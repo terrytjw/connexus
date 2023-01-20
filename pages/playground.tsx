@@ -11,7 +11,7 @@ const PlaygroundPage = () => {
   return (
     <main className="min-h-screen bg-slate-50">
       <h1 className="mb-4 p-6 bg-gray-900 text-center text-3xl text-teal-300 font-bold">
-        Playground
+        Playgroundsss
       </h1>
       <section className="p-8">
         <div className="flex justify-center">
