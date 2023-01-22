@@ -1,26 +1,27 @@
 version: "3.9"
 services:
-  web:
-    build: .
-    ports:
-      - "3000:3000"
-  postgres:
+  db:
     image: postgres:14.1-alpine
     restart: always
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
-        - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
-  pgadmin:
-        image: dpage/pgadmin4
-        environment: 
-            PGADMIN_DEFAULT_EMAIL: "abc@abc.com"
-            PGADMIN_DEFAULT_PASSWORD: "123"
-        ports: 
-            - "4000:80"
-        depends_on: 
-            - postgres    
-    
+         - database-data:/var/lib/postgresql/data
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./:/app
+      - /app/node_modules
+      - /app/.next
+    depends_on:
+      - db
+
+volumes:
+  database-data:

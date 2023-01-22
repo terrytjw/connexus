@@ -1,6 +1,6 @@
-FROM node:18-alpine
-WORKDIR /creator-economy
+FROM node:lts-slim
+WORKDIR /app
 COPY . .
-RUN yarn install --production
+
+RUN yarn install
 CMD ["yarn", "dev"]
-EXPOSE 3000
