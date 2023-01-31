@@ -2,5 +2,5 @@ FROM node:lts-slim
 WORKDIR /app
 COPY . .
 
-RUN yarn install
+RUN yarn
 CMD ["yarn", "dev"]

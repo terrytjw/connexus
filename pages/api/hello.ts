@@ -7,6 +7,15 @@ type Data = {
 };
 const prisma = new PrismaClient();
 
+/**
+ * @swagger
+ * /api/hello:
+ *   get:
+ *     description: Returns the hello world
+ *     responses:
+ *       200:
+ *         description: hello world
+ */
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User[]>
