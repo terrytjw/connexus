@@ -14,7 +14,7 @@
     "prisma:push": "yarn prisma db push",
     "prisma:seed": "yarn prisma db seed",
     "db": "yarn prisma studio",
-    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:push && yarn db"
+    "db:init": "yarn prisma:push && yarn prisma:seed && yarn db"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.5",
