@@ -2,21 +2,36 @@
 
 A template with all the libraries and configurations I love and use to build a fullstack app in <u>minutes<u/>.
 
-## Getting Started
+## Quick Start
 
-First, download dependencies by running:
+1. Download Docker from [Docker](https://www.docker.com/)
+2. Ensure that Docker is running
+3. Run `docker compose up`
+4. Initialize/Reset the database by running `yarn db:init`. Note: Whenver you are doing this, you will need to set the `POSTGRES_HOSTNAME=localhost` inside `.env`. Remember to change back to `POSTGRES_HOSTNAME=db` when you are done.
 
-```zsh
-yarn
-```
 
-Next, run the development server on localhost 3000:
+Frontend is deployed at `http://localhost:3000`
+Backend is deployed at `http://localhost:3000/api`
+Database GUI, it will be deployed at `http://localhost:5555`
 
-```zsh
-yarn dev
-```
+### Directory layout
 
-## Using configured reusable components
-
-Navigate to the `playground` page to view some of the useful reusable components you can use for your projects. <br />
-p.s. they are optimized from Headless UI
+    .
+    ├── components             # Contains your reusable components
+    ├── lib                    # Contains global functions that we will be using
+    ├── pages                  # Contains app's pages and the backend endpoints inside /api
+    ├── prisma                 # Contains codes related to prisma (ORM)
+    ├── public                 # Contains our assets
+    ├── styles                 # Global styles
+    ├── .dockerignore          # Code to ignore while deploying to docker
+    ├── .env                   # Environment variables
+    ├── .eslintrc.json         # Linting settings
+    ├── .gitignore             # Code to ignore while deploying to GIT
+    ├── docker-compose.yml     # Code to manage different containers
+    ├── Dockerfile             # Code to manage deploying frontend as a image
+    ├── next.config.js         # Configuring NextJS
+    ├── package.json
+    ├── postcss.config.js
+    ├── README.md
+    ├── tailwind.config.js
+    └── tsconfig.json
