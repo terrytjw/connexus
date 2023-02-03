@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import CustomLink from "../components/CustomLink";
-import { FaGithub } from "react-icons/fa";
+import { FaGithub, FaShareSquare } from "react-icons/fa";
+import Button from "../components/Button";
 
 const HomePage: NextPage = () => {
   return (
@@ -12,15 +13,47 @@ const HomePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col justify-center items-center h-screen tracking-widest">
-        <h1 className="text-2xl font-bold animate-pulse">Let's build. 🚀</h1>
-        <CustomLink
+      <main className="flex flex-col items-center justify-center p-12 tracking-widest">
+        <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
+        <h2 className="mt-10 mb-6 text-xl font-semibold">
+          Components showcase
+        </h2>
+
+        <div className="divider" />
+
+        {/* <CustomLink
           href="https://github.com/terrytjw/t2-template"
           className="flex gap-4 p-8"
         >
           <FaGithub />
           Github repo
-        </CustomLink>
+        </CustomLink> */}
+        <h3 className="font-bold">Buttons</h3>
+        <section className="mb-8 flex gap-4">
+          <Button variant="solid" size="md" className="mt-4">
+            <FaGithub />
+            Github repo
+          </Button>
+          <Button variant="solid" size="md" className="mt-4">
+            Github repo
+          </Button>
+          <Button variant="outlined" size="md" className="mt-4">
+            <FaGithub />
+            Github repo
+          </Button>
+          <Button variant="outlined" size="md" className="mt-4">
+            Github repo
+          </Button>
+        </section>
+        <section className="flex gap-4">
+          <Button variant="solid" size="md" className="rounded-full">
+            <FaShareSquare />
+          </Button>
+          <Button variant="outlined" size="md" className="rounded-full">
+            <FaShareSquare />
+          </Button>
+        </section>
+        <div className="divider" />
       </main>
     </div>
   );
