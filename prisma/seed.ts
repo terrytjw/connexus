@@ -1,4 +1,4 @@
-import { CommunityType, PrismaClient, PrivacyType } from "@prisma/client";
+import { CommunityType, PrismaClient, PrivacyType, ChannelType } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
   const alice = await prisma.user.upsert({
@@ -22,8 +22,15 @@ async function main() {
             tags: ["A", "B"],
             maxMembers: 10,
             privacyType: PrivacyType.PUBLIC,
-            communityType: CommunityType.NFT
-          }
+            communityType: CommunityType.NFT,
+            channels: {
+              create: {
+                  name: "Home",
+                  description: "Home Channel",
+                  channelType: ChannelType.REGULAR
+                }
+            }
+          }       
       }
     },
   });

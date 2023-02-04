@@ -15,7 +15,7 @@ model User {
 
   createdCommunities Community[] @relation(name: "createdCommunities")
   joinedCommunities Community[] @relation(name: "joinedCommunities")
-  // joinedChannels Channel[]
+  joinedChannels Channel[]
   posts Post[]
   // comments Comment[]
 }
@@ -36,14 +36,28 @@ model Community {
   profilePic String?
   tags String[]
   maxMembers Int
-  privacyType PrivacyType
+  privacyType PrivacyType @default(PUBLIC)
   communityType CommunityType 
   
 
   creator User @relation(name: "createdCommunities", fields: [creatorId], references: [id])
-  creatorId Int
+  creatorId Int @unique
 
   members User[] @relation(name: "joinedCommunities")
+
+  channels Channel[] 
+}
+
+model Channel {
+  channelId Int @id @default(autoincrement())
+  name String @unique
+  description String? 
+  channelType ChannelType @default(REGULAR)
+
+  members User[]
+
+  community Community @relation(fields: [communityId], references: [communityId])
+  communityId Int @unique
 }
 
 enum PrivacyType {
@@ -54,4 +68,10 @@ enum PrivacyType {
 enum CommunityType {
   NFT
   CRYPTO
+}
+
+enum ChannelType {
+  REGULAR
+  PREMIUM
+  PRIVATE
 }
