@@ -38,6 +38,16 @@ async function main() {
                 name: "Home"
               }
             }
+          },
+          comments: {
+            create: {
+              content: "First",
+              commenter: {
+                connect: {
+                  userId: 1
+                }
+              }
+            }
           }
         },
       },
@@ -79,20 +89,38 @@ async function main() {
           }
         }       
       },
-      // posts: {
-      //   create: [
-      //     {
-      //       title: "Follow Prisma on Twitter",
-      //       content: "https://twitter.com/prisma",
-      //       published: true,
-      //     },
-      //     {
-      //       title: "Follow Nexus on Twitter",
-      //       content: "https://twitter.com/nexusgql",
-      //       published: true,
-      //     },
-      //   ],
-      // },
+      posts: {
+        create: [
+          {
+            title: "Follow Prisma on Twitter",
+            content: "https://twitter.com/prisma",
+            media: ["A", "B"],
+            isPinned: false,
+            channel: {
+              connect: {
+                communityId_name: {
+                  communityId: 2,
+                  name: "Home"
+                }
+              }
+            }
+          },
+          {
+            title: "Follow Nexus on Twitter",
+            content: "https://twitter.com/nexusgql",
+            media: ["A", "B"],
+            isPinned: false,
+            channel: {
+              connect: {
+                communityId_name: {
+                  communityId: 2,
+                  name: "Home"
+                }
+              }
+            }
+          },
+        ],
+      },
     },
   });
   console.log({ alice, bob });
