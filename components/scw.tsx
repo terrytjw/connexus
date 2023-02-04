@@ -14,10 +14,13 @@ const Home = () => {
   const [socialLoginSDK, setSocialLoginSDK] = useState<SocialLogin | null>(
     null
   );
+  const [connectWeb3Loading, setConnectWeb3Loading] = useState(false);
 
   const connectWeb3 = useCallback(async () => {
+    setConnectWeb3Loading(true);
     if (typeof window === "undefined") return;
     console.log("socialLoginSDK", socialLoginSDK);
+
     if (socialLoginSDK?.provider) {
       const web3Provider = new ethers.providers.Web3Provider(
         socialLoginSDK.provider
@@ -27,16 +30,21 @@ const Home = () => {
       setAccount(accounts[0]);
       return;
     }
+
     if (socialLoginSDK) {
       socialLoginSDK.showWallet();
       return socialLoginSDK;
     }
+
     const sdk = new SocialLogin();
     await sdk.init({
       chainId: ethers.utils.hexValue(80001),
     });
     setSocialLoginSDK(sdk);
     sdk.showWallet();
+
+    setConnectWeb3Loading(false);
+
     return socialLoginSDK;
   }, [socialLoginSDK]);
 
@@ -106,6 +114,10 @@ const Home = () => {
           {!account ? "Connect Wallet" : "Disconnect Wallet"}
         </button>
 
+        {connectWeb3Loading && (
+          <div className="bg-blue-300 p-8">connect web3 loading...</div>
+        )}
+
         {account && (
           <div>
             <h2>EOA Address</h2>
@@ -113,7 +125,9 @@ const Home = () => {
           </div>
         )}
 
-        {scwLoading && <h2>Loading Smart Account...</h2>}
+        {scwLoading && (
+          <h2 className="bg-red-300 p-8">Loading Smart Account...</h2>
+        )}
 
         {scwAddress && (
           <div>
