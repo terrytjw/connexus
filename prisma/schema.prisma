@@ -9,13 +9,13 @@ generator client {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
+  userId    Int    @id @default(autoincrement())
   email String @unique
   name  String
 
   createdCommunities Community[] @relation(name: "createdCommunities")
   joinedCommunities Community[] @relation(name: "joinedCommunities")
-  joinedChannels Channel[]
+  joinedChannels UsersOnChannels[]
   posts Post[]
   // comments Comment[]
 }
@@ -25,7 +25,7 @@ model Post {
   title     String
   content   String
   published Boolean
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [userId])
   userId    Int
 }
 
@@ -40,7 +40,7 @@ model Community {
   communityType CommunityType 
   
 
-  creator User @relation(name: "createdCommunities", fields: [creatorId], references: [id])
+  creator User @relation(name: "createdCommunities", fields: [creatorId], references: [userId])
   creatorId Int @unique
 
   members User[] @relation(name: "joinedCommunities")
@@ -49,15 +49,26 @@ model Community {
 }
 
 model Channel {
-  channelId Int @id @default(autoincrement())
-  name String @unique
+  name String
   description String? 
   channelType ChannelType @default(REGULAR)
 
-  members User[]
+  members UsersOnChannels[]
 
   community Community @relation(fields: [communityId], references: [communityId])
-  communityId Int @unique
+  communityId Int
+
+  @@id([communityId, name])
+}
+
+model UsersOnChannels {
+  user User @relation(fields: [userId], references: [userId])
+  userId Int
+  channel Channel @relation(fields: [communityId, name], references: [communityId, name])
+  communityId Int
+  name String
+
+  @@id([userId, communityId, name])
 }
 
 enum PrivacyType {

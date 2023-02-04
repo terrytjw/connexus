@@ -16,21 +16,21 @@ async function main() {
       },
       createdCommunities: {
         create: {
-            name: "AliceCommunity",
-            description: "Alice's Community",
-            profilePic: "",
-            tags: ["A", "B"],
-            maxMembers: 10,
-            privacyType: PrivacyType.PUBLIC,
-            communityType: CommunityType.NFT,
-            channels: {
-              create: {
-                  name: "Home",
-                  description: "Home Channel",
-                  channelType: ChannelType.REGULAR
-                }
+          name: "AliceCommunity",
+          description: "Alice's Community",
+          profilePic: "",
+          tags: ["A", "B"],
+          maxMembers: 10,
+          privacyType: PrivacyType.PUBLIC,
+          communityType: CommunityType.NFT,
+          channels: {
+            create: {
+              name: "Home",
+              description: "Home Channel",
+              channelType: ChannelType.REGULAR
             }
-          }       
+          }
+        }       
       }
     },
   });
@@ -40,6 +40,36 @@ async function main() {
     create: {
       email: "bob@prisma.io",
       name: "Bob",
+      joinedChannels: {
+        create: {
+          channel: {
+            connect: {
+              communityId_name: {
+                communityId: 1,
+                name: "Home"
+              }
+            }
+          }
+        }
+      },
+      createdCommunities: {
+        create: {
+          name: "BobCommunity",
+          description: "Bob's Community",
+          profilePic: "",
+          tags: ["A", "B"],
+          maxMembers: 10,
+          privacyType: PrivacyType.PUBLIC,
+          communityType: CommunityType.NFT,
+          channels: {
+            create: {
+              name: "Home",
+              description: "Home Channel",
+              channelType: ChannelType.REGULAR
+            }
+          }
+        }       
+      },
       posts: {
         create: [
           {
