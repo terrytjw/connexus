@@ -27,8 +27,14 @@ const HomePage: NextPage = () => {
     () => import("../components/scw").then((res) => res.default),
     {
       ssr: false,
+      loading: () => <ConnectButtonLoading />,
     }
   );
+
+  const ConnectButtonLoading = () => (
+    <div className="bg-green-300 p-8">Connect wallet button loading...</div>
+  );
+
   return (
     <div>
       <Head>
@@ -39,17 +45,9 @@ const HomePage: NextPage = () => {
 
       <main className="flex flex-col items-center justify-center tracking-widest">
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
-        <div>
-          <Suspense
-            fallback={
-              <div className="bg-green-300 p-8">
-                Connect wallet button loading...
-              </div>
-            }
-          >
-            <SocialLoginDynamic />
-          </Suspense>
-        </div>
+
+        <SocialLoginDynamic />
+
         <div className="divider" />
 
         <h2 className="mt-10 mb-6 text-xl font-semibold">
