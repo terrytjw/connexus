@@ -40,7 +40,13 @@ const HomePage: NextPage = () => {
       <main className="flex flex-col items-center justify-center tracking-widest">
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
         <div>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense
+            fallback={
+              <div className="bg-green-300 p-8">
+                Connect wallet button loading...
+              </div>
+            }
+          >
             <SocialLoginDynamic />
           </Suspense>
         </div>
