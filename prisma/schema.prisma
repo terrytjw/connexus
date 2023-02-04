@@ -12,7 +12,12 @@ model User {
   id    Int    @id @default(autoincrement())
   email String @unique
   name  String
+
+  createdCommunities Community[] @relation(name: "createdCommunities")
+  joinedCommunities Community[] @relation(name: "joinedCommunities")
+  // joinedChannels Channel[]
   posts Post[]
+  // comments Comment[]
 }
 
 model Post {
@@ -22,4 +27,31 @@ model Post {
   published Boolean
   user      User    @relation(fields: [userId], references: [id])
   userId    Int
+}
+
+model Community {
+  communityId Int @id @default(autoincrement())
+  name String 
+  description String?
+  profilePic String?
+  tags String[]
+  maxMembers Int
+  privacyType PrivacyType
+  communityType CommunityType 
+  
+
+  creator User @relation(name: "createdCommunities", fields: [creatorId], references: [id])
+  creatorId Int
+
+  members User[] @relation(name: "joinedCommunities")
+}
+
+enum PrivacyType {
+  PUBLIC
+  PRIVATE
+}
+
+enum CommunityType {
+  NFT
+  CRYPTO
 }

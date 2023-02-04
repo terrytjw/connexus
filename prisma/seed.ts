@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { CommunityType, PrismaClient, PrivacyType } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
   const alice = await prisma.user.upsert({
@@ -14,6 +14,17 @@ async function main() {
           published: true,
         },
       },
+      createdCommunities: {
+        create: {
+            name: "AliceCommunity",
+            description: "Alice's Community",
+            profilePic: "",
+            tags: ["A", "B"],
+            maxMembers: 10,
+            privacyType: PrivacyType.PUBLIC,
+            communityType: CommunityType.NFT
+          }
+      }
     },
   });
   const bob = await prisma.user.upsert({
