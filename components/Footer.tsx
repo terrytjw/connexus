@@ -1,7 +1,38 @@
+import Link from "next/link";
 import React from "react";
+import CustomLink from "./CustomLink";
+import Image from "next/image";
 
 const Footer = () => {
-  return <div>Footer</div>;
+  return (
+    <footer className="footer footer-center rounded bg-gray-200 p-10 text-base-content">
+      <div className="grid grid-flow-col gap-4 font-medium">
+        <CustomLink href="#">About us</CustomLink>
+        <CustomLink href="#">Contact</CustomLink>
+        <CustomLink href="#">T&Cs</CustomLink>
+      </div>
+      <div>
+        <Link
+          href="/"
+          className="block transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
+        >
+          <Image
+            src="/images/logo.png"
+            alt="Connexus logo"
+            width={160}
+            height={50}
+          />
+        </Link>
+        <p className="p-3 italic">
+          Empowering creators to develop authentic relationships with their
+          fans.
+        </p>
+      </div>
+      <div>
+        <p>Copyright © 2023 | Connexus</p>
+      </div>
+    </footer>
+  );
 };
 
 export default Footer;

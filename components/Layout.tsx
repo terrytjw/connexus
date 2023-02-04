@@ -10,6 +10,7 @@ import {
   FaGripVertical,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
+import Footer from "./Footer";
 
 const MobileNavbar = () => {
   return (
@@ -210,7 +211,10 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="flex flex-col lg:flex-row">
       <MobileNavbar />
       <DesktopSidebar />
-      <div className="h-screen w-full bg-gray-100">{children}</div>
+      <main className="w-full">
+        <div className="h-screen bg-gray-100">{children}</div>
+        <Footer />
+      </main>
     </div>
   );
 };
