@@ -29,7 +29,7 @@ const HomePage: NextPage = () => {
           Github repo
         </CustomLink> */}
         <h3 className="font-bold">Buttons</h3>
-        <section className="mb-8 flex gap-4">
+        <section className="mb-8 flex flex-wrap gap-4">
           <Button variant="solid" size="md" className="mt-4">
             <FaGithub />
             Github repo

@@ -211,7 +211,7 @@ const Layout = ({ children }: LayoutProps) => {
     <div className="flex flex-col lg:flex-row">
       <MobileNavbar />
       <DesktopSidebar />
-      <main className="w-full">
+      <main className="mt-14 w-full">
         <div className="h-screen bg-gray-100">{children}</div>
         <Footer />
       </main>
