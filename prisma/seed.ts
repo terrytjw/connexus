@@ -7,13 +7,6 @@ async function main() {
     create: {
       email: "alice@prisma.io",
       name: "Alice",
-      posts: {
-        create: {
-          title: "Check out Prisma with Next.js",
-          content: "https://www.prisma.io/nextjs",
-          published: true,
-        },
-      },
       createdCommunities: {
         create: {
           name: "AliceCommunity",
@@ -31,7 +24,23 @@ async function main() {
             }
           }
         }       
-      }
+      },
+      posts: {
+        create: {
+          title: "Check out Prisma with Next.js",
+          content: "https://www.prisma.io/nextjs",
+          media: ["A", "B"],
+          isPinned: false,
+          channel: {
+            connect: {
+              communityId_name: {
+                communityId: 1,
+                name: "Home"
+              }
+            }
+          }
+        },
+      },
     },
   });
   const bob = await prisma.user.upsert({
@@ -70,20 +79,20 @@ async function main() {
           }
         }       
       },
-      posts: {
-        create: [
-          {
-            title: "Follow Prisma on Twitter",
-            content: "https://twitter.com/prisma",
-            published: true,
-          },
-          {
-            title: "Follow Nexus on Twitter",
-            content: "https://twitter.com/nexusgql",
-            published: true,
-          },
-        ],
-      },
+      // posts: {
+      //   create: [
+      //     {
+      //       title: "Follow Prisma on Twitter",
+      //       content: "https://twitter.com/prisma",
+      //       published: true,
+      //     },
+      //     {
+      //       title: "Follow Nexus on Twitter",
+      //       content: "https://twitter.com/nexusgql",
+      //       published: true,
+      //     },
+      //   ],
+      // },
     },
   });
   console.log({ alice, bob });
