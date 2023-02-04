@@ -17,9 +17,10 @@ const Home = () => {
   const [connectWeb3Loading, setConnectWeb3Loading] = useState(false);
 
   const connectWeb3 = useCallback(async () => {
-    setConnectWeb3Loading(true);
     if (typeof window === "undefined") return;
     console.log("socialLoginSDK", socialLoginSDK);
+
+    setConnectWeb3Loading(true);
 
     if (socialLoginSDK?.provider) {
       const web3Provider = new ethers.providers.Web3Provider(
@@ -33,6 +34,7 @@ const Home = () => {
 
     if (socialLoginSDK) {
       socialLoginSDK.showWallet();
+      setConnectWeb3Loading(false);
       return socialLoginSDK;
     }
 
@@ -105,13 +107,13 @@ const Home = () => {
 
   return (
     <div className="">
-      <main className="flex flex-col p-20">
-        <h1 className="py-4">Biconomy SDK Next.js Web3Auth Example</h1>
+      <main className="mt-4 flex flex-col rounded-2xl bg-white p-20">
+        <h1 className="py-4">Biconomy SDK | Next.js | Web3Auth</h1>
         <button
           className="btn-outline btn"
           onClick={!account ? connectWeb3 : disconnectWeb3}
         >
-          {!account ? "Connect Wallet" : "Disconnect Wallet"}
+          {!account ? "Login" : "Logout"}
         </button>
 
         {connectWeb3Loading && (
