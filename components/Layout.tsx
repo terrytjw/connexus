@@ -97,7 +97,7 @@ const MobileNavbar = () => {
           </li>
           <li className="mb-4">
             <Link
-              href="/profile"
+              href="/users/profile/1"
               className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
             >
               <FaUser className="ml-2" />
@@ -182,7 +182,7 @@ const DesktopSidebar = () => {
         </li>
         <li className="mb-4">
           <Link
-            href="/profile"
+            href="/users/profile/1"
             className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
           >
             <FaUser className="ml-2" />
