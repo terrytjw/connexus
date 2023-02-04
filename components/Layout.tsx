@@ -7,6 +7,7 @@ import {
   FaComment,
   FaUser,
   FaBell,
+  FaGripVertical,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 
@@ -102,6 +103,15 @@ const MobileNavbar = () => {
               Profile
             </Link>
           </li>
+          <li className="mb-4">
+            <Link
+              href="/playground"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white"
+            >
+              <FaGripVertical className="ml-2" />
+              Playground
+            </Link>
+          </li>
         </ul>
       </div>
     </div>
@@ -176,6 +186,15 @@ const DesktopSidebar = () => {
           >
             <FaUser className="ml-2" />
             Profile
+          </Link>
+        </li>
+        <li className="mb-4">
+          <Link
+            href="/playground"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white"
+          >
+            <FaGripVertical className="ml-2" />
+            Playground
           </Link>
         </li>
       </ul>

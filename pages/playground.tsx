@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
+import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
 import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
@@ -7,37 +8,47 @@ import Toggle from "../components/Toggle";
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWord, setShowWord] = useState(false);
+  const [accordionIdx, setAccordionIdx] = useState<number | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
 
   return (
     <main className="min-h-screen bg-slate-50">
-      <h1 className="mb-4 p-6 bg-gray-900 text-center text-3xl text-teal-300 font-bold">
+      <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
         Playground
       </h1>
       <section className="p-8">
         <div className="flex justify-center">
-          <h1 className="inline-block mb-4 py-1 text-xl font-bold border-b-2 border-gray-300">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
             Accordion component
           </h1>
         </div>
-        <Accordion label="What's the refund policy?">
-          If you're unhappy with your purchase for any reason, email us within
-          90 days and we'll refund you in full, no questions asked.
+        <Accordion
+          id={0}
+          idx={accordionIdx}
+          setIdx={setAccordionIdx}
+          title="Mary had a little lamb?"
+        >
+          <h1 className="rounded-sm bg-teal-100 p-8">Hello</h1>
         </Accordion>
-        <Accordion label="Mary had a little lamb. What's next?">
-          Its fleece was white as snow, and everywhere that Mary went, the lamb
-          was sure to go.
+        <Accordion
+          id={1}
+          idx={accordionIdx}
+          setIdx={setAccordionIdx}
+          title="And it was really cute?"
+        >
+          <h1 className="rounded-sm bg-teal-100 p-8">World</h1>
         </Accordion>
       </section>
       <div className="divider" />
       <section className="p-8">
         <div className="flex justify-center">
-          <h1 className="inline-block mb-4 py-1 text-xl font-bold border-b-2 border-gray-300">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
             Modal component
           </h1>
         </div>
         <div className="flex justify-center p-6">
           <button
-            className="btn btn-outline"
+            className="btn-outline btn"
             onClick={() => setIsModalOpen(true)}
           >
             Open modal
@@ -65,34 +76,56 @@ const PlaygroundPage = () => {
         </Modal>
       </section>
       <div className="divider" />
-      <section className="p-8">
+      <div className="p-8">
         <div className="flex justify-center">
-          <h1 className="inline-block py-1 text-xl font-bold border-b-2 border-gray-300">
+          <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
             Tab group component
           </h1>
         </div>
         <div className="flex justify-center">
-          <TabGroup />
+          <TabGroup
+            tabs={["Tab 1", "Tab 2", "Tab 3", "Tab 69"]}
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab == 0 && <h1>Hi</h1>}
+            {activeTab == 1 && <h1>My</h1>}
+            {activeTab == 2 && <h1>Name</h1>}
+            {activeTab == 3 && <h1>Jeff</h1>}
+          </TabGroup>
         </div>
-      </section>
+      </div>
       <div className="divider" />
       <section className="p-8">
         <div className="flex justify-center">
-          <h1 className="inline-block py-1 text-xl font-bold border-b-2 border-gray-300">
+          <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
             Toggle component
           </h1>
         </div>
-        <div className="flex flex-col justify-center items-center gap-4 p-8">
+        <div className="flex flex-col items-center justify-center gap-4 p-8">
           <Toggle isChecked={showWord} setIsChecked={setShowWord} />
 
           <div className="inline-block h-10">
             <p className="">
               Word of the day:{" "}
-              <span className="inline-block p-2 w-32 bg-orange-200 text-center font-bold text-black/80 text- rounded">
+              <span className="text- inline-block w-32 rounded bg-orange-200 p-2 text-center font-bold text-black/80">
                 {showWord ? "Hello World" : "?????"}
               </span>
             </p>
           </div>
+        </div>
+      </section>
+      <div className="divider" />
+      <section className="p-8 pb-52">
+        <div className="flex justify-center">
+          <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Dropdown component
+          </h1>
+        </div>
+        <div className="flex flex-col items-center justify-center gap-4 p-8">
+          <Dropdown />
         </div>
       </section>
     </main>
