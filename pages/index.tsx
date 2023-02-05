@@ -5,6 +5,7 @@ import { FaGithub, FaShareSquare } from "react-icons/fa";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { useState } from "react";
+import Notification from "../components/Notification";
 
 const HomePage: NextPage = () => {
   const [selected, setSelected] = useState(false);
@@ -71,6 +72,36 @@ const HomePage: NextPage = () => {
           />
         </section>
         <div className="divider" />
+        <h3 className="font-bold">Chat Notification</h3>
+        <section className="mt-4 flex w-full flex-col flex-wrap">
+          <Notification
+            userId="1"
+            userProfilePic="https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg"
+            userName="Fan name"
+            message="has sent you a message! Let's chat!"
+            linkLabel="Go to chat room #1"
+            href="chats"
+          />
+          <div className="card border-2 border-gray-200 bg-white">
+            <ul role="list" className="divide-y divide-gray-200">
+              <li>
+                <Notification
+                  userId="1"
+                  userProfilePic="https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg"
+                  userName="Creator name #1"
+                  message="has rejected your chat request."
+                />
+              </li>
+              <li>
+                <Notification
+                  message="Please be reminded that event will start in 2 days!"
+                  linkLabel="Go to event details"
+                  href="events"
+                />
+              </li>
+            </ul>
+          </div>
+        </section>
       </main>
     </div>
   );
