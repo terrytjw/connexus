@@ -3,8 +3,12 @@ import Head from "next/head";
 import CustomLink from "../components/CustomLink";
 import { FaGithub, FaShareSquare } from "react-icons/fa";
 import Button from "../components/Button";
+import Badge from "../components/Badge";
+import { useState } from "react";
 
 const HomePage: NextPage = () => {
+  const [selected, setSelected] = useState(false);
+
   return (
     <div>
       <Head>
@@ -52,6 +56,19 @@ const HomePage: NextPage = () => {
           <Button variant="outlined" size="md" className="rounded-full">
             <FaShareSquare />
           </Button>
+        </section>
+        <div className="divider" />
+        <h3 className="font-bold">Badges</h3>
+        <section className="mt-4 flex flex-wrap items-center gap-4">
+          <Badge size="lg" label="NFT" />
+          <Badge
+            size="lg"
+            label="Entertainment"
+            selected={selected}
+            onClick={() => {
+              setSelected(!selected);
+            }}
+          />
         </section>
         <div className="divider" />
       </main>
