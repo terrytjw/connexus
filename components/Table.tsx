@@ -4,20 +4,12 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-// to be moved to another file
-type ChatRequest = {
-  name: string;
-  community: string;
-  tipAmount: number;
-  status: "Accepted" | "Pending" | "Rejected";
+type TableProps = {
+  data: any[]; // TODO: change type any to data type
+  columns: string[];
 };
 
-interface TableProps {
-  data: ChatRequest[];
-  columns: string[];
-}
-
-const Table: FC<TableProps> = ({ data, columns }) => {
+const Table = ({ data, columns }: TableProps) => {
   return (
     <div className="w-full overflow-x-auto">
       <table className="table w-full">
