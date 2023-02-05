@@ -72,7 +72,7 @@ const HomePage: NextPage = () => {
           />
         </section>
         <div className="divider" />
-        <h3 className="font-bold">Chat Notification</h3>
+        <h3 className="font-bold">Notifications</h3>
         <section className="mt-4 flex w-full flex-col flex-wrap">
           <Notification
             userId="1"
