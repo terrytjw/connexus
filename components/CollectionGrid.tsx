@@ -5,12 +5,12 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-interface CollectionGridProps {
+type CollectionGridProps = {
   //   products: {}[];
   // decide later
-}
+};
 
-const CollectionGrid: FC<CollectionGridProps> = ({ products }) => {
+const CollectionGrid = ({ products }: CollectionGridProps) => {
   return (
     <div className="mx-auto max-w-7xl overflow-hidden py-0 px-0 sm:py-0 sm:px-0 lg:px-2">
       <div className="gap-y-15 grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
