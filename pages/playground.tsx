@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
+import CollectionGrid from "../components/CollectionGrid";
 import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
 import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
+import { products } from "../utils/dummyData";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +18,18 @@ const PlaygroundPage = () => {
       <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
         Playground
       </h1>
+      {/* Collection Grid */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Collection Grid
+          </h1>
+        </div>
+
+        <CollectionGrid products={products} />
+      </section>
+      <div className="divider" />
+
       <section className="p-8">
         <div className="flex justify-center">
           <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
