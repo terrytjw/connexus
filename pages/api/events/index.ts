@@ -9,10 +9,14 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/events:
  *   get:
- *     description: Returns a list of @event
+ *     description: Returns a list of Event objects
  *     responses:
  *       200:
- *         description: hello world
+ *         description: A list of Event objects
+ *         content:
+ *          application/json:
+ *            schema:
+ *              $ref: "#/components/schemas/Event"
  */
 export default async function handler(
   req: NextApiRequest,

@@ -10,20 +10,9 @@ generator client {
   binaryTargets = ["linux-arm64-openssl-1.1.x"]
 }
 
-model User {
-  id    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  posts Post[]
-}
-
-model Post {
-  id        Int     @id @default(autoincrement())
-  title     String
-  content   String
-  published Boolean
-  user      User    @relation(fields: [userId], references: [id])
-  userId    Int
+generator jsonSchema {
+  provider = "prisma-json-schema-generator"
+  output   = "./generated/json-schema"
 }
 
 model Event {

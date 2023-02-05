@@ -104,14 +104,6 @@ exports.Prisma.EventScalarFieldEnum = makeEnum({
   privacyType: 'privacyType'
 });
 
-exports.Prisma.PostScalarFieldEnum = makeEnum({
-  id: 'id',
-  title: 'title',
-  content: 'content',
-  published: 'published',
-  userId: 'userId'
-});
-
 exports.Prisma.PromotionScalarFieldEnum = makeEnum({
   promotionId: 'promotionId',
   name: 'name',
@@ -149,12 +141,6 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   ReadCommitted: 'ReadCommitted',
   RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
-});
-
-exports.Prisma.UserScalarFieldEnum = makeEnum({
-  id: 'id',
-  email: 'email',
-  name: 'name'
 });
 exports.CategoryType = makeEnum({
   AUTO_BOAT_AIR: 'AUTO_BOAT_AIR',
@@ -199,8 +185,6 @@ exports.VisibilityType = makeEnum({
 });
 
 exports.Prisma.ModelName = makeEnum({
-  User: 'User',
-  Post: 'Post',
   Event: 'Event',
   Ticket: 'Ticket',
   Promotion: 'Promotion'

@@ -1,0 +1,174 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "Event": {
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "AUTO_BOAT_AIR",
+            "BUSINESS_PROFESSIONAL",
+            "CHARITY_CAUSES",
+            "COMMUNITY_CULTURE",
+            "FAMILY_EDUCATION",
+            "FASHION_BEAUTY",
+            "FILM_MEDIA_ENTERTAINMENT",
+            "FOOD_DRINK",
+            "GOVERNMENT_POLITICS",
+            "HEALTH_WELLNESS",
+            "HOBBIES_SPECIAL_INTEREST",
+            "HOME_LIFESTYLE",
+            "PERFORMING_VISUAL_ARTS",
+            "RELIGION_SPIRITUALITY",
+            "SCHOOL_ACTIVITIES",
+            "SCIENCE_TECHNOLOGY",
+            "SEASONAL_HOLIDAY",
+            "SPORTS_FITNESS",
+            "TRAVEL_OUTDOOR"
+          ]
+        },
+        "location": {
+          "type": "string"
+        },
+        "eventDurationType": {
+          "type": "string",
+          "enum": [
+            "SINGLE",
+            "RECURRING"
+          ]
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "visibilityType": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PUBLISHED"
+          ]
+        },
+        "privacyType": {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ]
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ticket"
+          }
+        }
+      }
+    },
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "price": {
+          "type": "number"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "promotion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
+        }
+      }
+    },
+    "Promotion": {
+      "type": "object",
+      "properties": {
+        "promotionId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "promotionType": {
+          "type": "string",
+          "enum": [
+            "LIMITED",
+            "UNLIMITED"
+          ]
+        },
+        "promotionValue": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "event": {
+      "$ref": "#/definitions/Event"
+    },
+    "ticket": {
+      "$ref": "#/definitions/Ticket"
+    },
+    "promotion": {
+      "$ref": "#/definitions/Promotion"
+    }
+  }
+}
