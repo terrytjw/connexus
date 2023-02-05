@@ -4,7 +4,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-interface InputProps {
+type InputProps = {
   type: "text" | "number";
   label: string;
   value: string | number;
@@ -24,9 +24,9 @@ interface InputProps {
     | "error";
   disabled?: boolean;
   className?: string;
-}
+};
 
-const Input: FC<InputProps> = ({
+const Input = ({
   type,
   label,
   value,
@@ -37,7 +37,7 @@ const Input: FC<InputProps> = ({
   variant,
   disabled,
   className,
-}) => {
+}: InputProps) => {
   return (
     <div className="form-control w-full max-w-xs">
       <label className="label">
