@@ -236,8 +236,8 @@ const Layout = ({ children }: LayoutProps) => {
     <MobileNavbar>
       <div className="flex text-black">
         <DesktopSidebar />
-        <main className="w-full">
-          <div className="min-h-screen bg-gray-100 lg:ml-64">{children}</div>
+        <main className="w-full lg:ml-64">
+          <div className="min-h-screen bg-gray-100">{children}</div>
           <Footer />
         </main>
       </div>
