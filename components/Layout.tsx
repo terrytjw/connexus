@@ -37,7 +37,7 @@ const MobileNavbar = () => {
       </div>
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <ul className="menu w-80 bg-base-100 p-4 text-base-content">
+        <ul className="menu w-80 bg-white p-4 text-gray-500">
           {/* <!-- Sidebar content here --> */}
           <Link
             href="/"
@@ -121,7 +121,7 @@ const MobileNavbar = () => {
 
 const DesktopSidebar = () => {
   return (
-    <div className="hidden h-screen w-80 bg-white lg:block">
+    <div className="hidden min-h-screen w-80 bg-white lg:block">
       <Link
         href="/"
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
@@ -208,10 +208,10 @@ type LayoutProps = {
 };
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="flex flex-col lg:flex-row">
+    <div className="flex flex-col text-black lg:flex-row">
       <MobileNavbar />
       <DesktopSidebar />
-      <main className="mt-14 w-full">
+      <main className="mt-14 w-full lg:mt-0">
         <div className="h-screen bg-gray-100">{children}</div>
         <Footer />
       </main>
