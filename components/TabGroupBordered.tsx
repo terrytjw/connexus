@@ -18,18 +18,18 @@ const animatedVariant = {
   },
 };
 
-type TabGroupTestProps = {
+type TabGroupBorderedProps = {
   tabs: string[];
   activeTab: number;
   setActiveTab: (index: number) => void;
   children?: React.ReactNode;
 };
-const TabGroupTest = ({
+const TabGroupBordered = ({
   tabs,
   activeTab,
   setActiveTab,
   children,
-}: TabGroupTestProps) => {
+}: TabGroupBorderedProps) => {
   return (
     <div className="mx-auto w-full max-w-5xl px-2 py-16 sm:px-0">
       <Tab.Group
@@ -78,4 +78,4 @@ const TabGroupTest = ({
   );
 };
 
-export default TabGroupTest;
+export default TabGroupBordered;
