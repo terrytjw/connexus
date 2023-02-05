@@ -4,13 +4,13 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-interface AvatarProps {
+type AvatarProps = {
   imageUrl: string;
   className?: string;
   alt?: string;
-}
+};
 
-const Avatar: FC<AvatarProps> = ({ imageUrl, className, alt }) => {
+const Avatar = ({ imageUrl, className, alt }: AvatarProps) => {
   return (
     <div className="flex">
       <img

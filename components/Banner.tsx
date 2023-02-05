@@ -4,13 +4,13 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-interface BannerProps {
+type BannerProps = {
   coverImageUrl: string;
   className?: string;
   alt?: string;
-}
+};
 
-const Banner: FC<BannerProps> = ({ coverImageUrl, className, alt }) => {
+const Banner = ({ coverImageUrl, className, alt }: BannerProps) => {
   return (
     <div>
       <img
