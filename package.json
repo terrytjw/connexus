@@ -11,10 +11,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prisma:push": "yarn prisma db push",
+    "prisma:push": "yarn prisma db push --force-reset",
     "prisma:seed": "yarn prisma db seed",
-    "db": "yarn prisma studio",
-    "db:init": "yarn prisma:push && yarn prisma:seed && yarn db"
+    "prisma:generate": "yarn prisma generate",
+    "prisma:db": "yarn prisma studio",
+    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:generate && yarn prisma:db"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.5",
