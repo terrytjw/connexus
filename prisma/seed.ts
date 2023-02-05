@@ -1,12 +1,13 @@
-import { CommunityType, PrismaClient, PrivacyType, ChannelType } from "@prisma/client";
+import { CommunityType, PrismaClient, ChannelType } from "@prisma/client";
 const prisma = new PrismaClient();
 async function main() {
-  const alice = await prisma.user.upsert({
-    where: { email: "alice@prisma.io" },
-    update: {},
-    create: {
+  const alice = await prisma.user.create({
+    data : {
+      walletAddress: "Address",
+      phoneNumber: "123",
+      displayName: "alice",
+      username: "alice123",
       email: "alice@prisma.io",
-      name: "Alice",
       createdCommunities: {
         create: {
           name: "AliceCommunity",
@@ -14,7 +15,6 @@ async function main() {
           profilePic: "",
           tags: ["A", "B"],
           maxMembers: 10,
-          privacyType: PrivacyType.PUBLIC,
           communityType: CommunityType.NFT,
           channels: {
             create: {
@@ -51,14 +51,15 @@ async function main() {
           }
         },
       },
-    },
+    }
   });
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@prisma.io" },
-    update: {},
-    create: {
+  const bob = await prisma.user.create({
+    data: {
+      walletAddress: "Address",
+      phoneNumber: "456",
+      displayName: "bob",
+      username: "bob456",
       email: "bob@prisma.io",
-      name: "Bob",
       joinedChannels: {
         create: {
           channel: {
@@ -78,7 +79,6 @@ async function main() {
           profilePic: "",
           tags: ["A", "B"],
           maxMembers: 10,
-          privacyType: PrivacyType.PUBLIC,
           communityType: CommunityType.NFT,
           channels: {
             create: {

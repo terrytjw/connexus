@@ -9,9 +9,16 @@ generator client {
 }
 
 model User {
-  userId    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
+  userId Int @id @default(autoincrement())
+  walletAddress String
+  phoneNumber String
+  profilePic String?
+  bannerPic String?
+  displayName String
+  username String
+  email String
+  notificationBySMS Boolean @default(true)
+  notificationByEmail Boolean @default(true)
 
   createdCommunities Community[] @relation(name: "createdCommunities")
   joinedCommunities Community[] @relation(name: "joinedCommunities")
@@ -49,10 +56,8 @@ model Community {
   profilePic String?
   tags String[]
   maxMembers Int
-  privacyType PrivacyType @default(PUBLIC)
   communityType CommunityType 
   
-
   creator User @relation(name: "createdCommunities", fields: [creatorId], references: [userId])
   creatorId Int @unique
 
@@ -100,6 +105,7 @@ model Comment {
   likes User[] @relation(name: "likedComments")
 
   originalComment Comment @relation(name: "replies", fields: [commentId], references: [commentId])
+  
   replies Comment[] @relation(name: "replies")
 }
 
