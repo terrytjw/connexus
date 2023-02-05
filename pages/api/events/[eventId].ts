@@ -27,16 +27,37 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Event"
+ *   put:
+ *     description: Updates a single Event object
+ *     parameters:
+ *       - in: object
+ *         name: Event
+ *         required: true
+ *         description: Event object to update
+ *         application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/Event"
+ *     responses:
+ *       200:
+ *         description: A single Event object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Event"
  */
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Event | null>
 ) {
-  let eventId = req.query.eventId as string;
-  const event = await prisma.event.findUnique({
-    where: {
-      eventId: parseInt(eventId),
-    },
-  });
-  res.status(200).json(event);
+  if (req.method === "GET") {
+    let eventId = req.query.eventId as string;
+
+    const event = await prisma.event.findUnique({
+      where: {
+        eventId: parseInt(eventId),
+      },
+    });
+    res.status(200).json(event);
+  }
 }
