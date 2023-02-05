@@ -146,7 +146,7 @@ const MobileNavbar = ({ children }: any) => {
 
 const DesktopSidebar = () => {
   return (
-    <div className="hidden min-h-screen w-80 bg-white lg:block">
+    <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">
       <Link
         href="/"
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
@@ -159,7 +159,7 @@ const DesktopSidebar = () => {
         />
       </Link>
 
-      <ul className="mt-28 pl-2 pr-16 text-gray-500">
+      <ul className="mt-28 pl-2 pr-8 text-gray-500">
         <li className="mb-4">
           <Link
             href="/"
@@ -237,7 +237,7 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="w-full">
-          <div className="min-h-screen bg-gray-100">{children}</div>
+          <div className="min-h-screen bg-gray-100 lg:ml-64">{children}</div>
           <Footer />
         </main>
       </div>
