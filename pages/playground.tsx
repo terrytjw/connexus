@@ -1,9 +1,15 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
+import Avatar from "../components/Avatar";
+import Banner from "../components/Banner";
+import Button from "../components/Button";
 import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
 import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
+
+import { products, profile } from "../utils/dummyData";
+import { FaEnvelope, FaPhone } from "react-icons/fa";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +22,55 @@ const PlaygroundPage = () => {
       <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
         Playground
       </h1>
+      {/* Profile header */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Profile Header (Banner + Profile Pic)
+          </h1>
+        </div>
+        <Banner coverImageUrl={profile.coverImageUrl} />
+        <div>
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
+              <Avatar imageUrl={profile.imageUrl} />
+              <div className="mt-6 sm:flex sm:min-w-0 sm:flex-1 sm:items-center sm:justify-end sm:space-x-6 sm:pb-1">
+                {/* mobile view profile name*/}
+                <div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
+                  <h1 className="truncate text-2xl font-bold text-gray-900">
+                    {profile.name} - mobile
+                  </h1>
+                </div>
+                <div className="justify-stretch mt-6 flex flex-col space-y-3 sm:flex-row sm:space-y-0 sm:space-x-4">
+                  <Button variant="outlined" size="md">
+                    <FaEnvelope
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    Message
+                  </Button>
+                  <Button variant="outlined" size="md">
+                    <FaPhone
+                      className="-ml-1 mr-2 h-5 w-5 text-gray-400"
+                      aria-hidden="true"
+                    />
+                    Call
+                  </Button>
+                </div>
+              </div>
+            </div>
+            {/* desktop view profile name*/}
+            <div className="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
+              <h1 className="truncate text-2xl font-bold text-gray-900">
+                {profile.name} - desktop
+              </h1>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="divider" />
+
       <section className="p-8">
         <div className="flex justify-center">
           <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
