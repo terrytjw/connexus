@@ -11,15 +11,37 @@ import {
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
+import { useRouter } from "next/router";
+import { useEffect, useRef } from "react";
 
-const MobileNavbar = () => {
+const MobileNavbar = ({ children }: any) => {
+  const router = useRouter();
+  const checkboxRef = useRef<HTMLInputElement>(null);
+
+  // to automatically close daisyUI side drawer when route changes
+  useEffect(() => {
+    router.events.on("routeChangeStart", () => {
+      if (checkboxRef.current && checkboxRef.current.checked === true) {
+        checkboxRef.current.checked = false;
+      }
+    });
+  }, [router.events]);
+
   return (
-    <div className="drawer fixed z-40 lg:hidden">
-      <input id="my-drawer" type="checkbox" className="drawer-toggle" />
+    <div className="drawer">
+      <input
+        id="my-drawer"
+        ref={checkboxRef}
+        type="checkbox"
+        className="drawer-toggle"
+      />
       <div className="drawer-content">
         {/* <!-- Page content here --> */}
-        <div className="relative flex items-center bg-white p-4 shadow-sm">
-          <label htmlFor="my-drawer" className="">
+        <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
+          <label
+            htmlFor="my-drawer"
+            className="cursor-pointer transition-all hover:text-gray-500"
+          >
             <BiMenuAltLeft className="h-10 w-10" />
           </label>
           <Link
@@ -34,7 +56,10 @@ const MobileNavbar = () => {
             />
           </Link>
         </div>
+        {children}
       </div>
+
+      {/* Side Drawer */}
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
         <ul className="menu w-80 bg-white p-4 text-gray-500">
@@ -208,14 +233,15 @@ type LayoutProps = {
 };
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className="flex flex-col text-black lg:flex-row">
-      <MobileNavbar />
-      <DesktopSidebar />
-      <main className="mt-14 w-full lg:mt-0">
-        <div className="h-screen bg-gray-100">{children}</div>
-        <Footer />
-      </main>
-    </div>
+    <MobileNavbar>
+      <div className="flex text-black">
+        <DesktopSidebar />
+        <main className="w-full">
+          <div className="h-screen bg-gray-100">{children}</div>
+          <Footer />
+        </main>
+      </div>
+    </MobileNavbar>
   );
 };
 
