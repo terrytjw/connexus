@@ -107,6 +107,7 @@ const HomePage: NextPage = () => {
         <section className="mt-4 flex flex-row flex-wrap justify-center gap-4 lg:flex-col">
           {items.map((item, index) => (
             <CollectionItemInput
+              key={index}
               item={item}
               updateItem={(updatedItem: Item) => {
                 setItems(
