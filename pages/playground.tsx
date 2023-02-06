@@ -26,7 +26,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
 
-        <CollectionGrid products={products} />
+        <CollectionGrid data={products} />
       </section>
       <div className="divider" />
 
