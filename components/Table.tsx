@@ -21,16 +21,16 @@ const Table = ({ data, columns }: TableProps) => {
                 <input type="checkbox" className="checkbox" />
               </label>
             </th>
-            {columns.map((headerTitle) => (
-              <th>{headerTitle}</th>
+            {columns.map((headerTitle, index) => (
+              <th key={index}>{headerTitle}</th>
             ))}
             <th></th>
           </tr>
         </thead>
         <tbody>
           {/* <!-- row 1 --> */}
-          {data.map((request) => (
-            <tr>
+          {data.map((data, index) => (
+            <tr key={index}>
               <th>
                 <label>
                   <input type="checkbox" className="checkbox" />
@@ -47,22 +47,20 @@ const Table = ({ data, columns }: TableProps) => {
                     </div>
                   </div>
                   <div>
-                    <div className="font-bold">{request?.name}</div>
-                    <div className="text-sm opacity-50">
-                      {request?.community}
-                    </div>
+                    <div className="font-bold">{data?.name}</div>
+                    <div className="text-sm opacity-50">{data?.community}</div>
                   </div>
                 </div>
               </td>
               <td>
-                {request?.tipAmount}
+                {data?.tipAmount}
                 <br />
                 <span className="badge-ghost badge badge-sm">
                   optional badge
                 </span>
               </td>
               <td>
-                <span className="badge ">{request?.status}</span>
+                <span className="badge ">{data?.status}</span>
               </td>
               <th>
                 {/* note: these buttons display depending on tab a user is on */}
