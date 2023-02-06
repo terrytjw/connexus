@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Accordion from "../components/Accordion";
 import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
-import TabGroup from "../components/TabGroup";
+// import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
 import Table from "../components/Table";
 
@@ -106,7 +106,7 @@ const PlaygroundPage = () => {
         </Modal>
       </section>
       <div className="divider" />
-      <div className="p-8">
+      {/* <section className="p-8">
         <div className="flex justify-center">
           <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
             Tab group component
@@ -126,7 +126,7 @@ const PlaygroundPage = () => {
             {activeTab == 3 && <h1>Jeff</h1>}
           </TabGroup>
         </div>
-      </div>
+      </section> */}
       <div className="divider" />
       <section className="p-8">
         <div className="flex justify-center">

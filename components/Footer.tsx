@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const Footer = () => {
   return (
-    <footer className="footer footer-center rounded bg-gray-200 p-10 text-base-content">
+    <footer className="footer footer-center bg-gray-200 p-10 text-black">
       <div className="grid grid-flow-col gap-4 font-medium">
         <CustomLink href="#">About us</CustomLink>
         <CustomLink href="#">Contact</CustomLink>
