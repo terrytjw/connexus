@@ -38,7 +38,7 @@ const TabGroupBordered = ({
         onChange={setActiveTab}
       >
         <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-          <Tab.List className="rounded-x -mb-px flex space-x-8 border-b border-gray-200 p-1">
+          <Tab.List className="rounded-x -mb-px flex space-x-8 border-b border-gray-200">
             {tabs.map((tab) => (
               <Tab
                 key={tab}
