@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
+import CollectionGrid from "../components/CollectionGrid";
 import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
 // import TabGroup from "../components/TabGroup";
@@ -14,6 +15,7 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
+import { products } from "../utils/dummyData";
 import Table from "../components/Table";
 
 const PlaygroundPage = () => {
@@ -86,6 +88,17 @@ const PlaygroundPage = () => {
 
       <div className="divider" />
 
+      {/* Collection Grid */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Collection Grid
+          </h1>
+        </div>
+
+        <CollectionGrid data={products} />
+      </section>
+      <div className="divider" />
 
       {/* Table */}
       <section className="p-8">
@@ -115,6 +128,7 @@ const PlaygroundPage = () => {
       </section>
 
       <div className="divider" />
+      
       <section className="p-8">
         <div className="flex justify-center">
           <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
