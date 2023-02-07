@@ -43,7 +43,40 @@ export const products = [
   },
   {
     id: 2,
-    name: "Basic Beaer",
+    name: "Basic Bear",
+    href: "http://localhost:3000/merchandise/",
+    price: "$32",
+    description:
+      "Look like a visionary CEO and wear the same black t-shirt every day.",
+    options: "options",
+    imageSrc: "/images/bear.jpg",
+    imageAlt: "Front of plain black t-shirt.",
+  },
+  {
+    id: 3,
+    name: "Basic Bear 2",
+    href: "http://localhost:3000/merchandise/",
+    price: "$32",
+    description:
+      "Look like a visionary CEO and wear the same black t-shirt every day.",
+    options: "options",
+    imageSrc: "/images/bear.jpg",
+    imageAlt: "Front of plain black t-shirt.",
+  },
+  {
+    id: 4,
+    name: "Basic Beer 3",
+    href: "http://localhost:3000/merchandise/",
+    price: "$32",
+    description:
+      "Look like a visionary CEO and wear the same black t-shirt every day.",
+    options: "options",
+    imageSrc: "/images/bear.jpg",
+    imageAlt: "Front of plain black t-shirt.",
+  },
+  {
+    id: 4,
+    name: "Basic Beer 3",
     href: "http://localhost:3000/merchandise/",
     price: "$32",
     description:

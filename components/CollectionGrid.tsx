@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React from "react";
 import Button from "./Button";
 
 function classNames(...classes: string[]) {
@@ -15,7 +15,7 @@ const CollectionGrid = ({ data }: CollectionGridProps) => {
     <div className="mx-auto max-w-7xl overflow-hidden py-0 px-0 sm:py-0 sm:px-0 lg:px-2">
       <div className="gap-y-15 grid grid-cols-1 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
         {data.map((data) => (
-          <a key={data.id} href={data.href} className="group text-sm">
+          <a key={data.id} href={data.href} className="group mb-8 text-sm">
             <div className="saspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
               <img
                 src={data.imageSrc}
