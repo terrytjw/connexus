@@ -4,7 +4,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-type InputGroupProps {
+type InputGroupProps = {
   type: "text" | "number";
   label: string;
   value: string | number;
@@ -25,7 +25,7 @@ type InputGroupProps {
   disabled?: boolean;
   className?: string;
   children: React.ReactNode;
-}
+};
 
 const InputGroup = ({
   type,
