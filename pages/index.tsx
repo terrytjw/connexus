@@ -112,6 +112,7 @@ const HomePage: NextPage = () => {
               updateItem={(updatedItem: Item) => {
                 setItems(
                   items.map((item1, index1) =>
+                    // need to compare index in order to update current item
                     index == index1 ? updatedItem : item1
                   )
                 );

@@ -79,6 +79,8 @@ const CollectionItemInput = ({
             step={1}
             value={item.quantity}
             onKeyDown={(e) => {
+              // disallow decimal
+              // only allow numbers, backspace, arrow left and right for editing
               if (
                 e.code == "Backspace" ||
                 e.code == "ArrowLeft" ||
