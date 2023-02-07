@@ -5,6 +5,16 @@ import Dropdown from "../components/Dropdown";
 import Modal from "../components/Modal";
 // import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
+import Input from "../components/Input";
+import InputGroup from "../components/InputGroup";
+
+import { FaGithub, FaPhone, FaEnvelope } from "react-icons/fa";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
+import TabGroupBordered from "../components/TabGroupBordered";
 import { products } from "../utils/dummyData";
 
 const PlaygroundPage = () => {
@@ -12,12 +22,71 @@ const PlaygroundPage = () => {
   const [showWord, setShowWord] = useState(false);
   const [accordionIdx, setAccordionIdx] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState(0);
+  const [value, setValue] = useState<string | number>("");
 
   return (
     <main className="min-h-screen bg-slate-50">
       <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
         Playground
       </h1>
+
+      {/* Input and Input Groups */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Input component Text: {value}
+          </h1>
+        </div>
+        <Input
+          type="text"
+          size="md"
+          variant="bordered"
+          label="text input"
+          placeholder="placeholder"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        />
+
+        <InputGroup
+          type="text"
+          size="md"
+          // addOn="$"
+          variant="bordered"
+          label="text input"
+          placeholder="placeholder"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+        >
+          <FaGithub />
+        </InputGroup>
+      </section>
+
+      <div className="divider" />
+      {/* Bordered Tab Group */}
+      <div className="p-8">
+        <div className="flex justify-center">
+          <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Bordered Tab Group component
+          </h1>
+        </div>
+        <div className="flex justify-center">
+          <TabGroupBordered
+            tabs={["Tab 1", "Tab 2", "Tab 3"]}
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab == 0 && <h1>Hi</h1>}
+            {activeTab == 1 && <h1>My</h1>}
+            {activeTab == 2 && <h1>Name</h1>}
+          </TabGroupBordered>
+        </div>
+      </div>
+      <div className="divider" />
+
+      <div className="divider" />
+
       {/* Collection Grid */}
       <section className="p-8">
         <div className="flex justify-center">
