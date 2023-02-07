@@ -5,6 +5,8 @@ import Modal from "../components/Modal";
 // import TabGroup from "../components/TabGroup";
 import Toggle from "../components/Toggle";
 
+import TabGroupBordered from "../components/TabGroupBordered";
+
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showWord, setShowWord] = useState(false);
@@ -16,6 +18,32 @@ const PlaygroundPage = () => {
       <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
         Playground
       </h1>
+
+      {/* Bordered Tab Group */}
+      <div className="p-8">
+        <div className="flex justify-center">
+          <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Bordered Tab Group component
+          </h1>
+        </div>
+        <div className="flex justify-center">
+          <TabGroupBordered
+            tabs={["Tab 1", "Tab 2", "Tab 3"]}
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab == 0 && <h1>Hi</h1>}
+            {activeTab == 1 && <h1>My</h1>}
+            {activeTab == 2 && <h1>Name</h1>}
+          </TabGroupBordered>
+        </div>
+      </div>
+      <div className="divider" />
+
+      <div className="divider" />
+
       <section className="p-8">
         <div className="flex justify-center">
           <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
