@@ -16,6 +16,7 @@ function classNames(...classes: string[]) {
 
 import TabGroupBordered from "../components/TabGroupBordered";
 import { products } from "../utils/dummyData";
+import Table from "../components/Table";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -99,6 +100,35 @@ const PlaygroundPage = () => {
       </section>
       <div className="divider" />
 
+      {/* Table */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Table
+          </h1>
+        </div>
+
+        <Table
+          data={[
+            {
+              name: "name",
+              community: "community",
+              tipAmount: 10,
+              status: "Accepted",
+            },
+            {
+              name: "name1",
+              community: "community1",
+              tipAmount: 100,
+              status: "Pending",
+            },
+          ]}
+          columns={["Name", "Tip Amount", "Status"]}
+        />
+      </section>
+
+      <div className="divider" />
+      
       <section className="p-8">
         <div className="flex justify-center">
           <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
