@@ -4,7 +4,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-interface InputGroupProps {
+type InputGroupProps {
   type: "text" | "number";
   label: string;
   value: string | number;
@@ -27,7 +27,7 @@ interface InputGroupProps {
   children: React.ReactNode;
 }
 
-const InputGroup: FC<InputGroupProps> = ({
+const InputGroup = ({
   type,
   label,
   value,
@@ -39,7 +39,7 @@ const InputGroup: FC<InputGroupProps> = ({
   disabled,
   className,
   children,
-}) => {
+}: InputGroupProps) => {
   return (
     <div className="form-control w-full max-w-xs">
       <label className="label">
