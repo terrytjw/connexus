@@ -6,9 +6,19 @@ import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { useState } from "react";
 import Notification from "../components/Notification";
+import CollectionItemInput from "../components/CollectionItemInput";
+
+type Item = {
+  image: string;
+  description: string;
+  quantity: number;
+};
 
 const HomePage: NextPage = () => {
   const [selected, setSelected] = useState(false);
+  const [items, setItems] = useState([
+    { image: "", description: "", quantity: 1 },
+  ]);
 
   return (
     <div>
@@ -101,6 +111,53 @@ const HomePage: NextPage = () => {
               </li>
             </ul>
           </div>
+        </section>
+        <div className="divider" />
+        <h3 className="font-bold">Collection Item Input</h3>
+        <section className="mt-4 flex flex-wrap items-center gap-4">
+          <Button
+            variant="outlined"
+            size="md"
+            className="rounded-full"
+            onClick={() => {
+              console.log(items);
+            }}
+          >
+            View items in console
+          </Button>
+          <Button
+            variant="outlined"
+            size="md"
+            className="rounded-full"
+            onClick={() => {
+              setItems([...items, { image: "", description: "", quantity: 1 }]);
+            }}
+          >
+            Add item
+          </Button>
+        </section>
+        <section className="mt-4 flex flex-row flex-wrap justify-center gap-4 lg:flex-col">
+          {items.map((item, index) => (
+            <CollectionItemInput
+              key={index}
+              item={item}
+              updateItem={(updatedItem: Item) => {
+                setItems(
+                  items.map((item1, index1) =>
+                    // need to compare index in order to update current item
+                    index == index1 ? updatedItem : item1
+                  )
+                );
+              }}
+              deleteItem={() => {
+                setItems(
+                  items.filter((item1) => {
+                    return item1 != item;
+                  })
+                );
+              }}
+            />
+          ))}
         </section>
       </main>
     </div>
