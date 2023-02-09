@@ -39,16 +39,6 @@ async function main() {
               }
             }
           },
-          comments: {
-            create: {
-              content: "First",
-              commenter: {
-                connect: {
-                  userId: 1
-                }
-              }
-            }
-          }
         },
       },
     }
@@ -102,6 +92,21 @@ async function main() {
                   communityId: 2,
                   name: "Home"
                 }
+              }
+            },
+            comments: {
+              create: {
+                content: "First",
+                commenter: {
+                  connect: {
+                    userId: 1
+                  }
+                }
+              }
+            },
+            likes: {
+              connect: {
+                userId: 1
               }
             }
           },
