@@ -1,11 +1,13 @@
 import {
   CategoryType,
   DurationType,
-  PrismaClient,
   PrivacyType,
   PromotionType,
   VisibilityType,
-} from "@prisma/client";
+} from "./generated/client";
+
+import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 async function main() {
   await generateEvent();
