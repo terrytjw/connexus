@@ -39,7 +39,7 @@ model Ticket {
   startDate   DateTime
   endDate     DateTime
   description String
-  event       Event       @relation(references: [eventId], fields: [eventId])
+  event       Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId     Int
   promotion   Promotion[]
 }
@@ -52,7 +52,7 @@ model Promotion {
   quantity       Int
   startDate      DateTime
   endDate        DateTime
-  ticket         Ticket        @relation(references: [ticketId], fields: [ticketId])
+  ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
   ticketId       Int
 }
 
