@@ -12,7 +12,8 @@ function ApiDoc({ spec }: InferGetStaticPropsType<typeof getStaticProps>) {
 export const getStaticProps: GetStaticProps = async () => {
   const spec: Record<string, any> = createSwaggerSpec({
     definition: {
-      apiFolder: "pages/api",
+      apiFolder: "pages/",
+      schemaFolders: ["pages/"],
       openapi: "3.0.0",
       info: {
         title: "Next Swagger API Example",

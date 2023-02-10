@@ -3,4 +3,5 @@ WORKDIR /app
 COPY . .
 
 RUN yarn
+RUN yarn prisma generate
 CMD ["yarn", "dev"]

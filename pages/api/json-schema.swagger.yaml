@@ -1,0 +1,145 @@
+openapi: 3.0.0
+info:
+  title: Converted from json-schema.swagger.yaml with typeconv
+  version: '1'
+  x-id: json-schema.swagger.yaml
+  x-comment: >-
+    Generated from prisma/generated/json-schema/json-schema.json by
+    core-types-json-schema (https://github.com/grantila/core-types-json-schema)
+    on behalf of typeconv (https://github.com/grantila/typeconv)
+paths: {}
+components:
+  schemas:
+    User:
+      properties:
+        id:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+      type: object
+    Post:
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/User'
+      type: object
+    Event:
+      properties:
+        eventId:
+          type: integer
+        title:
+          type: string
+        category:
+          enum:
+            - AUTO_BOAT_AIR
+            - BUSINESS_PROFESSIONAL
+            - CHARITY_CAUSES
+            - COMMUNITY_CULTURE
+            - FAMILY_EDUCATION
+            - FASHION_BEAUTY
+            - FILM_MEDIA_ENTERTAINMENT
+            - FOOD_DRINK
+            - GOVERNMENT_POLITICS
+            - HEALTH_WELLNESS
+            - HOBBIES_SPECIAL_INTEREST
+            - HOME_LIFESTYLE
+            - PERFORMING_VISUAL_ARTS
+            - RELIGION_SPIRITUALITY
+            - SCHOOL_ACTIVITIES
+            - SCIENCE_TECHNOLOGY
+            - SEASONAL_HOLIDAY
+            - SPORTS_FITNESS
+            - TRAVEL_OUTDOOR
+          type: string
+        location:
+          type: string
+        eventDurationType:
+          enum:
+            - SINGLE
+            - RECURRING
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+        images:
+          items:
+            type: string
+          type: array
+        summary:
+          type: string
+        description:
+          type: string
+        visibilityType:
+          enum:
+            - DRAFT
+            - PUBLISHED
+          type: string
+        privacyType:
+          enum:
+            - PUBLIC
+            - PRIVATE
+          type: string
+        tickets:
+          items:
+            $ref: '#/components/schemas/Ticket'
+          type: array
+      type: object
+    Ticket:
+      properties:
+        ticketId:
+          type: integer
+        name:
+          type: string
+        quantity:
+          type: integer
+        price:
+          type: number
+        startDate:
+          type: string
+        endDate:
+          type: string
+        description:
+          type: string
+        event:
+          $ref: '#/components/schemas/Event'
+        promotion:
+          items:
+            $ref: '#/components/schemas/Promotion'
+          type: array
+      type: object
+    Promotion:
+      properties:
+        promotionId:
+          type: integer
+        name:
+          type: string
+        promotionType:
+          enum:
+            - LIMITED
+            - UNLIMITED
+          type: string
+        promotionValue:
+          type: number
+        quantity:
+          type: integer
+        startDate:
+          type: string
+        endDate:
+          type: string
+        ticket:
+          $ref: '#/components/schemas/Ticket'
+      type: object

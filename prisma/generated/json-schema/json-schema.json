@@ -1,0 +1,446 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "User": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "integer"
+        },
+        "walletAddress": {
+          "type": "string"
+        },
+        "phoneNumber": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "bannerPic": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "notificationBySMS": {
+          "type": "boolean",
+          "default": true
+        },
+        "notificationByEmail": {
+          "type": "boolean",
+          "default": true
+        },
+        "createdCommunities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Community"
+          }
+        },
+        "joinedCommunities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Community"
+          }
+        },
+        "joinedChannels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UsersOnChannels"
+          }
+        },
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Post"
+          }
+        },
+        "likedPosts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Post"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        },
+        "likedComments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        }
+      }
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "postId": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "media": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "isPinned": {
+          "type": "boolean",
+          "default": false
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        }
+      }
+    },
+    "Community": {
+      "type": "object",
+      "properties": {
+        "communityId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "maxMembers": {
+          "type": "integer",
+          "default": 100
+        },
+        "communityType": {
+          "type": "string",
+          "default": "NFT",
+          "enum": [
+            "NFT",
+            "CRYPTO"
+          ]
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Channel"
+          }
+        }
+      }
+    },
+    "Channel": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "channelType": {
+          "type": "string",
+          "default": "REGULAR",
+          "enum": [
+            "REGULAR",
+            "PREMIUM",
+            "PRIVATE"
+          ]
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UsersOnChannels"
+          }
+        },
+        "community": {
+          "$ref": "#/definitions/Community"
+        },
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Post"
+          }
+        }
+      }
+    },
+    "UsersOnChannels": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "Comment": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "post": {
+          "$ref": "#/definitions/Post"
+        },
+        "commenter": {
+          "$ref": "#/definitions/User"
+        },
+        "likes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "originalComment": {
+          "$ref": "#/definitions/Comment"
+        },
+        "replies": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Comment"
+          }
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "eventId": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "AUTO_BOAT_AIR",
+            "BUSINESS_PROFESSIONAL",
+            "CHARITY_CAUSES",
+            "COMMUNITY_CULTURE",
+            "FAMILY_EDUCATION",
+            "FASHION_BEAUTY",
+            "FILM_MEDIA_ENTERTAINMENT",
+            "FOOD_DRINK",
+            "GOVERNMENT_POLITICS",
+            "HEALTH_WELLNESS",
+            "HOBBIES_SPECIAL_INTEREST",
+            "HOME_LIFESTYLE",
+            "PERFORMING_VISUAL_ARTS",
+            "RELIGION_SPIRITUALITY",
+            "SCHOOL_ACTIVITIES",
+            "SCIENCE_TECHNOLOGY",
+            "SEASONAL_HOLIDAY",
+            "SPORTS_FITNESS",
+            "TRAVEL_OUTDOOR"
+          ]
+        },
+        "location": {
+          "type": "string"
+        },
+        "eventDurationType": {
+          "type": "string",
+          "enum": [
+            "SINGLE",
+            "RECURRING"
+          ]
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "images": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "summary": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "visibilityType": {
+          "type": "string",
+          "enum": [
+            "DRAFT",
+            "PUBLISHED"
+          ]
+        },
+        "privacyType": {
+          "type": "string",
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ]
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ticket"
+          }
+        }
+      }
+    },
+    "Ticket": {
+      "type": "object",
+      "properties": {
+        "ticketId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "price": {
+          "type": "number"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "promotion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
+        }
+      }
+    },
+    "Promotion": {
+      "type": "object",
+      "properties": {
+        "promotionId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "promotionType": {
+          "type": "string",
+          "enum": [
+            "LIMITED",
+            "UNLIMITED"
+          ]
+        },
+        "promotionValue": {
+          "type": "number"
+        },
+        "quantity": {
+          "type": "integer"
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
+        }
+      }
+    }
+  },
+  "type": "object",
+  "properties": {
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "post": {
+      "$ref": "#/definitions/Post"
+    },
+    "community": {
+      "$ref": "#/definitions/Community"
+    },
+    "channel": {
+      "$ref": "#/definitions/Channel"
+    },
+    "usersOnChannels": {
+      "$ref": "#/definitions/UsersOnChannels"
+    },
+    "comment": {
+      "$ref": "#/definitions/Comment"
+    },
+    "event": {
+      "$ref": "#/definitions/Event"
+    },
+    "ticket": {
+      "$ref": "#/definitions/Ticket"
+    },
+    "promotion": {
+      "$ref": "#/definitions/Promotion"
+    }
+  }
+}
