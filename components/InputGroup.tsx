@@ -41,18 +41,18 @@ const InputGroup = ({
   children,
 }: InputGroupProps) => {
   return (
-    <div className="form-control w-full max-w-xs">
+    <div className="form-control w-full">
       <label className="label">
         <span className="label-text">{label}</span>
       </label>
-      <div className="relative mt-1 max-w-xs rounded-md shadow-sm">
+      <div className="relative mt-1 rounded-md shadow-sm">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           {children}
         </div>
 
         <input
           className={classNames(
-            "input block w-full max-w-xs rounded-md pl-10",
+            "input block w-full rounded-md pl-10",
             `input-${variant}`,
             `input-${size}`,
             className ?? ""

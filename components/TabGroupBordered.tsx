@@ -31,13 +31,13 @@ const TabGroupBordered = ({
   children,
 }: TabGroupBorderedProps) => {
   return (
-    <div className="mx-auto w-full max-w-5xl px-2 py-16 sm:px-0">
+    <div className="mx-auto w-full px-2 py-16 sm:px-0">
       <Tab.Group
         as={Fragment}
         selectedIndex={activeTab}
         onChange={setActiveTab}
       >
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <Tab.List className="rounded-x -mb-px flex space-x-8 border-b border-gray-200">
             {tabs.map((tab) => (
               <Tab
@@ -47,7 +47,7 @@ const TabGroupBordered = ({
                     "whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium",
                     selected
                       ? "border-pink-500 text-gray-900"
-                      : "hover:border-gray-500' border-transparent text-gray-500 hover:text-gray-700",
+                      : "border-transparent text-gray-500 hover:border-gray-500 hover:text-gray-700",
                     "transition-all"
                   )
                 }
@@ -60,7 +60,7 @@ const TabGroupBordered = ({
             {tabs.map((tab, index) => (
               <Tab.Panel
                 key={index}
-                className={classNames("p-8", "focus:outline-none")}
+                className={classNames("py-4", "focus:outline-none")}
               >
                 <motion.div
                   variants={animatedVariant}
