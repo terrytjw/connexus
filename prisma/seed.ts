@@ -1,12 +1,11 @@
 import {
+  PrismaClient,
   CategoryType,
   DurationType,
   PrivacyType,
   PromotionType,
   VisibilityType,
-} from "./generated/client";
-
-import { PrismaClient } from "@prisma/client";
+} from "@prisma/client";
 
 const prisma = new PrismaClient();
 async function main() {

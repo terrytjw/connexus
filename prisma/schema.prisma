@@ -6,8 +6,7 @@ datasource db {
 
 generator client {
   provider      = "prisma-client-js"
-  output        = "./generated/client"
-  binaryTargets = ["linux-arm64-openssl-1.1.x"]
+  binaryTargets = ["linux-arm64-openssl-1.1.x", "darwin-arm64"]
 }
 
 generator jsonSchema {

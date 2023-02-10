@@ -5,7 +5,7 @@ import {
   VisibilityType,
   Prisma,
   CategoryType,
-} from "../prisma/generated/client";
+} from "@prisma/client";
 
 import React, { useEffect, useState } from "react";
 
@@ -14,6 +14,7 @@ const EventsPage = (props: any) => {
 
   useEffect(() => {
     const fetchEvents = async () => {
+      console.log(props);
       const temp: Event[] = props.events.map((event: any) => {
         return JSON.parse(JSON.stringify(event)) as Event;
       });
