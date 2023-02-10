@@ -16,7 +16,7 @@ const Badge = ({ className, size, label, selected, onClick }: BadgeProps) => {
       <button
         className={classNames(
           "badge badge-outline rounded-full",
-          selected ? "border-0 bg-blue-600 text-white" : "text-blue-600",
+          selected ? "bg-blue-600 text-white" : "text-blue-600",
           `badge-${size}`,
           className ?? ""
         )}
