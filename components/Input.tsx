@@ -39,7 +39,7 @@ const Input = ({
   className,
 }: InputProps) => {
   return (
-    <div className="form-control w-full max-w-xs">
+    <div className="form-control w-full">
       <label className="label">
         <span className="label-text">{label}</span>
       </label>
@@ -48,7 +48,7 @@ const Input = ({
           "input-group input",
           `input-${variant}`,
           `input-${size}`,
-          "w-full max-w-xs",
+          "w-full",
           className ?? ""
         )}
         type={type}

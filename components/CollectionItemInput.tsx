@@ -41,7 +41,7 @@ const CollectionItemInput = ({
             className="absolute h-40 w-40 rounded-lg object-cover object-center"
           />
         ) : (
-          <div className="absolute flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-lg border-2 text-xs text-gray-500">
+          <div className="input-bordered input absolute flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-lg text-xs text-gray-500">
             <FaImage size={40} />
             Upload Image
           </div>
@@ -50,7 +50,7 @@ const CollectionItemInput = ({
 
       <div className="h-40 w-60">
         <textarea
-          className="textarea-bordered textarea h-full w-full resize-none border-2 border-gray-200"
+          className="textarea-bordered textarea h-full w-full resize-none"
           placeholder="Description"
           value={item.description}
           onChange={(e) => {
