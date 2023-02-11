@@ -157,6 +157,129 @@
           "$ref": "#/definitions/Ticket"
         }
       }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "email": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        },
+        "walletAddress": {
+          "type": "string"
+        },
+        "profilePic": {
+          "type": "string"
+        },
+        "bannerPic": {
+          "type": "string"
+        },
+        "displayName": {
+          "type": "string"
+        },
+        "notificationBySMS": {
+          "type": "boolean"
+        },
+        "notificationByEmail": {
+          "type": "boolean"
+        },
+        "twitterURL": {
+          "type": "string"
+        },
+        "posts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Post"
+          }
+        }
+      }
+    },
+    "Collection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fixedPrice": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "enum": [
+            "USD",
+            "ETH",
+            "BTC",
+            "USDC"
+          ]
+        },
+        "collectionState": {
+          "type": "string",
+          "default": "CREATED",
+          "enum": [
+            "CREATED",
+            "ON_SALE",
+            "SOLD"
+          ]
+        },
+        "collections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionMedia"
+          }
+        }
+      }
+    },
+    "CollectionMedia": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "media": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "numOfMerch": {
+          "type": "integer"
+        },
+        "collection": {
+          "$ref": "#/definitions/Collection"
+        }
+      }
+    },
+    "Post": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "title": {
+          "type": "string"
+        },
+        "content": {
+          "type": "string"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
     }
   },
   "type": "object",
@@ -169,6 +292,18 @@
     },
     "promotion": {
       "$ref": "#/definitions/Promotion"
+    },
+    "user": {
+      "$ref": "#/definitions/User"
+    },
+    "collection": {
+      "$ref": "#/definitions/Collection"
+    },
+    "collectionMedia": {
+      "$ref": "#/definitions/CollectionMedia"
+    },
+    "post": {
+      "$ref": "#/definitions/Post"
     }
   }
 }
