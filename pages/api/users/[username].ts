@@ -24,23 +24,6 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/User"
- *   post:
- *     description: Updates a single User object
- *     parameters:
- *       - in: object
- *         name: User
- *         required: true
- *         description: User object to update
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/User"
- *     responses:
- *       200:
- *         description: A single User object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/User"
  *   delete:
  *     description: Delete a single User object
  *     parameters:
@@ -70,10 +53,6 @@ export default async function handler(
     case "GET":
       await handleGET(username);
       break;
-    case "POST":
-      const user = JSON.parse(JSON.stringify(req.body)) as User;
-      await handlePOST(username, user);
-      break;
     case "DELETE":
       await handleDELETE(username);
       break;
@@ -98,20 +77,6 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(username: string, user: User) {
-    try {
-      const response = await prisma.user.update({
-        where: {
-          username: username,
-        },
-        data: { ...user, username: undefined },
-      });
-      res.status(200).json(response);
-    } catch (error) {
-      const errorResponse = handleError(error);
-      res.status(400).json(errorResponse);
-    }
-  }
 
   async function handleDELETE(username: string) {
     try {

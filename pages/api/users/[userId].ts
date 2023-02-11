@@ -7,14 +7,14 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/users/{username}:
+ * /api/users/{userId}:
  *   get:
  *     description: Returns a single User object
  *     parameters:
  *       - in: path
- *         name: username
+ *         name: userId
  *         required: true
- *         description: String username of the User to retrieve.
+ *         description: String ID of the User to retrieve.
  *         schema:
  *           type: string
  *     responses:
@@ -45,9 +45,9 @@ const prisma = new PrismaClient();
  *     description: Delete a single User object
  *     parameters:
  *       - in: path
- *         name: username
+ *         name: userId
  *         required: true
- *         description: String username of the User to delete.
+ *         description: String ID of the User to delete.
  *         schema:
  *           type: string
  *     responses:
@@ -64,29 +64,29 @@ export default async function handler(
   res: NextApiResponse<User | ErrorResponse | {}>
 ) {
   const { query, method } = req;
-  let username = query.username as string;
+  let userId = parseInt(query.userId as string);
 
   switch (req.method) {
     case "GET":
-      await handleGET(username);
+      await handleGET(userId);
       break;
     case "POST":
       const user = JSON.parse(JSON.stringify(req.body)) as User;
-      await handlePOST(username, user);
+      await handlePOST(userId, user);
       break;
     case "DELETE":
-      await handleDELETE(username);
+      await handleDELETE(userId);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(username: string) {
+  async function handleGET(userId: number) {
     try {
       const user = await prisma.user.findUnique({
         where: {
-          username: username,
+          userId: userId,
         },
       });
 
@@ -98,13 +98,13 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(username: string, user: User) {
+  async function handlePOST(userId: number, user: User) {
     try {
       const response = await prisma.user.update({
         where: {
-          username: username,
+          userId: userId,
         },
-        data: { ...user, username: undefined },
+        data: { ...user, userId: undefined },
       });
       res.status(200).json(response);
     } catch (error) {
@@ -113,11 +113,11 @@ export default async function handler(
     }
   }
 
-  async function handleDELETE(username: string) {
+  async function handleDELETE(userId: number) {
     try {
       const response = await prisma.user.delete({
         where: {
-          username: username,
+          userId: userId,
         },
       });
       res.status(200).json(response);

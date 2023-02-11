@@ -13,7 +13,7 @@
     "prisma:seed": "yarn prisma db seed",
     "prisma:generate": "yarn prisma generate",
     "prisma:db": "yarn prisma studio",
-    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:generate && yarn prisma:db && openapi:yaml"
+    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:generate && yarn prisma:db && yarn openapi:yaml"
   },
   "dependencies": {
     "@formkit/auto-animate": "^1.0.0-beta.5",

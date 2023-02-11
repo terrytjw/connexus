@@ -45,7 +45,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const user = JSON.parse(JSON.stringify(req.body)) as Event;
+      const user = JSON.parse(JSON.stringify(req.body)) as User;
       await handlePOST(user);
       break;
     default:

@@ -98,7 +98,7 @@ enum PromotionType {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
+  userId    Int    @id @default(autoincrement())
   email String @unique
   name  String
   username String @unique 
@@ -113,7 +113,7 @@ model User {
 }
 
 model Collection{
-  id Int    @id @default(autoincrement()) 
+  collectionId Int    @id @default(autoincrement()) 
   description String @unique
   fixedPrice Float 
   currency Currency @default(USD)
@@ -135,19 +135,19 @@ enum Currency{
 }
 
 model CollectionMedia{
-  id Int @id @default(autoincrement())
+  collectionMediaId Int @id @default(autoincrement())
   media String 
   description  String 
   numOfMerch Int
-  collection Collection @relation(fields: [collectionId], references:[id])
+  collection Collection @relation(fields: [collectionId], references:[collectionId], onDelete: Cascade)
   collectionId Int
 }
 
 model Post {
-  id        Int     @id @default(autoincrement())
+  postId        Int     @id @default(autoincrement())
   title     String
   content   String
   published Boolean
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
   userId    Int
 }
