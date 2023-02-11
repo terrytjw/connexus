@@ -52,7 +52,7 @@ const CreatorCommunity = () => {
         <div id="feed" className="flex flex-col gap-4">
           <PostInput />
           {posts.map((post) => {
-            return <Post post={post} />;
+            return <Post key={post.postId} post={post} />;
           })}
         </div>
 

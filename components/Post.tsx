@@ -80,6 +80,7 @@ const Post = ({ post }: PostProps) => {
             return (
               <div
                 id={`${post.postId}-${index}`}
+                key={index}
                 className="carousel-item relative w-full"
               >
                 <img
@@ -178,11 +179,11 @@ const Post = ({ post }: PostProps) => {
         <div id={`${post.postId}-comments`} className="hidden">
           {post.comments?.map((comment) => {
             return (
-              <div className="-mx-8 hover:bg-gray-100">
+              <div key={comment.commentId} className="-mx-8 hover:bg-gray-100">
                 <Comment comment={comment} />
                 <div className="pl-16">
                   {comment.replies.map((reply: CommentType) => {
-                    return <Comment comment={reply} />;
+                    return <Comment key={reply.commentId} comment={reply} />;
                   })}
                 </div>
               </div>
