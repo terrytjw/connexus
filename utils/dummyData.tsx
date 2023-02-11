@@ -87,3 +87,137 @@ export const products = [
   },
   // More products...
 ];
+
+export type Community = {
+  communityId: number;
+  name: string;
+  description: string;
+  bannerPic: string;
+  profilePic: string;
+  tags: string[];
+};
+
+export type Post = {
+  postId: number;
+  title: string;
+  content: string;
+  date: Date;
+  media: string[];
+  isPinned: boolean;
+  creator: {
+    userId: string;
+    displayName: string;
+    profilePic: string;
+  };
+  likes: number;
+  comments: Comment[];
+};
+
+export type Comment = {
+  commentId: number;
+  content: string;
+  date: Date;
+  commentor: {
+    userId: string;
+    displayName: string;
+    profilePic: string;
+  };
+  replies: Comment[];
+};
+
+export const posts = [
+  {
+    postId: 1,
+    title: "Post 1 Title",
+    content: "Post 1 Content",
+    date: new Date(),
+    media: [
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
+      "https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg",
+    ],
+    isPinned: false,
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+    likes: 0,
+    comments: [
+      {
+        commentId: 1,
+        content: "Comment 1",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator",
+          profilePic: "/images/bear.jpg",
+        },
+        replies: [],
+      },
+    ],
+  },
+  {
+    postId: 2,
+    title: "Post 2 Title",
+    content: "Post 1 Content",
+    date: new Date(),
+    media: [
+      "/images/bear.jpg",
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
+    ],
+    isPinned: false,
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+    likes: 0,
+    comments: [
+      {
+        commentId: 2,
+        content: "Comment 2",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator",
+          profilePic: "/images/bear.jpg",
+        },
+        replies: [],
+      },
+      {
+        commentId: 3,
+        content: "Comment 3",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator",
+          profilePic: "/images/bear.jpg",
+        },
+        replies: [
+          {
+            commentId: 4,
+            content: "Comment 4",
+            date: new Date(),
+            commentor: {
+              userId: "1",
+              displayName: "Creator",
+              profilePic: "/images/bear.jpg",
+            },
+          },
+        ],
+      },
+    ] as Comment[],
+  },
+];
+
+export const community = {
+  communityId: 1,
+  name: "Community Name",
+  description: "Community Description",
+  bannerPic:
+    "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+  profilePic: "/images/bear.jpg",
+  tags: ["NFT", "Entertainment", "Fitness"],
+};
