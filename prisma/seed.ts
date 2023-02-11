@@ -5,6 +5,7 @@ import {
   PrivacyType,
   PromotionType,
   VisibilityType,
+  
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
