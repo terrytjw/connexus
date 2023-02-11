@@ -40,7 +40,7 @@ const MobileNavbar = ({ children }: any) => {
         <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
           <label
             htmlFor="my-drawer"
-            className="cursor-pointer transition-all hover:text-gray-500"
+            className="cursor-pointer text-gray-700 transition-all hover:text-gray-500"
           >
             <BiMenuAltLeft className="h-10 w-10" />
           </label>
@@ -62,7 +62,7 @@ const MobileNavbar = ({ children }: any) => {
       {/* Side Drawer */}
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <ul className="menu w-80 bg-white p-4 text-gray-500">
+        <ul className="menu w-80 bg-white p-4 text-gray-700">
           {/* <!-- Sidebar content here --> */}
           <Link
             href="/"
@@ -78,7 +78,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mt-10 mb-4">
             <Link
               href="/"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaHome className="ml-2" />
               Home
@@ -87,7 +87,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/merchandise"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaPhotoVideo className="ml-2" />
               Merchandise
@@ -96,7 +96,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/events"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaCalendarAlt className="ml-2" />
               Events
@@ -105,7 +105,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/chats"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaComment className="ml-2" />
               Chats
@@ -114,7 +114,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/notifications"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaBell className="ml-2" />
               Notifications
@@ -123,7 +123,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/users/profile/1"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaUser className="ml-2" />
               Profile
@@ -159,11 +159,11 @@ const DesktopSidebar = () => {
         />
       </Link>
 
-      <ul className="mt-28 pl-2 pr-8 text-gray-500">
+      <ul className="mt-28 pl-2 pr-8 text-gray-700">
         <li className="mb-4">
           <Link
             href="/"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaHome className="ml-2" />
             Home
@@ -172,7 +172,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/merchandise"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaPhotoVideo className="ml-2" />
             Merchandise
@@ -181,7 +181,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/events"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaCalendarAlt className="ml-2" />
             Events
@@ -190,7 +190,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/chats"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaComment className="ml-2" />
             Chats
@@ -199,7 +199,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/notifications"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaBell className="ml-2" />
             Notifications
@@ -208,7 +208,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/users/profile/1"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-cyan-600 hover:text-white"
+            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaUser className="ml-2" />
             Profile
@@ -237,7 +237,7 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="w-full lg:ml-64">
-          <div className="min-h-screen bg-gray-100">{children}</div>
+          <div className="min-h-screen bg-gray-100 p-12">{children}</div>
           <Footer />
         </main>
       </div>

@@ -28,7 +28,7 @@ const HomePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center p-12 tracking-widest">
+      <main className="flex flex-col items-center justify-center tracking-widest">
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
         <h2 className="mt-10 mb-6 text-xl font-semibold">
           Components showcase
