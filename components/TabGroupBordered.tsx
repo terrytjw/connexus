@@ -31,14 +31,14 @@ const TabGroupBordered = ({
   children,
 }: TabGroupBorderedProps) => {
   return (
-    <div className="mx-auto w-full px-2 py-16 sm:px-0">
+    <div className="mx-auto w-full px-2 py-12 sm:px-0">
       <Tab.Group
         as={Fragment}
         selectedIndex={activeTab}
         onChange={setActiveTab}
       >
-        <div className="mx-auto px-4 sm:px-6 lg:px-8">
-          <Tab.List className="rounded-x -mb-px flex space-x-8 border-b border-gray-200">
+        <div className="mx-auto">
+          <Tab.List className="rounded-x -mb-px flex space-x-8 overflow-x-auto border-b border-gray-200">
             {tabs.map((tab) => (
               <Tab
                 key={tab}
