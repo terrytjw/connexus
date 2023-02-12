@@ -1,10 +1,7 @@
 import { useState } from "react";
 import {
-  FaPaperclip,
-  FaRegSmile,
   FaSearch,
   FaShareSquare,
-  FaTelegramPlane,
   FaTimes,
   FaUserFriends,
 } from "react-icons/fa";
@@ -64,70 +61,6 @@ const CommunityPage = () => {
             return <Post key={post.postId} post={post} />;
           })}
         </div>
-
-        <div
-          id="chatroom"
-          className="card hidden border-2 border-gray-200 bg-white"
-        >
-          <p className="p-6 text-center">Sunday, 27 January 2023</p>
-          <div className="flex w-full gap-4 p-6 hover:bg-gray-200">
-            <img
-              className="h-12 w-12 rounded-full"
-              src="/images/bear.jpg"
-              alt="Current user profile pic"
-            />
-            <div>
-              <CustomLink href={`/users/profile/1`} className="text-gray-700">
-                User
-              </CustomLink>
-              <p>Message Content</p>
-            </div>
-          </div>
-          <div className="divider px-6"></div>
-          <p className="p-6 text-center">Sunday, 28 January 2023</p>
-          <div className="flex w-full gap-4 p-6 hover:bg-gray-200">
-            <img
-              className="h-12 w-12 rounded-full"
-              src="/images/bear.jpg"
-              alt="Current user profile pic"
-            />
-            <div>
-              <CustomLink href={`/users/profile/1`} className="text-gray-700">
-                User
-              </CustomLink>
-              <p>Hellooooo</p>
-            </div>
-          </div>
-          <div className="divider px-6"></div>
-          <div className="flex w-full items-center gap-4 px-6 pb-6">
-            <img
-              className="h-12 w-12 rounded-full"
-              src="/images/bear.jpg"
-              alt="Current user profile pic"
-            />
-            <div className="form-control w-full">
-              <div className="relative mt-1 rounded-md shadow-sm">
-                <input
-                  type="text"
-                  onChange={() => {}}
-                  placeholder="Enter your message"
-                  className="input-bordered input h-12 w-full"
-                />
-                <div className="absolute inset-y-0 right-0 flex items-center gap-2 pr-3">
-                  <Button variant="outlined" size="sm" className="border-0">
-                    <FaPaperclip />
-                  </Button>
-                  <Button variant="outlined" size="sm" className="border-0">
-                    <FaRegSmile />
-                  </Button>
-                  <Button variant="solid" size="sm">
-                    <FaTelegramPlane />
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     );
   };
@@ -186,21 +119,23 @@ const CommunityPage = () => {
           </div>
         </div>
 
-        <div className="z-30 mx-auto px-16">
-          <div className="relative z-30 -mt-12 sm:-mt-16">
+        <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div className="relative -mt-12 sm:-mt-16">
             <Avatar imageUrl={communityDetails?.profilePic || ""} />
           </div>
         </div>
 
-        <div className="mx-auto px-4 sm:px-12">
+        <div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
           <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
             <div>
-              <h2 className="mt-4 text-4xl font-bold">
+              <h1 className="truncate text-4xl font-bold text-gray-900">
                 {communityDetails?.name}
-              </h2>
-              <h3 className="mt-4">{communityDetails?.description}</h3>
+              </h1>
+              <p className="mt-1 text-gray-500">
+                {communityDetails?.description}
+              </p>
 
-              <div className="mt-4 flex gap-2">
+              <div className="mt-6 flex gap-2">
                 {isCreator ? (
                   <Button variant="solid" size="sm">
                     Edit <span className="hidden sm:contents">Community</span>
@@ -236,7 +171,7 @@ const CommunityPage = () => {
                   <Button
                     variant="outlined"
                     size="sm"
-                    className="max-w-xs border-0 !text-red-500 hover:bg-gray-300"
+                    className="max-w-xs border-0 !text-red-500 hover:!bg-gray-300"
                     onClick={() => {}}
                   >
                     + <span className="hidden md:contents">Create New</span>{" "}
