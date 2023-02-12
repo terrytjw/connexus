@@ -122,14 +122,14 @@ const CreatorEventCreate = () => {
   // a null/ undefined state is needed for form validation
   const addNewTicket = (): void => {
     append({
-      ticketId: undefined,
+      ticketId: 1,
       name: "",
       description: "",
-      price: undefined,
-      quantity: undefined,
-      startDate: undefined,
-      endDate: undefined,
-      eventId: undefined,
+      price: Number.MIN_VALUE,
+      quantity: Number.MIN_VALUE,
+      startDate: new Date(0),
+      endDate: new Date(0),
+      eventId: Number.MIN_VALUE,
     });
   };
 
@@ -204,7 +204,7 @@ const CreatorEventCreate = () => {
 
   const currentStep: Step | undefined = useMemo(
     () => getCurrentStep(),
-    [steps, getCurrentStep]
+    [getCurrentStep]
   );
 
   return (
@@ -741,7 +741,7 @@ const TicketFormInputs = ({
                   <Input
                     type="datetime-local"
                     label="Start Date and Time"
-                    value={value}
+                    value={value.toString()} // NOTE: native input cannot accept dates need to see how to pass to be
                     onChange={onChange}
                     placeholder="Start Date and Time"
                     size="md"
@@ -767,7 +767,7 @@ const TicketFormInputs = ({
                   <Input
                     type="datetime-local"
                     label="End Date and Time"
-                    value={value}
+                    value={value.toString()}
                     onChange={onChange}
                     placeholder="End Date and Time"
                     size="md"
