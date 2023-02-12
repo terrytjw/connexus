@@ -42,7 +42,7 @@ async function generateCommunity() {
       profilePic: "",
       tags: ["A", "B"],
       maxMembers: 10,
-      user: {
+      creator: {
         connect: {
           userId: 1
         }
@@ -57,7 +57,7 @@ async function generateCommunity() {
       profilePic: "",
       tags: ["A", "B"],
       maxMembers: 10,
-      user: {
+      creator: {
         connect: {
           userId: 2
         }
@@ -99,7 +99,7 @@ async function generatePost() {
         content: "https://www.prisma.io/nextjs",
         media: ["A", "B"],
         isPinned: false,
-        user: {
+        creator: {
           connect: {
             userId: 1
           }
@@ -129,7 +129,7 @@ async function generatePost() {
           }
         }
       },
-      user: {
+      creator: {
         connect: {
           userId: 2
         }

@@ -69,7 +69,7 @@ export default async function handler(
       const response = await prisma.community.create({
         data: { 
           ...community,
-          user: {
+          creator: {
             connect: {
               userId : userId
             }
