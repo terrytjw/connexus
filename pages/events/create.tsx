@@ -167,8 +167,6 @@ const CreatorEventCreate = () => {
               : step
           )
         );
-        // proceed to publish
-        console.log("current form data", getValues());
         break;
       default:
         break;
@@ -187,7 +185,6 @@ const CreatorEventCreate = () => {
               : step
           )
         );
-        console.log("current form data", getValues());
         break;
       case "Step 3":
         setSteps((prev) =>
@@ -199,8 +196,6 @@ const CreatorEventCreate = () => {
               : step
           )
         );
-        // proceed to publish
-        console.log("current form data", getValues());
         break;
       default:
         break;
@@ -209,7 +204,7 @@ const CreatorEventCreate = () => {
 
   const currentStep: Step | undefined = useMemo(
     () => getCurrentStep(),
-    [steps]
+    [steps, getCurrentStep]
   );
 
   return (
