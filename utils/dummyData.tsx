@@ -68,7 +68,7 @@ export const events = [
     ],
   },
   {
-    eventId: 0,
+    eventId: 1,
     title: "string",
     category: "AUTO_BOAT_AIR",
     location: "string",
@@ -106,7 +106,7 @@ export const events = [
     ],
   },
   {
-    eventId: 0,
+    eventId: 2,
     title: "string",
     category: "AUTO_BOAT_AIR",
     location: "string",
@@ -144,7 +144,7 @@ export const events = [
     ],
   },
   {
-    eventId: 0,
+    eventId: 3,
     title: "string",
     category: "AUTO_BOAT_AIR",
     location: "string",
@@ -230,7 +230,7 @@ export const products = [
     imageAlt: "Front of plain black t-shirt.",
   },
   {
-    id: 4,
+    id: 5,
     name: "Basic Beer 3",
     href: "http://localhost:3000/merchandise/",
     price: "$32",
