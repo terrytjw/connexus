@@ -10,6 +10,176 @@ info:
 paths: {}
 components:
   schemas:
+    User:
+      properties:
+        userId:
+          type: integer
+        walletAddress:
+          type: string
+        phoneNumber:
+          type: string
+        profilePic:
+          type: string
+        bannerPic:
+          type: string
+        displayName:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        notificationBySMS:
+          default: 'true'
+          type: boolean
+        notificationByEmail:
+          default: 'true'
+          type: boolean
+        createdCommunities:
+          items:
+            $ref: '#/components/schemas/Community'
+          type: array
+        joinedCommunities:
+          items:
+            $ref: '#/components/schemas/Community'
+          type: array
+        joinedChannels:
+          items:
+            $ref: '#/components/schemas/UsersOnChannels'
+          type: array
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+        likedPosts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+        comments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+        likedComments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+      type: object
+    Post:
+      properties:
+        postId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+        media:
+          items:
+            type: string
+          type: array
+        isPinned:
+          type: boolean
+        creator:
+          $ref: '#/components/schemas/User'
+        channel:
+          $ref: '#/components/schemas/Channel'
+        likes:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        comments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+      type: object
+    Community:
+      properties:
+        communityId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        profilePic:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+        maxMembers:
+          default: '100'
+          type: integer
+        communityType:
+          enum:
+            - NFT
+            - CRYPTO
+          default: NFT
+          type: string
+        creator:
+          $ref: '#/components/schemas/User'
+        members:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        channels:
+          items:
+            $ref: '#/components/schemas/Channel'
+          type: array
+      type: object
+    Channel:
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        channelType:
+          enum:
+            - REGULAR
+            - PREMIUM
+            - PRIVATE
+          default: REGULAR
+          type: string
+        members:
+          items:
+            $ref: '#/components/schemas/UsersOnChannels'
+          type: array
+        community:
+          $ref: '#/components/schemas/Community'
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+      type: object
+    UsersOnChannels:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        channel:
+          $ref: '#/components/schemas/Channel'
+      type: object
+    Comment:
+      properties:
+        content:
+          type: string
+        date:
+          type: string
+        post:
+          $ref: '#/components/schemas/Post'
+        commenter:
+          $ref: '#/components/schemas/User'
+        likes:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        originalComment:
+          anyOf:
+            - $ref: '#/components/schemas/Comment'
+            - nullable: true
+        replies:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+      type: object
     Event:
       properties:
         eventId:
