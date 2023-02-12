@@ -245,7 +245,14 @@
           }
         },
         "originalComment": {
-          "$ref": "#/definitions/Comment"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Comment"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "replies": {
           "type": "array",

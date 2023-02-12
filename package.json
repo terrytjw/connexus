@@ -21,6 +21,7 @@
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
     "@prisma/client": "^4.9.0",
+    "alchemy-sdk": "^2.4.3",
     "axios": "^1.2.1",
     "daisyui": "^2.46.1",
     "date-fns": "^2.29.3",

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event } from "@prisma/client";
+import { Network, Alchemy } from "alchemy-sdk";
 
 const prisma = new PrismaClient();
 
@@ -54,13 +55,26 @@ export default async function handler(
   }
 
   async function handleGET() {
-    try {
-      const events = await prisma.event.findMany();
-      res.status(200).json(events);
-    } catch (error) {
-      const errorResponse = handleError(error);
-      res.status(400).json(errorResponse);
-    }
+    // Optional Config object, but defaults to demo api-key and eth-mainnet.
+    const settings = {
+      apiKey: "6ycDX83NnrwWaaZZDB8ic_xPMc88ClwD", // Replace with your Alchemy API Key.
+      network: Network.MATIC_MUMBAI, // Replace with your network.
+    };
+    const alchemy = new Alchemy(settings);
+    const latestBlock = await alchemy.core.getBlockNumber();
+    console.log("The latest block number is", latestBlock);
+
+    // try {
+    //   const events = await prisma.event.findMany({
+    //     include: {
+    //       tickets: true,
+    //     },
+    //   });
+    //   res.status(200).json(events);
+    // } catch (error) {
+    //   const errorResponse = handleError(error);
+    //   res.status(400).json(errorResponse);
+    // }
   }
 
   async function handlePOST(event: Event) {

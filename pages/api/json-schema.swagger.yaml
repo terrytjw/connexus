@@ -10,32 +10,6 @@ info:
 paths: {}
 components:
   schemas:
-    User:
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        name:
-          type: string
-        posts:
-          items:
-            $ref: '#/components/schemas/Post'
-          type: array
-      type: object
-    Post:
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        content:
-          type: string
-        published:
-          type: boolean
-        user:
-          $ref: '#/components/schemas/User'
-      type: object
     Event:
       properties:
         eventId:
