@@ -31,7 +31,7 @@ const TabGroupBordered = ({
   children,
 }: TabGroupBorderedProps) => {
   return (
-    <div className="mx-auto w-full px-2 py-12 sm:px-0">
+    <div className="mx-auto w-full py-8 px-0">
       <Tab.Group
         as={Fragment}
         selectedIndex={activeTab}
@@ -48,7 +48,8 @@ const TabGroupBordered = ({
                     selected
                       ? "border-pink-500 text-gray-900"
                       : "border-transparent text-gray-500 hover:border-gray-500 hover:text-gray-700",
-                    "transition-all"
+                    "transition-all",
+                    tab === "+ Unlock Premium Channels" ? "text-red-500" : ""
                   )
                 }
               >
