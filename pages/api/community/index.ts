@@ -33,40 +33,6 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Community"
- *   put:
- *     description: Update a Community object
- *     parameters:
- *       - in: object
- *         name: Community
- *         required: true
- *         description: Community object to update
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Community"
- *     responses:
- *       200:
- *         description: The updated Community object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Community"
- *   delete:
- *     description: Delete a Community object
- *     parameters:
- *       - in: object
- *         name: Community
- *         required: true
- *         description: Community object to delete
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Community"
- *     responses:
- *       200:
- *         description: The deleted Community object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Community"
  */
 
 export default async function handler(
@@ -85,15 +51,13 @@ export default async function handler(
       await handlePOST(community);
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
   async function handleGET() {
     try {
-      const communities = await prisma.community.findMany({
-        
-      });
+      const communities = await prisma.community.findMany();
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);

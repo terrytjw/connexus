@@ -27,6 +27,12 @@ const prisma = new PrismaClient();
  *   put:
  *     description: Updates a single Community object
  *     parameters:
+ *       - in: path
+ *         name: communityId
+ *         required: true
+ *         description: String ID of the Community to update.
+ *         schema:
+ *           type: string
  *       - in: object
  *         name: Community
  *         required: true
@@ -78,7 +84,7 @@ export default async function handler(
       await handleDELETE(communityId);
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
@@ -104,7 +110,7 @@ export default async function handler(
         where: {
           communityId: communityId,
         },
-        data: { ...community },
+        data: { ...community, communityId: undefined },
       });
       res.status(200).json(response);
     } catch (error) {
