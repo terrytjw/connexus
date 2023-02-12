@@ -1,6 +1,8 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FaShareSquare } from "react-icons/fa";
+import { FiSettings } from "react-icons/fi";
 import Avatar from "../../../components/Avatar";
 import Banner from "../../../components/Banner";
 import Button from "../../../components/Button";
@@ -11,6 +13,7 @@ import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { profile, products } from "../../../utils/dummyData";
 
 const UserProfilePage = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -56,6 +59,14 @@ const UserProfilePage = () => {
             <Button variant="solid" size="md">
               <FaShareSquare aria-hidden="true" />
               <span className="hidden sm:inline-block">Share</span>
+            </Button>
+            <Button
+              variant="solid"
+              size="md"
+              onClick={() => router.push("/user/settings/1")}
+            >
+              <FiSettings aria-hidden="true" />
+              <span className="hidden sm:inline-block">Settings</span>
             </Button>
           </div>
 
