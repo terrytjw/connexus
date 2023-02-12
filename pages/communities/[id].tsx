@@ -8,22 +8,30 @@ import {
   FaTimes,
   FaUserFriends,
 } from "react-icons/fa";
-import Avatar from "../components/Avatar";
-import Badge from "../components/Badge";
-import Banner from "../components/Banner";
-import Button from "../components/Button";
-import CustomLink from "../components/CustomLink";
-import InputGroup from "../components/InputGroup";
-import Modal from "../components/Modal";
-import Post from "../components/Post";
-import PostInput from "../components/PostInput";
-import TabGroupBordered from "../components/TabGroupBordered";
-import { community, posts } from "../utils/dummyData";
+import { toast, Toaster } from "react-hot-toast";
+import copy from "copy-to-clipboard";
+import Avatar from "../../components/Avatar";
+import Badge from "../../components/Badge";
+import Banner from "../../components/Banner";
+import Button from "../../components/Button";
+import CustomLink from "../../components/CustomLink";
+import InputGroup from "../../components/InputGroup";
+import Modal from "../../components/Modal";
+import Post from "../../components/Post";
+import PostInput from "../../components/PostInput";
+import TabGroupBordered from "../../components/TabGroupBordered";
+import { community, posts } from "../../utils/dummyData";
 
-const CreatorCommunity = () => {
+const CommunityPage = () => {
+  const [isCreator, setIsCreator] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [communityDetails, setCommunityDetails] = useState(community);
   const [activeTab, setActiveTab] = useState(0);
+
+  const createPost = (data: any) => {
+    // api call
+    console.log(data);
+  };
 
   const TabContent = () => {
     return (
@@ -50,7 +58,8 @@ const CreatorCommunity = () => {
         </div>
 
         <div id="feed" className="flex flex-col gap-4">
-          <PostInput />
+          {isCreator ? <PostInput createPost={createPost} /> : null}
+
           {posts.map((post) => {
             return <Post key={post.postId} post={post} />;
           })}
@@ -68,13 +77,10 @@ const CreatorCommunity = () => {
               alt="Current user profile pic"
             />
             <div>
-              <CustomLink
-                href={`/users/profile/1`}
-                className="px-0 text-gray-700"
-              >
+              <CustomLink href={`/users/profile/1`} className="text-gray-700">
                 User
               </CustomLink>
-              <p>hello how are you ? im fine, thank you and you ? im good !</p>
+              <p>Message Content</p>
             </div>
           </div>
           <div className="divider px-6"></div>
@@ -86,10 +92,7 @@ const CreatorCommunity = () => {
               alt="Current user profile pic"
             />
             <div>
-              <CustomLink
-                href={`/users/profile/1`}
-                className="px-0 text-gray-700"
-              >
+              <CustomLink href={`/users/profile/1`} className="text-gray-700">
                 User
               </CustomLink>
               <p>Hellooooo</p>
@@ -167,9 +170,9 @@ const CreatorCommunity = () => {
             src="/images/bear.jpg"
             alt="Member profile pic"
           />
-          <CustomLink href={`/users/profile/1`} className="px-0 text-gray-700">
+          <CustomLink href={`/users/profile/1`} className="text-gray-700">
             Member name
-          </CustomLink>{" "}
+          </CustomLink>
         </div>
       </Modal>
 
@@ -189,46 +192,103 @@ const CreatorCommunity = () => {
           </div>
         </div>
 
-        <div className="px-4 sm:px-12">
-          <h2 className="mt-4 text-4xl font-bold">{communityDetails?.name}</h2>
-          <h3 className="mt-4">{communityDetails?.description}</h3>
+        <div className="mx-auto px-4 sm:px-12">
+          <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
+            <div>
+              <h2 className="mt-4 text-4xl font-bold">
+                {communityDetails?.name}
+              </h2>
+              <h3 className="mt-4">{communityDetails?.description}</h3>
 
-          <div className="mt-4 flex gap-4">
-            <Button variant="solid" size="sm">
-              Edit Community
-            </Button>
-            <Button variant="solid" size="sm">
-              <FaShareSquare />
-            </Button>
+              <div className="mt-4 flex gap-2">
+                {isCreator ? (
+                  <Button variant="solid" size="sm">
+                    Edit <span className="hidden sm:contents">Community</span>
+                  </Button>
+                ) : (
+                  <Button variant="solid" size="sm">
+                    Joined
+                  </Button>
+                )}
+
+                <Button
+                  variant="solid"
+                  size="sm"
+                  onClick={() => {
+                    copy(location.href);
+                    toast("Community link copied successfully!");
+                  }}
+                >
+                  <FaShareSquare />
+                </Button>
+                <Toaster
+                  position="bottom-center"
+                  toastOptions={{
+                    style: {
+                      background: "#1A7DFF",
+                      color: "#fff",
+                      textAlign: "center",
+                    },
+                  }}
+                />
+
+                {isCreator ? (
+                  <Button
+                    variant="outlined"
+                    size="sm"
+                    className="max-w-xs border-0 !text-red-500 hover:bg-gray-300"
+                    onClick={() => {}}
+                  >
+                    + <span className="hidden md:contents">Create New</span>{" "}
+                    Premium Channel
+                  </Button>
+                ) : (
+                  <Button
+                    variant="solid"
+                    size="sm"
+                    className="!bg-orange-300 hover:!bg-orange-400"
+                  >
+                    Submit Chat Request
+                  </Button>
+                )}
+              </div>
+            </div>
+            <div className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm">
+              Highlighted Collection
+              <img src="/images/bear.jpg" className="h-36 w-36 rounded-lg" />
+              <div
+                aria-hidden="true"
+                className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-between rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+              >
+                <span className="self-end">x100</span>
+                Collection #1
+              </div>
+            </div>
           </div>
 
-          <div className="relative -mx-6 sm:-mx-8">
-            <TabGroupBordered
-              tabs={["Home"]}
-              activeTab={activeTab}
-              setActiveTab={(index: number) => {
-                setActiveTab(index);
-              }}
-            >
-              {activeTab == 0 && <TabContent />}
-            </TabGroupBordered>
-
-            <select
-              className="select absolute right-8 top-16 max-w-xs"
-              value={activeTab}
-              onChange={(e) => {
-                setActiveTab(Number(e.target.value));
-              }}
-            >
-              <option disabled selected value={0}>
-                List of Premium Channels
-              </option>
-            </select>
-          </div>
+          <TabGroupBordered
+            tabs={
+              isCreator
+                ? communityDetails.channels.map((channel) => {
+                    return channel.name;
+                  })
+                : communityDetails.channels
+                    .map((channel) => {
+                      return channel.name;
+                    })
+                    .concat(["+ Unlock Premium Channels"])
+            }
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab == 0 && <TabContent />}
+          </TabGroupBordered>
         </div>
       </main>
     </div>
   );
 };
 
-export default CreatorCommunity;
+export default CommunityPage;

@@ -5,13 +5,10 @@ import {
   FaRegShareSquare,
 } from "react-icons/fa";
 import Button from "./Button";
-import CustomLink from "./CustomLink";
+import Carousel from "./Carousel";
 import Comment from "./Comment";
+import CustomLink from "./CustomLink";
 import { Post, Comment as CommentType } from "../utils/dummyData";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
 
 type PostProps = {
   post: Post;
@@ -20,7 +17,7 @@ type PostProps = {
 const Post = ({ post }: PostProps) => {
   return (
     <div className="card border-2 border-gray-200 bg-white">
-      <div className="card-body gap-6">
+      <div className="card-body gap-4">
         <div className="flex w-full flex-wrap items-center justify-between">
           <div className="flex items-center gap-4">
             <img
@@ -30,7 +27,7 @@ const Post = ({ post }: PostProps) => {
             />
             <CustomLink
               href={`/users/profile/${post.creator.userId}`}
-              className="px-0 text-gray-700"
+              className="text-gray-700"
             >
               {post.creator.displayName}
             </CustomLink>{" "}
@@ -47,12 +44,7 @@ const Post = ({ post }: PostProps) => {
               className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
             >
               <li>
-                <button
-                  className="hover:bg-gray-200 focus:bg-gray-300"
-                  onClick={() => {
-                    // api call
-                  }}
-                >
+                <button className="hover:bg-gray-200 focus:bg-gray-300">
                   Pin Post
                 </button>
               </li>
@@ -62,12 +54,7 @@ const Post = ({ post }: PostProps) => {
                 </button>
               </li>
               <li>
-                <button
-                  className="hover:bg-gray-200 focus:bg-gray-300"
-                  onClick={() => {
-                    // api call
-                  }}
-                >
+                <button className="hover:bg-gray-200 focus:bg-gray-300">
                   Delete Post
                 </button>
               </li>
@@ -75,44 +62,7 @@ const Post = ({ post }: PostProps) => {
           </div>
         </div>
 
-        <div className="carousel rounded-box h-60 w-full md:h-96">
-          {post.media?.map((media, index) => {
-            return (
-              <div
-                id={`${post.postId}-${index}`}
-                key={index}
-                className="carousel-item relative w-full"
-              >
-                <img
-                  src={media}
-                  className="w-full object-cover object-center"
-                />
-                <div className="absolute left-3 right-3 top-1/2 flex -translate-y-1/2 transform justify-between md:left-5 md:right-5">
-                  <a
-                    href={`#${post.postId}-${index - 1}`}
-                    className={classNames(
-                      "btn-xs btn-circle btn md:btn-md",
-                      index === 0 ? "pointer-events-none opacity-0" : ""
-                    )}
-                  >
-                    ❮
-                  </a>
-                  <a
-                    href={`#${post.postId}-${index + 1}`}
-                    className={classNames(
-                      "btn-xs btn-circle btn md:btn-md",
-                      index === post.media.length - 1
-                        ? "pointer-events-none opacity-0"
-                        : ""
-                    )}
-                  >
-                    ❯
-                  </a>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Carousel images={post.media} />
 
         <p>{post.content}</p>
 
@@ -188,39 +138,6 @@ const Post = ({ post }: PostProps) => {
                 </div>
               </div>
             );
-            // return (
-            //   <div className="-mx-8 flex flex-col px-8 py-4 hover:bg-gray-100">
-            //     <div className="flex w-full gap-4">
-            //       <img
-            //         className="h-12 w-12 rounded-full"
-            //         src={comment.commentor.profilePic}
-            //         alt="Current user profile pic"
-            //       />
-            //       <CustomLink
-            //         href={`/users/profile/${comment.commentor.userId}`}
-            //         className="px-0 text-gray-700"
-            //       >
-            //         {comment.commentor.displayName}
-            //       </CustomLink>{" "}
-            //     </div>
-
-            //     <div className="pl-16">
-            //       <p className=" text-sm">{comment.content}</p>
-
-            //       <div className="mt-4 flex items-center gap-4">
-            //         <button className="text-sm">Like</button>
-            //         <button className="text-sm">Reply</button>
-            //         <span className="text-sm text-gray-500">
-            //           {comment.date.toLocaleString("en-gb", {
-            //             day: "numeric",
-            //             month: "short",
-            //             year: "numeric",
-            //           })}
-            //         </span>
-            //       </div>
-            //     </div>
-            //   </div>
-            // );
           })}
         </div>
       </div>

@@ -1,25 +1,16 @@
 import { Controller, useForm } from "react-hook-form";
 import { FaCamera, FaTimes } from "react-icons/fa";
-import Avatar from "../components/Avatar";
-import Badge from "../components/Badge";
-import Banner from "../components/Banner";
-import Button from "../components/Button";
-import Input from "../components/Input";
-
-type CommunityData = {
-  name: string;
-  description: string;
-  bannerPic: File | null;
-  profilePic: File | null;
-  maxMember: number;
-  tags: string[];
-};
+import Avatar from "../../components/Avatar";
+import Badge from "../../components/Badge";
+import Banner from "../../components/Banner";
+import Button from "../../components/Button";
+import Input from "../../components/Input";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const CreateCommunity = () => {
+const CreateCommunityPage = () => {
   const labels = [
     "NFT",
     "Lifestyle",
@@ -31,7 +22,16 @@ const CreateCommunity = () => {
     "Education",
     "Health",
   ];
-  const { handleSubmit, setValue, control, watch } = useForm<CommunityData>();
+  const { handleSubmit, setValue, control, watch } = useForm({
+    defaultValues: {
+      name: "",
+      description: "",
+      bannerPic: null as unknown as File | null,
+      profilePic: null as unknown as File,
+      maxMember: null as unknown as number,
+      tags: [] as string[],
+    },
+  });
   const [bannerPic, profilePic, tags] = watch([
     "bannerPic",
     "profilePic",
@@ -53,6 +53,7 @@ const CreateCommunity = () => {
               bannerPic ? "bg-black opacity-60" : "bg-gray-200"
             )}
           ></div>
+
           <div className="absolute top-0 flex h-32 w-full items-center justify-center gap-6 lg:h-48">
             <label className="relative">
               <Button variant="solid" size="md" className="!btn-circle">
@@ -69,6 +70,7 @@ const CreateCommunity = () => {
                 }}
               />
             </label>
+
             {bannerPic ? (
               <Button
                 variant="solid"
@@ -95,6 +97,7 @@ const CreateCommunity = () => {
                 profilePic ? "bg-black opacity-60" : "bg-gray-200"
               )}
             ></div>
+
             <div className="absolute top-0 flex h-24 w-24 items-center justify-center rounded-full ring-4 ring-white sm:h-32 sm:w-32">
               <label className="relative">
                 <Button variant="solid" size="md" className="!rounded-full">
@@ -199,7 +202,7 @@ const CreateCommunity = () => {
 
             <label className="label">
               <span className="label-text-alt text-red-500">
-                {/* Please select at least one topic */}
+                {/* {tags.length === 0 ? "Please select at least one topic" : null} */}
               </span>
             </label>
           </div>
@@ -237,4 +240,4 @@ const CreateCommunity = () => {
   );
 };
 
-export default CreateCommunity;
+export default CreateCommunityPage;

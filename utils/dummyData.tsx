@@ -95,6 +95,7 @@ export type Community = {
   bannerPic: string;
   profilePic: string;
   tags: string[];
+  numMembers: number;
 };
 
 export type Post = {
@@ -220,4 +221,68 @@ export const community = {
     "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
   profilePic: "/images/bear.jpg",
   tags: ["NFT", "Entertainment", "Fitness"],
+  numMembers: 2,
+  channels: [
+    {
+      channelId: 1,
+      name: "Home",
+    },
+    {
+      channelId: 2,
+      name: "Premium Channel 1",
+    },
+  ],
 };
+
+export const communities = [
+  {
+    communityId: 1,
+    name: "Community Name 1",
+    description: "Community Description 1",
+    bannerPic:
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT", "Entertainment", "Fitness"],
+    numMembers: 2,
+  },
+  {
+    communityId: 2,
+    name: "Community Name 2",
+    description: "Community Description 2",
+    bannerPic:
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    numMembers: 1000,
+  },
+  {
+    communityId: 3,
+    name: "Community Name 3",
+    description: "Community Description 3",
+    bannerPic:
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    numMembers: 8,
+  },
+  {
+    communityId: 4,
+    name: "Community Name 4",
+    description: "Community Description 4",
+    bannerPic:
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    numMembers: 10000,
+  },
+  {
+    communityId: 5,
+    name: "Community Name 5",
+    description: "Community Description 5",
+    bannerPic:
+      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    numMembers: 200,
+  },
+];
