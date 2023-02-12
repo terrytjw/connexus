@@ -75,17 +75,16 @@ export default async function handler(
 ) {
   const { method, body } = req;
 
-  const channel = JSON.parse(JSON.stringify(body)) as Channel;
-
   switch (method) {
     case "GET":
       await handleGET();
       break;
     case "POST":
-      await handlePOST(channel);
+      const { channel, communityId } : { channel: Channel, communityId: number } = JSON.parse(JSON.stringify(body));
+      await handlePOST(channel, communityId);
       break;
     default:
-      res.setHeader("Allow", ["GET", "POST", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
@@ -99,10 +98,17 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(channel: Channel) {
+  async function handlePOST(channel: Channel, communityId: number) {
     try {
       const response = await prisma.channel.create({
-        data: { ...channel }
+        data: { 
+          ...channel,
+          community: {
+            connect: {
+              communityId: communityId
+            }
+          } 
+        }
       });
       res.status(200).json([response]);
     } catch (error) {
