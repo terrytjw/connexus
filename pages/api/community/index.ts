@@ -41,14 +41,13 @@ export default async function handler(
 ) {
   const { method, body } = req;
 
-  const community = JSON.parse(JSON.stringify(body)) as Community;
-
   switch (method) {
     case "GET":
       await handleGET();
       break;
     case "POST":
-      await handlePOST(community);
+      const { Community: community, number: userId } = JSON.parse(JSON.stringify(body))
+      await handlePOST(community, userId);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -65,10 +64,17 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(community: Community) {
+  async function handlePOST(community: Community, userId: number) {
     try {
       const response = await prisma.community.create({
-        data: { ...community }
+        data: { 
+          ...community,
+          user: {
+            connect: {
+              userId : userId
+            }
+          }
+         },
       });
       res.status(200).json([response]);
     } catch (error) {
