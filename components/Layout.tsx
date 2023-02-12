@@ -237,7 +237,7 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="w-full lg:ml-64">
-          <div className="min-h-screen bg-gray-100">{children}</div>
+          <div className="min-h-screen bg-sky-100">{children}</div>
           <Footer />
         </main>
       </div>
