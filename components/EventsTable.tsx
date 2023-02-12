@@ -1,10 +1,7 @@
 import React from "react";
 import {
   FaEdit,
-  FaRegEdit,
-  FaTrash,
   FaTrashAlt,
-  FaUserEdit,
 } from "react-icons/fa";
 import Badge from "./Badge";
 

@@ -1,18 +1,6 @@
 import React, { useState } from "react";
-import {
-  FaTimes,
-  FaSearch,
-  FaShareSquare,
-  FaUserFriends,
-} from "react-icons/fa";
-import Avatar from "../Avatar";
-import Badge from "../Badge";
-import Banner from "../Banner";
 import Button from "../Button";
-import CustomLink from "../CustomLink";
 import EventsCollectionGrid from "../EventsCollectionGrid";
-import InputGroup from "../InputGroup";
-import Modal from "../Modal";
 import TabGroupBordered from "../TabGroupBordered";
 import { events } from "../../utils/dummyData";
 
