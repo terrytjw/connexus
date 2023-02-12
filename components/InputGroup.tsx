@@ -5,9 +5,9 @@ function classNames(...classes: string[]) {
 }
 
 type InputGroupProps = {
-  type: "text" | "number";
+  type: "text" | "number" | "date" | "datetime-local";
   label: string;
-  value: string | number;
+  value: string | number | Date;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   errorMessage?: string;
@@ -55,6 +55,7 @@ const InputGroup = ({
             "input block w-full rounded-md pl-10",
             `input-${variant}`,
             `input-${size}`,
+            `items-center bg-white`,
             className ?? ""
           )}
           type={type}

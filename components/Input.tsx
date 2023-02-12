@@ -5,9 +5,9 @@ function classNames(...classes: string[]) {
 }
 
 type InputProps = {
-  type: "text" | "number";
+  type: "text" | "number" | "date" | "datetime-local";
   label: string;
-  value: string | number;
+  value: string | number | Date;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   errorMessage?: string;
@@ -48,7 +48,8 @@ const Input = ({
           "input-group input",
           `input-${variant}`,
           `input-${size}`,
-          "w-full",
+          "w-full bg-white",
+          "items-center",
           className ?? ""
         )}
         type={type}
