@@ -34,7 +34,7 @@ const Notification = ({
             <>
               <CustomLink
                 href={`/users/profile/${userId}`}
-                className="px-0 font-bold"
+                className="font-bold"
               >
                 {userName}
               </CustomLink>{" "}
