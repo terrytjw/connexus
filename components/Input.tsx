@@ -5,7 +5,7 @@ function classNames(...classes: string[]) {
 }
 
 type InputProps = {
-  type: "text" | "number";
+  type: "text" | "number" | "email" | "password";
   label: string;
   value: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
