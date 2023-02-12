@@ -46,7 +46,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const { Community: community, number: userId } = JSON.parse(JSON.stringify(body))
+      const { community, userId } : { community: Community, userId: number } = JSON.parse(JSON.stringify(body))
       await handlePOST(community, userId);
       break;
     default:
