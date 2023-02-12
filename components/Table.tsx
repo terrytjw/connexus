@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -40,9 +41,12 @@ const Table = ({ data, columns }: TableProps) => {
                 <div className="flex items-center space-x-3">
                   <div className="avatar">
                     <div className="mask mask-squircle h-12 w-12">
-                      <img
+                      <Image
                         src="/images/bear.jpg"
                         alt="Avatar Tailwind CSS Component"
+                        className="h-full w-full object-cover object-center"
+                        width={100}
+                        height={100}
                       />
                     </div>
                   </div>

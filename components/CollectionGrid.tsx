@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "./Button";
+import Image from "next/image";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -17,10 +18,12 @@ const CollectionGrid = ({ data }: CollectionGridProps) => {
         {data.map((data) => (
           <a key={data.id} href={data.href} className="group mb-8 text-sm">
             <div className="saspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
-              <img
+              <Image
                 src={data.imageSrc}
                 alt={data.imageAlt}
                 className="h-full w-full object-cover object-center"
+                width={100}
+                height={100}
               />
               <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
                 <div
