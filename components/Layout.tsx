@@ -122,7 +122,7 @@ const MobileNavbar = ({ children }: any) => {
           </li>
           <li className="mb-4">
             <Link
-              href="/users/profile/1"
+              href="/user/profile/1"
               className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
             >
               <FaUser className="ml-2" />
@@ -207,7 +207,7 @@ const DesktopSidebar = () => {
         </li>
         <li className="mb-4">
           <Link
-            href="/users/profile/1"
+            href="/user/profile/1"
             className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
           >
             <FaUser className="ml-2" />
@@ -237,7 +237,7 @@ const Layout = ({ children }: LayoutProps) => {
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="w-full lg:ml-64">
-          <div className="min-h-screen bg-gray-100">{children}</div>
+          <div className="min-h-screen bg-sky-100">{children}</div>
           <Footer />
         </main>
       </div>

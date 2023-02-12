@@ -20,6 +20,7 @@ function classNames(...classes: string[]) {
 import TabGroupBordered from "../components/TabGroupBordered";
 import { products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
+import TextArea from "../components/TextArea";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,6 +28,7 @@ const PlaygroundPage = () => {
   const [accordionIdx, setAccordionIdx] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState(0);
   const [value, setValue] = useState<string | number>("");
+  const [textAreaContent, setTextAreaContent] = useState("");
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -112,6 +114,20 @@ const PlaygroundPage = () => {
         >
           <FaGithub />
         </InputGroup>
+      </section>
+
+      <div className="divider" />
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Text Area component
+          </h1>
+        </div>
+        <TextArea
+          placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
+          value={textAreaContent}
+          onChange={(e) => setTextAreaContent(e.target.value)}
+        />
       </section>
 
       <div className="divider" />
