@@ -65,6 +65,7 @@ model Community {
 }
 
 model Channel {
+  channelId   Int               @id @default(autoincrement())
   name        String
   description String
   channelType ChannelType       @default(REGULAR)
@@ -73,7 +74,7 @@ model Channel {
   communityId Int
   posts       Post[]
 
-  @@id([communityId, name])
+  @@unique([communityId, name])
 }
 
 model UsersOnChannels {
@@ -95,7 +96,7 @@ model Comment {
   commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
   userId          Int
   likes           User[]    @relation(name: "likedComments")
-  originalComment Comment?   @relation(name: "replies", fields: [commentId], references: [commentId])
+  originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
   replies         Comment[] @relation(name: "replies")
 }
 
