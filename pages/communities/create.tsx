@@ -5,6 +5,7 @@ import Badge from "../../components/Badge";
 import Banner from "../../components/Banner";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
+import TextArea from "../../components/TextArea";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -143,16 +144,63 @@ const CreateCommunityPage = () => {
             name="description"
             rules={{ required: "Community Description is required" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextArea
+                className="max-w-3xl"
+                label="Description"
+                placeholder="Tell us what your community is about"
+                value={value}
+                onChange={onChange}
+                errorMessage={error?.message}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="tags"
+            rules={{
+              validate: (value) =>
+                value.length > 0 || "Please select at least one topic",
+            }}
+            render={({ fieldState: { error } }) => (
               <div className="form-control w-full max-w-3xl">
                 <label className="label">
-                  <span className="label-text">Description</span>
+                  <span className="label-text">Topics of Your Community</span>
                 </label>
-                <textarea
-                  className="input-group textarea-bordered textarea w-full max-w-3xl"
-                  placeholder="Tell us what your community is about"
-                  value={value}
-                  onChange={onChange}
-                />
+
+                <div className="input-bordered input flex h-fit flex-wrap gap-4 p-4">
+                  {labels.map((label, index) => {
+                    return (
+                      <Badge
+                        key={index}
+                        size="lg"
+                        label={label}
+                        selected={
+                          tags && tags.length > 0 && tags.indexOf(label) != -1
+                        }
+                        onClick={() => {
+                          if (!tags) {
+                            setValue("tags", [label]);
+                            return;
+                          }
+
+                          if (tags && tags.indexOf(label) == -1) {
+                            setValue("tags", [...tags, label]);
+                            return;
+                          }
+
+                          setValue(
+                            "tags",
+                            tags?.filter((tag) => {
+                              return tag != label;
+                            })
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </div>
+
                 <label className="label">
                   <span className="label-text-alt text-red-500">
                     {error?.message}
@@ -161,51 +209,6 @@ const CreateCommunityPage = () => {
               </div>
             )}
           />
-
-          <div className="form-control w-full max-w-3xl">
-            <label className="label">
-              <span className="label-text">Topics of Your Community</span>
-            </label>
-
-            <div className="input-bordered input flex h-fit flex-wrap gap-4 p-4">
-              {labels.map((label, index) => {
-                return (
-                  <Badge
-                    key={index}
-                    size="lg"
-                    label={label}
-                    selected={
-                      tags && tags.length > 0 && tags.indexOf(label) != -1
-                    }
-                    onClick={() => {
-                      if (!tags) {
-                        setValue("tags", [label]);
-                        return;
-                      }
-
-                      if (tags && tags.indexOf(label) == -1) {
-                        setValue("tags", [...tags, label]);
-                        return;
-                      }
-
-                      setValue(
-                        "tags",
-                        tags?.filter((tag) => {
-                          return tag != label;
-                        })
-                      );
-                    }}
-                  />
-                );
-              })}
-            </div>
-
-            <label className="label">
-              <span className="label-text-alt text-red-500">
-                {/* {tags.length === 0 ? "Please select at least one topic" : null} */}
-              </span>
-            </label>
-          </div>
 
           <Controller
             control={control}
