@@ -75,14 +75,13 @@ export default async function handler(
 ) {
   const { method, body } = req;
 
-  const comment = JSON.parse(JSON.stringify(body)) as Comment;
-
   switch (method) {
     case "GET":
       await handleGET();
       break;
     case "POST":
-      await handlePOST(comment);
+      const { comment, userId, postId } : { comment: Comment, userId: number, postId: number } = JSON.parse(JSON.stringify(body))
+      await handlePOST(comment, userId, postId);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -101,10 +100,22 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(comment: Comment) {
+  async function handlePOST(comment: Comment, userId: number, postId: number) {
     try {
       const response = await prisma.comment.create({
-        data: { ...comment }
+        data: { 
+          ...comment,
+          commenter: {
+            connect: {
+              userId: userId
+            }
+          },
+          post: {
+            connect: {
+              postId: postId
+            }
+          } 
+        }
       });
       res.status(200).json([response]);
     } catch (error) {
