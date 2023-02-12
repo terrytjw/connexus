@@ -36,47 +36,47 @@ const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="mt-8 sm:max-w-xl">
-        <Input
-          type="text"
-          label="Display name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="example"
-          size="md"
-          variant="bordered"
-        />
-        <Input
-          type="text"
-          label="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          placeholder="example"
-          size="md"
-          variant="bordered"
-        />
-        <TextArea
-          placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-        />
-        <Input
-          type="email"
-          label="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="example"
-          size="md"
-          variant="bordered"
-        />
-      </div>
+        <div className="mt-8 sm:max-w-xl">
+          <Input
+            type="text"
+            label="Display name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="example"
+            size="md"
+            variant="bordered"
+          />
+          <Input
+            type="text"
+            label="Username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="example"
+            size="md"
+            variant="bordered"
+          />
+          <TextArea
+            placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
+            value={bio}
+            onChange={(e) => setBio(e.target.value)}
+          />
+          <Input
+            type="email"
+            label="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="example"
+            size="md"
+            variant="bordered"
+          />
+        </div>
 
-      <div className="mt-8">
-        <Button variant="solid" size="md">
-          <span>Save settings</span>
-        </Button>
+        <div className="mt-8">
+          <Button variant="solid" size="md">
+            <span>Save settings</span>
+          </Button>
+        </div>
       </div>
     </main>
   );
