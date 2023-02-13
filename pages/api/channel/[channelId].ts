@@ -34,6 +34,13 @@ const prisma = new PrismaClient();
  *         application/json:
  *          schema:
  *            $ref: "#/components/schemas/Channel"
+ *     requestBody:
+ *       name: Channel
+ *       required: true
+ *       description: Channel object to create
+ *       application/json:
+ *         schema:
+ *           $ref: "#/components/schemas/Channel"  
  *     responses:
  *       200:
  *         description: A single Channel object
@@ -50,13 +57,6 @@ const prisma = new PrismaClient();
  *         description: String ID of the Channel to delete.
  *         schema:
  *           type: string
- *     requestBody:
- *       name: Channel
- *       required: true
- *       description: Channel object to create
- *       application/json:
- *         schema:
- *           $ref: "#/components/schemas/Channel" 
  *     responses:
  *       200:
  *         description: The deleted Channel object
