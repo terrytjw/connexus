@@ -18,51 +18,16 @@ const prisma = new PrismaClient();
  *              $ref: "#/components/schemas/Channel"
  *   post:
  *     description: Create a Channel object
- *     parameters:
- *       - in: object
- *         name: Channel
- *         required: true
- *         description: Channel object to create
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Channel"
+ *     requestBody:
+ *       name: Channel
+ *       required: true
+ *       description: Channel object to create
+ *       application/json:
+ *         schema:
+ *           $ref: "#/components/schemas/Channel"
  *     responses:
  *       200:
  *         description: The created Channel object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Channel"
- *   put:
- *     description: Update a Channel object
- *     parameters:
- *       - in: object
- *         name: Channel
- *         required: true
- *         description: Channel object to update
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Channel"
- *     responses:
- *       200:
- *         description: The updated Channel object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Channel"
- *   delete:
- *     description: Delete a Channel object
- *     parameters:
- *       - in: object
- *         name: Channel
- *         required: true
- *         description: Channel object to delete
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Channel"
- *     responses:
- *       200:
- *         description: The deleted Channel object
  *         content:
  *           application/json:
  *             schema:
