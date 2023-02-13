@@ -26,7 +26,7 @@ const Post = ({ post }: PostProps) => {
               alt="Creator profile pic"
             />
             <CustomLink
-              href={`/users/profile/${post.creator.userId}`}
+              href={`/user/profile/${post.creator.userId}`}
               className="text-gray-700"
             >
               {post.creator.displayName}
@@ -44,19 +44,31 @@ const Post = ({ post }: PostProps) => {
               className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
             >
               <li>
-                <button className="hover:bg-gray-200 focus:bg-gray-300">
+                <Button
+                  size="md"
+                  variant="solid"
+                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                >
                   Pin Post
-                </button>
+                </Button>
               </li>
               <li>
-                <button className="hover:bg-gray-200 focus:bg-gray-300">
+                <Button
+                  size="md"
+                  variant="solid"
+                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                >
                   Edit Post
-                </button>
+                </Button>
               </li>
               <li>
-                <button className="hover:bg-gray-200 focus:bg-gray-300">
+                <Button
+                  size="md"
+                  variant="solid"
+                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                >
                   Delete Post
-                </button>
+                </Button>
               </li>
             </ul>
           </div>
@@ -74,7 +86,7 @@ const Post = ({ post }: PostProps) => {
               year: "numeric",
             })}
           </span>
-          <div className="flex w-full items-center justify-between gap-x-4 border-y-2 py-2 sm:w-auto sm:border-0">
+          <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
             <div className="flex items-center gap-x-2">
               <Button
                 size="md"
@@ -101,14 +113,6 @@ const Post = ({ post }: PostProps) => {
               </Button>
               {post.comments?.length}
             </div>
-
-            <Button
-              size="md"
-              variant="outlined"
-              className="!btn-circle border-0"
-            >
-              <FaRegShareSquare size={24} />
-            </Button>
           </div>
         </div>
 
