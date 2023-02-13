@@ -22,9 +22,10 @@ model User {
   bannerPic           String
   displayName         String
   username            String
-  email               String
+  email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]       @relation(name: "createdCollections")
   createdCommunities  Community[]       @relation(name: "createdCommunities")
   joinedCommunities   Community[]       @relation(name: "joinedCommunities")
   joinedChannels      UsersOnChannels[]
@@ -201,6 +202,8 @@ model Collection{
   currency Currency @default(USD)
   collectionState CollectionState @default(CREATED)
   collections CollectionMedia[]
+  creator User @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId     Int
 }
 
 enum CollectionState{

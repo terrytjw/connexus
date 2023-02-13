@@ -36,6 +36,12 @@
           "type": "boolean",
           "default": true
         },
+        "createdCollections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collection"
+          }
+        },
         "createdCommunities": {
           "type": "array",
           "items": {
@@ -245,7 +251,14 @@
           }
         },
         "originalComment": {
-          "$ref": "#/definitions/Comment"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Comment"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "replies": {
           "type": "array",
@@ -412,50 +425,6 @@
         }
       }
     },
-    "User": {
-      "type": "object",
-      "properties": {
-        "userId": {
-          "type": "integer"
-        },
-        "email": {
-          "type": "string"
-        },
-        "name": {
-          "type": "string"
-        },
-        "username": {
-          "type": "string"
-        },
-        "walletAddress": {
-          "type": "string"
-        },
-        "profilePic": {
-          "type": "string"
-        },
-        "bannerPic": {
-          "type": "string"
-        },
-        "displayName": {
-          "type": "string"
-        },
-        "notificationBySMS": {
-          "type": "boolean"
-        },
-        "notificationByEmail": {
-          "type": "boolean"
-        },
-        "twitterURL": {
-          "type": "string"
-        },
-        "posts": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Post"
-          }
-        }
-      }
-    },
     "Collection": {
       "type": "object",
       "properties": {
@@ -492,6 +461,9 @@
           "items": {
             "$ref": "#/definitions/CollectionMedia"
           }
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
         }
       }
     },
@@ -512,26 +484,6 @@
         },
         "collection": {
           "$ref": "#/definitions/Collection"
-        }
-      }
-    },
-    "Post": {
-      "type": "object",
-      "properties": {
-        "postId": {
-          "type": "integer"
-        },
-        "title": {
-          "type": "string"
-        },
-        "content": {
-          "type": "string"
-        },
-        "published": {
-          "type": "boolean"
-        },
-        "user": {
-          "$ref": "#/definitions/User"
         }
       }
     }
@@ -565,17 +517,11 @@
     "promotion": {
       "$ref": "#/definitions/Promotion"
     },
-    "user": {
-      "$ref": "#/definitions/User"
-    },
     "collection": {
       "$ref": "#/definitions/Collection"
     },
     "collectionMedia": {
       "$ref": "#/definitions/CollectionMedia"
-    },
-    "post": {
-      "$ref": "#/definitions/Post"
     }
   }
 }
