@@ -20,17 +20,12 @@ const prisma = new PrismaClient();
  *     description: Create a Community object
  *     parameters:
  *     requestBody:
- *       description: Community object to create.
+ *       description: Community object to create. Creator's userId is required
  *       required: true
  *       content:
  *         application/json:
  *           schema:
- *             type: object
- *             properties:
- *               Community:
- *                 $ref: "#/components/schemas/Community"
- *               userId:
- *                 type: number
+ *             $ref: "#/components/schemas/Community"
  *     responses:
  *       200:
  *         description: The created Community object
@@ -51,8 +46,8 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const { community, userId } : { community: Community, userId: number } = JSON.parse(JSON.stringify(body))
-      await handlePOST(community, userId);
+      const community = JSON.parse(JSON.stringify(body)) as Community;
+      await handlePOST(community);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -69,16 +64,11 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(community: Community, userId: number) {
+  async function handlePOST(community: Community) {
     try {
       const response = await prisma.community.create({
         data: { 
-          ...community,
-          creator: {
-            connect: {
-              userId : userId
-            }
-          }
+          ...community
          },
       });
       res.status(200).json([response]);
