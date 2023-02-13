@@ -10,32 +10,6 @@ info:
 paths: {}
 components:
   schemas:
-    User:
-      properties:
-        id:
-          type: integer
-        email:
-          type: string
-        name:
-          type: string
-        posts:
-          items:
-            $ref: '#/components/schemas/Post'
-          type: array
-      type: object
-    Post:
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        content:
-          type: string
-        published:
-          type: boolean
-        user:
-          $ref: '#/components/schemas/User'
-      type: object
     Event:
       properties:
         eventId:
@@ -142,4 +116,87 @@ components:
           type: string
         ticket:
           $ref: '#/components/schemas/Ticket'
+      type: object
+    User:
+      properties:
+        userId:
+          type: integer
+        email:
+          type: string
+        name:
+          type: string
+        username:
+          type: string
+        walletAddress:
+          type: string
+        profilePic:
+          type: string
+        bannerPic:
+          type: string
+        displayName:
+          type: string
+        notificationBySMS:
+          type: boolean
+        notificationByEmail:
+          type: boolean
+        twitterURL:
+          type: string
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+      type: object
+    Collection:
+      properties:
+        collectionId:
+          type: integer
+        description:
+          type: string
+        fixedPrice:
+          type: number
+        currency:
+          enum:
+            - USD
+            - ETH
+            - BTC
+            - USDC
+          default: USD
+          type: string
+        collectionState:
+          enum:
+            - CREATED
+            - ON_SALE
+            - SOLD
+          default: CREATED
+          type: string
+        collections:
+          items:
+            $ref: '#/components/schemas/CollectionMedia'
+          type: array
+      type: object
+    CollectionMedia:
+      properties:
+        collectionMediaId:
+          type: integer
+        media:
+          type: string
+        description:
+          type: string
+        numOfMerch:
+          type: integer
+        collection:
+          $ref: '#/components/schemas/Collection'
+      type: object
+    Post:
+      properties:
+        postId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        published:
+          type: boolean
+        user:
+          $ref: '#/components/schemas/User'
       type: object
