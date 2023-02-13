@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-import Badge from "../components/Badge";
-import Button from "../components/Button";
-import CommunityGrid from "../components/CommunityGrid";
-import Modal from "../components/Modal";
-import TabGroupBordered from "../components/TabGroupBordered";
-import { communities } from "../utils/dummyData";
+import Badge from "../../components/Badge";
+import Button from "../../components/Button";
+import CommunityGrid from "../../components/CommunityGrid";
+import Modal from "../../components/Modal";
+import TabGroupBordered from "../../components/TabGroupBordered";
+import { communities } from "../../utils/dummyData";
 
 const CommunitiesPage = () => {
   const labels = [

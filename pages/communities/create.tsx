@@ -1,16 +1,20 @@
+import { useRouter } from "next/router";
 import { Controller, useForm } from "react-hook-form";
+import { FaChevronLeft } from "react-icons/fa";
 import AvatarInput from "../../components/AvatarInput";
 import Badge from "../../components/Badge";
 import BannerInput from "../../components/BannerInput";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import TextArea from "../../components/TextArea";
+import { Community } from "../../utils/dummyData";
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+type CreateCommunityPageProps = {
+  community: Community;
+};
 
-const CreateCommunityPage = () => {
+const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
+  const router = useRouter();
   const labels = [
     "NFT",
     "Lifestyle",
@@ -24,12 +28,12 @@ const CreateCommunityPage = () => {
   ];
   const { handleSubmit, setValue, control, watch } = useForm({
     defaultValues: {
-      name: "",
-      description: "",
-      bannerPic: null as unknown as File,
+      name: community ? community.name : "",
+      description: community ? community.description : "",
+      bannerPic: null as unknown as File, // to check with BE on file format
       profilePic: null as unknown as File,
-      maxMember: "" as unknown as number,
-      tags: [] as string[],
+      maxMember: community ? community.maxMember : ("" as unknown as number),
+      tags: community ? community.tags : ([] as string[]),
     },
   });
   const [bannerPic, profilePic, tags] = watch([
@@ -39,10 +43,34 @@ const CreateCommunityPage = () => {
   ]);
 
   return (
-    <form onSubmit={handleSubmit((data) => console.log(data))}>
+    <form
+      onSubmit={handleSubmit((data) => {
+        console.log(data);
+        router.push("/communities/1");
+      })}
+    >
       <main className="py-12 px-4 sm:px-12">
-        <h2 className="text-4xl font-bold">Community</h2>
-        <h3 className="mt-4 mb-8">Set up a new community</h3>
+        <div className="mb-8 flex items-center gap-4">
+          <Button
+            variant="outlined"
+            size="md"
+            className="border-0"
+            onClick={() => history.back()}
+          >
+            <FaChevronLeft />
+          </Button>
+          <div>
+            <h2 className="text-4xl font-bold">
+              {community ? "Edit " : ""}Community
+            </h2>
+            <h3 className="mt-4">
+              {community
+                ? "Update your community details"
+                : "Set up a new community"}
+            </h3>
+          </div>
+        </div>
+
         <BannerInput
           bannerPic={bannerPic}
           onChange={(e) => {
@@ -190,8 +218,7 @@ const CreateCommunityPage = () => {
 
             <div className="mt-8">
               <Button variant="solid" size="md">
-                <input type="submit" className="hidden" />
-                Submit
+                {community ? "Save Changes" : "Submit"}
               </Button>
             </div>
           </div>
