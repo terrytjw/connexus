@@ -27,10 +27,10 @@ const prisma = new PrismaClient();
  *   put:
  *     description: Updates a single Channel object
  *     parameters:
- *       - in: object
- *         name: Channel
+ *       - in: path
+ *         name: channelid
  *         required: true
- *         description: Channel object to update
+ *         description: String ID of the Channel to retrieve.
  *         application/json:
  *          schema:
  *            $ref: "#/components/schemas/Channel"
