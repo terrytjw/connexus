@@ -193,20 +193,6 @@ enum PromotionType {
   UNLIMITED
 }
 
-model User {
-  userId    Int    @id @default(autoincrement())
-  email String @unique
-  name  String
-  username String @unique 
-  walletAddress String @unique 
-  profilePic  String 
-  bannerPic String 
-  displayName  String 
-  notificationBySMS Boolean 
-  notificationByEmail  Boolean 
-  twitterURL  String
-  posts Post[]
-}
 
 model Collection{
   collectionId Int    @id @default(autoincrement()) 
@@ -237,13 +223,4 @@ model CollectionMedia{
   numOfMerch Int
   collection Collection @relation(fields: [collectionId], references:[collectionId], onDelete: Cascade)
   collectionId Int
-}
-
-model Post {
-  postId        Int     @id @default(autoincrement())
-  title     String
-  content   String
-  published Boolean
-  user      User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
-  userId    Int
 }
