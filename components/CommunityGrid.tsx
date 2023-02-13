@@ -1,3 +1,4 @@
+import Link from "next/link";
 import React from "react";
 import { FaUserFriends } from "react-icons/fa";
 import Button from "./Button";
@@ -11,9 +12,9 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {communities.map((community) => (
-        <a
+        <Link
           key={community.communityId}
-          href={`communities/${community.communityId}`}
+          href={`/communities/${community.communityId}`}
           className="group rounded-lg p-2 text-sm hover:bg-gray-200"
         >
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
@@ -53,7 +54,7 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
             />
             <h3 className="font-medium text-gray-900">{community.name}</h3>
           </div>
-        </a>
+        </Link>
       ))}
     </div>
   );

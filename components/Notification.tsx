@@ -33,7 +33,7 @@ const Notification = ({
           {userId && userName ? (
             <>
               <CustomLink
-                href={`/users/profile/${userId}`}
+                href={`/user/profile/${userId}`}
                 className="font-bold"
               >
                 {userName}

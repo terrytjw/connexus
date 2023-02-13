@@ -15,7 +15,7 @@ const Comment = ({ comment }: CommentProps) => {
           alt="Current user profile pic"
         />
         <CustomLink
-          href={`/users/profile/${comment.commentor.userId}`}
+          href={`/user/profile/${comment.commentor.userId}`}
           className="text-gray-700"
         >
           {comment.commentor.displayName}
