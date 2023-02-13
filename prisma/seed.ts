@@ -9,13 +9,6 @@ import {
 
 const prisma = new PrismaClient();
 
-async function main() {
-  await generateEvent();
-  await generateUser(); 
-  await generateCollection(); 
-  await generateCommunity();
-} from "@prisma/client";
-
 
 async function generateCommunity() {
   await prisma.community.create({
