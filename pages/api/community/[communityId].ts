@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Community"
- *   put:
+ *   post:
  *     description: Updates a single Community object
  *     parameters:
  *       - in: path
@@ -76,15 +76,15 @@ export default async function handler(
     case "GET":
       await handleGET(communityId);
       break;
-    case "PUT":
+    case "POST":
       const community = JSON.parse(JSON.stringify(req.body)) as Community;
-      await handlePUT(communityId, community);
+      await handlePOST(communityId, community);
       break;
     case "DELETE":
       await handleDELETE(communityId);
       break;
     default:
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
@@ -104,7 +104,7 @@ export default async function handler(
     }
   }
 
-  async function handlePUT(communityId: number, community: Community) {
+  async function handlePOST(communityId: number, community: Community) {
     try {
       const response = await prisma.community.update({
         where: {
