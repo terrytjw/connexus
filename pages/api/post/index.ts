@@ -17,7 +17,7 @@ const prisma = new PrismaClient();
  *            schema:
  *              $ref: "#/components/schemas/Post"
  *   post:
- *     description: Create a Post object
+ *     description: Create a Post object. Creator's userId and channel's channelId are required
  *     requestBody:
  *       name: Post
  *       required: true
@@ -67,9 +67,7 @@ export default async function handler(
   async function handlePOST(post: Post) {
     try {
       const response = await prisma.post.create({
-        data: { 
-          ...post
-        }
+        data: { ...post }
       });
       res.status(200).json([response]);
     } catch (error) {
