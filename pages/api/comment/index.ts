@@ -18,51 +18,16 @@ const prisma = new PrismaClient();
  *              $ref: "#/components/schemas/Comment"
  *   post:
  *     description: Create a Comment object
- *     parameters:
- *       - in: object
- *         name: Comment
- *         required: true
- *         description: Comment object to create
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Comment"
+ *     requestBody:
+ *       name: Comment
+ *       required: true
+ *       description: Comment object to create
+ *       application/json:
+ *       schema:
+ *         $ref: "#/components/schemas/Comment"
  *     responses:
  *       200:
  *         description: The created Comment object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Comment"
- *   put:
- *     description: Update a Comment object
- *     parameters:
- *       - in: object
- *         name: Comment
- *         required: true
- *         description: Comment object to update
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Comment"
- *     responses:
- *       200:
- *         description: The updated Comment object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Comment"
- *   delete:
- *     description: Delete a Comment object
- *     parameters:
- *       - in: object
- *         name: Comment
- *         required: true
- *         description: Comment object to delete
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Comment"
- *     responses:
- *       200:
- *         description: The deleted Comment object
  *         content:
  *           application/json:
  *             schema:

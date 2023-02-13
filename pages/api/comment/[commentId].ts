@@ -27,13 +27,20 @@ const prisma = new PrismaClient();
  *   put:
  *     description: Updates a single Comment object
  *     parameters:
- *       - in: object
- *         name: Comment
+ *       - in: path
+ *         name: commentId
  *         required: true
- *         description: Comment object to update
+ *         description: String ID of comment to update
  *         application/json:
  *          schema:
  *            $ref: "#/components/schemas/Comment"
+ *     requestBody:
+ *       name: Comment
+ *       required: true
+ *       description: Comment object to create
+ *       application/json:
+ *       schema:
+ *         $ref: "#/components/schemas/Comment"
  *     responses:
  *       200:
  *         description: A single Comment object
