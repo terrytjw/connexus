@@ -32,7 +32,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
       description: community ? community.description : "",
       bannerPic: null as unknown as File, // to check with BE on file format
       profilePic: null as unknown as File,
-      maxMember: community ? community.maxMember : ("" as unknown as number),
+      maxMembers: community ? community.maxMembers : ("" as unknown as number),
       tags: community ? community.tags : ([] as string[]),
     },
   });
@@ -193,7 +193,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
 
             <Controller
               control={control}
-              name="maxMember"
+              name="maxMembers"
               rules={{
                 required: "Maximum Number of Members is required",
                 validate: (value) =>

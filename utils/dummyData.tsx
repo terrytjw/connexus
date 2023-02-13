@@ -95,6 +95,7 @@ export type Community = {
   bannerPic: string;
   profilePic: string;
   tags: string[];
+  maxMembers: number;
   numMembers: number;
 };
 
@@ -221,6 +222,7 @@ export const community = {
     "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
   profilePic: "/images/bear.jpg",
   tags: ["NFT", "Entertainment", "Fitness"],
+  maxMembers: 2,
   numMembers: 2,
   channels: [
     {
@@ -243,6 +245,7 @@ export const communities = [
       "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT", "Entertainment", "Fitness"],
+    maxMembers: 2,
     numMembers: 2,
   },
   {
@@ -253,6 +256,7 @@ export const communities = [
       "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
+    maxMembers: 2,
     numMembers: 1000,
   },
   {
@@ -263,6 +267,7 @@ export const communities = [
       "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
+    maxMembers: 2,
     numMembers: 8,
   },
   {
@@ -273,6 +278,7 @@ export const communities = [
       "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
+    maxMembers: 2,
     numMembers: 10000,
   },
   {
@@ -283,6 +289,7 @@ export const communities = [
       "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
+    maxMembers: 2,
     numMembers: 200,
   },
 ];
