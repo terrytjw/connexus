@@ -80,11 +80,10 @@ model Channel {
 model UsersOnChannels {
   user        User    @relation(fields: [userId], references: [userId])
   userId      Int
-  channel     Channel @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
+  channel     Channel @relation(fields: [channelId], references: [channelId])
+  channelId   Int
 
-  @@id([userId, communityId, name])
+  @@id([userId, channelId])
 }
 
 model Comment {
