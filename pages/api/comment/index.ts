@@ -80,7 +80,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const { comment, userId, postId } : { comment: Comment, userId: number, postId: number } = JSON.parse(JSON.stringify(body))
+      const comment = JSON.parse(JSON.stringify(body)) as Comment
       await handlePOST(comment, userId, postId);
       break;
     default:
@@ -105,16 +105,6 @@ export default async function handler(
       const response = await prisma.comment.create({
         data: { 
           ...comment,
-          commenter: {
-            connect: {
-              userId: userId
-            }
-          },
-          post: {
-            connect: {
-              postId: postId
-            }
-          } 
         }
       });
       res.status(200).json([response]);
