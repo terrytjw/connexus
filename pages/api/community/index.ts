@@ -19,13 +19,18 @@ const prisma = new PrismaClient();
  *   post:
  *     description: Create a Community object
  *     parameters:
- *       - in: object
- *         name: Community
- *         required: true
- *         description: Community object to create
+ *     requestBody:
+ *       description: Community object to create.
+ *       required: true
+ *       content:
  *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Community"
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Community:
+ *                 $ref: "#/components/schemas/Community"
+ *               userId:
+ *                 type: number
  *     responses:
  *       200:
  *         description: The created Community object

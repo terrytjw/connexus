@@ -33,13 +33,13 @@ const prisma = new PrismaClient();
  *         description: String ID of the Community to update.
  *         schema:
  *           type: string
- *       - in: object
- *         name: Community
- *         required: true
- *         description: Community object to update
+ *     requestBody:
+ *       description: Community object to update.
+ *       required: true
+ *       content:
  *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Community"
+ *           schema:
+ *             $ref: '#/components/schemas/Community'
  *     responses:
  *       200:
  *         description: A single Community object
