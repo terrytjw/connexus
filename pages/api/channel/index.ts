@@ -80,8 +80,8 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const { channel, communityId } : { channel: Channel, communityId: number } = JSON.parse(JSON.stringify(body));
-      await handlePOST(channel, communityId);
+      const channel = JSON.parse(JSON.stringify(body)) as Channel
+      await handlePOST(channel);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -98,16 +98,11 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(channel: Channel, communityId: number) {
+  async function handlePOST(channel: Channel) {
     try {
       const response = await prisma.channel.create({
         data: { 
-          ...channel,
-          community: {
-            connect: {
-              communityId: communityId
-            }
-          } 
+          ...channel
         }
       });
       res.status(200).json([response]);
