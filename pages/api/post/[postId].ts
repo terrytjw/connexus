@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Post"
- *   put:
+ *   post:
  *     description: Updates a single Post object
  *     parameters:
  *       - in: path
@@ -77,15 +77,15 @@ export default async function handler(
     case "GET":
       await handleGET(postId);
       break;
-    case "PUT":
+    case "POST":
       const post = JSON.parse(JSON.stringify(req.body)) as Post;
-      await handlePUT(postId, post);
+      await handlePOST(postId, post);
       break;
     case "DELETE":
       await handleDELETE(postId);
       break;
     default:
-      res.setHeader("Allow", ["GET", "PUT", "DELETE"]);
+      res.setHeader("Allow", ["GET", "POST", "DELETE"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
@@ -105,7 +105,7 @@ export default async function handler(
     }
   }
 
-  async function handlePUT(postId: number, post: Post) {
+  async function handlePOST(postId: number, post: Post) {
     try {
       const response = await prisma.post.update({
         where: {
