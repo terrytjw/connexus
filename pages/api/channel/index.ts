@@ -17,7 +17,7 @@ const prisma = new PrismaClient();
  *            schema:
  *              $ref: "#/components/schemas/Channel"
  *   post:
- *     description: Create a Channel object
+ *     description: Create a Channel object. communityId and userId of creator are required
  *     requestBody:
  *       name: Channel
  *       required: true
