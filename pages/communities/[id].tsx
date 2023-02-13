@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useState } from "react";
 import {
   FaSearch,
@@ -11,15 +12,19 @@ import Avatar from "../../components/Avatar";
 import Badge from "../../components/Badge";
 import Banner from "../../components/Banner";
 import Button from "../../components/Button";
+import CollectionGrid from "../../components/CollectionGrid";
 import CustomLink from "../../components/CustomLink";
 import InputGroup from "../../components/InputGroup";
 import Modal from "../../components/Modal";
 import Post from "../../components/Post";
 import PostInput from "../../components/PostInput";
 import TabGroupBordered from "../../components/TabGroupBordered";
-import { community, posts } from "../../utils/dummyData";
+import { community, posts, products } from "../../utils/dummyData";
 
 const CommunityPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
   const [isCreator, setIsCreator] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [communityDetails, setCommunityDetails] = useState(community);
@@ -92,6 +97,7 @@ const CommunityPage = () => {
         >
           <FaSearch />
         </InputGroup>
+
         <div className="mt-2 flex flex-col items-center gap-2">
           <img src="/images/bear.jpg" className="h-20 w-20 rounded-lg" />
           <p className="text-sm text-gray-500">No member found!</p>
@@ -103,7 +109,7 @@ const CommunityPage = () => {
             src="/images/bear.jpg"
             alt="Member profile pic"
           />
-          <CustomLink href={`/users/profile/1`} className="text-gray-700">
+          <CustomLink href={`/user/profile/1`} className="text-gray-700">
             Member name
           </CustomLink>
         </div>
@@ -137,7 +143,11 @@ const CommunityPage = () => {
 
               <div className="mt-6 flex gap-2">
                 {isCreator ? (
-                  <Button variant="solid" size="sm">
+                  <Button
+                    variant="solid"
+                    size="sm"
+                    href={`/communities/edit/${id}`}
+                  >
                     Edit <span className="hidden sm:contents">Community</span>
                   </Button>
                 ) : (
@@ -218,7 +228,10 @@ const CommunityPage = () => {
               setActiveTab(index);
             }}
           >
-            {activeTab == 0 && <TabContent />}
+            {activeTab != communityDetails.channels.length && <TabContent />}
+            {!isCreator && activeTab == communityDetails.channels.length && (
+              <CollectionGrid data={products} />
+            )}
           </TabGroupBordered>
         </div>
       </main>
