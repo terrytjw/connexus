@@ -16,7 +16,6 @@ async function main() {
   await generateCommunity();
 } from "@prisma/client";
 
-const prisma = new PrismaClient();
 
 async function generateCommunity() {
   await prisma.community.create({
