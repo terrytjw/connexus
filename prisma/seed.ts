@@ -4,35 +4,11 @@ import {
   DurationType,
   PrivacyType,
   PromotionType,
-  VisibilityType
+  VisibilityType,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-async function generateUser() {
-  await prisma.user.createMany({
-    data : [
-      {
-        walletAddress: "Address",
-        phoneNumber: "123",
-        displayName: "alice",
-        profilePic: "",
-        bannerPic: "",
-        username: "alice123",
-        email: "alice@prisma.io",
-      },
-      {
-        walletAddress: "Address",
-        phoneNumber: "456",
-        displayName: "bob",
-        profilePic: "",
-        bannerPic: "",
-        username: "bob456",
-        email: "bob@prisma.io"
-      }
-    ]
-  })
-}
 
 async function generateCommunity() {
   await prisma.community.create({
@@ -45,6 +21,11 @@ async function generateCommunity() {
       creator: {
         connect: {
           userId: 1
+        }
+      }, 
+      members: {
+        connect: {
+          userId : 2
         }
       }
     }
@@ -61,9 +42,14 @@ async function generateCommunity() {
         connect: {
           userId: 2
         }
-      }
+      }, 
+      members: {
+        connect: {
+          userId : 1
+        }
     }
-  })
+  }
+})
 }
 
 async function generateChannel() {
@@ -125,7 +111,7 @@ async function generatePost() {
       },
       creator: {
         connect: {
-          userId: 2
+          userId: 1
         }
       }
     }
@@ -150,6 +136,70 @@ async function generateComment() {
   })
 }
 
+async function generateUser(){
+
+  const alice = await prisma.user.upsert({
+    where: { email: "alice@prisma.io" },
+    update: {},
+    create: {
+      email: "alice@prisma.io",
+      username: "Alice", 
+      walletAddress : "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName : "Alice", 
+      notificationBySMS : false, 
+      notificationByEmail : false,
+      profilePic: "https://aliceinwonderland.fandom.com/wiki/Alice",
+      bannerPic: "https://aliceinwonderland.fandom.com/wiki/Alice",
+      phoneNumber: "8399712",
+      
+    },
+  });
+
+  const bob = await prisma.user.upsert({
+    where: { email: "bob@prisma.io" },
+    update: {},
+    create: {
+      email: "bob@prisma.io",
+      username: "Bob", 
+      walletAddress : "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName : "Bob", 
+      notificationBySMS : false, 
+      notificationByEmail : false,
+      profilePic: "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+      bannerPic: "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+      phoneNumber: "8399712",
+      
+    },
+  });
+}
+
+async function generateCollection(){
+
+  const collection1 = await prisma.collection.upsert({ 
+    where: {description : "very cool collection",},
+    update: {}, 
+    create:{
+      description : "very cool collection",
+      fixedPrice : 20.0,
+      currency : "USD", 
+      collectionState : "CREATED", 
+      collections:{
+        create: {
+          media: "....com" , 
+          description: "cool items", 
+          numOfMerch : 200, 
+        }
+      },
+      creator:{
+        connect:{
+          userId:1
+        }
+      }
+
+    }
+
+  });
+}
 async function generateEvent() {
   await prisma.event.create({
     data: {
@@ -313,6 +363,7 @@ async function main() {
   await generatePost();
   await generateComment();
   await generateEvent();
+  await generateCollection();
 }
 main()
   .then(async () => {
