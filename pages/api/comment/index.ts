@@ -17,7 +17,7 @@ const prisma = new PrismaClient();
  *            schema:
  *              $ref: "#/components/schemas/Comment"
  *   post:
- *     description: Create a Comment object
+ *     description: Create a Comment object. postId and userId are required.
  *     requestBody:
  *       name: Comment
  *       required: true
@@ -46,7 +46,7 @@ export default async function handler(
       break;
     case "POST":
       const comment = JSON.parse(JSON.stringify(body)) as Comment
-      await handlePOST(comment, userId, postId);
+      await handlePOST(comment);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -65,7 +65,7 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(comment: Comment, userId: number, postId: number) {
+  async function handlePOST(comment: Comment) {
     try {
       const response = await prisma.comment.create({
         data: { 
