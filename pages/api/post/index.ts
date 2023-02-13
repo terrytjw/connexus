@@ -18,51 +18,16 @@ const prisma = new PrismaClient();
  *              $ref: "#/components/schemas/Post"
  *   post:
  *     description: Create a Post object
- *     parameters:
- *       - in: object
- *         name: Post
- *         required: true
- *         description: Post object to create
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Post"
+ *     requestBody:
+ *       name: Post
+ *       required: true
+ *       description: Post object to create
+ *       application/json:
+ *         schema:
+ *           $ref: "#/components/schemas/Post"
  *     responses:
  *       200:
  *         description: The created Post object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Post"
- *   put:
- *     description: Update a Post object
- *     parameters:
- *       - in: object
- *         name: Post
- *         required: true
- *         description: Post object to update
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Post"
- *     responses:
- *       200:
- *         description: The updated Post object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/Post"
- *   delete:
- *     description: Delete a Post object
- *     parameters:
- *       - in: object
- *         name: Post
- *         required: true
- *         description: Post object to delete
- *         application/json:
- *          schema:
- *            $ref: "#/components/schemas/Post"
- *     responses:
- *       200:
- *         description: The deleted Post object
  *         content:
  *           application/json:
  *             schema:

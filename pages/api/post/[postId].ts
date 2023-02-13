@@ -27,13 +27,20 @@ const prisma = new PrismaClient();
  *   put:
  *     description: Updates a single Post object
  *     parameters:
- *       - in: object
- *         name: Post
+ *       - in: path
+ *         name: postId
  *         required: true
- *         description: Post object to update
+ *         description: String ID of the Post to update.
  *         application/json:
  *          schema:
  *            $ref: "#/components/schemas/Post"
+ *     requestBody:
+ *       name: Post
+ *       required: true
+ *       description: Post object to create
+ *       application/json:
+ *         schema:
+ *           $ref: "#/components/schemas/Post" 
  *     responses:
  *       200:
  *         description: A single Post object
