@@ -3,7 +3,7 @@ import {
   CategoryType,
   DurationType,
   PrivacyType,
-  PromotionType
+  PromotionType,
   VisibilityType,
 } from "@prisma/client";
 
