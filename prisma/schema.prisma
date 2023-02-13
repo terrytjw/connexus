@@ -22,9 +22,10 @@ model User {
   bannerPic           String
   displayName         String
   username            String
-  email               String
+  email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
   createdCommunities  Community[]       @relation(name: "createdCommunities")
   joinedCommunities   Community[]       @relation(name: "joinedCommunities")
   joinedChannels      UsersOnChannels[]
@@ -95,7 +96,7 @@ model Comment {
   commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
   userId          Int
   likes           User[]    @relation(name: "likedComments")
-  originalComment Comment?   @relation(name: "replies", fields: [commentId], references: [commentId])
+  originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
   replies         Comment[] @relation(name: "replies")
 }
 
@@ -191,4 +192,37 @@ enum ChannelType {
 enum PromotionType {
   LIMITED
   UNLIMITED
+}
+
+model Collection {
+  collectionId    Int               @id @default(autoincrement())
+  description     String            @unique
+  fixedPrice      Float
+  currency        Currency          @default(USD)
+  collectionState CollectionState   @default(CREATED)
+  collections     CollectionMedia[]
+  creator         User              @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId       Int
+}
+
+enum CollectionState {
+  CREATED
+  ON_SALE
+  SOLD
+}
+
+enum Currency {
+  USD
+  ETH
+  BTC
+  USDC
+}
+
+model CollectionMedia {
+  collectionMediaId Int        @id @default(autoincrement())
+  media             String
+  description       String
+  numOfMerch        Int
+  collection        Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  collectionId      Int
 }
