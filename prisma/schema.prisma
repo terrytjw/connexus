@@ -43,9 +43,8 @@ model Post {
   isPinned    Boolean   @default(false)
   creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
   creatorId   Int
-  channel     Channel   @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
+  channel     Channel   @relation(fields: [channelId], references: [channelId])
+  channelId   Int
   likes       User[]    @relation(name: "likedPosts")
   comments    Comment[]
 }
