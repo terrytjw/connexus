@@ -42,8 +42,8 @@ model Post {
   date        DateTime  @default(now())
   media       String[]
   isPinned    Boolean   @default(false)
-  creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
-  creatorId   Int
+  creator     User      @relation(name: "creator", fields: [userId], references: [userId])
+  userId      Int
   channel     Channel   @relation(fields: [communityId, name], references: [communityId, name])
   communityId Int
   name        String
@@ -59,8 +59,8 @@ model Community {
   tags          String[]
   maxMembers    Int           @default(100)
   communityType CommunityType @default(NFT)
-  creator       User          @relation(name: "createdCommunities", fields: [creatorId], references: [userId])
-  creatorId     Int
+  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId        Int
   members       User[]        @relation(name: "joinedCommunities")
   channels      Channel[]
 }
