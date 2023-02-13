@@ -24,7 +24,7 @@ const prisma = new PrismaClient();
  *           application/json:
  *             schema:
  *               $ref: "#/components/schemas/Channel"
- *   put:
+ *   post:
  *     description: Updates a single Channel object
  *     parameters:
  *       - in: path
@@ -77,9 +77,9 @@ export default async function handler(
     case "GET":
       await handleGET(channelId);
       break;
-    case "PUT":
+    case "POST":
       const channel = JSON.parse(JSON.stringify(req.body)) as Channel;
-      await handlePUT(channelId, channel);
+      await handlePOST(channelId, channel);
       break;
     case "DELETE":
       await handleDELETE(channelId);
@@ -105,7 +105,7 @@ export default async function handler(
     }
   }
 
-  async function handlePUT(channelId: number, channel: Channel) {
+  async function handlePOST(channelId: number, channel: Channel) {
     try {
       const response = await prisma.channel.update({
         where: {
