@@ -42,7 +42,7 @@ const BannerInput = ({ bannerPic, onChange, onClick }: BannerInputProps) => {
           <Button
             variant="solid"
             size="md"
-            className="!rounded-full"
+            className="z-10 !rounded-full"
             onClick={onClick}
           >
             <FaTimes />

@@ -94,7 +94,7 @@ const CollectionItemInput = ({
             onChange={(e) => {
               updateItem({ ...item, quantity: e.target.valueAsNumber });
             }}
-            className="w-full appearance-none bg-gray-200 text-center outline-none"
+            className="w-full appearance-none rounded-none bg-gray-200 text-center outline-none"
           ></input>
           <button
             className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
