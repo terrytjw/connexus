@@ -4,6 +4,7 @@ import Layout from "../components/Layout";
 import { useState } from "react";
 import Loading from "../components/Loading";
 import { Router } from "next/router";
+import { SessionProvider } from "next-auth/react";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [loading, setLoading] = useState(false);
@@ -24,10 +25,13 @@ function MyApp({ Component, pageProps }: AppProps) {
     return <Loading />;
   }
 
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <SessionProvider session={session}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </SessionProvider>
   );
 }
 

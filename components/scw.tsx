@@ -5,6 +5,7 @@ import { ChainId } from "@biconomy/core-types";
 import SocialLogin from "@biconomy/web3-auth";
 import SmartAccount from "@biconomy/smart-account";
 import Button from "./Button";
+import { signIn } from "next-auth/react";
 
 const Home = () => {
   const [provider, setProvider] = useState<any>();
@@ -35,6 +36,8 @@ const Home = () => {
       setProvider(web3Provider);
       const accounts = await web3Provider.listAccounts();
       setAccount(accounts[0]);
+      signIn("credentials", { redirect: false, walletAddress: accounts[0] });
+
       return;
     }
 
