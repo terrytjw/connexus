@@ -15,6 +15,11 @@ const prisma = new PrismaClient();
  *         description: The keyword to search communities by. Optional parameter, will retrieve all communities if no parameters are passed
  *         schema:
  *           type: string
+ *       - in: query
+ *         name: cursor
+ *         description: The communityId of the last community in the previous page. Pass 0 or don't pass to retrieve first X results
+ *         schema:
+ *           type: number
  *     responses:
  *       200:
  *         description: A list of Community objects
@@ -44,14 +49,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Community[] | ErrorResponse>
 ) {
-  const { method, body, query: { keyword } } = req;
+  const { method, body, query } = req;
+  const keyword = query.keyword as string;
+  const cursor = parseInt(query.cursor as string);
 
   switch (method) {
     case "GET":
       if (keyword) {
-        await handleGETWithQuery(keyword as string);
+        await handleGETWithQuery(keyword, cursor);
       } else {
-        await handleGET();
+        await handleGET(cursor);
       }
       break;
     case "POST":
@@ -63,19 +70,33 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(cursor: number) {
     try {
-      const communities = await prisma.community.findMany();
+      const communities = await prisma.community.findMany({
+        take: 10,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { communityId : cursor } : undefined,
+        orderBy: {
+          communityId: 'asc'
+        }
+      });
       res.status(200).json(communities);
     } catch (error) {
+      console.log(error)
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
 
-  async function handleGETWithQuery(keyword: string) {
+  async function handleGETWithQuery(keyword: string, cursor: number) {
     try {
       const communities = await prisma.community.findMany({
+        take: 10,
+        skip:  cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { communityId : cursor } : undefined,
+        orderBy: {
+          communityId: 'asc'
+        },
         where: {
           OR: [
             {
