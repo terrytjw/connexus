@@ -16,7 +16,7 @@ async function generateCommunity() {
       name: "AliceCommunity",
       description: "Alice's Community",
       profilePic: "",
-      tags: ["A", "B"],
+      tags: ["Lifestyle", "Entertainment"],
       maxMembers: 10,
       creator: {
         connect: {
@@ -36,7 +36,7 @@ async function generateCommunity() {
       name: "BobCommunity",
       description: "Bob's Community",
       profilePic: "",
-      tags: ["A", "B"],
+      tags: ["Lifestyle"],
       maxMembers: 10,
       creator: {
         connect: {
