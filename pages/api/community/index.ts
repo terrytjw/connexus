@@ -9,6 +9,12 @@ const prisma = new PrismaClient();
  * /api/community:
  *   get:
  *     description: Returns a list of Community objects
+ *     parameters:
+ *       - in: query
+ *         name: keyword
+ *         description: The keyword to search communities by. Optional parameter, will retrieve all communities if no parameters are passed
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: A list of Community objects
@@ -18,7 +24,6 @@ const prisma = new PrismaClient();
  *              $ref: "#/components/schemas/Community"
  *   post:
  *     description: Create a Community object
- *     parameters:
  *     requestBody:
  *       description: Community object to create. Creator's userId is required
  *       required: true
@@ -75,7 +80,8 @@ export default async function handler(
           OR: [
             {
               name: {
-                contains: keyword
+                contains: keyword,
+                mode: 'insensitive'
               }
             },
             {
@@ -83,18 +89,24 @@ export default async function handler(
                 is: {
                   OR: [
                     {
-                      displayName: keyword
+                      displayName: {
+                        contains: keyword,
+                        mode: 'insensitive'
+                      }
                     },
                     {
-                      username: keyword
+                      username: {
+                        contains: keyword,
+                        mode: 'insensitive'
+                      }
                     }
-                  ]
+                  ],
                 }
               }
             },
             {   
               tags: {
-                has: keyword
+                has: keyword.toUpperCase()
               }
             }
           ]
@@ -102,6 +114,7 @@ export default async function handler(
       })
       res.status(200).json(communities);
     } catch (error) {
+      console.log(error)
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
@@ -111,7 +124,10 @@ export default async function handler(
     try {
       const response = await prisma.community.create({
         data: { 
-          ...community
+          ...community,
+          // for searching tags
+          tags: community.tags
+            .map(s => s.toUpperCase())
          },
       });
       res.status(200).json([response]);
