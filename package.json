@@ -8,12 +8,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "openapi:yaml": "typeconv -f jsc -t oapi --oapi-format yaml --output-extension 'swagger.yaml' --output-directory 'pages/api' 'prisma/generated/json-schema/json-schema.json'",
+    "openapi:yaml": "typeconv -f jsc -t oapi --oapi-format yaml --output-extension swagger.yaml --output-directory pages/api prisma/generated/json-schema/json-schema.json",
     "prisma:push": "yarn prisma db push --force-reset",
     "prisma:seed": "yarn prisma db seed",
     "prisma:generate": "yarn prisma generate",
     "prisma:db": "yarn prisma studio",
-    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:generate && yarn openapi:yaml && yarn prisma:db",
+    "db:init": "yarn prisma:push && yarn prisma:seed && yarn prisma:generate && yarn prisma:db && yarn openapi:yaml",
     "postinstall": "prisma generate"
   },
   "dependencies": {
