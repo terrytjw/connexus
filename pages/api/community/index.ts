@@ -39,11 +39,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Community[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query: { keyword } } = req;
 
   switch (method) {
     case "GET":
-      await handleGET();
+      if (keyword) {
+        await handleGETWithQuery(keyword as string);
+      } else {
+        await handleGET();
+      }
       break;
     case "POST":
       const community = JSON.parse(JSON.stringify(body)) as Community;
@@ -57,6 +61,45 @@ export default async function handler(
   async function handleGET() {
     try {
       const communities = await prisma.community.findMany();
+      res.status(200).json(communities);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
+
+  async function handleGETWithQuery(keyword: string) {
+    try {
+      const communities = await prisma.community.findMany({
+        where: {
+          OR: [
+            {
+              name: {
+                contains: keyword
+              }
+            },
+            {
+              creator: {
+                is: {
+                  OR: [
+                    {
+                      displayName: keyword
+                    },
+                    {
+                      username: keyword
+                    }
+                  ]
+                }
+              }
+            },
+            {   
+              tags: {
+                has: keyword
+              }
+            }
+          ]
+        }
+      })
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
