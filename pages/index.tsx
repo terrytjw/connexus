@@ -13,6 +13,9 @@ type Item = {
   description: string;
   quantity: number;
 };
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import "@biconomy/web3-auth/dist/src/style.css";
 
 const HomePage: NextPage = () => {
   const [selected, setSelected] = useState(false);
@@ -20,6 +23,12 @@ const HomePage: NextPage = () => {
     { image: "", description: "", quantity: 1 },
   ]);
 
+  const SocialLoginDynamic = dynamic(
+    () => import("../components/scw").then((res) => res.default),
+    {
+      ssr: false,
+    }
+  );
   return (
     <div>
       <Head>
@@ -30,6 +39,13 @@ const HomePage: NextPage = () => {
 
       <main className="flex flex-col items-center justify-center tracking-widest">
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
+        <div>
+          <Suspense fallback={<div>Loading...</div>}>
+            <SocialLoginDynamic />
+          </Suspense>
+        </div>
+        <div className="divider" />
+
         <h2 className="mt-10 mb-6 text-xl font-semibold">
           Components showcase
         </h2>
