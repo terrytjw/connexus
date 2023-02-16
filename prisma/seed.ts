@@ -106,7 +106,7 @@ async function generatePost() {
       isPinned: false,
       channel: {
         connect: {
-          channelId: 2
+          channelId: 1
         }
       },
       creator: {
