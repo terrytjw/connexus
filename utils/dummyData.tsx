@@ -124,6 +124,7 @@ export type Comment = {
     displayName: string;
     profilePic: string;
   };
+  likes: number;
   replies: Comment[];
 };
 
@@ -152,9 +153,10 @@ export const posts = [
         date: new Date(),
         commentor: {
           userId: "1",
-          displayName: "Creator",
+          displayName: "Creator 1",
           profilePic: "/images/bear.jpg",
         },
+        likes: 0,
         replies: [],
       },
     ],
@@ -183,9 +185,10 @@ export const posts = [
         date: new Date(),
         commentor: {
           userId: "1",
-          displayName: "Creator",
+          displayName: "Creator 2",
           profilePic: "/images/bear.jpg",
         },
+        likes: 1,
         replies: [],
       },
       {
@@ -194,9 +197,10 @@ export const posts = [
         date: new Date(),
         commentor: {
           userId: "1",
-          displayName: "Creator",
+          displayName: "Creator 3",
           profilePic: "/images/bear.jpg",
         },
+        likes: 2,
         replies: [
           {
             commentId: 4,
@@ -204,9 +208,11 @@ export const posts = [
             date: new Date(),
             commentor: {
               userId: "1",
-              displayName: "Creator",
+              displayName: "Creator 4",
               profilePic: "/images/bear.jpg",
             },
+            likes: 0,
+            replies: [],
           },
         ],
       },

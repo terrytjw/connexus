@@ -1,3 +1,5 @@
+import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
+import Button from "./Button";
 import CustomLink from "./CustomLink";
 import { Comment } from "../utils/dummyData";
 
@@ -7,27 +9,30 @@ type CommentProps = {
 
 const Comment = ({ comment }: CommentProps) => {
   return (
-    <div className="flex flex-col px-8 py-4">
-      <div className="flex w-full gap-4">
-        <img
-          className="h-12 w-12 rounded-full"
-          src={comment.commentor.profilePic}
-          alt="Current user profile pic"
-        />
-        <CustomLink
-          href={`/user/profile/${comment.commentor.userId}`}
-          className="text-gray-700"
-        >
-          {comment.commentor.displayName}
-        </CustomLink>
-      </div>
+    <div className="flex gap-4 px-8 py-4">
+      <img
+        className="h-12 w-12 rounded-full"
+        src={comment.commentor.profilePic}
+        alt="Current user profile pic"
+      />
+      <div className="flex-grow">
+        <div className="flex w-full flex-col gap-1">
+          <CustomLink
+            href={`/user/profile/${comment.commentor.userId}`}
+            className="text-gray-700"
+          >
+            {comment.commentor.displayName}
+          </CustomLink>
+          <p className="break-all text-sm">{comment.content}</p>
+        </div>
 
-      <div className="pl-16">
-        <p className=" text-sm">{comment.content}</p>
-
-        <div className="mt-4 flex items-center gap-4">
-          <button className="text-sm">Like</button>
-          <button className="text-sm">Reply</button>
+        <div className="mt-2 flex items-center gap-4">
+          {comment.likes > 0 ? (
+            <span className="text-sm">
+              {comment.likes} like{comment.likes != 1 ? "s" : null}
+            </span>
+          ) : null}
+          <button className="text-sm hover:underline">Reply</button>
           <span className="text-sm text-gray-500">
             {comment.date.toLocaleString("en-gb", {
               day: "numeric",
@@ -37,6 +42,20 @@ const Comment = ({ comment }: CommentProps) => {
           </span>
         </div>
       </div>
+      <Button
+        size="sm"
+        variant="outlined"
+        className="!btn-circle self-center border-0"
+      >
+        <FaRegHeart />
+      </Button>
+      <Button
+        size="sm"
+        variant="outlined"
+        className="!btn-circle self-center border-0"
+      >
+        <FaTrashAlt />
+      </Button>
     </div>
   );
 };
