@@ -47,6 +47,17 @@ const HomePage: NextPage = () => {
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
 
         <SocialLoginDynamic />
+        <div className="m-4 flex flex-col justify-center bg-white px-40 py-20">
+          <h2 className="text-2xl font-bold">Biconomy | Web3Auth login</h2>
+          <Button
+            variant="solid"
+            size="md"
+            className="mt-4"
+            onClick={() => router.push("/login")}
+          >
+            Login
+          </Button>
+        </div>
 
         <div className="divider" />
 

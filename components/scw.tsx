@@ -4,6 +4,7 @@ import { ethers } from "ethers";
 import { ChainId } from "@biconomy/core-types";
 import SocialLogin from "@biconomy/web3-auth";
 import SmartAccount from "@biconomy/smart-account";
+import Button from "./Button";
 
 const Home = () => {
   const [provider, setProvider] = useState<any>();
@@ -16,9 +17,14 @@ const Home = () => {
   );
   const [connectWeb3Loading, setConnectWeb3Loading] = useState(false);
 
+  // console.log("account -> ", account);
+  // console.log("smartAccount -> ", smartAccount);
+  // console.log("scwAddress -> ", scwAddress);
+  // console.log("socialLoginSDK -> ", socialLoginSDK);
+
   const connectWeb3 = useCallback(async () => {
     if (typeof window === "undefined") return;
-    console.log("socialLoginSDK", socialLoginSDK);
+    console.log("socialLoginSDK ->", socialLoginSDK);
 
     setConnectWeb3Loading(true);
 
@@ -49,6 +55,10 @@ const Home = () => {
 
     return socialLoginSDK;
   }, [socialLoginSDK]);
+
+  useEffect(() => {
+    connectWeb3();
+  }, []);
 
   // if wallet already connected close widget
   useEffect(() => {
@@ -115,6 +125,20 @@ const Home = () => {
         >
           {!account ? "Login" : "Logout"}
         </button>
+    <div className="mt-96 p-10">
+      <h1 className="py-4 text-center font-semibold">
+        Biconomy SDK | Next.js | Web3Auth
+      </h1>
+
+      <div className="flex justify-center">
+        <Button
+          variant="outlined"
+          size="md"
+          onClick={!account ? connectWeb3 : disconnectWeb3}
+        >
+          {!account ? "Login" : "Logout"}
+        </Button>
+      </div>
 
         {connectWeb3Loading && !socialLoginSDK && (
           <div className="bg-blue-300 p-8">connect web3 loading...</div>
@@ -138,6 +162,14 @@ const Home = () => {
           </div>
         )}
       </main>
+        <div className="p-2">
+          <h2 className="font-semibold">Smart Account Address:</h2>
+          {scwLoading && (
+            <h2 className="bg-red-300 p-2">Loading Smart Account...</h2>
+          )}
+          {scwAddress ? <p>{scwAddress}</p> : <p>- nil -</p>}
+        </div>
+      </section>
     </div>
   );
 };
