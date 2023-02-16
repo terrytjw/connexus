@@ -382,7 +382,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
         <div className="p-8">
-          <PostInput createPost={() => {}} />
+          <PostInput onSubmit={() => {}} />
         </div>
       </section>
 
