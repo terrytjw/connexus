@@ -92,10 +92,7 @@ async function generatePost() {
         },
         channel: {
           connect: {
-            communityId_name: {
-              communityId: 1,
-              name: "Home"
-            }
+            channelId: 1
           }
         },
     }
@@ -109,10 +106,7 @@ async function generatePost() {
       isPinned: false,
       channel: {
         connect: {
-          communityId_name: {
-            communityId: 2,
-            name: "Home"
-          }
+          channelId: 2
         }
       },
       creator: {
