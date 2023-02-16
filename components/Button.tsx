@@ -10,6 +10,7 @@ type ButtonProps = {
   href?: string;
   variant: "solid" | "outlined";
   size: "sm" | "md";
+  type?: "button" | "submit" | "reset";
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   children: React.ReactNode;
@@ -19,6 +20,7 @@ const Button = ({
   href,
   variant,
   size,
+  type,
   onClick,
   children,
   disabled,
@@ -54,6 +56,7 @@ const Button = ({
       )}
       onClick={onClick}
       disabled={disabled}
+      type={type}
     >
       {children}
     </button>
