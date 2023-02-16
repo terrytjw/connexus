@@ -1,13 +1,11 @@
-import {
-  FaEllipsisH,
-  FaRegComment,
-  FaRegHeart,
-  FaRegShareSquare,
-} from "react-icons/fa";
+import { useState } from "react";
+import { FaEllipsisH, FaRegComment, FaRegHeart, FaTimes } from "react-icons/fa";
 import Button from "./Button";
 import Carousel from "./Carousel";
 import Comment from "./Comment";
 import CustomLink from "./CustomLink";
+import Modal from "./Modal";
+import PostInput from "./PostInput";
 import { Post, Comment as CommentType } from "../utils/dummyData";
 
 type PostProps = {
@@ -15,9 +13,36 @@ type PostProps = {
 };
 
 const Post = ({ post }: PostProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="card border-2 border-gray-200 bg-white">
-      <div className="card-body gap-4">
+      <Modal
+        isOpen={isModalOpen}
+        setIsOpen={setIsModalOpen}
+        className="!max-w-3xl"
+      >
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-semibold">Edit Post</h3>
+          <Button
+            variant="outlined"
+            size="sm"
+            className="border-0"
+            onClick={() => setIsModalOpen(false)}
+          >
+            <FaTimes />
+          </Button>
+        </div>
+        <PostInput
+          onSubmit={(data: any) => {
+            console.log("Editing post", data);
+            setIsModalOpen(false);
+          }}
+          post={post}
+        />
+      </Modal>
+
+      <div className="card-body gap-4 p-4 sm:p-8">
         <div className="flex w-full flex-wrap items-center justify-between">
           <div className="flex items-center gap-4">
             <img
@@ -57,6 +82,7 @@ const Post = ({ post }: PostProps) => {
                   size="md"
                   variant="solid"
                   className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                  onClick={() => setIsModalOpen(true)}
                 >
                   Edit Post
                 </Button>

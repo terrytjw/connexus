@@ -3,16 +3,23 @@ import { Controller, useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
 import Button from "./Button";
 import Carousel from "./Carousel";
+import TextArea from "./TextArea";
+import { Post } from "../utils/dummyData";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 type PostInputProps = {
-  createPost: Function;
+  onSubmit: Function;
+  post?: Post;
 };
 
-const PostInput = ({ createPost }: PostInputProps) => {
+const PostInput = ({ onSubmit, post }: PostInputProps) => {
   const { handleSubmit, setValue, control, watch } = useForm({
     defaultValues: {
-      content: "",
-      media: [] as string[],
+      content: post ? post.content : "",
+      media: post ? post.media : ([] as string[]),
     },
   });
 
@@ -20,8 +27,11 @@ const PostInput = ({ createPost }: PostInputProps) => {
 
   return (
     <form
-      className="card items-center justify-center gap-4 border-2 border-gray-200 bg-white p-8"
-      onSubmit={handleSubmit((data) => createPost(data))}
+      className={classNames(
+        "card items-center justify-center gap-4 bg-white",
+        post ? "" : "border-2 border-gray-200 p-4 sm:p-8"
+      )}
+      onSubmit={handleSubmit((data) => onSubmit(data))}
     >
       <Toaster
         position="bottom-center"
@@ -38,8 +48,12 @@ const PostInput = ({ createPost }: PostInputProps) => {
         control={control}
         name="content"
         render={({ field: { onChange, value } }) => (
-          <textarea
-            className="input-group textarea w-full focus:outline-none"
+          <TextArea
+            className={classNames(
+              "h-min w-full",
+              post ? "" : "border-0 focus:outline-none"
+            )}
+            label={post ? "Description" : ""}
             placeholder="Got something on your mind?"
             value={value}
             onChange={onChange}
@@ -48,7 +62,17 @@ const PostInput = ({ createPost }: PostInputProps) => {
       />
 
       {media.length > 0 ? (
-        <Carousel images={media} />
+        <Carousel
+          images={media}
+          removeImage={(imageToRemove: string) => {
+            setValue(
+              "media",
+              media?.filter((image) => {
+                return image != imageToRemove;
+              })
+            );
+          }}
+        />
       ) : (
         <div className="rounded-box relative flex h-60 w-full md:h-96">
           <div className="rounded-box flex h-full w-full flex-col justify-center gap-2 border-2 text-center text-xs text-gray-500">
@@ -120,7 +144,7 @@ const PostInput = ({ createPost }: PostInputProps) => {
           size="md"
           disabled={content == "" && media.length === 0}
         >
-          Publish
+          {post ? "Save Changes" : "Publish"}
         </Button>
       </div>
     </form>

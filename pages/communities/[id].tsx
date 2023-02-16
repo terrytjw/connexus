@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import {
@@ -32,7 +33,7 @@ const CommunityPage = () => {
 
   const createPost = (data: any) => {
     // api call
-    console.log(data);
+    console.log("Creating post", data);
   };
 
   const TabContent = () => {
@@ -60,7 +61,7 @@ const CommunityPage = () => {
         </div>
 
         <div id="feed" className="flex flex-col gap-4">
-          {isCreator ? <PostInput createPost={createPost} /> : null}
+          {isCreator ? <PostInput onSubmit={createPost} /> : null}
 
           {posts.map((post) => {
             return <Post key={post.postId} post={post} />;
@@ -198,7 +199,10 @@ const CommunityPage = () => {
                 )}
               </div>
             </div>
-            <div className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm">
+            <Link
+              href="/merchandise"
+              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
+            >
               Highlighted Collection
               <img src="/images/bear.jpg" className="h-36 w-36 rounded-lg" />
               <div
@@ -208,7 +212,7 @@ const CommunityPage = () => {
                 <span className="self-end">x100</span>
                 Collection #1
               </div>
-            </div>
+            </Link>
           </div>
 
           <TabGroupBordered
