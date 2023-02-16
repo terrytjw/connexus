@@ -120,28 +120,20 @@ const Home = () => {
 
   return (
     <div className="">
-      <main className="mt-4 flex flex-col rounded-2xl bg-white p-20">
-        <h1 className="py-4">Biconomy SDK | Next.js | Web3Auth</h1>
-        <button
-          className="btn-outline btn"
-          onClick={!account ? connectWeb3 : disconnectWeb3}
-        >
-          {!account ? "Login" : "Logout"}
-        </button>
-    <div className="mt-96 p-10">
-      <h1 className="py-4 text-center font-semibold">
-        Biconomy SDK | Next.js | Web3Auth
-      </h1>
+      <div className="mt-96 p-10">
+        <h1 className="py-4 text-center font-semibold">
+          Biconomy SDK | Next.js | Web3Auth
+        </h1>
 
-      <div className="flex justify-center">
-        <Button
-          variant="outlined"
-          size="md"
-          onClick={!account ? connectWeb3 : disconnectWeb3}
-        >
-          {!account ? "Login" : "Logout"}
-        </Button>
-      </div>
+        <div className="flex justify-center">
+          <Button
+            variant="outlined"
+            size="md"
+            onClick={!account ? connectWeb3 : disconnectWeb3}
+          >
+            {!account ? "Login" : "Logout"}
+          </Button>
+        </div>
 
         {connectWeb3Loading && !socialLoginSDK && (
           <div className="bg-blue-300 p-8">connect web3 loading...</div>
@@ -164,15 +156,7 @@ const Home = () => {
             <p>{scwAddress}</p>
           </div>
         )}
-      </main>
-        <div className="p-2">
-          <h2 className="font-semibold">Smart Account Address:</h2>
-          {scwLoading && (
-            <h2 className="bg-red-300 p-2">Loading Smart Account...</h2>
-          )}
-          {scwAddress ? <p>{scwAddress}</p> : <p>- nil -</p>}
-        </div>
-      </section>
+      </div>
     </div>
   );
 };

@@ -6,7 +6,7 @@ import Loading from "../components/Loading";
 import { Router } from "next/router";
 import { SessionProvider } from "next-auth/react";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const [loading, setLoading] = useState(false);
 
   // for page routing loading animation
@@ -25,7 +25,6 @@ function MyApp({ Component, pageProps }: AppProps) {
     return <Loading />;
   }
 
-function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   return (
     <SessionProvider session={session}>
       <Layout>
