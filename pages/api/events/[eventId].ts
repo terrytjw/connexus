@@ -2,6 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 
@@ -63,6 +65,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Event | ErrorResponse | {}>
 ) {
+  const session = await getServerSession(req, res, authOptions);
+  console.log(session);
+
+  if (!session) {
+    res.status(401).json({ message: "Unaurhorized" });
+  }
   const { query, method } = req;
   let eventId = parseInt(query.eventId as string);
 
