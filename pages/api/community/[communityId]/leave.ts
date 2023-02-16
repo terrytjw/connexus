@@ -58,10 +58,13 @@ export default async function handler(
         data: {
           members: {
             disconnect: {
-                userId: userId
+              userId: userId
             }
+          }
+        },
+        include: {
+          members: true
         }
-      }
       });
       res.status(200).json(response);
     } catch (error) {
