@@ -25,7 +25,7 @@ const TextArea = ({
   errorMessage,
 }: TextAreaProps) => {
   return (
-    <div className="form-control">
+    <div className="form-control w-full">
       <label className="label">
         <span className="label-text">{label}</span>
       </label>
