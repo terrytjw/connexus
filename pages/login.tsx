@@ -3,20 +3,15 @@ import dynamic from "next/dynamic";
 import Head from "next/head";
 
 import "@biconomy/web3-auth/dist/src/style.css";
+import Loading from "../components/Loading";
 
 const LoginPage = () => {
   const SocialLoginDynamic = dynamic(
     () => import("../components/scw").then((res) => res.default),
     {
       ssr: false,
-      loading: () => <ConnectButtonLoading />,
+      loading: () => <Loading />,
     }
-  );
-
-  const ConnectButtonLoading = () => (
-    <div className="mt-96 flex items-center justify-center">
-      <span className="bg-green-300 p-8">Connect wallet button loading...</span>
-    </div>
   );
 
   return (
