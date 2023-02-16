@@ -3,12 +3,15 @@ import { Pagination, Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { FaTimes } from "react-icons/fa";
+import Button from "./Button";
 
 type CarouselProps = {
   images: string[];
+  removeImage?: Function;
 };
 
-const Carousel = ({ images }: CarouselProps) => {
+const Carousel = ({ images, removeImage }: CarouselProps) => {
   return (
     <Swiper
       slidesPerView={1}
@@ -17,14 +20,26 @@ const Carousel = ({ images }: CarouselProps) => {
       }}
       navigation={true}
       modules={[Pagination, Navigation]}
+      className="w-full"
     >
-      {images.map((image) => {
+      {images.map((image, index) => {
         return (
-          <SwiperSlide key={image} className="!w-full">
+          <SwiperSlide key={index} className="relative">
             <img
               src={image}
               className="h-60 w-full rounded-lg object-cover object-center md:h-96"
             />
+            {removeImage ? (
+              <Button
+                variant="solid"
+                size="md"
+                className="!btn-circle absolute top-4 right-4"
+                type="button"
+                onClick={() => removeImage(image)}
+              >
+                <FaTimes />
+              </Button>
+            ) : null}
           </SwiperSlide>
         );
       })}
