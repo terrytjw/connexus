@@ -116,7 +116,7 @@ const Home = () => {
           {!account ? "Login" : "Logout"}
         </button>
 
-        {connectWeb3Loading && (
+        {connectWeb3Loading && !socialLoginSDK && (
           <div className="bg-blue-300 p-8">connect web3 loading...</div>
         )}
 
