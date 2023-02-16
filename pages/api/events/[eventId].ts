@@ -107,6 +107,12 @@ export default async function handler(
         data: { ...event, eventId: undefined },
       });
       res.status(200).json(response);
+      const location = event.location; 
+      const title = event.title; 
+      const start = event.startDate; 
+      const description = event.description; 
+      //const tickets = event.tickets; 
+
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

@@ -47,9 +47,9 @@ export default async function handler(
   const { method } = req;
 
   switch (req.method) {
-    case "GET":
-      await handleGET();
-      break;
+    //case "GET":
+///await handleGET();
+     // break;
     case "POST":
       const event = JSON.parse(JSON.stringify(req.body)) as Event;
       await handlePOST(event);
@@ -132,6 +132,7 @@ export default async function handler(
         data: { ...event, eventId: undefined },
       });
       res.status(200).json([response]);
+      //now create the contract
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
