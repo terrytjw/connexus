@@ -16,12 +16,12 @@ generator jsonSchema {
 
 model User {
   userId              Int               @id @default(autoincrement())
-  walletAddress       String
-  phoneNumber         String
-  profilePic          String
-  bannerPic           String
-  displayName         String
-  username            String
+  walletAddress       String            @unique
+  phoneNumber         String            @default("")
+  profilePic          String            @default("")
+  bannerPic           String            @default("")
+  displayName         String            @default("")
+  username            String            @default("")
   email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)

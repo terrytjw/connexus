@@ -31,6 +31,16 @@ const Home = () => {
 
     setConnectWeb3Loading(true);
 
+    const sdk = new SocialLogin();
+
+    if (!socialLoginSDK) {
+      await sdk.init({
+        chainId: ethers.utils.hexValue(80001),
+      });
+      setSocialLoginSDK(sdk);
+      sdk.showWallet();
+    }
+
     if (socialLoginSDK?.provider) {
       const web3Provider = new ethers.providers.Web3Provider(
         socialLoginSDK.provider
@@ -38,7 +48,16 @@ const Home = () => {
       setProvider(web3Provider);
       const accounts = await web3Provider.listAccounts();
       setAccount(accounts[0]);
-      signIn("credentials", { redirect: false, walletAddress: accounts[0] });
+
+      const retrievedUserInfo = await sdk.getUserInfo();
+      const userInfo = {
+        name: retrievedUserInfo?.name,
+        email: retrievedUserInfo?.email,
+        profileImage: retrievedUserInfo?.profileImage,
+        walletAddress: accounts[0],
+      };
+
+      signIn("credentials", { redirect: false, ...userInfo });
 
       return;
     }
@@ -48,13 +67,6 @@ const Home = () => {
       setConnectWeb3Loading(false);
       return socialLoginSDK;
     }
-
-    const sdk = new SocialLogin();
-    await sdk.init({
-      chainId: ethers.utils.hexValue(80001),
-    });
-    setSocialLoginSDK(sdk);
-    sdk.showWallet();
 
     setConnectWeb3Loading(false);
 

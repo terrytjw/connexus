@@ -1,34 +1,40 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import prisma from "../../../lib/prisma";
-import { handleError } from "../../../lib/prisma-util";
+
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        userId: { label: "userId", type: "text", placeholder: "" },
-        walletAddress: { label: "address", type: "text", placeholder: "" },
+        name: { label: "Name", type: "text", placeholder: "Name" },
+        email: { label: "Email", type: "email", placeholder: "Email" },
+        profileImage: {
+          label: "Profile Image",
+          type: "text",
+          placeholder: "Profile Image",
+        },
+        walletAddress: { label: "Wallet Address", type: "text" },
       },
       async authorize(credentials, req) {
-        // try {
-        //   const event = await prisma.user.findUnique({
-        //     where: {
-        //       eventId: eventId,
-        //     },
-        //   });
+        if (!credentials) return null;
 
-        //   if (!event) res.status(200).json({});
-        //   else res.status(200).json(event);
-        // } catch (error) {
-        //   const errorResponse = handleError(error);
-        //   res.status(400).json(errorResponse);
-        // }
+        const { name, email, profileImage, walletAddress } = credentials;
+        const user = await retrieveUserByWallet(walletAddress);
+        if (user) return user;
 
-        const walletAddress = credentials ? credentials.walletAddress : "";
-        const user = { id: "5", walletAddress: walletAddress };
-        return user ? user : null;
+        const createdUser = await createUserUsingWallet(
+          name,
+          email,
+          profileImage,
+          walletAddress
+        );
+
+        if (createdUser) return user;
+
+        return null;
       },
     }),
   ],
@@ -49,5 +55,51 @@ export const authOptions: NextAuthOptions = {
     },
   },
 };
+
+async function retrieveUserByWallet(walletAddress: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        walletAddress: walletAddress,
+      },
+    });
+
+    if (user) {
+      return {
+        id: user.userId,
+        walletAddress: walletAddress,
+      } as any;
+    } else return null;
+  } catch (error) {
+    return null;
+  }
+}
+
+async function createUserUsingWallet(
+  name: string,
+  email: string,
+  profilePicture: string,
+  walletAddress: string
+) {
+  try {
+    const user = await prisma.user.create({
+      data: {
+        username: name,
+        email: email,
+        profilePic: profilePicture,
+        walletAddress: walletAddress,
+      },
+    });
+
+    if (user) {
+      return {
+        id: user.userId,
+        walletAddress: walletAddress,
+      } as any;
+    } else return null;
+  } catch (error) {
+    return null;
+  }
+}
 
 export default NextAuth(authOptions);
