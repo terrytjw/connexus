@@ -21,6 +21,7 @@ import Post from "../../components/Post";
 import PostInput from "../../components/PostInput";
 import TabGroupBordered from "../../components/TabGroupBordered";
 import { community, posts, products } from "../../utils/dummyData";
+import Toggle from "../../components/Toggle";
 
 const CommunityPage = () => {
   const router = useRouter();
@@ -197,6 +198,11 @@ const CommunityPage = () => {
                     Submit Chat Request
                   </Button>
                 )}
+              </div>
+              {/* to be removed after pr approved */}
+              <div className="mt-4 flex gap-2">
+                Toggle creator / fan view
+                <Toggle isChecked={isCreator} setIsChecked={setIsCreator} />
               </div>
             </div>
             <Link
