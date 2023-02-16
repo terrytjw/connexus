@@ -1,5 +1,7 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
+import prisma from "../../../lib/prisma";
+import { handleError } from "../../../lib/prisma-util";
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,6 +12,20 @@ export const authOptions: NextAuthOptions = {
         walletAddress: { label: "address", type: "text", placeholder: "" },
       },
       async authorize(credentials, req) {
+        // try {
+        //   const event = await prisma.user.findUnique({
+        //     where: {
+        //       eventId: eventId,
+        //     },
+        //   });
+
+        //   if (!event) res.status(200).json({});
+        //   else res.status(200).json(event);
+        // } catch (error) {
+        //   const errorResponse = handleError(error);
+        //   res.status(400).json(errorResponse);
+        // }
+
         const walletAddress = credentials ? credentials.walletAddress : "";
         const user = { id: "5", walletAddress: walletAddress };
         return user ? user : null;

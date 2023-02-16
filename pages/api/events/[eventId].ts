@@ -69,8 +69,9 @@ export default async function handler(
   console.log(session);
 
   if (!session) {
-    res.status(401).json({ message: "Unaurhorized" });
+    res.status(401).json({ error: "401", message: "Unauthorized" });
   }
+
   const { query, method } = req;
   let eventId = parseInt(query.eventId as string);
 
