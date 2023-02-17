@@ -35,8 +35,8 @@ const PlaygroundPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [value, setValue] = useState<string | number>("");
   const [textAreaContent, setTextAreaContent] = useState("");
-  const [profilePic, setProfilePic] = useState<File>(null as unknown as File);
-  const [bannerPic, setBannerPic] = useState<File>(null as unknown as File);
+  const [profilePic, setProfilePic] = useState("");
+  const [bannerPic, setBannerPic] = useState("");
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -330,10 +330,14 @@ const PlaygroundPage = () => {
             bannerPic={bannerPic}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
-                setBannerPic(e.target.files[0]);
+                const reader = new FileReader();
+                reader.addEventListener("load", () => {
+                  setBannerPic(reader.result as string);
+                });
+                reader.readAsDataURL(e.target.files[0]);
               }
             }}
-            onClick={() => setBannerPic(null as unknown as File)}
+            onClick={() => setBannerPic("")}
           />
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="relative -mt-12 h-24 sm:-mt-16 sm:h-32">
@@ -341,7 +345,11 @@ const PlaygroundPage = () => {
                 profilePic={profilePic}
                 onChange={(e) => {
                   if (e.target.files && e.target.files.length > 0) {
-                    setProfilePic(e.target.files[0]);
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                      setProfilePic(reader.result as string);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
                   }
                 }}
               />
