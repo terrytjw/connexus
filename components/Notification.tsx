@@ -1,3 +1,4 @@
+import Image from "next/image";
 import CustomLink from "./CustomLink";
 
 type NotificationProps = {
@@ -20,20 +21,18 @@ const Notification = ({
   return (
     <div className="flex w-full flex-wrap justify-between gap-4 p-6">
       <div className="flex items-center gap-4">
-        <div className="avatar">
-          <div className="w-8 rounded-full">
-            {userProfilePic ? (
-              <img src={userProfilePic} />
-            ) : (
-              <img src="/images/logo-icon.png" />
-            )}
-          </div>
-        </div>
+        <Image
+          height={32}
+          width={32}
+          className="h-8 w-8 rounded-full object-cover object-center"
+          src={userProfilePic || "/images/logo-icon.png"}
+          alt="Community Profile"
+        />
         <p className="text-gray-900">
           {userId && userName ? (
             <>
               <CustomLink
-                href={`/user/profile/${userId}`}
+                href={`/users/profile/${userId}`}
                 className="font-bold"
               >
                 {userName}

@@ -3,6 +3,7 @@ import { Pagination, Navigation } from "swiper";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import Image from "next/image";
 import { FaTimes } from "react-icons/fa";
 import Button from "./Button";
 
@@ -25,10 +26,14 @@ const Carousel = ({ images, removeImage }: CarouselProps) => {
       {images.map((image, index) => {
         return (
           <SwiperSlide key={index} className="relative">
-            <img
-              src={image}
+            <Image
+              height={60}
+              width={1200}
               className="h-60 w-full rounded-lg object-cover object-center md:h-96"
+              src={image}
+              alt={"Carousel Image"}
             />
+
             {removeImage ? (
               <Button
                 variant="solid"

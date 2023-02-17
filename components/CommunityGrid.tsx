@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaUserFriends } from "react-icons/fa";
@@ -18,9 +19,12 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
           className="group rounded-lg p-2 text-sm hover:bg-gray-200"
         >
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
-            <img
-              src={community.bannerPic}
+            <Image
+              height={500}
+              width={500}
               className="h-full w-full object-cover object-center"
+              src={community.bannerPic}
+              alt="Community Banner"
             />
             <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
               <div
@@ -48,9 +52,12 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
             </div>
           </div>
           <div className="mt-2 flex items-center gap-4">
-            <img
-              src={community.profilePic}
+            <Image
+              height={64}
+              width={64}
               className="h-16 w-16 rounded-full object-cover object-center"
+              src={community.profilePic}
+              alt="Community Profile"
             />
             <h3 className="font-medium text-gray-900">{community.name}</h3>
           </div>

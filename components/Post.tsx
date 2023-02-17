@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState } from "react";
 import { FaEllipsisH, FaRegComment, FaRegHeart, FaTimes } from "react-icons/fa";
 import Button from "./Button";
@@ -45,8 +46,10 @@ const Post = ({ post }: PostProps) => {
       <div className="card-body gap-4 p-4 sm:p-8">
         <div className="flex w-full flex-wrap items-center justify-between">
           <div className="flex items-center gap-4">
-            <img
-              className="h-12 w-12 rounded-full"
+            <Image
+              height={48}
+              width={48}
+              className="h-12 w-12 rounded-full object-cover object-center"
               src={post.creator.profilePic}
               alt="Creator profile pic"
             />
@@ -143,10 +146,12 @@ const Post = ({ post }: PostProps) => {
         </div>
 
         <div className="flex w-full items-center gap-4">
-          <img
-            className="h-12 w-12 rounded-full"
+          <Image
+            height={48}
+            width={48}
+            className="h-12 w-12 rounded-full object-cover object-center"
             src={post.creator.profilePic}
-            alt="Current user profile pic"
+            alt="Creator profile pic"
           />
           <input
             type="text"

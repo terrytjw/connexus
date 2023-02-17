@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
@@ -101,13 +102,21 @@ const CommunityPage = () => {
         </InputGroup>
 
         <div className="mt-2 flex flex-col items-center gap-2">
-          <img src="/images/bear.jpg" className="h-20 w-20 rounded-lg" />
+          <Image
+            height={80}
+            width={80}
+            className="h-20 w-20 rounded-lg object-cover object-center"
+            src="/images/bear.jpg"
+            alt="No member found image"
+          />
           <p className="text-sm text-gray-500">No member found!</p>
         </div>
 
         <div className="flex w-full gap-4 rounded-lg p-2 hover:bg-gray-200">
-          <img
-            className="h-12 w-12 rounded-full"
+          <Image
+            height={48}
+            width={48}
+            className="h-12 w-12 rounded-full object-cover object-center"
             src="/images/bear.jpg"
             alt="Member profile pic"
           />
@@ -210,7 +219,13 @@ const CommunityPage = () => {
               className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
             >
               Highlighted Collection
-              <img src="/images/bear.jpg" className="h-36 w-36 rounded-lg" />
+              <Image
+                height={144}
+                width={144}
+                className="h-36 w-36 rounded-lg object-cover object-center"
+                src="/images/bear.jpg"
+                alt="Member profile pic"
+              />
               <div
                 aria-hidden="true"
                 className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-between rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"

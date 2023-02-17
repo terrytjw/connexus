@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import Button from "./Button";
 import CustomLink from "./CustomLink";
@@ -10,7 +11,9 @@ type CommentProps = {
 const Comment = ({ comment }: CommentProps) => {
   return (
     <div className="flex gap-4 px-8 py-4">
-      <img
+      <Image
+        height={48}
+        width={48}
         className="h-12 w-12 rounded-full"
         src={comment.commentor.profilePic}
         alt="Current user profile pic"

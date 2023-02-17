@@ -8,10 +8,8 @@ export const tabs = [
 // dummy profile data
 export const profile = {
   name: "NFT_g0d",
-  imageUrl:
-    "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80",
-  coverImageUrl:
-    "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80",
+  imageUrl: "/images/bear.jpg",
+  coverImageUrl: "/images/bear.jpg",
   about: `
       <p>Tincidunt quam neque in cursus viverra orci, dapibus nec tristique. Nullam ut sit dolor consectetur urna, dui cras nec sed. Cursus risus congue arcu aenean posuere aliquam.</p>
       <p>Et vivamus lorem pulvinar nascetur non. Pulvinar a sed platea rhoncus ac mauris amet. Urna, sem pretium sit pretium urna, senectus vitae. Scelerisque fermentum, cursus felis dui suspendisse velit pharetra. Augue et duis cursus maecenas eget quam lectus. Accumsan vitae nascetur pharetra rhoncus praesent dictum risus suspendisse.</p>
@@ -134,11 +132,7 @@ export const posts = [
     title: "Post 1 Title",
     content: "Post 1 Content",
     date: new Date(),
-    media: [
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-      "https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg",
-    ],
+    media: ["/images/bear.jpg", "/images/bear.jpg", "/images/bear.jpg"],
     isPinned: false,
     creator: {
       userId: "1",
@@ -166,11 +160,7 @@ export const posts = [
     title: "Post 2 Title",
     content: "Post 1 Content",
     date: new Date(),
-    media: [
-      "/images/bear.jpg",
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Image_created_with_a_mobile_phone.png/640px-Image_created_with_a_mobile_phone.png",
-    ],
+    media: ["/images/bear.jpg", "/images/bear.jpg", "/images/bear.jpg"],
     isPinned: false,
     creator: {
       userId: "1",
@@ -224,8 +214,7 @@ export const community = {
   communityId: 1,
   name: "Community Name",
   description: "Community Description",
-  bannerPic:
-    "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+  bannerPic: "/images/bear.jpg",
   profilePic: "/images/bear.jpg",
   tags: ["NFT", "Entertainment", "Fitness"],
   maxMembers: 2,
@@ -247,8 +236,7 @@ export const communities = [
     communityId: 1,
     name: "Community Name 1",
     description: "Community Description 1",
-    bannerPic:
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    bannerPic: "/images/bear.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT", "Entertainment", "Fitness"],
     maxMembers: 2,
@@ -258,8 +246,7 @@ export const communities = [
     communityId: 2,
     name: "Community Name 2",
     description: "Community Description 2",
-    bannerPic:
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    bannerPic: "/images/bear.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
     maxMembers: 2,
@@ -269,8 +256,7 @@ export const communities = [
     communityId: 3,
     name: "Community Name 3",
     description: "Community Description 3",
-    bannerPic:
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    bannerPic: "/images/bear.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
     maxMembers: 2,
@@ -280,8 +266,7 @@ export const communities = [
     communityId: 4,
     name: "Community Name 4",
     description: "Community Description 4",
-    bannerPic:
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    bannerPic: "/images/bear.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
     maxMembers: 2,
@@ -291,8 +276,7 @@ export const communities = [
     communityId: 5,
     name: "Community Name 5",
     description: "Community Description 5",
-    bannerPic:
-      "https://helpx.adobe.com/content/dam/help/en/photoshop/using/convert-color-image-black-white/jcr_content/main-pars/before_and_after/image-before/Landscape-Color.jpg",
+    bannerPic: "/images/bear.jpg",
     profilePic: "/images/bear.jpg",
     tags: ["NFT"],
     maxMembers: 2,
