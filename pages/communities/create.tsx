@@ -30,8 +30,8 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
     defaultValues: {
       name: community ? community.name : "",
       description: community ? community.description : "",
-      bannerPic: null as unknown as File, // to check with BE on file format
-      profilePic: null as unknown as File,
+      bannerPic: "",
+      profilePic: "",
       maxMembers: community ? community.maxMembers : ("" as unknown as number),
       tags: community ? community.tags : ([] as string[]),
     },
@@ -75,11 +75,15 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
           bannerPic={bannerPic}
           onChange={(e) => {
             if (e.target.files && e.target.files.length > 0) {
-              setValue("bannerPic", e.target.files[0]);
+              const reader = new FileReader();
+              reader.addEventListener("load", () => {
+                setValue("bannerPic", reader.result as string);
+              });
+              reader.readAsDataURL(e.target.files[0]);
             }
           }}
           onClick={() => {
-            setValue("bannerPic", null as unknown as File);
+            setValue("bannerPic", "");
           }}
         />
 
@@ -89,7 +93,11 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
               profilePic={profilePic}
               onChange={(e) => {
                 if (e.target.files && e.target.files.length > 0) {
-                  setValue("profilePic", e.target.files[0]);
+                  const reader = new FileReader();
+                  reader.addEventListener("load", () => {
+                    setValue("profilePic", reader.result as string);
+                  });
+                  reader.readAsDataURL(e.target.files[0]);
                 }
               }}
             />

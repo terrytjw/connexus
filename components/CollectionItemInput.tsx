@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useState } from "react";
 import { FaImage, FaTrashAlt } from "react-icons/fa";
 import Button from "./Button";
@@ -30,15 +31,22 @@ const CollectionItemInput = ({
           accept="image/png, image/gif, image/jpeg, video/mp4"
           onChange={(e) => {
             if (e.target.files && e.target.files[0]) {
-              setImagePreview(URL.createObjectURL(e.target.files[0]));
-              updateItem({ ...item, image: e.target.files[0] });
+              const reader = new FileReader();
+              reader.addEventListener("load", () => {
+                setImagePreview(reader.result as string);
+                updateItem({ ...item, image: reader.result as string });
+              });
+              reader.readAsDataURL(e.target.files[0]);
             }
           }}
         />
         {imagePreview ? (
-          <img
-            src={imagePreview}
+          <Image
+            height={40}
+            width={40}
             className="absolute h-40 w-40 rounded-lg object-cover object-center"
+            src={imagePreview}
+            alt={"Collection item image"}
           />
         ) : (
           <div className="input-bordered input absolute flex h-40 w-40 flex-col items-center justify-center gap-2 rounded-lg text-xs text-gray-500">
