@@ -4,6 +4,7 @@ import { FaEllipsisH, FaRegComment, FaRegHeart, FaTimes } from "react-icons/fa";
 import Button from "./Button";
 import Carousel from "./Carousel";
 import Comment from "./Comment";
+import CommentInput from "./CommentInput";
 import CustomLink from "./CustomLink";
 import Modal from "./Modal";
 import PostInput from "./PostInput";
@@ -15,6 +16,8 @@ type PostProps = {
 
 const Post = ({ post }: PostProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [newComment, setNewComment] = useState("");
+  const [activeComment, setActiveComment] = useState<CommentType>();
 
   return (
     <div className="card border-2 border-gray-200 bg-white">
@@ -153,22 +156,49 @@ const Post = ({ post }: PostProps) => {
             src={post.creator.profilePic}
             alt="Creator profile pic"
           />
-          <input
-            type="text"
-            onChange={() => {}}
-            placeholder="Add a comment"
-            className="input-bordered input h-12 w-full"
-          />
+          <CommentInput
+            value={newComment}
+            placeholder={activeComment ? "" : "Add a comment"}
+            onChange={(e) => {
+              setNewComment(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.code == "Backspace") {
+                if (newComment == "") {
+                  setActiveComment(null as unknown as CommentType);
+                }
+              }
+
+              if (e.code === "Enter") {
+                console.log(newComment);
+              }
+            }}
+          >
+            {activeComment ? "@" + activeComment?.commentor.displayName : null}
+          </CommentInput>
         </div>
 
         <div id={`${post.postId}-comments`} className="hidden">
           {post.comments?.map((comment) => {
             return (
               <div key={comment.commentId} className="-mx-8 hover:bg-gray-100">
-                <Comment comment={comment} />
+                <Comment
+                  comment={comment}
+                  replyTo={() => {
+                    setActiveComment(comment);
+                  }}
+                />
                 <div className="pl-16">
                   {comment.replies.map((reply: CommentType) => {
-                    return <Comment key={reply.commentId} comment={reply} />;
+                    return (
+                      <Comment
+                        key={reply.commentId}
+                        comment={reply}
+                        replyTo={() => {
+                          setActiveComment(comment);
+                        }}
+                      />
+                    );
                   })}
                 </div>
               </div>

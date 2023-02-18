@@ -6,9 +6,10 @@ import { Comment } from "../utils/dummyData";
 
 type CommentProps = {
   comment: Comment;
+  replyTo: Function;
 };
 
-const Comment = ({ comment }: CommentProps) => {
+const Comment = ({ comment, replyTo }: CommentProps) => {
   return (
     <div className="flex gap-4 px-8 py-4">
       <Image
@@ -35,7 +36,9 @@ const Comment = ({ comment }: CommentProps) => {
               {comment.likes} like{comment.likes != 1 ? "s" : null}
             </span>
           ) : null}
-          <button className="text-sm hover:underline">Reply</button>
+          <button className="text-sm hover:underline" onClick={() => replyTo()}>
+            Reply
+          </button>
           <span className="text-sm text-gray-500">
             {comment.date.toLocaleString("en-gb", {
               day: "numeric",
