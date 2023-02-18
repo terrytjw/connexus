@@ -12,12 +12,18 @@ const prisma = new PrismaClient();
  *     parameters:
  *       - in: query
  *         name: keyword
- *         description: The keyword to search communities by. Optional parameter, will retrieve all communities if no parameters are passed
+ *         description: The keyword to search communities by. Searches creator name, community name and tags for a match. Optional parameter, will retrieve all communities if no parameters are passed
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: filter
+ *         description: The tag to filter communities by. Optional parameter.
  *         schema:
  *           type: string
  *       - in: query
  *         name: cursor
  *         description: The communityId of the last community in the previous page. Pass 0 or don't pass to retrieve first X results
+ *         required: true
  *         schema:
  *           type: number
  *     responses:
