@@ -48,7 +48,7 @@ const Input = ({
           "input-group input",
           `input-${variant}`,
           `input-${size}`,
-          "w-full bg-white",
+          "w-full",
           "items-center",
           className ?? ""
         )}
