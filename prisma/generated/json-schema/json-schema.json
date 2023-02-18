@@ -36,6 +36,12 @@
           "type": "boolean",
           "default": true
         },
+        "createdCollections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collection"
+          }
+        },
         "createdCommunities": {
           "type": "array",
           "items": {
@@ -245,7 +251,14 @@
           }
         },
         "originalComment": {
-          "$ref": "#/definitions/Comment"
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Comment"
+            },
+            {
+              "type": "null"
+            }
+          ]
         },
         "replies": {
           "type": "array",
@@ -411,6 +424,68 @@
           "$ref": "#/definitions/Ticket"
         }
       }
+    },
+    "Collection": {
+      "type": "object",
+      "properties": {
+        "collectionId": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fixedPrice": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "enum": [
+            "USD",
+            "ETH",
+            "BTC",
+            "USDC"
+          ]
+        },
+        "collectionState": {
+          "type": "string",
+          "default": "CREATED",
+          "enum": [
+            "CREATED",
+            "ON_SALE",
+            "SOLD"
+          ]
+        },
+        "collections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionMedia"
+          }
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "CollectionMedia": {
+      "type": "object",
+      "properties": {
+        "collectionMediaId": {
+          "type": "integer"
+        },
+        "media": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "numOfMerch": {
+          "type": "integer"
+        },
+        "collection": {
+          "$ref": "#/definitions/Collection"
+        }
+      }
     }
   },
   "type": "object",
@@ -441,6 +516,12 @@
     },
     "promotion": {
       "$ref": "#/definitions/Promotion"
+    },
+    "collection": {
+      "$ref": "#/definitions/Collection"
+    },
+    "collectionMedia": {
+      "$ref": "#/definitions/CollectionMedia"
     }
   }
 }
