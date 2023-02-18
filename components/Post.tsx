@@ -195,7 +195,7 @@ const Post = ({ post }: PostProps) => {
                         key={reply.commentId}
                         comment={reply}
                         replyTo={() => {
-                          setActiveComment(comment);
+                          setActiveComment(reply);
                         }}
                       />
                     );
