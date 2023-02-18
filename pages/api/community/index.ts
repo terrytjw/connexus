@@ -51,14 +51,15 @@ export default async function handler(
 ) {
   const { method, body, query } = req;
   const keyword = query.keyword as string;
+  const filter = query.filter as string;
   const cursor = parseInt(query.cursor as string);
 
   switch (method) {
     case "GET":
       if (keyword) {
-        await handleGETWithQuery(keyword, cursor);
+        await handleGETWithKeyword(keyword, cursor, filter);
       } else {
-        await handleGET(cursor);
+        await handleGET(cursor, filter);
       }
       break;
     case "POST":
@@ -70,7 +71,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number) {
+  async function handleGET(cursor: number, filter?: string) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -78,17 +79,21 @@ export default async function handler(
         cursor: cursor ? { communityId : cursor } : undefined,
         orderBy: {
           communityId: 'asc'
-        }
+        },
+        where: filter ? {
+          tags: {
+            has: filter.toUpperCase()
+          }
+        } : undefined
       });
       res.status(200).json(communities);
     } catch (error) {
-      console.log(error)
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
 
-  async function handleGETWithQuery(keyword: string, cursor: number) {
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: string) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -127,7 +132,7 @@ export default async function handler(
             },
             {   
               tags: {
-                has: keyword.toUpperCase()
+                has: keyword.toUpperCase() || filter?.toUpperCase()
               }
             }
           ]
