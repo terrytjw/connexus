@@ -8,7 +8,7 @@ import { useState } from "react";
 import Notification from "../components/Notification";
 import CollectionItemInput from "../components/CollectionItemInput";
 
-type Item = {
+export type Item = {
   image: string;
   description: string;
   quantity: number;

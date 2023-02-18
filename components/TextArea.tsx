@@ -8,6 +8,7 @@ type TextAreaProps = {
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
+  label: string;
   placeholder?: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
@@ -17,6 +18,7 @@ const TextArea = ({
   className,
   autoFocus,
   disabled,
+  label,
   placeholder,
   value,
   onChange,
@@ -25,7 +27,7 @@ const TextArea = ({
   return (
     <div className="form-control">
       <label className="label">
-        <span className="label-text">Your bio</span>
+        <span className="label-text">{label}</span>
       </label>
       <textarea
         className={classNames(

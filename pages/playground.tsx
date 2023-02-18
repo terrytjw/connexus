@@ -124,6 +124,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
         <TextArea
+          label="Your bio"
           placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
           value={textAreaContent}
           onChange={(e) => setTextAreaContent(e.target.value)}

@@ -1,14 +1,22 @@
 import React, { useState } from "react";
 import TabGroupBordered from "../../TabGroupBordered";
-import CollectedTab from "../Fan/CollectedTab";
-import MarketplaceTab from "../Fan/MarketplaceTab";
-import { products } from "../../../utils/dummyData";
+import Button from "../../Button";
+import { useRouter } from "next/router";
 
 const CreatorMerchandisePage = () => {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
 
   return (
-    <div className="py-2">
+    <div className="relative py-2">
+      <Button
+        variant="solid"
+        size="md"
+        className=" mt-4 lg:absolute lg:right-0 lg:top-6"
+        onClick={() => router.push("/merchandise/create")}
+      >
+        Create new merchandise
+      </Button>
       <TabGroupBordered
         tabs={["Featured", "Created", "On Sale", "Sold"]}
         activeTab={activeTab}
