@@ -112,7 +112,8 @@ model Event {
   description       String
   visibilityType    VisibilityType
   privacyType       PrivacyType
-  tickets           Ticket[]
+  tickets           Ticket[] 
+  scAddress         String
 }
 
 model Ticket {

@@ -344,6 +344,9 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "scAddress": {
+          "type": "string"
         }
       }
     },

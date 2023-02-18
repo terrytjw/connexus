@@ -116,6 +116,7 @@ export default async function handler(
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
+      console.log(errorResponse);
     }
   }
 

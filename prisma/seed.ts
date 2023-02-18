@@ -166,6 +166,7 @@ async function generateEvent() {
       startDate: new Date(),
       endDate: new Date(),
       images: [],
+      scAddress: "0xa",
       summary:
         "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
       description: "This is a yoga class",
@@ -248,6 +249,8 @@ async function generateEvent() {
       description: "This is a spin class",
       visibilityType: VisibilityType.DRAFT,
       privacyType: PrivacyType.PUBLIC,
+      scAddress: "0xa",
+
       tickets: {
         create: [
           {

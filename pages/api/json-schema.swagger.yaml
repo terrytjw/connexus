@@ -241,6 +241,8 @@ components:
           items:
             $ref: '#/components/schemas/Ticket'
           type: array
+        scAddress:
+          type: string
       type: object
     Ticket:
       properties:
