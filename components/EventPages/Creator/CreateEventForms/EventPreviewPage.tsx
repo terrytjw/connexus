@@ -1,7 +1,7 @@
 import { Ticket } from "@prisma/client";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
-import React, { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { Control, UseFormWatch, useWatch } from "react-hook-form";
 import {
   FaCalendar,
@@ -13,11 +13,11 @@ import {
   FaTelegram,
   FaTwitter,
 } from "react-icons/fa";
-import Avatar from "../../../components/Avatar";
-import Badge from "../../../components/Badge";
-import Banner from "../../../components/Banner";
-import Button from "../../../components/Button";
-import { Event } from "../../../pages/events/create";
+import Avatar from "../../../Avatar";
+import Badge from "../../../Badge";
+import Banner from "../../../Banner";
+import Button from "../../../Button";
+import { Event } from "../../../../pages/events/create";
 
 type EventPreviewPageProps = {
   formValues: Event;
@@ -41,13 +41,20 @@ const EventPreviewPage = ({
     venue,
     tags,
   } = formValues;
-
+  useEffect(() => {
+    // scroll to ticket
+    document.getElementById(`preview-alert`)?.scrollIntoView({
+      behavior: "smooth",
+      block: "start",
+      inline: "nearest",
+    });
+  }, []);
   return (
     <div>
       <main>
         {/* TODO: abstract out to Alert Component */}
         <div className="alert alert-info mb-8 shadow-lg">
-          <div>
+          <div id="preview-alert">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               fill="none"

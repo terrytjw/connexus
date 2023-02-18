@@ -6,12 +6,12 @@ import {
   UseFormWatch,
   useWatch,
 } from "react-hook-form";
-import Badge from "../../Badge";
-import BannerInput from "../../BannerInput";
-import Button from "../../Button";
-import Input from "../../Input";
-import { Event } from "../../../pages/events/create"; // replace with Prisma Type
-import AvatarInput from "../../AvatarInput";
+import Badge from "../../../Badge";
+import BannerInput from "../../../BannerInput";
+import Button from "../../../Button";
+import Input from "../../../Input";
+import { Event } from "../../../../pages/events/create"; // replace with Prisma Type
+import AvatarInput from "../../../AvatarInput";
 import {
   GoogleMap,
   Autocomplete,
@@ -19,9 +19,9 @@ import {
   Marker,
 } from "@react-google-maps/api";
 import { useEffect, useMemo, useState } from "react";
-import Loading from "../../Loading";
+import Loading from "../../../Loading";
 import { FaSearch } from "react-icons/fa";
-import InputGroup from "../../InputGroup";
+import InputGroup from "../../../InputGroup";
 
 type EventFormPageProps = {
   watch: UseFormWatch<Event>;

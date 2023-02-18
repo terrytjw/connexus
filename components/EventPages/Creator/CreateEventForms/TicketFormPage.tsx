@@ -5,10 +5,10 @@ import {
   UseFormTrigger,
 } from "react-hook-form";
 import { FaDollarSign, FaTrash } from "react-icons/fa";
-import Button from "../../Button";
-import Input from "../../Input";
-import InputGroup from "../../InputGroup";
-import { Event } from "../../../pages/events/create";
+import Button from "../../../Button";
+import Input from "../../../Input";
+import InputGroup from "../../../InputGroup";
+import { Event } from "../../../../pages/events/create";
 
 type TicketFormPageProps = {
   control: Control<Event, any>;

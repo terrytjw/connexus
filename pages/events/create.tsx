@@ -2,9 +2,9 @@ import { useContext, useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import StepsMobile from "../../components/EventPages/StepsMobile";
 import StepsDesktop, { Step } from "../../components/EventPages/StepsDesktop";
-import EventFormPage from "./../../components/EventPages/Creator/EventFormPage";
-import TicketFormPage from "./../../components/EventPages/Creator/TicketFormPage";
-import PublishFormPage from "../../components/EventPages/Creator/PublishFormPage";
+import EventFormPage from "../../components/EventPages/Creator/CreateEventForms/EventFormPage";
+import TicketFormPage from "../../components/EventPages/Creator/CreateEventForms/TicketFormPage";
+import PublishFormPage from "../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { Ticket, PrivacyType, Promotion } from "@prisma/client";
