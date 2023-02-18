@@ -18,9 +18,10 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { products, profile } from "../utils/dummyData";
+import { events, products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
+import EventsGrid from "../components/EventPages/EventsGrid";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -165,6 +166,18 @@ const PlaygroundPage = () => {
         </div>
 
         <CollectionGrid data={products} />
+      </section>
+      <div className="divider" />
+
+      {/* Collection Grid */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Collection Grid
+          </h1>
+        </div>
+
+        <EventsGrid data={events} />
       </section>
       <div className="divider" />
 

@@ -1,3 +1,4 @@
+import { TicketCard } from "../../components/EventPages/TicketCard";
 import { useRouter } from "next/router";
 import React from "react";
 import {
@@ -22,20 +23,12 @@ const EventPage = () => {
     <div>
       <main>
         <div className="relative">
-          <Banner
-            coverImageUrl={
-              "https://images.unsplash.com/photo-1444628838545-ac4016a5418a?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80"
-            }
-          />
+          <Banner coverImageUrl={"/images/bear.jpg"} />
         </div>
 
         <div className="z-30 mx-auto px-16">
           <div className="relative z-30 -mt-12 sm:-mt-16">
-            <Avatar
-              imageUrl={
-                "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=8&w=1024&h=1024&q=80"
-              }
-            />
+            <Avatar imageUrl={"/images/bear.jpg"} />
           </div>
         </div>
 
@@ -127,50 +120,3 @@ const EventPage = () => {
 };
 
 export default EventPage;
-
-const TicketCard = () => {
-  return (
-    <div>
-      <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
-        Ticket Options (Types)
-      </h1>
-      <div className="py-4 sm:py-8">
-        <div className="center card flex items-center justify-between gap-6 border-2 border-gray-200 bg-white p-6 lg:card-side">
-          <div className="flex flex-col gap-y-4">
-            <h1 className="text-xl font-bold text-gray-700">Ticket Name</h1>
-            <span>
-              <p className="text-md font-semibold text-blue-600">Ticket Type</p>
-              <p className="text-sn text-gray-700">Premium</p>
-            </span>
-            <span>
-              <p className="text-md font-semibold text-blue-600">Price</p>
-              <p className="text-sn text-gray-700">$999</p>
-            </span>
-            <span className="flex gap-4">
-              <p className="text-md font-semibold text-gray-700">
-                Sale Duration
-              </p>
-              <p className="text-sn text-gray-700">placeholder</p>
-            </span>
-            <span className="flex gap-4">
-              <p className="text-md font-semibold text-gray-700">Event Date</p>
-              <p className="text-sn text-gray-700">placeholder</p>
-            </span>
-            <span className="flex gap-4">
-              <p className="text-md font-semibold text-gray-700">
-                Event Location
-              </p>
-              <p className="text-sn text-gray-700">placeholder</p>
-            </span>
-            <span className="mt-6 flex flex-col gap-4">
-              <p className="text-md text-blue-600">
-                Perks of owning this ticket:
-              </p>
-              <p className="text-sn text-gray-700">• Access to...</p>
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};

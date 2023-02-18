@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import Toggle from "../components/Toggle";
-import CreatorEventsPage from "../components/EventPages/creatorEvents";
-import FanEventsPage from "../components/EventPages/fanEvents";
+import Toggle from "../../components/Toggle";
+import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEventsPage";
+import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 
 const EventsPage = () => {
   const [isCreator, setIsCreator] = useState<boolean>(false);
