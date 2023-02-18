@@ -100,6 +100,8 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
                 });
                 setValue("media", [...media, ...newMedia]);
               }
+
+              e.target.value = ""; // reset value of input
             }}
           />
         </div>
@@ -127,6 +129,8 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
                 });
                 setValue("media", [...media, ...newMedia]);
               }
+
+              e.target.value = ""; // reset value of input
             }}
           />
           <Button
