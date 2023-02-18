@@ -14,6 +14,91 @@ generator jsonSchema {
   output   = "./generated/json-schema"
 }
 
+model User {
+  userId              Int               @id @default(autoincrement())
+  walletAddress       String
+  phoneNumber         String
+  profilePic          String
+  bannerPic           String
+  displayName         String
+  username            String
+  email               String            @unique
+  notificationBySMS   Boolean           @default(true)
+  notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
+  createdCommunities  Community[]       @relation(name: "createdCommunities")
+  joinedCommunities   Community[]       @relation(name: "joinedCommunities")
+  joinedChannels      UsersOnChannels[]
+  posts               Post[]            @relation(name: "creator")
+  likedPosts          Post[]            @relation(name: "likedPosts")
+  comments            Comment[]         @relation(name: "commenter")
+  likedComments       Comment[]         @relation(name: "likedComments")
+}
+
+model Post {
+  postId      Int       @id @default(autoincrement())
+  title       String
+  content     String
+  date        DateTime  @default(now())
+  media       String[]
+  isPinned    Boolean   @default(false)
+  creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
+  creatorId   Int
+  channel     Channel   @relation(fields: [channelId], references: [channelId])
+  channelId   Int
+  likes       User[]    @relation(name: "likedPosts")
+  comments    Comment[]
+}
+
+model Community {
+  communityId   Int           @id @default(autoincrement())
+  name          String
+  description   String
+  profilePic    String
+  tags          String[]
+  maxMembers    Int           @default(100)
+  communityType CommunityType @default(NFT)
+  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId        Int
+  members       User[]        @relation(name: "joinedCommunities")
+  channels      Channel[]
+}
+
+model Channel {
+  channelId   Int               @id @default(autoincrement())
+  name        String
+  description String
+  channelType ChannelType       @default(REGULAR)
+  members     UsersOnChannels[]
+  community   Community         @relation(fields: [communityId], references: [communityId])
+  communityId Int
+  posts       Post[]
+
+  @@unique([communityId, name])
+}
+
+model UsersOnChannels {
+  user        User    @relation(fields: [userId], references: [userId])
+  userId      Int
+  channel     Channel @relation(fields: [channelId], references: [channelId])
+  channelId   Int
+
+  @@id([userId, channelId])
+}
+
+model Comment {
+  commentId       Int       @id @default(autoincrement())
+  content         String
+  date            DateTime  @default(now())
+  post            Post      @relation(fields: [postId], references: [postId])
+  postId          Int
+  commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
+  userId          Int
+  likes           User[]    @relation(name: "likedComments")
+  originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
+  replies         Comment[] @relation(name: "replies")
+}
+
 model Event {
   eventId           Int            @id @default(autoincrement())
   title             String
@@ -92,7 +177,51 @@ enum PrivacyType {
   PRIVATE
 }
 
+enum CommunityType {
+  NFT
+  CRYPTO
+}
+
+enum ChannelType {
+  REGULAR
+  PREMIUM
+  PRIVATE
+}
+
 enum PromotionType {
   LIMITED
   UNLIMITED
+}
+
+model Collection {
+  collectionId    Int               @id @default(autoincrement())
+  description     String            @unique
+  fixedPrice      Float
+  currency        Currency          @default(USD)
+  collectionState CollectionState   @default(CREATED)
+  collections     CollectionMedia[]
+  creator         User              @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId       Int
+}
+
+enum CollectionState {
+  CREATED
+  ON_SALE
+  SOLD
+}
+
+enum Currency {
+  USD
+  ETH
+  BTC
+  USDC
+}
+
+model CollectionMedia {
+  collectionMediaId Int        @id @default(autoincrement())
+  media             String
+  description       String
+  numOfMerch        Int
+  collection        Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  collectionId      Int
 }

@@ -8,19 +8,198 @@ import {
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
-async function main() {
-  await generateEvent();
-}
-main()
-  .then(async () => {
-    await prisma.$disconnect();
+
+
+async function generateCommunity() {
+  await prisma.community.create({
+    data: {
+      name: "AliceCommunity",
+      description: "Alice's Community",
+      profilePic: "",
+      tags: ["A", "B"],
+      maxMembers: 10,
+      creator: {
+        connect: {
+          userId: 1
+        }
+      }, 
+      members: {
+        connect: {
+          userId : 2
+        }
+      }
+    }
   })
-  .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
+
+  await prisma.community.create({
+    data: {
+      name: "BobCommunity",
+      description: "Bob's Community",
+      profilePic: "",
+      tags: ["A", "B"],
+      maxMembers: 10,
+      creator: {
+        connect: {
+          userId: 2
+        }
+      }, 
+      members: {
+        connect: {
+          userId : 1
+        }
+    }
+  }
+})
+}
+
+async function generateChannel() {
+  await prisma.channel.create({
+    data: {
+      name: "Home",
+      description: "Home Channel",
+      community: {
+        connect: {
+          communityId: 1
+        }
+      }
+    }
+  })
+
+  await prisma.channel.create({
+    data: {
+      name: "Home",
+      description: "Home Channel",
+      community: {
+        connect: {
+          communityId: 2
+        }
+      }
+    }
+  })
+}
+
+async function generatePost() {
+  await prisma.post.create({
+    data: {
+      title: "Check out Prisma with Next.js",
+        content: "https://www.prisma.io/nextjs",
+        media: ["A", "B"],
+        isPinned: false,
+        creator: {
+          connect: {
+            userId: 1
+          }
+        },
+        channel: {
+          connect: {
+            channelId: 1
+          }
+        },
+    }
+  })
+
+  await prisma.post.create({
+    data: {
+      title: "Follow Prisma on Twitter",
+      content: "https://twitter.com/prisma",
+      media: ["A", "B"],
+      isPinned: false,
+      channel: {
+        connect: {
+          channelId: 1
+        }
+      },
+      creator: {
+        connect: {
+          userId: 1
+        }
+      }
+    }
+  })
+}
+
+async function generateComment() {
+  await prisma.comment.create({
+    data: {
+      content: "First",
+      commenter: {
+        connect: {
+          userId: 1
+        }
+      },
+      post: {
+        connect: {
+          postId: 2
+        }
+      }
+    }
+  })
+}
+
+async function generateUser(){
+
+  const alice = await prisma.user.upsert({
+    where: { email: "alice@prisma.io" },
+    update: {},
+    create: {
+      email: "alice@prisma.io",
+      username: "Alice", 
+      walletAddress : "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName : "Alice", 
+      notificationBySMS : false, 
+      notificationByEmail : false,
+      profilePic: "https://aliceinwonderland.fandom.com/wiki/Alice",
+      bannerPic: "https://aliceinwonderland.fandom.com/wiki/Alice",
+      phoneNumber: "8399712",
+      
+    },
   });
 
+  const bob = await prisma.user.upsert({
+    where: { email: "bob@prisma.io" },
+    update: {},
+    create: {
+      email: "bob@prisma.io",
+      username: "Bob", 
+      walletAddress : "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName : "Bob", 
+      notificationBySMS : false, 
+      notificationByEmail : false,
+      profilePic: "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+      bannerPic: "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+      phoneNumber: "8399712",
+      
+    },
+  });
+}
+
+async function generateCollection(){
+
+  const collection1 = await prisma.collection.upsert({ 
+    where: {description : "very cool collection",},
+    update: {}, 
+    create:{
+      description : "very cool collection",
+      fixedPrice : 20.0,
+      currency : "USD", 
+      collectionState : "CREATED", 
+      collections:{
+        create: {
+          media: "....com" , 
+          description: "cool items", 
+          numOfMerch : 200, 
+        }
+      },
+      creator:{
+        connect:{
+          userId:1
+        }
+      }
+
+    }
+
+  });
+}
 async function generateEvent() {
   await prisma.event.create({
     data: {
@@ -176,3 +355,22 @@ async function generateEvent() {
     },
   });
 }
+
+async function main() {
+  await generateUser();
+  await generateCommunity();
+  await generateChannel();
+  await generatePost();
+  await generateComment();
+  await generateEvent();
+  await generateCollection();
+}
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
