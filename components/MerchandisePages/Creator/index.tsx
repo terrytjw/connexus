@@ -10,10 +10,10 @@ const CreatorMerchandisePage = () => {
   return (
     <div className="relative py-2">
       <Button
+        className="mt-4 lg:absolute lg:right-0 lg:top-6"
+        href="/merchandise/create"
         variant="solid"
         size="md"
-        className=" mt-4 lg:absolute lg:right-0 lg:top-6"
-        onClick={() => router.push("/merchandise/create")}
       >
         Create new merchandise
       </Button>

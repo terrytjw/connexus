@@ -1,16 +1,21 @@
 import React from "react";
+import { Path, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 type InputGroupProps = {
+  className?: string;
   type: "text" | "number";
   label: string;
-  value: string | number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  name: string;
   placeholder?: string;
-  errorMessage?: string;
+  register: UseFormRegister<any>;
+  required?: boolean;
+  additionalValidations?: any; // must be an object, see Playground.tsx for implementation details
+  errors: any;
+  disabled?: boolean;
   size: "xs" | "sm" | "md" | "lg";
   variant:
     | "bordered"
@@ -22,31 +27,44 @@ type InputGroupProps = {
     | "success"
     | "warning"
     | "error";
-  disabled?: boolean;
-  className?: string;
-  children: React.ReactNode;
+  children: React.ReactNode; // icon, symbol, etc. to be displayed on the left side of the input
 };
 
 const InputGroup = ({
+  className,
   type,
   label,
-  value,
-  onChange,
+  name,
   placeholder,
-  errorMessage,
+  register,
+  required,
+  additionalValidations,
+  errors,
+  disabled,
   size,
   variant,
-  disabled,
-  className,
   children,
 }: InputGroupProps) => {
+  const isRequiredError = errors[name]?.type === "required";
+
   return (
     <div className="form-control w-full">
       <label className="label">
-        <span className="label-text">{label}</span>
+        <span
+          className={classNames(
+            "label-text",
+            isRequiredError ? "text-red-500" : ""
+          )}
+        >
+          {label}
+        </span>
       </label>
       <div className="relative mt-1 rounded-md shadow-sm">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <div
+          className={classNames(
+            "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
+          )}
+        >
           {children}
         </div>
 
@@ -55,18 +73,25 @@ const InputGroup = ({
             "input block w-full rounded-md pl-10",
             `input-${variant}`,
             `input-${size}`,
-            className ?? ""
+            className ?? "",
+            classNames("label-text", isRequiredError ? "border-red-500" : "")
           )}
           type={type}
-          value={value}
           placeholder={placeholder}
-          onChange={onChange}
+          {...register(name, {
+            required,
+            ...additionalValidations,
+          })}
           disabled={disabled}
         />
       </div>
-      <label className="label">
-        <span className="label-text-alt text-red-500">{errorMessage}</span>
-      </label>
+      {/* { [condition] && (
+        <label className="label">
+          <span className="label-text-alt text-red-500">
+            I am an error message.
+          </span>
+        </label>
+      )} */}
     </div>
   );
 };

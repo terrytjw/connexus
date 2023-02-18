@@ -1,16 +1,21 @@
 import React from "react";
+import { Path, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 type InputProps = {
+  className?: string;
   type: "text" | "number" | "email" | "password";
   label: string;
-  value: string | number;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  name: string;
   placeholder?: string;
-  errorMessage?: string;
+  register: UseFormRegister<any>;
+  required?: boolean;
+  additionalValidations?: any; // must be an object, see Playground.tsx for implementation details
+  errors: any;
+  disabled?: boolean;
   size: "xs" | "sm" | "md" | "lg";
   variant:
     | "bordered"
@@ -22,44 +27,59 @@ type InputProps = {
     | "success"
     | "warning"
     | "error";
-  disabled?: boolean;
-  className?: string;
 };
 
 const Input = ({
+  className,
   type,
   label,
-  value,
-  onChange,
+  name,
   placeholder,
-  errorMessage,
+  register,
+  required,
+  additionalValidations,
+  errors,
+  disabled,
   size,
   variant,
-  disabled,
-  className,
 }: InputProps) => {
+  const isRequiredError = errors[name]?.type === "required";
+
   return (
     <div className="form-control w-full">
       <label className="label">
-        <span className="label-text">{label}</span>
+        <span
+          className={classNames(
+            "label-text",
+            isRequiredError ? "text-red-500" : ""
+          )}
+        >
+          {label}
+        </span>
       </label>
       <input
         className={classNames(
-          "input-group input",
+          "input-group input w-full",
           `input-${variant}`,
           `input-${size}`,
-          "w-full",
-          className ?? ""
+          className ?? "",
+          classNames("label-text", isRequiredError ? "border-red-500" : "")
         )}
         type={type}
-        value={value}
         placeholder={placeholder}
-        onChange={onChange}
+        {...register(name, {
+          required,
+          ...additionalValidations,
+        })}
         disabled={disabled}
       />
-      <label className="label">
-        <span className="label-text-alt text-red-500">{errorMessage}</span>
-      </label>
+      {/* { [condition] && (
+        <label className="label">
+          <span className="label-text-alt text-red-500">
+            I am an error message.
+          </span>
+        </label>
+      )} */}
     </div>
   );
 };

@@ -21,6 +21,7 @@ import TabGroupBordered from "../components/TabGroupBordered";
 import { products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
+import { useForm } from "react-hook-form";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -29,6 +30,13 @@ const PlaygroundPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [value, setValue] = useState<string | number>("");
   const [textAreaContent, setTextAreaContent] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<any>();
 
   return (
     <main className="min-h-screen bg-slate-50">
@@ -94,23 +102,33 @@ const PlaygroundPage = () => {
         </div>
         <Input
           type="text"
+          label="Input Name*"
+          name="inputName"
+          placeholder="Input Name"
+          register={register}
+          errors={errors}
+          required
+          // check with Terry on how to use customValidations, see https://react-hook-form.com/api/useform/register for more info
+          additionalValidations={{
+            maxLength: 10,
+            minLength: 2,
+            validate: {
+              numIsSmallerThan2: (val: string) => parseInt(val) > 2,
+            },
+          }} // checks if the value is greater than 1
           size="md"
           variant="bordered"
-          label="text input"
-          placeholder="placeholder"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
         />
 
         <InputGroup
           type="text"
+          label="Input Group Name"
+          name="inputGroupName"
+          placeholder="Input Group Name"
+          register={register}
+          errors={errors}
           size="md"
-          // addOn="$"
           variant="bordered"
-          label="text input"
-          placeholder="placeholder"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
         >
           <FaGithub />
         </InputGroup>
@@ -125,9 +143,10 @@ const PlaygroundPage = () => {
         </div>
         <TextArea
           label="Your bio"
+          name="bio"
           placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
-          value={textAreaContent}
-          onChange={(e) => setTextAreaContent(e.target.value)}
+          register={register}
+          errors={errors}
         />
       </section>
 

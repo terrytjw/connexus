@@ -6,6 +6,7 @@ import { Item } from "../index";
 import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
+import { useForm, SubmitHandler } from "react-hook-form";
 
 const CreateMerchandisePage = () => {
   const [items, setItems] = useState([
@@ -15,13 +16,38 @@ const CreateMerchandisePage = () => {
   const [textAreaContent, setTextAreaContent] = useState("");
   const [inputGrpValue, setInputGrpValue] = useState("");
 
+  type CreateMerchandiseForm = {
+    items: Item[];
+    collectionName: string;
+    collectionDescription: string;
+    price: number;
+  };
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<CreateMerchandiseForm>({
+    defaultValues: {
+      items: [{ image: "", description: "", quantity: 1 }],
+      collectionName: "",
+      collectionDescription: "",
+      price: 0,
+    },
+  });
+
   return (
     <div className="debug-screens">
       <Head>
         <title>Merchandise | Connexus</title>
       </Head>
 
-      <main className="p-10">
+      <form
+        className="p-10"
+        onSubmit={handleSubmit((val: any) => {
+          console.log("Create merchandise form -> ", val);
+        })}
+      >
         <h1 className="text-3xl font-bold">
           Create a New Merchandise Collection
         </h1>
@@ -75,27 +101,40 @@ const CreateMerchandisePage = () => {
         <section className="mt-8 lg:w-2/3">
           <Input
             type="text"
+            label="Collection Name*"
+            name="collectionName"
+            placeholder="Collection Name"
+            register={register}
+            errors={errors}
+            required
+            additionalValidations={{
+              maxLength: 10,
+              minLength: 2,
+              validate: {
+                numIsSmallerThan2: (val: string) => parseInt(val) > 2,
+              },
+            }} // checks if the value is greater than 1
             size="md"
             variant="bordered"
-            label="Collection Name*"
-            placeholder="Collection Name"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
           />
           <TextArea
-            label="Collection Description*"
+            label="Collection Description"
+            name="collectionDescription"
             placeholder="Give your collection a description!"
-            value={textAreaContent}
-            onChange={(e) => setTextAreaContent(e.target.value)}
+            register={register}
+            required
+            errors={errors}
           />
           <InputGroup
-            type="text"
+            type="number"
+            label="Price*"
+            name="inputGroupName"
+            placeholder="0"
+            register={register}
+            required
+            errors={errors}
             size="md"
             variant="bordered"
-            label="Price*"
-            placeholder="20"
-            value={inputGrpValue}
-            onChange={(e) => setInputGrpValue(e.target.value)}
           >
             $
           </InputGroup>
@@ -106,18 +145,11 @@ const CreateMerchandisePage = () => {
             Total number of items:{" "}
             <span className="ml-1 text-blue-600 underline">{items.length}</span>
           </div>
-          <Button
-            variant="solid"
-            size="md"
-            className="lg:w-40"
-            onClick={() => {
-              console.log("Submit create merchandise form");
-            }}
-          >
+          <Button type="submit" variant="solid" size="md" className="lg:w-40">
             Submit
           </Button>
         </section>
-      </main>
+      </form>
     </div>
   );
 };
