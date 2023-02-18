@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/community/{communityId}/leave:
  *   post:
- *     description: Updates a single Community object without the leaving User
+ *     description: Removes a User to the list of a Community's members
  *     parameters:
  *       - in: path
  *         name: communityId

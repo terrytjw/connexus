@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/community/{communityId}/join:
  *   post:
- *     description: Updates a single Community object with the newly joined User
+ *     description: Adds a User to the list of a Community's members
  *     parameters:
  *       - in: path
  *         name: communityId
