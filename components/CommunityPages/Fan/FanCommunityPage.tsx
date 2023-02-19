@@ -9,7 +9,6 @@ import Avatar from "../../Avatar";
 import Badge from "../../Badge";
 import Banner from "../../Banner";
 import Button from "../../Button";
-import CollectionGrid from "../../CollectionGrid";
 import TabGroupBordered from "../../TabGroupBordered";
 import { communities, products } from "../../../utils/dummyData";
 import UnlockPremiumChannelTab from "../CommunityTabs/UnlockPremiumChannel";

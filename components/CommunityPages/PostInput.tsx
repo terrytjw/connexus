@@ -4,7 +4,7 @@ import { toast, Toaster } from "react-hot-toast";
 import Button from "../Button";
 import Carousel from "../Carousel";
 import TextArea from "../TextArea";
-import { Post } from "../../utils/dummyData";
+import { Post } from "../../utils/types";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
