@@ -6,15 +6,17 @@ import { Item } from "../index";
 import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
-import { useForm, SubmitHandler } from "react-hook-form";
+import {
+  Controller,
+  useForm,
+  SubmitHandler,
+  useFieldArray,
+} from "react-hook-form";
 
 const CreateMerchandisePage = () => {
   const [items, setItems] = useState([
     { image: "", description: "", quantity: 1 },
   ]);
-  const [inputValue, setInputValue] = useState("");
-  const [textAreaContent, setTextAreaContent] = useState("");
-  const [inputGrpValue, setInputGrpValue] = useState("");
 
   type CreateMerchandiseForm = {
     items: Item[];
@@ -22,18 +24,19 @@ const CreateMerchandisePage = () => {
     collectionDescription: string;
     price: number;
   };
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<CreateMerchandiseForm>({
-    defaultValues: {
-      items: [{ image: "", description: "", quantity: 1 }],
-      collectionName: "",
-      collectionDescription: "",
-      price: 0,
-    },
+  const { handleSubmit, setValue, control, watch } =
+    useForm<CreateMerchandiseForm>({
+      defaultValues: {
+        items: [{ image: "", description: "", quantity: 1 }],
+        collectionName: "",
+        collectionDescription: "",
+        price: 0,
+      },
+    });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "items",
   });
 
   return (
@@ -68,7 +71,8 @@ const CreateMerchandisePage = () => {
             size="md"
             className="rounded-full"
             onClick={() => {
-              setItems([...items, { image: "", description: "", quantity: 1 }]);
+              // setItems([...items, { image: "", description: "", quantity: 1 }]);
+              append({ image: "", description: "", quantity: 1 });
             }}
           >
             Add item
@@ -76,7 +80,7 @@ const CreateMerchandisePage = () => {
         </section>
         <p className="mt-8">Supported file formats: JPEG, GIF, MP4</p>
         <section className="mt-2 flex flex-row flex-wrap justify-center gap-4 lg:flex-col">
-          {items.map((item, index) => (
+          {fields.map((item, index) => (
             <CollectionItemInput
               key={index}
               item={item}
@@ -98,46 +102,67 @@ const CreateMerchandisePage = () => {
             />
           ))}
         </section>
+
         <section className="mt-8 lg:w-2/3">
-          <Input
-            type="text"
-            label="Collection Name*"
+          <Controller
+            control={control}
             name="collectionName"
-            placeholder="Collection Name"
-            register={register}
-            errors={errors}
-            required
-            additionalValidations={{
-              maxLength: 10,
-              minLength: 2,
-              validate: {
-                numIsSmallerThan2: (val: string) => parseInt(val) > 2,
-              },
-            }} // checks if the value is greater than 1
-            size="md"
-            variant="bordered"
+            rules={{ required: "Collection Name is required" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                type="text"
+                label="Collection Name*"
+                value={value}
+                onChange={onChange}
+                placeholder="Collection Name"
+                errorMessage={error?.message}
+                size="md"
+                variant="bordered"
+              />
+            )}
           />
-          <TextArea
-            label="Collection Description"
+
+          <Controller
+            control={control}
             name="collectionDescription"
-            placeholder="Give your collection a description!"
-            register={register}
-            required
-            errors={errors}
+            rules={{ required: "Collection Description is required" }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextArea
+                className="max-w-3xl"
+                placeholder="Give your collection a description!"
+                label="Collection Description"
+                value={value}
+                onChange={onChange}
+                errorMessage={error?.message}
+              />
+            )}
           />
-          <InputGroup
-            type="number"
-            label="Price*"
-            name="inputGroupName"
-            placeholder="0"
-            register={register}
-            required
-            errors={errors}
-            size="md"
-            variant="bordered"
-          >
-            $
-          </InputGroup>
+
+          <Controller
+            control={control}
+            name="price"
+            rules={{
+              required: "Price is required",
+              validate: {
+                priceIsZero: (val: number) =>
+                  val > 0 || "Price must be greater than 0",
+              },
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <InputGroup
+                type="text"
+                label="Price*"
+                value={value}
+                onChange={onChange}
+                placeholder="0"
+                errorMessage={error?.message}
+                size="md"
+                variant="bordered"
+              >
+                $
+              </InputGroup>
+            )}
+          />
         </section>
         <div className="divider" />
         <section className="flex flex-col justify-between gap-y-6 pt-2 pb-20 lg:flex-row">
