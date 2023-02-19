@@ -5,7 +5,7 @@ function classNames(...classes: string[]) {
 }
 
 type InputProps = {
-  type: "text" | "number" | "email" | "password";
+  type: "text" | "number" | "date" | "datetime-local" | "email" | "password";
   label: string;
   value: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
@@ -49,6 +49,7 @@ const Input = ({
           `input-${variant}`,
           `input-${size}`,
           "w-full",
+          "items-center",
           className ?? ""
         )}
         type={type}
