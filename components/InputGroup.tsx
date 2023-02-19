@@ -1,5 +1,4 @@
 import React from "react";
-import { Path, UseFormRegister, UseFormWatch } from "react-hook-form";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -11,11 +10,7 @@ type InputGroupProps = {
   value?: string | number;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
-  register: UseFormRegister<any>;
-  required?: boolean;
-  additionalValidations?: any; // must be an object, see Playground.tsx for implementation details
-  errors: any;
-  disabled?: boolean;
+  errorMessage?: string;
   size: "xs" | "sm" | "md" | "lg";
   variant:
     | "bordered"
@@ -27,44 +22,31 @@ type InputGroupProps = {
     | "success"
     | "warning"
     | "error";
-  children: React.ReactNode; // icon, symbol, etc. to be displayed on the left side of the input
+  disabled?: boolean;
+  className?: string;
+  children: React.ReactNode;
 };
 
 const InputGroup = ({
-  className,
   type,
   label,
-  name,
+  value,
+  onChange,
   placeholder,
-  register,
-  required,
-  additionalValidations,
-  errors,
-  disabled,
+  errorMessage,
   size,
   variant,
+  disabled,
+  className,
   children,
 }: InputGroupProps) => {
-  const isRequiredError = errors[name]?.type === "required";
-
   return (
     <div className="form-control w-full">
       <label className="label">
-        <span
-          className={classNames(
-            "label-text",
-            isRequiredError ? "text-red-500" : ""
-          )}
-        >
-          {label}
-        </span>
+        <span className="label-text">{label}</span>
       </label>
       <div className="relative mt-1 rounded-md shadow-sm">
-        <div
-          className={classNames(
-            "pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3"
-          )}
-        >
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           {children}
         </div>
 
@@ -77,21 +59,15 @@ const InputGroup = ({
             className ?? ""
           )}
           type={type}
+          value={value}
           placeholder={placeholder}
-          {...register(name, {
-            required,
-            ...additionalValidations,
-          })}
+          onChange={onChange}
           disabled={disabled}
         />
       </div>
-      {/* { [condition] && (
-        <label className="label">
-          <span className="label-text-alt text-red-500">
-            I am an error message.
-          </span>
-        </label>
-      )} */}
+      <label className="label">
+        <span className="label-text-alt text-red-500">{errorMessage}</span>
+      </label>
     </div>
   );
 };

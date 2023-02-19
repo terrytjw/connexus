@@ -2,8 +2,6 @@ import Image from "next/image";
 import { useState } from "react";
 import { FaImage, FaTrashAlt } from "react-icons/fa";
 import Button from "./Button";
-import Image from "next/image";
-import TextArea from "./TextArea";
 
 type Item = {
   image: string;
@@ -25,7 +23,7 @@ const CollectionItemInput = ({
   const [imagePreview, setImagePreview] = useState("");
 
   return (
-    <div className="card flex items-center justify-around gap-6 border-2 border-gray-200 bg-white p-6 lg:card-side">
+    <div className="card flex items-center justify-center gap-6 border-2 border-gray-200 bg-white p-6 lg:card-side">
       <div className="flex h-40 w-40">
         <input
           type="file"
@@ -67,13 +65,6 @@ const CollectionItemInput = ({
             updateItem({ ...item, description: e.target.value });
           }}
         ></textarea>
-        {/* <TextArea
-          label="Your bio"
-          name="bio"
-          placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
-          register={register}
-          errors={errors}
-        /> */}
       </div>
 
       <div className="flex items-center">
