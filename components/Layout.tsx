@@ -35,7 +35,7 @@ const MobileNavbar = ({ children }: any) => {
         type="checkbox"
         className="drawer-toggle"
       />
-      <div className="drawer-content">
+      <div id="scrollable" className="drawer-content">
         {/* <!-- Page content here --> */}
         <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
           <label

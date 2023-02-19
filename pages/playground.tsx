@@ -18,7 +18,7 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { communities, products, profile } from "../utils/dummyData";
+import { communities, events, products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
@@ -27,6 +27,7 @@ import Carousel from "../components/Carousel";
 import Post from "../components/CommunityPages/Post";
 import PostInput from "../components/CommunityPages/PostInput";
 import CommunityGrid from "../components/CommunityPages/CommunityGrid";
+import EventsGrid from "../components/EventPages/EventsGrid";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -173,6 +174,18 @@ const PlaygroundPage = () => {
         </div>
 
         <CollectionGrid data={products} />
+      </section>
+      <div className="divider" />
+
+      {/* Collection Grid */}
+      <section className="p-8">
+        <div className="flex justify-center">
+          <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+            Collection Grid
+          </h1>
+        </div>
+
+        <EventsGrid data={events} />
       </section>
       <div className="divider" />
 
