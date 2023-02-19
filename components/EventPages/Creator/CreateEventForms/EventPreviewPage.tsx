@@ -1,5 +1,4 @@
 import { format } from "date-fns";
-import { useRouter } from "next/router";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   FaCalendar,
@@ -17,18 +16,14 @@ import Banner from "../../../Banner";
 import Button from "../../../Button";
 import { Event } from "../../../../pages/events/create";
 import TicketCard from "../../TicketCard";
+import { UseFormWatch } from "react-hook-form";
 
 type EventPreviewPageProps = {
-  formValues: Event;
+  watch: UseFormWatch<Event>;
   setIsPreview: Dispatch<SetStateAction<boolean>>;
 };
 
-const EventPreviewPage = ({
-  formValues,
-  setIsPreview,
-}: EventPreviewPageProps) => {
-  const router = useRouter();
-  const { eid } = router.query;
+const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
   const {
     name,
     description,
@@ -39,7 +34,7 @@ const EventPreviewPage = ({
     endDateTime,
     venue,
     tags,
-  } = formValues;
+  } = watch();
   useEffect(() => {
     // scroll to ticket
     document.getElementById(`preview-alert`)?.scrollIntoView({
@@ -131,6 +126,9 @@ const EventPreviewPage = ({
           </section>
 
           <section>
+            <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
+              Ticket Options (Types)
+            </h1>
             {tickets.map((ticket) => (
               <TicketCard key={ticket.ticketId} ticket={ticket} />
             ))}

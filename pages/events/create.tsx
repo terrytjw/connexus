@@ -7,7 +7,7 @@ import TicketFormPage from "../../components/EventPages/Creator/CreateEventForms
 import PublishFormPage from "../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { Ticket, PrivacyType, Promotion } from "@prisma/client";
+import { Ticket, PrivacyType, Promotion, VisibilityType } from "@prisma/client";
 import { StepStatus } from "../../utils/enums";
 
 // hard coded tag type, will be replaced with prisma type
@@ -32,6 +32,7 @@ export type Event = {
   tags: string[];
   tickets: Ticket[];
   privacy: PrivacyType;
+  visibility: VisibilityType;
   promo?: Promotion;
 };
 
@@ -270,6 +271,7 @@ const CreatorEventCreate = () => {
             currentStep?.status === StepStatus.CURRENT && (
               <PublishFormPage
                 watch={watch}
+                setValue={setValue}
                 privacy={privacy}
                 publish={publish}
               />

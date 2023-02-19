@@ -1,11 +1,12 @@
 import { useState } from "react";
-import { UseFormWatch } from "react-hook-form";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { FaHeart, FaCalendar, FaMapPin, FaPersonBooth } from "react-icons/fa";
 import { Event } from "../../../../pages/events/create"; // replace with Prisma Type
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
 import { format } from "date-fns";
+import { PrivacyType, VisibilityType } from "@prisma/client";
 
 type PublishFormPageProps = {
   privacy: {
@@ -19,11 +20,16 @@ type PublishFormPageProps = {
     description: string;
   }[];
   watch: UseFormWatch<Event>;
+  setValue: UseFormSetValue<Event>;
 };
 
-const PublishFormPage = ({ privacy, publish, watch }: PublishFormPageProps) => {
+const PublishFormPage = ({
+  publish,
+  watch,
+  setValue,
+}: PublishFormPageProps) => {
   // form values
-  const [
+  const {
     name,
     bannerPic,
     profilePic,
@@ -33,20 +39,11 @@ const PublishFormPage = ({ privacy, publish, watch }: PublishFormPageProps) => {
     tickets,
     venue,
     maxAttendees,
-  ] = watch([
-    "name",
-    "bannerPic",
-    "profilePic",
-    "startDateTime",
-    "endDateTime",
-    "tags",
-    "tickets",
-    "venue",
-    "maxAttendees",
-  ]);
+    privacy,
+    visibility,
+  } = watch();
   const [isPreview, setIsPreview] = useState<boolean>(false);
-  const formValues = watch();
-  console.log("WATCH ", formValues);
+
   return (
     <div>
       {!isPreview ? (
@@ -112,28 +109,39 @@ const PublishFormPage = ({ privacy, publish, watch }: PublishFormPageProps) => {
                 </h2>
                 <fieldset className="mt-8">
                   <div className="space-y-5">
-                    {privacy.map((privacy) => (
+                    {Object.values(PrivacyType).map((privacyOption) => (
                       <div
-                        key={privacy.id}
+                        key={privacyOption}
                         className="relative flex items-start"
                       >
                         <div className="flex h-5 items-center">
                           <input
-                            id={privacy.id}
                             name="privacyType"
                             type="radio"
-                            defaultChecked={true}
+                            value={privacyOption}
+                            defaultChecked={
+                              privacyOption === PrivacyType.PUBLIC
+                            }
                             className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            onChange={(e) =>
+                              setValue("privacy", e.target.value as PrivacyType)
+                            }
                           />
                         </div>
                         <div className="ml-3 text-sm">
                           <label
-                            htmlFor={privacy.id}
+                            htmlFor={privacyOption}
                             className="font-medium text-gray-700"
                           >
-                            {privacy.name}
+                            {privacyOption === PrivacyType.PRIVATE
+                              ? "Private"
+                              : "Public"}
                           </label>
-                          <p className="text-gray-500">{privacy.description}</p>
+                          <p className="text-gray-500">
+                            {privacyOption === PrivacyType.PRIVATE
+                              ? "Only available to selected audience"
+                              : "Shard on Connexus and search engines"}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -148,33 +156,42 @@ const PublishFormPage = ({ privacy, publish, watch }: PublishFormPageProps) => {
                 </h2>
                 <fieldset className="mt-8">
                   <div className="space-y-5">
-                    {publish.map((publish) => (
+                    {Object.values(VisibilityType).map((visibilityOption) => (
                       <div
-                        key={publish.id}
+                        key={visibilityOption}
                         className="relative flex items-start"
                       >
                         <div className="flex h-5 items-center">
                           <input
-                            id={publish.id}
-                            name="privacyType"
+                            name="visibilityType"
                             type="radio"
-                            defaultChecked={true}
+                            value={visibilityOption}
+                            defaultChecked={
+                              visibilityOption === VisibilityType.PUBLISHED
+                            }
                             className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            onChange={(e) =>
+                              setValue(
+                                "visibility",
+                                e.target.value as VisibilityType
+                              )
+                            }
                           />
                         </div>
                         <div className="ml-3 text-sm">
                           <label
-                            htmlFor={publish.id}
+                            htmlFor={visibilityOption}
                             className="font-medium text-gray-700"
                           >
-                            {publish.name}
+                            {visibilityOption === VisibilityType.PUBLISHED
+                              ? "Now"
+                              : "Later"}
                           </label>
-                          <p className="text-gray-500">{publish.description}</p>
-                          {publish.id === "later" && (
-                            <div className="text-green-400">
-                              todo: add date input
-                            </div>
-                          )}
+                          <p className="text-gray-500">
+                            {visibilityOption === VisibilityType.PUBLISHED
+                              ? "Publish now"
+                              : "Keep as Draft"}
+                          </p>
                         </div>
                       </div>
                     ))}
@@ -198,7 +215,7 @@ const PublishFormPage = ({ privacy, publish, watch }: PublishFormPageProps) => {
         </div>
       ) : (
         // show preview page, passing props bc passing 'watch' doesn't seem to work
-        <EventPreviewPage formValues={formValues} setIsPreview={setIsPreview} />
+        <EventPreviewPage watch={watch} setIsPreview={setIsPreview} />
       )}
     </div>
   );

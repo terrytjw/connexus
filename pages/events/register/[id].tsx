@@ -1,18 +1,32 @@
-import { useContext, useEffect, useMemo, useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
 import StepsMobile from "../../../components/EventPages/StepsMobile";
 import StepsDesktop, {
   Step,
 } from "../../../components/EventPages/StepsDesktop";
-import EventFormPage from "../../../components/EventPages/Creator/CreateEventForms/EventFormPage";
-import TicketFormPage from "../../../components/EventPages/Creator/CreateEventForms/TicketFormPage";
-import PublishFormPage from "../../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { Ticket, PrivacyType, Promotion } from "@prisma/client";
 import { StepStatus } from "../../../utils/enums";
+import ParticularsFormPage from "../../../components/EventPages/Fan/RegisterEventForms/ParticularsFormPage";
+import { Event } from "../create";
+import TicketSelectionFormPage from "../../../components/EventPages/Fan/RegisterEventForms/TicketSelectionFormPage";
+import { PrivacyType, VisibilityType } from "@prisma/client";
+import ConfirmationPage from "../../../components/EventPages/Fan/RegisterEventForms/ConfirmationPage";
 
 // hard coded tag type, will be replaced with prisma type
+export type Attendee = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  mobileNumber: string;
+  attendeeTickets: {
+    name: string;
+    ticketIds: string[];
+    qty: number;
+    // rest of ticket details
+  }[];
+};
+
 export type Venue = {
   lat: number | undefined;
   lng: number | undefined;
@@ -22,122 +36,70 @@ export type Venue = {
   postalCode: number;
 };
 
-export type Event = {
-  name: string;
-  description: string;
-  bannerPic: File | null;
-  profilePic: File | null;
-  startDateTime: string;
-  endDateTime: string;
-  venue: Venue;
-  maxAttendees: number;
-  tags: string[];
-  tickets: Ticket[];
-  privacy: PrivacyType;
-  promo?: Promotion;
-};
-
-// hard coded tag types, will be replaced
-const labels = [
-  "NFT",
-  "Lifestyle",
-  "Fitness",
-  "Entertainment",
-  "Fashion",
-  "Animals",
-  "Travel",
-  "Education",
-  "Health",
-];
-
-// hard coded data
-const privacy = [
-  {
-    id: "public",
-    name: "Public",
-    description: "description..",
-  },
-  {
-    id: "private",
-    name: "Private",
-    description: "description..",
-  },
-];
-
-const publish = [
-  {
-    id: "now",
-    name: "Publish now",
-    description: "description..",
-  },
-  {
-    id: "later",
-    name: "Schedule for later",
-    description: "description..",
-  },
-];
-
 const FanEventRegister = () => {
-  // hard coded default event, will be replaced to match prisma type
-  const { handleSubmit, setValue, control, watch, trigger } = useForm<Event>({
-    defaultValues: {
-      name: "",
-      description: "",
-      startDateTime: "",
-      endDateTime: "",
-      tags: [""],
-      venue: {
-        lat: undefined,
-        lng: undefined,
-        venueName: "",
-        address1: "",
-        address2: "",
-        postalCode: 0 as unknown as number,
-      },
-      tickets: [],
+  // TO replace: fetch event data using ID from api
+  const [event, setEvent] = useState<Event>({
+    name: "Blockchain Event",
+    description: "Event Description",
+    bannerPic: null,
+    profilePic: null,
+    startDateTime: "2023-02-19T08:08",
+    endDateTime: "2023-02-19T20:08",
+    tags: [""],
+    venue: {
+      lat: 1.2942824,
+      lng: 103.7741012,
+      venueName: "COM 2",
+      address1: "15 Computing Drive",
+      address2: "01-15",
+      postalCode: 117418,
     },
+    tickets: [
+      {
+        ticketId: 1,
+        name: "Cat A",
+        description: "Good views",
+        price: 69,
+        quantity: 10,
+        startDate: new Date("2023-03-21T12:31"),
+        endDate: new Date("2023-03-22T00:32"),
+        eventId: 5e-324,
+      },
+      {
+        ticketId: 1,
+        name: "Cat B",
+        description: "Slightly worse views",
+        price: 10,
+        quantity: 30,
+        startDate: new Date("20-03-12T03:12"),
+        endDate: new Date("2023-02-19T08:10"),
+        eventId: 5e-324,
+      },
+    ],
+    maxAttendees: 30,
+    privacy: PrivacyType.PUBLIC,
+    visibility: VisibilityType.PUBLISHED,
   });
 
-  // listen to tickets array
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "tickets",
-  });
-
-  const [tickets] = watch(["tickets"]);
+  // hard coded default event, will be replaced to match prisma type
+  // this is the attendee object used for an api call to the backend
+  const { handleSubmit, setValue, control, watch, trigger } = useForm<Attendee>(
+    {
+      defaultValues: {
+        firstName: "",
+        lastName: "",
+        email: "",
+        mobileNumber: "",
+        attendeeTickets: [],
+      },
+    }
+  );
 
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Particulars", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Select Tickets", status: StepStatus.UPCOMING },
     { id: "Step 3", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
-
-  // a null/ undefined state is needed for form validation
-  const addNewTicket = (): void => {
-    append({
-      ticketId: 1,
-      name: "",
-      description: "",
-      price: null as unknown as number,
-      quantity: null as unknown as number,
-      startDate: null as unknown as Date,
-      endDate: null as unknown as Date,
-      eventId: Number.MIN_VALUE,
-    });
-  };
-
-  useEffect(() => {
-    // scroll to ticket
-    document.getElementById(`ticket-${tickets.length}`)?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
-  }, [tickets]);
-
-  const removeTicket = (index: number): void => {
-    remove(index);
-  };
 
   const getCurrentStep = (): Step | undefined => {
     return steps.find((step) => step.status === StepStatus.CURRENT);
@@ -155,9 +117,6 @@ const FanEventRegister = () => {
               : step
           )
         );
-        if (tickets.length === 0) {
-          addNewTicket();
-        }
         break;
       case "Step 2":
         setSteps((prev) =>
@@ -224,8 +183,8 @@ const FanEventRegister = () => {
           {currentStep?.id === "Step 1"
             ? "Register for Event"
             : currentStep?.id === "Step 2"
-            ? "Create New Tickets"
-            : "Publish Event"}
+            ? "Select Tickets"
+            : "Confirm Registration"}
         </h2>
       </nav>
 
@@ -239,17 +198,15 @@ const FanEventRegister = () => {
       {/* Form */}
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <form
-          onSubmit={handleSubmit((data: Event) =>
+          onSubmit={handleSubmit((data: Attendee) =>
             console.log("Submitting Form Data", data)
           )}
         >
           {/* Step 1 */}
           {currentStep?.id === "Step 1" &&
             currentStep?.status === StepStatus.CURRENT && (
-              <EventFormPage
+              <ParticularsFormPage
                 watch={watch}
-                labels={labels}
-                setValue={setValue}
                 control={control}
                 trigger={trigger}
                 proceedStep={proceedStep}
@@ -258,22 +215,23 @@ const FanEventRegister = () => {
           {/* Step 2 */}
           {currentStep?.id === "Step 2" &&
             currentStep?.status === StepStatus.CURRENT && (
-              <TicketFormPage
+              <TicketSelectionFormPage
+                event={event}
+                setValue={setValue}
+                watch={watch}
                 control={control}
                 trigger={trigger}
-                fields={fields}
-                addNewTicket={addNewTicket}
-                removeTicket={removeTicket}
                 proceedStep={proceedStep}
               />
             )}
           {/* Step 3 */}
           {currentStep?.id === "Step 3" &&
             currentStep?.status === StepStatus.CURRENT && (
-              <PublishFormPage
+              <ConfirmationPage
                 watch={watch}
-                privacy={privacy}
-                publish={publish}
+                control={control}
+                trigger={trigger}
+                proceedStep={proceedStep}
               />
             )}
         </form>
