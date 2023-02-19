@@ -243,6 +243,12 @@ components:
           type: array
         scAddress:
           type: string
+        ticketCount:
+          type: integer
+        ticketURIs:
+          items:
+            type: string
+          type: array
       type: object
     Ticket:
       properties:

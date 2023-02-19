@@ -108,7 +108,9 @@ const EventsPage = (props: any) => {
       description: "This is just a description",
       visibilityType: VisibilityType.DRAFT,
       privacyType: PrivacyType.PUBLIC,
-      scAddress : "0x85DC03b19148468Bb306Ff5389d300E7893cAf80", //event_contract.address,
+      scAddress :event_contract.address,
+      ticketCount : 0,
+      ticketURIs: [],
       /*tickets:[   issues with ticket addition to event
         {
           ticketId: 1, 
@@ -131,31 +133,6 @@ const EventsPage = (props: any) => {
     
   }
 
-  async function updateEvent() {
-    const event: Event = {
-      eventId: 1,
-      title: "This is a new updated event",
-      category: CategoryType.AUTO_BOAT_AIR,
-      location: "Singapore Expo",
-      eventDurationType: DurationType.SINGLE,
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary: "This is just a summary",
-      description: "This is just a description",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PRIVATE,
-      scAddress : "s", //event_contract.address,
-
-    };
-
-    let response = await axios.post(
-      "http://localhost:3000/api/events/1",
-      event
-    );
-    let data = response.data;
-    console.log(data);
-  }
 
   async function deleteEvent() {
     let response = await axios.delete("http://localhost:3000/api/events/3");
@@ -163,23 +140,7 @@ const EventsPage = (props: any) => {
     console.log(data);
   }
 
-  async function mintTicket(){
-    //promotion will be separately applied 
-    //get event details -> fish out to put into metadata 
-    //once pinned -> go to smart contract mint function  -> input the ipfs link as tokenuri to mint 
-
-    console.log("Pinning metadata");
-    let response = await axios.get("http://localhost:3000/api/events/10");
-    const event_details = response.data; 
-    const event_sc = "0xeaBFF06FeBFEC94Cf39f0388fE80153fEB82d35F";//event_details.scAddress;
-    const event_name = event_details.title; 
-    const location = event_details.location; 
-    const endDate = event_details.endDate; 
-    const startDate = event_details.startDate; 
-    const category = "General Admission"; 
-    
-    console.log(response.data);
-
+  async function mintOnChain(event_name, location, startDate, endDate, category){
     var metadata_data = JSON.stringify({
       "pinataOptions": {
         "cidVersion": 1
@@ -216,20 +177,40 @@ const EventsPage = (props: any) => {
         //handle response here
         
         accepted = 1; 
-        console.log(response.data)
-        /*
-        Returns the IPFS hash  
-        https://gateway.pinata.cloud/ipfs/bafkreia3atgjtyhg2cqqwbjkeccr4mbqxfwlwbccup7o3kztw43fn7wnvy 
-        //set tokenURI for the mint function when user wants to mint the ticket 
-        // contract instance */
+        console.log(response.data.IpfsHash)
+        return response.data.IpfsHash;
 
     }).catch(function (error) {
         //handle error here
     }); 
-    accepted = 1;
-    if (accepted == 1){
-      let ipfshash = response.data.IpfsHash; 
-      const link = "https://gateway.pinata.cloud/ipfs/" + "bafkreia3atgjtyhg2cqqwbjkeccr4mbqxfwlwbccup7o3kztw43fn7wnvy";
+
+  }
+
+  async function mintTicket(){
+    //promotion will be separately applied 
+    //get event details -> fish out to put into metadata 
+    //once pinned -> go to smart contract mint function  -> input the ipfs link as tokenuri to mint 
+
+    console.log("Pinning metadata");
+    let response = await axios.get("http://localhost:3000/api/events/3");
+    const event_details = response.data; 
+    const event_sc = event_details.scAddress;
+    const event_name = event_details.title; 
+    const location = event_details.location; 
+    const endDate = event_details.endDate; 
+    const startDate = event_details.startDate; 
+    var ticketSupply = event_details.ticketCount; 
+    var ticketURIs = event_details.ticketURIs;
+    const category = "General Admission"; 
+    
+    //let ipfshash = await mintOnChain(event_name, location, startDate, endDate, category)
+    let ipfshash = "bafkreigqp37qsksqgrf42snchf25hbh22teak2guw5wnlxismbwotipdcq";
+    console.log(ipfshash);
+    const link = "https://gateway.pinata.cloud/ipfs/" + ipfshash;
+    console.log("IPFS Hash Link  : ", link);
+   //how to synchronously pass the ipfs hash over? 
+    if (ipfshash != undefined){
+      const link = "https://gateway.pinata.cloud/ipfs/" + ipfshash;
       console.log("IPFS Hash Link  : ", link);
       const event_contract = new ethers.Contract(event_sc, abi, signer);
       console.log(event_sc);
@@ -242,25 +223,110 @@ const EventsPage = (props: any) => {
       /*
       The code will return errors eg. max minting reached, max minting per category reached. so if error -> for FE
       */
-      console.log(mint_ticket);
+      console.log(mint_ticket.hash);
+
+      //also update event details in db to add in ipfs link + update ticketsupply 
+      ticketSupply += 1;
+      ticketURIs.push(link);
+      const event: Event = {
+        eventId: 1,
+        ticketCount : ticketSupply, 
+        ticketURIs : ticketURIs,
+  
+      };
+  
+      let response = await axios.post(
+        "http://localhost:3000/api/events/3",
+        event
+      );
+      let data = response.data;
+      console.log(data);
+      
+
 }
 
 
     
   }
 
-  async function getTicket(){
+
+  async function getTicket(){ //will have to do for users to retrieve all the tickets they have 
+    //perhaps store all their ticketURIs within themselves?
+    //or just do a query on chain to get all their erc721 tokens -> contract address -> get tokenURI -> show
     const event_sc = "0xeaBFF06FeBFEC94Cf39f0388fE80153fEB82d35F";
     const event_contract = new ethers.Contract(event_sc, abi, signer);
     console.log(event_sc);
     console.log(event_contract)
-    const tokenURI = await event_contract.tokenURI(2);
-    console.log(tokenURI);
-    //const res = await axios.get(tokenURI).then(response=>{console.log(response.data)});
-    console.log(res);
+    const ipfs_link = await event_contract.tokenURI(2);
+    console.log(ipfs_link);
+    let response = await axios.get(ipfs_link);
+    console.log(response);
 
 
   }
+
+  async function updateEvent() {
+    const event: Event = {
+      eventId: 1,
+      title: "This is a new updated event",
+      category: CategoryType.AUTO_BOAT_AIR,
+      location: "Singapore Expo",
+      eventDurationType: DurationType.SINGLE,
+      startDate: new Date(),
+      endDate: new Date(),
+      images: [],
+      summary: "This is just a summary",
+      description: "This is just a description",
+      visibilityType: VisibilityType.DRAFT,
+      privacyType: PrivacyType.PRIVATE,
+
+    };
+
+    let response = await axios.post(
+      "http://localhost:3000/api/events/3",
+      event
+    );
+    let data = response.data;
+    console.log("Data uploaded");
+
+    //then update the metadata within the event and repin all tokenURIs to update 
+    let event_db = await axios.get("http://localhost:3000/api/events/3");
+    const event_details = event_db.data; 
+    const event_sc = event_details.scAddress;
+    var ticketURIs = event_details.ticketURIs;
+    var newticketURIs = [];
+    for (let i = 0 ; i < ticketURIs.length; i ++){
+      var ticketURI = ticketURIs[i]; 
+      console.log(ticketURI); //axios.get the details within and retrieve the category bought
+      var category_chosen = "General Admission"; //will need to change this
+      const event_contract = new ethers.Contract(event_sc, abi, signer);
+      console.log(event_sc);
+      console.log(event_contract)
+      //let ipfshash = await mintOnChain(event_name, location, startDate, endDate, category)
+      let ipfshash = "bafkreihf6l4756g5zdz5czqt7qddeqrecayh5mlduv6w7tdciq6u34q6di";
+      console.log(ipfshash);
+      const link = "https://gateway.pinata.cloud/ipfs/" + ipfshash;
+      console.log("IPFS Hash Link  : ", link);
+      var changeTokenURI = await event_contract.setNewTokenURI(i, link, {gasLimit: 2100000});
+      console.log("Changed for Token ", i);
+      newticketURIs.push(changeTokenURI);
+    }
+    console.log(ticketURIs);
+    const updated_event: Event = {
+      ticketURIs : newticketURIs
+
+    };
+    //errors with updating again through axios
+    let updated_response = await axios.post(
+      "http://localhost:3000/api/events/3",
+      updated_event
+    );
+    let updated_data = updated_response.data;
+    console.log("Data uploaded");
+
+    
+  }
+
   const { data, error, isLoading } = useSWR(
     "http://localhost:3000/api/events",
     fetchEvents
@@ -284,6 +350,9 @@ const EventsPage = (props: any) => {
       <button onClick={mintTicket}>Click me to mint tickets</button>;
       <br/>
       <button onClick={getTicket}>Click me to get your ticket details</button>;
+      <br/>
+      <br/>
+      
     </div>
   );
 };

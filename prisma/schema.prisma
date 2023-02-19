@@ -114,6 +114,8 @@ model Event {
   privacyType       PrivacyType
   tickets           Ticket[] 
   scAddress         String
+  ticketCount       Int
+  ticketURIs        String[]
 }
 
 model Ticket {

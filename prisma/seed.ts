@@ -167,6 +167,8 @@ async function generateEvent() {
       endDate: new Date(),
       images: [],
       scAddress: "0xa",
+      ticketCount  :0 , 
+      ticketURIs : [],
       summary:
         "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
       description: "This is a yoga class",
@@ -244,13 +246,15 @@ async function generateEvent() {
       startDate: new Date(),
       endDate: new Date(),
       images: [],
+      ticketURIs: [],
+
       summary:
         "A spin class is a high-intensity, group fitness class that typically takes place on stationary bicycles. Participants follow a guided workout that simulates outdoor cycling and can include intervals of high-intensity sprints and hill climbs, as well as periods of recovery. ",
       description: "This is a spin class",
       visibilityType: VisibilityType.DRAFT,
       privacyType: PrivacyType.PUBLIC,
       scAddress: "0xa",
-
+      ticketCount : 0,
       tickets: {
         create: [
           {

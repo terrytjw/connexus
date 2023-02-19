@@ -116,9 +116,15 @@ contract SimpleEvent is  Ownable, ReentrancyGuard, ERC721URIStorage {
 
     } 
 
+    function setNewTokenURI(uint256 tokenId, string memory tokenURI) public{
+       _setTokenURI(tokenId, tokenURI);
 
+    }
 
-    
+    function getTokenSupply() public view returns(uint256){ 
+        return currentTicketSupply;
+    }
+
 
     function mint(string memory category, string memory tokenURI) public virtual payable returns(uint256){
         emit userMints(msg.sender); //event emitted

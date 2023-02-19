@@ -347,6 +347,15 @@
         },
         "scAddress": {
           "type": "string"
+        },
+        "ticketCount": {
+          "type": "integer"
+        },
+        "ticketURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
