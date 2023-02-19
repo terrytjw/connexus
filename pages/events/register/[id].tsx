@@ -206,7 +206,6 @@ const FanEventRegister = () => {
           {currentStep?.id === "Step 1" &&
             currentStep?.status === StepStatus.CURRENT && (
               <ParticularsFormPage
-                watch={watch}
                 control={control}
                 trigger={trigger}
                 proceedStep={proceedStep}
