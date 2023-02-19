@@ -1,10 +1,10 @@
 import { FaImages } from "react-icons/fa";
 import { Controller, useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
-import Button from "./Button";
-import Carousel from "./Carousel";
-import TextArea from "./TextArea";
-import { Post } from "../utils/dummyData";
+import Button from "../Button";
+import Carousel from "../Carousel";
+import TextArea from "../TextArea";
+import { Post } from "../../utils/dummyData";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");

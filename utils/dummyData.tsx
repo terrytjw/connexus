@@ -1,3 +1,5 @@
+import { ChannelType } from "./types";
+
 // dummy tab data
 export const tabs = [
   { name: "Profile", href: "#", current: true },
@@ -86,47 +88,7 @@ export const products = [
   // More products...
 ];
 
-export type Community = {
-  communityId: number;
-  name: string;
-  description: string;
-  bannerPic: string;
-  profilePic: string;
-  tags: string[];
-  maxMembers: number;
-  numMembers: number;
-};
-
-export type Post = {
-  postId: number;
-  title: string;
-  content: string;
-  date: Date;
-  media: string[];
-  isPinned: boolean;
-  creator: {
-    userId: string;
-    displayName: string;
-    profilePic: string;
-  };
-  likes: number;
-  comments: Comment[];
-};
-
-export type Comment = {
-  commentId: number;
-  content: string;
-  date: Date;
-  commentor: {
-    userId: string;
-    displayName: string;
-    profilePic: string;
-  };
-  likes: number;
-  replies: Comment[];
-};
-
-export const posts = [
+const posts = [
   {
     postId: 1,
     title: "Post 1 Title",
@@ -206,30 +168,24 @@ export const posts = [
           },
         ],
       },
-    ] as Comment[],
+    ],
   },
 ];
 
-export const community = {
-  communityId: 1,
-  name: "Community Name",
-  description: "Community Description",
-  bannerPic: "/images/bear.jpg",
-  profilePic: "/images/bear.jpg",
-  tags: ["NFT", "Entertainment", "Fitness"],
-  maxMembers: 2,
-  numMembers: 2,
-  channels: [
-    {
-      channelId: 1,
-      name: "Home",
-    },
-    {
-      channelId: 2,
-      name: "Premium Channel 1",
-    },
-  ],
-};
+const channels = [
+  {
+    channelId: 1,
+    name: "Home",
+    channelType: ChannelType.HOME,
+    posts: posts,
+  },
+  {
+    channelId: 2,
+    name: "Premium Channel 1",
+    channelType: ChannelType.PREMIUM,
+    posts: posts,
+  },
+];
 
 export const communities = [
   {
@@ -241,6 +197,7 @@ export const communities = [
     tags: ["NFT", "Entertainment", "Fitness"],
     maxMembers: 2,
     numMembers: 2,
+    channels: channels,
   },
   {
     communityId: 2,
@@ -251,6 +208,7 @@ export const communities = [
     tags: ["NFT"],
     maxMembers: 2,
     numMembers: 1000,
+    channels: channels,
   },
   {
     communityId: 3,
@@ -261,6 +219,7 @@ export const communities = [
     tags: ["NFT"],
     maxMembers: 2,
     numMembers: 8,
+    channels: channels,
   },
   {
     communityId: 4,
@@ -271,6 +230,7 @@ export const communities = [
     tags: ["NFT"],
     maxMembers: 2,
     numMembers: 10000,
+    channels: channels,
   },
   {
     communityId: 5,
@@ -281,5 +241,6 @@ export const communities = [
     tags: ["NFT"],
     maxMembers: 2,
     numMembers: 200,
+    channels: channels,
   },
 ];

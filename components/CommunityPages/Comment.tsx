@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { FaRegHeart, FaTrashAlt } from "react-icons/fa";
-import Button from "./Button";
-import CustomLink from "./CustomLink";
-import { Comment } from "../utils/dummyData";
+import Button from "../Button";
+import CustomLink from "../CustomLink";
+import { Comment } from "../../utils/types";
 
 type CommentProps = {
   comment: Comment;

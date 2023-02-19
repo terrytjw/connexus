@@ -18,15 +18,15 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { communities, posts, products, profile } from "../utils/dummyData";
+import { communities, products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
 import BannerInput from "../components/BannerInput";
 import Carousel from "../components/Carousel";
-import Post from "../components/Post";
-import PostInput from "../components/PostInput";
-import CommunityGrid from "../components/CommunityGrid";
+import Post from "../components/CommunityPages/Post";
+import PostInput from "../components/CommunityPages/PostInput";
+import CommunityGrid from "../components/CommunityPages/CommunityGrid";
 
 const PlaygroundPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -366,7 +366,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
         <div className="p-8">
-          <Carousel images={posts[0].media} />
+          <Carousel images={communities[0].channels[0].posts[0].media} />
         </div>
       </section>
 
@@ -378,7 +378,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
         <div className="p-8">
-          <Post post={posts[0]} />
+          <Post post={communities[0].channels[0].posts[0]} />
         </div>
       </section>
 

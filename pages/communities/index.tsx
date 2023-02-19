@@ -3,7 +3,7 @@ import { BiFilter } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import Badge from "../../components/Badge";
 import Button from "../../components/Button";
-import CommunityGrid from "../../components/CommunityGrid";
+import CommunityGrid from "../../components/CommunityPages/CommunityGrid";
 import Modal from "../../components/Modal";
 import TabGroupBordered from "../../components/TabGroupBordered";
 import { communities } from "../../utils/dummyData";

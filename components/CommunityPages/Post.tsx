@@ -1,14 +1,14 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FaEllipsisH, FaRegComment, FaRegHeart, FaTimes } from "react-icons/fa";
-import Button from "./Button";
-import Carousel from "./Carousel";
+import Button from "../Button";
+import Carousel from "../Carousel";
 import Comment from "./Comment";
 import CommentInput from "./CommentInput";
-import CustomLink from "./CustomLink";
-import Modal from "./Modal";
+import CustomLink from "../CustomLink";
+import Modal from "../Modal";
 import PostInput from "./PostInput";
-import { Post, Comment as CommentType } from "../utils/dummyData";
+import { Post, Comment as CommentType } from "../../utils/types";
 
 type PostProps = {
   post: Post;

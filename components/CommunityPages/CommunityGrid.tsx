@@ -2,8 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaUserFriends } from "react-icons/fa";
-import Button from "./Button";
-import { Community } from "../utils/dummyData";
+import Button from "../Button";
+import { Community } from "../../utils/types";
 
 type CommunityGridProps = {
   communities: Community[];
