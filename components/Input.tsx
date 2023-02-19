@@ -6,8 +6,7 @@ function classNames(...classes: string[]) {
 }
 
 type InputProps = {
-  className?: string;
-  type: "text" | "number" | "email" | "password";
+  type: "text" | "number" | "date" | "datetime-local" | "email" | "password";
   label: string;
   name: string;
   placeholder?: string;
@@ -62,8 +61,9 @@ const Input = ({
           "input-group input w-full",
           `input-${variant}`,
           `input-${size}`,
-          className ?? "",
-          classNames("label-text", isRequiredError ? "border-red-500" : "")
+          "w-full",
+          "items-center",
+          className ?? ""
         )}
         type={type}
         placeholder={placeholder}

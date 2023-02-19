@@ -35,7 +35,7 @@ const MobileNavbar = ({ children }: any) => {
         type="checkbox"
         className="drawer-toggle"
       />
-      <div className="drawer-content">
+      <div id="scrollable" className="drawer-content">
         {/* <!-- Page content here --> */}
         <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
           <label
@@ -236,7 +236,7 @@ const Layout = ({ children }: LayoutProps) => {
     <MobileNavbar>
       <div className="flex text-black">
         <DesktopSidebar />
-        <main className="w-full lg:ml-64">
+        <main className="w-full lg:pl-64">
           <div className="min-h-screen bg-sky-100">{children}</div>
           <Footer />
         </main>

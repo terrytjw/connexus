@@ -6,10 +6,10 @@ function classNames(...classes: string[]) {
 }
 
 type InputGroupProps = {
-  className?: string;
-  type: "text" | "number";
+  type: "text" | "number" | "date" | "datetime-local";
   label: string;
-  name: string;
+  value?: string | number;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   register: UseFormRegister<any>;
   required?: boolean;
@@ -73,8 +73,8 @@ const InputGroup = ({
             "input block w-full rounded-md pl-10",
             `input-${variant}`,
             `input-${size}`,
-            className ?? "",
-            classNames("label-text", isRequiredError ? "border-red-500" : "")
+            `items-center`,
+            className ?? ""
           )}
           type={type}
           placeholder={placeholder}

@@ -21,6 +21,7 @@ const Badge = ({ className, size, label, selected, onClick }: BadgeProps) => {
           className ?? ""
         )}
         onClick={onClick}
+        type="button"
       >
         {label}
       </button>

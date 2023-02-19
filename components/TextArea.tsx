@@ -16,6 +16,11 @@ type TextAreaProps = {
   errors: any;
   autoFocus?: boolean;
   disabled?: boolean;
+  placeholder?: string;
+  label?: string;
+  value: string;
+  onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
+  errorMessage?: string;
 };
 const TextArea = ({
   className,
@@ -28,20 +33,18 @@ const TextArea = ({
   errors,
   autoFocus,
   disabled,
+  placeholder,
+  label,
+  value,
+  onChange,
+  errorMessage,
 }: TextAreaProps) => {
   const isRequiredError = errors[name]?.type === "required";
 
   return (
-    <div className="form-control">
+    <div className="form-control w-full">
       <label className="label">
-        <span
-          className={classNames(
-            "label-text",
-            isRequiredError ? "text-red-500" : ""
-          )}
-        >
-          {label}
-        </span>
+        <span className="label-text">{label}</span>
       </label>
       <textarea
         className={classNames(
