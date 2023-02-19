@@ -51,7 +51,7 @@ const EventFormPage = ({
     | "localContext"
     | "places"
     | "visualization"
-  )[] = useMemo(() => ["places"], []);
+  )[] = ["places"];
   // gmaps api loader
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -131,11 +131,6 @@ const EventFormPage = ({
           getAddressComponent("route"),
         address2: getAddressComponent("subpremise") ?? "",
         postalCode: Number(getAddressComponent("postal_code")),
-      });
-      document.getElementById(`venue-inputs`)?.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "nearest",
       });
     }
   };

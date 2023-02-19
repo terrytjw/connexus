@@ -202,6 +202,7 @@ const CreatorEventCreate = () => {
     }
   };
 
+  // memoizing so that react only calculates the current step when it changes
   const currentStep: Step | undefined = useMemo(
     () => getCurrentStep(),
     [getCurrentStep]
