@@ -1,8 +1,6 @@
-import { Ticket } from "@prisma/client";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
-import { Control, UseFormWatch, useWatch } from "react-hook-form";
 import {
   FaCalendar,
   FaChevronLeft,

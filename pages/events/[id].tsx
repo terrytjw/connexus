@@ -14,10 +14,12 @@ import Avatar from "../../components/Avatar";
 import Badge from "../../components/Badge";
 import Banner from "../../components/Banner";
 import Button from "../../components/Button";
+import Link from "next/link";
 
 const EventPage = () => {
   const router = useRouter();
-  const { eid } = router.query;
+
+  const { id } = router.query;
 
   return (
     <div>
@@ -39,9 +41,11 @@ const EventPage = () => {
                 <h1 className="text-2xl font-bold sm:text-4xl">Event Name</h1>
                 <h3 className="mt-4">Description </h3>
               </div>
-              <Button variant="solid" size="md" className="max-w-xs">
-                Register for event
-              </Button>
+              <Link href={`/events/register/${id}`}>
+                <Button variant="solid" size="md" className="max-w-xs">
+                  Register for event
+                </Button>
+              </Link>
             </div>
           </section>
 

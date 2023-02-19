@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Control, UseFormWatch, useWatch } from "react-hook-form";
+import { UseFormWatch } from "react-hook-form";
 import { FaHeart, FaCalendar, FaMapPin, FaPersonBooth } from "react-icons/fa";
 import { Event } from "../../../../pages/events/create"; // replace with Prisma Type
 import EventPreviewPage from "./EventPreviewPage";

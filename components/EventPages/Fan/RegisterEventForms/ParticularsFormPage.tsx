@@ -36,7 +36,7 @@ type LatLngLiteral = google.maps.LatLngLiteral;
 type AutocompleteType = google.maps.places.Autocomplete;
 type GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
 
-const EventFormPage = ({
+const ParitcularsFormPage = ({
   watch,
   labels,
   setValue,
@@ -512,4 +512,4 @@ const EventFormPage = ({
   );
 };
 
-export default EventFormPage;
+export default ParitcularsFormPage;
