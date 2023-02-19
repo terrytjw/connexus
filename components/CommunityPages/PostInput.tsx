@@ -25,6 +25,42 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
 
   const [content, media] = watch(["content", "media"]);
 
+  const uploadMultipleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      if (media.length + e.target.files.length > 10) {
+        toast("You can only upload a maximum of 10 files!");
+        return;
+      }
+
+      const readFileAsBase64 = (file: File): Promise<string> => {
+        return new Promise(function (resolve, reject) {
+          const reader = new FileReader();
+
+          reader.onload = function () {
+            resolve(reader.result as string);
+          };
+
+          reader.onerror = function () {
+            reject(reader);
+          };
+
+          reader.readAsDataURL(file);
+        });
+      };
+
+      let readers: Promise<string>[] = [];
+      Array.from(e.target.files).forEach((file) => {
+        readers.push(readFileAsBase64(file));
+      });
+
+      Promise.all(readers).then((values) => {
+        setValue("media", [...media, ...values]);
+      });
+    }
+
+    e.target.value = ""; // reset value of input
+  };
+
   return (
     <form
       className={classNames(
@@ -87,22 +123,7 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
             accept="image/png, image/gif, image/jpeg, video/mp4"
             multiple={true}
             max={10}
-            onChange={(e) => {
-              if (media.length === 10) {
-                toast("You can only upload a maximum of 10 files!");
-                return;
-              }
-
-              let newMedia: string[] = [];
-              if (e.target.files) {
-                Array.from(e.target.files).map((file) => {
-                  newMedia.push(URL.createObjectURL(file));
-                });
-                setValue("media", [...media, ...newMedia]);
-              }
-
-              e.target.value = ""; // reset value of input
-            }}
+            onChange={(e) => uploadMultipleFiles(e)}
           />
         </div>
       )}
@@ -116,22 +137,7 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
             accept="image/png, image/gif, image/jpeg, video/mp4"
             multiple={true}
             max={10}
-            onChange={(e) => {
-              if (media.length === 10) {
-                toast("You can only upload a maximum of 10 files!");
-                return;
-              }
-
-              let newMedia: string[] = [];
-              if (e.target.files) {
-                Array.from(e.target.files).map((file) => {
-                  newMedia.push(URL.createObjectURL(file));
-                });
-                setValue("media", [...media, ...newMedia]);
-              }
-
-              e.target.value = ""; // reset value of input
-            }}
+            onChange={(e) => uploadMultipleFiles(e)}
           />
           <Button
             variant="outlined"
