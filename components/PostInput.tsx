@@ -53,8 +53,8 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
               "h-min w-full",
               post ? "" : "border-0 focus:outline-none"
             )}
-            label={post ? "Description" : ""}
             placeholder="Got something on your mind?"
+            label={post ? "Description" : ""}
             value={value}
             onChange={onChange}
           />

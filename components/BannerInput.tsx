@@ -7,7 +7,7 @@ function classNames(...classes: string[]) {
 }
 
 type BannerInputProps = {
-  bannerPic: string | null; // todo: change depending on api
+  bannerPic: string | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 };

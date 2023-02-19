@@ -32,9 +32,9 @@ const CommunityPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [communityDetails, setCommunityDetails] = useState(community);
   const [activeTab, setActiveTab] = useState(0);
+  const [searchString, setSearchString] = useState("");
 
   const createPost = (data: any) => {
-    // api call
     console.log("Creating post", data);
   };
 
@@ -91,8 +91,8 @@ const CommunityPage = () => {
         <InputGroup
           type="text"
           label=""
-          value=""
-          onChange={() => {}}
+          value={searchString}
+          onChange={(e) => setSearchString(e.target.value)}
           placeholder="Search Members"
           size="md"
           variant="bordered"

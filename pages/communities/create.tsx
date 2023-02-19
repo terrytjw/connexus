@@ -118,9 +118,9 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                   value={value}
                   onChange={onChange}
                   placeholder="Community Name"
+                  errorMessage={error?.message}
                   size="md"
                   variant="bordered"
-                  errorMessage={error?.message}
                 />
               )}
             />
@@ -135,8 +135,8 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
               }) => (
                 <TextArea
                   className="max-w-3xl"
-                  label="Description"
                   placeholder="Tell us what your community is about"
+                  label="Description"
                   value={value}
                   onChange={onChange}
                   errorMessage={error?.message}
@@ -217,9 +217,9 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                   value={value}
                   onChange={onChange}
                   placeholder="Maximum Number of Members"
+                  errorMessage={error?.message}
                   size="md"
                   variant="bordered"
-                  errorMessage={error?.message}
                 />
               )}
             />
