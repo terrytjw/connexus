@@ -1,5 +1,5 @@
-import React from "react";
 import Image from "next/image";
+import React from "react";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -13,16 +13,15 @@ type BannerProps = {
 
 const Banner = ({ coverImageUrl, className, alt }: BannerProps) => {
   return (
-    <div>
+    <div
+      className={classNames("relative h-32 w-full lg:h-48", className ?? "")}
+    >
       <Image
-        className={classNames(
-          "h-32 w-full object-cover lg:h-48",
-          className ?? ""
-        )}
+        fill
+        sizes="100vw"
+        className="object-cover"
         src={coverImageUrl}
-        alt={alt || ""}
-        width={200}
-        height={200}
+        alt={alt || "Banner"}
       />
     </div>
   );

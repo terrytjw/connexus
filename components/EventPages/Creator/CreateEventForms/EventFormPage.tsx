@@ -144,11 +144,15 @@ const EventFormPage = ({
         bannerPic={bannerPic}
         onChange={(e) => {
           if (e.target.files && e.target.files.length > 0) {
-            setValue("bannerPic", e.target.files[0]);
+            const reader = new FileReader();
+            reader.addEventListener("load", () => {
+              setValue("bannerPic", reader.result as string);
+            });
+            reader.readAsDataURL(e.target.files[0]);
           }
         }}
         onClick={() => {
-          setValue("bannerPic", null as unknown as File);
+          setValue("bannerPic", "");
         }}
       />
 
@@ -158,7 +162,11 @@ const EventFormPage = ({
             profilePic={profilePic}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
-                setValue("profilePic", e.target.files[0]);
+                const reader = new FileReader();
+                reader.addEventListener("load", () => {
+                  setValue("profilePic", reader.result as string);
+                });
+                reader.readAsDataURL(e.target.files[0]);
               }
             }}
           />

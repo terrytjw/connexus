@@ -7,16 +7,14 @@ function classNames(...classes: string[]) {
 }
 
 type AvatarInputProps = {
-  profilePic: File | null;
+  profilePic: string | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 const AvatarInput = ({ profilePic, onChange }: AvatarInputProps) => {
   return (
     <>
-      {profilePic ? (
-        <Avatar imageUrl={URL.createObjectURL(profilePic)} />
-      ) : null}
+      {profilePic ? <Avatar imageUrl={profilePic} /> : null}
       <div
         className={classNames(
           "absolute top-0 flex h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32",

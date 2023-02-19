@@ -61,7 +61,7 @@ const PublishFormPage = ({
                   >
                     <div className="aspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                       <Image
-                        src={profilePic ? URL.createObjectURL(profilePic) : ""}
+                        src={profilePic ? profilePic : ""}
                         alt={name}
                         className="h-full w-full object-cover object-center"
                         width={100}

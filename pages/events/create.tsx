@@ -23,8 +23,8 @@ export type Venue = {
 export type Event = {
   name: string;
   description: string;
-  bannerPic: File | null;
-  profilePic: File | null;
+  bannerPic: string | null;
+  profilePic: string | null;
   startDateTime: string;
   endDateTime: string;
   venue: Venue;
