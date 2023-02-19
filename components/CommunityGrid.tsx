@@ -20,9 +20,9 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
         >
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
             <Image
-              height={500}
-              width={500}
-              className="h-full w-full object-cover object-center"
+              fill
+              sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
+              className="object-cover object-center"
               src={community.bannerPic}
               alt="Community Banner"
             />
@@ -55,7 +55,7 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
             <Image
               height={64}
               width={64}
-              className="h-16 w-16 rounded-full object-cover object-center"
+              className="aspect-square rounded-full object-cover object-center"
               src={community.profilePic}
               alt="Community Profile"
             />

@@ -42,9 +42,9 @@ const CollectionItemInput = ({
         />
         {imagePreview ? (
           <Image
-            height={40}
-            width={40}
-            className="absolute h-40 w-40 rounded-lg object-cover object-center"
+            height={160}
+            width={160}
+            className="absolute aspect-square rounded-lg object-cover object-center"
             src={imagePreview}
             alt={"Collection item image"}
           />

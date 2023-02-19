@@ -13,14 +13,13 @@ type BannerProps = {
 
 const Banner = ({ coverImageUrl, className, alt }: BannerProps) => {
   return (
-    <div>
+    <div
+      className={classNames("relative h-32 w-full lg:h-48", className ?? "")}
+    >
       <Image
-        height={128}
-        width={1400}
-        className={classNames(
-          "h-32 w-full object-cover lg:h-48",
-          className ?? ""
-        )}
+        fill
+        sizes="100vw"
+        className="object-cover"
         src={coverImageUrl}
         alt={alt || "Banner"}
       />

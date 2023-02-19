@@ -12,13 +12,15 @@ type CommentProps = {
 const Comment = ({ comment, replyTo }: CommentProps) => {
   return (
     <div className="flex gap-4 px-8 py-4">
-      <Image
-        height={48}
-        width={48}
-        className="h-12 w-12 rounded-full"
-        src={comment.commentor.profilePic}
-        alt="Current user profile pic"
-      />
+      <div>
+        <Image
+          height={48}
+          width={48}
+          className="rounded-full"
+          src={comment.commentor.profilePic}
+          alt="Current user profile pic"
+        />
+      </div>
       <div className="flex-grow">
         <div className="flex w-full flex-col gap-1">
           <CustomLink

@@ -13,14 +13,15 @@ type AvatarProps = {
 
 const Avatar = ({ imageUrl, className, alt }: AvatarProps) => {
   return (
-    <div className="flex">
+    <div
+      className={classNames(
+        "relative h-24 w-24 overflow-hidden rounded-full ring-4 ring-white sm:h-32 sm:w-32",
+        className ?? ""
+      )}
+    >
       <Image
-        height={96}
-        width={96}
-        className={classNames(
-          "h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32",
-          className ?? ""
-        )}
+        fill
+        sizes="(min-width: 640px) 128, 96"
         src={imageUrl}
         alt={alt || "Avatar"}
       />

@@ -52,7 +52,7 @@ const Post = ({ post }: PostProps) => {
             <Image
               height={48}
               width={48}
-              className="h-12 w-12 rounded-full object-cover object-center"
+              className="aspect-square rounded-full object-cover object-center"
               src={post.creator.profilePic}
               alt="Creator profile pic"
             />
@@ -152,7 +152,7 @@ const Post = ({ post }: PostProps) => {
           <Image
             height={48}
             width={48}
-            className="h-12 w-12 rounded-full object-cover object-center"
+            className="aspect-square rounded-full object-cover object-center"
             src={post.creator.profilePic}
             alt="Creator profile pic"
           />

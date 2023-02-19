@@ -24,7 +24,7 @@ const Notification = ({
         <Image
           height={32}
           width={32}
-          className="h-8 w-8 rounded-full object-cover object-center"
+          className="rounded-full object-cover object-center"
           src={userProfilePic || "/images/logo-icon.png"}
           alt="Community Profile"
         />

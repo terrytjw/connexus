@@ -26,13 +26,15 @@ const Carousel = ({ images, removeImage }: CarouselProps) => {
       {images.map((image, index) => {
         return (
           <SwiperSlide key={index} className="relative">
-            <Image
-              height={60}
-              width={1200}
-              className="h-60 w-full rounded-lg object-cover object-center md:h-96"
-              src={image}
-              alt={"Carousel Image"}
-            />
+            <div className="relative h-60 w-full overflow-hidden rounded-lg md:h-96">
+              <Image
+                fill
+                sizes="80vw"
+                className="object-cover object-center"
+                src={image}
+                alt={"Carousel Image"}
+              />
+            </div>
 
             {removeImage ? (
               <Button

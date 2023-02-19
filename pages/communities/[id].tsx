@@ -105,7 +105,7 @@ const CommunityPage = () => {
           <Image
             height={80}
             width={80}
-            className="h-20 w-20 rounded-lg object-cover object-center"
+            className="aspect-square rounded-lg object-cover object-center"
             src="/images/bear.jpg"
             alt="No member found image"
           />
@@ -116,7 +116,7 @@ const CommunityPage = () => {
           <Image
             height={48}
             width={48}
-            className="h-12 w-12 rounded-full object-cover object-center"
+            className="aspect-square rounded-full object-cover object-center"
             src="/images/bear.jpg"
             alt="Member profile pic"
           />
@@ -222,7 +222,7 @@ const CommunityPage = () => {
               <Image
                 height={144}
                 width={144}
-                className="h-36 w-36 rounded-lg object-cover object-center"
+                className="aspect-square rounded-lg object-cover object-center"
                 src="/images/bear.jpg"
                 alt="Member profile pic"
               />
