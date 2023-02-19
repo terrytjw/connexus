@@ -79,16 +79,12 @@ const EventPreviewPage = ({
           </div>
         </div>
         <div className="relative">
-          <Banner
-            coverImageUrl={bannerPic ? URL.createObjectURL(bannerPic) : ""}
-          />
+          <Banner coverImageUrl={bannerPic ? bannerPic : ""} />
         </div>
 
         <div className="z-30 mx-auto px-16">
           <div className="relative z-30 -mt-12 sm:-mt-16">
-            <Avatar
-              imageUrl={profilePic ? URL.createObjectURL(profilePic) : ""}
-            />
+            <Avatar imageUrl={profilePic ? profilePic : ""} />
           </div>
         </div>
 

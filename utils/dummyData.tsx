@@ -1,3 +1,5 @@
+import { ChannelType } from "./types";
+
 // dummy tab data
 export const tabs = [
   { name: "Profile", href: "#", current: true },
@@ -239,4 +241,161 @@ export const products = [
     imageAlt: "Front of plain black t-shirt.",
   },
   // More products...
+];
+
+const posts = [
+  {
+    postId: 1,
+    title: "Post 1 Title",
+    content: "Post 1 Content",
+    date: new Date(),
+    media: ["/images/bear.jpg", "/images/bear.jpg", "/images/bear.jpg"],
+    isPinned: false,
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+    likes: 0,
+    comments: [
+      {
+        commentId: 1,
+        content: "Comment 1",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator 1",
+          profilePic: "/images/bear.jpg",
+        },
+        likes: 0,
+        replies: [],
+      },
+    ],
+  },
+  {
+    postId: 2,
+    title: "Post 2 Title",
+    content: "Post 1 Content",
+    date: new Date(),
+    media: ["/images/bear.jpg", "/images/bear.jpg", "/images/bear.jpg"],
+    isPinned: false,
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+    likes: 0,
+    comments: [
+      {
+        commentId: 2,
+        content: "Comment 2",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator 2",
+          profilePic: "/images/bear.jpg",
+        },
+        likes: 1,
+        replies: [],
+      },
+      {
+        commentId: 3,
+        content: "Comment 3",
+        date: new Date(),
+        commentor: {
+          userId: "1",
+          displayName: "Creator 3",
+          profilePic: "/images/bear.jpg",
+        },
+        likes: 2,
+        replies: [
+          {
+            commentId: 4,
+            content: "Comment 4",
+            date: new Date(),
+            commentor: {
+              userId: "1",
+              displayName: "Creator 4",
+              profilePic: "/images/bear.jpg",
+            },
+            likes: 0,
+            replies: [],
+          },
+        ],
+      },
+    ],
+  },
+];
+
+const channels = [
+  {
+    channelId: 1,
+    name: "Home",
+    channelType: ChannelType.HOME,
+    posts: posts,
+  },
+  {
+    channelId: 2,
+    name: "Premium Channel 1",
+    channelType: ChannelType.PREMIUM,
+    posts: posts,
+  },
+];
+
+export const communities = [
+  {
+    communityId: 1,
+    name: "Community Name 1",
+    description: "Community Description 1",
+    bannerPic: "/images/bear.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT", "Entertainment", "Fitness"],
+    maxMembers: 2,
+    numMembers: 2,
+    channels: channels,
+  },
+  {
+    communityId: 2,
+    name: "Community Name 2",
+    description: "Community Description 2",
+    bannerPic: "/images/bear.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    maxMembers: 2,
+    numMembers: 1000,
+    channels: channels,
+  },
+  {
+    communityId: 3,
+    name: "Community Name 3",
+    description: "Community Description 3",
+    bannerPic: "/images/bear.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    maxMembers: 2,
+    numMembers: 8,
+    channels: channels,
+  },
+  {
+    communityId: 4,
+    name: "Community Name 4",
+    description: "Community Description 4",
+    bannerPic: "/images/bear.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    maxMembers: 2,
+    numMembers: 10000,
+    channels: channels,
+  },
+  {
+    communityId: 5,
+    name: "Community Name 5",
+    description: "Community Description 5",
+    bannerPic: "/images/bear.jpg",
+    profilePic: "/images/bear.jpg",
+    tags: ["NFT"],
+    maxMembers: 2,
+    numMembers: 200,
+    channels: channels,
+  },
 ];

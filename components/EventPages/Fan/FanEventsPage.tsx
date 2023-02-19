@@ -140,33 +140,33 @@ const FanEventsPage = () => {
             {activeTab == 1 && <VisitedTabContent />}
             {activeTab == 2 && <ExpiredTabContent />}
           </TabGroupBordered>
-        </div>
 
-        {/* desktop */}
-        <div className="absolute right-0 top-8 hidden items-center gap-x-4 lg:flex">
-          <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch />
+          {/* desktop */}
+          <div className="absolute right-0 top-8 hidden items-center gap-x-4 lg:flex">
+            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <FaSearch />
+              </div>
+              <input
+                className="input-outlined input input-md block w-full rounded-md pl-10"
+                type="text"
+                value={searchString}
+                placeholder="Search Events"
+                onChange={(e) => {
+                  setSearchString(e.target.value);
+                }}
+              />
             </div>
-            <input
-              className="input-outlined input input-md block w-full rounded-md pl-10"
-              type="text"
-              value={searchString}
-              placeholder="Search Communities"
-              onChange={(e) => {
-                setSearchString(e.target.value);
-              }}
-            />
+            <Button
+              variant="solid"
+              size="md"
+              className="max-w-sm !bg-white !text-gray-700"
+              onClick={() => setIsModalOpen(true)}
+            >
+              Filter by Topic
+              <BiFilter className="h-8 w-8" />
+            </Button>
           </div>
-          <Button
-            variant="solid"
-            size="md"
-            className="max-w-sm !bg-white !text-gray-700"
-            onClick={() => setIsModalOpen(true)}
-          >
-            Filter by Topic
-            <BiFilter className="h-8 w-8" />
-          </Button>
         </div>
       </main>
     </div>

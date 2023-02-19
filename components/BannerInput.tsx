@@ -7,7 +7,7 @@ function classNames(...classes: string[]) {
 }
 
 type BannerInputProps = {
-  bannerPic: File | null;
+  bannerPic: string | null;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
 };
@@ -15,9 +15,7 @@ type BannerInputProps = {
 const BannerInput = ({ bannerPic, onChange, onClick }: BannerInputProps) => {
   return (
     <div className="relative h-32 w-full lg:h-48">
-      {bannerPic ? (
-        <Banner coverImageUrl={URL.createObjectURL(bannerPic)} />
-      ) : null}
+      {bannerPic ? <Banner coverImageUrl={bannerPic} /> : null}
       <div
         className={classNames(
           "absolute top-0 flex h-32 w-full lg:h-48",
@@ -42,7 +40,7 @@ const BannerInput = ({ bannerPic, onChange, onClick }: BannerInputProps) => {
           <Button
             variant="solid"
             size="md"
-            className="!rounded-full"
+            className="z-10 !rounded-full"
             onClick={onClick}
           >
             <FaTimes />
