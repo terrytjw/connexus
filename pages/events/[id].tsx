@@ -1,4 +1,4 @@
-import { TicketCard } from "../../components/EventPages/TicketCard";
+import TicketCard from "../../components/EventPages/TicketCard";
 import { useRouter } from "next/router";
 import React from "react";
 import {
@@ -73,9 +73,7 @@ const EventPage = () => {
             </div>
           </section>
 
-          <section>
-            <TicketCard />
-          </section>
+          <section>{/* <TicketCard {} /> */}</section>
 
           <section>
             <h1 className="mt-12 text-xl font-semibold sm:text-2xl">Topics</h1>
