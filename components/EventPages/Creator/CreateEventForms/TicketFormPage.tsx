@@ -104,7 +104,7 @@ const TicketFormPage = ({
 
               <Controller
                 control={control}
-                name={`tickets.${index}.quantity`}
+                name={`tickets.${index}.totalTicketSupply`}
                 rules={{
                   required: "Available quantity is required",
                   validate: (value) => value > 0 || "Minimum quantity is 1",

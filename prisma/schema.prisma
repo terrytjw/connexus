@@ -33,21 +33,22 @@ model User {
   likedPosts          Post[]            @relation(name: "likedPosts")
   comments            Comment[]         @relation(name: "commenter")
   likedComments       Comment[]         @relation(name: "likedComments")
+  tickets             Ticket[]
 }
 
 model Post {
-  postId      Int       @id @default(autoincrement())
-  title       String
-  content     String
-  date        DateTime  @default(now())
-  media       String[]
-  isPinned    Boolean   @default(false)
-  creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
-  creatorId   Int
-  channel     Channel   @relation(fields: [channelId], references: [channelId])
-  channelId   Int
-  likes       User[]    @relation(name: "likedPosts")
-  comments    Comment[]
+  postId    Int       @id @default(autoincrement())
+  title     String
+  content   String
+  date      DateTime  @default(now())
+  media     String[]
+  isPinned  Boolean   @default(false)
+  creator   User      @relation(name: "creator", fields: [creatorId], references: [userId])
+  creatorId Int
+  channel   Channel   @relation(fields: [channelId], references: [channelId])
+  channelId Int
+  likes     User[]    @relation(name: "likedPosts")
+  comments  Comment[]
 }
 
 model Community {
@@ -78,10 +79,10 @@ model Channel {
 }
 
 model UsersOnChannels {
-  user        User    @relation(fields: [userId], references: [userId])
-  userId      Int
-  channel     Channel @relation(fields: [channelId], references: [channelId])
-  channelId   Int
+  user      User    @relation(fields: [userId], references: [userId])
+  userId    Int
+  channel   Channel @relation(fields: [channelId], references: [channelId])
+  channelId Int
 
   @@id([userId, channelId])
 }
@@ -100,42 +101,63 @@ model Comment {
 }
 
 model Event {
-  eventId           Int            @id @default(autoincrement())
-  title             String
-  category          CategoryType
-  location          String
-  eventDurationType DurationType
-  startDate         DateTime
-  endDate           DateTime
-  images            String[]
-  summary           String
-  description       String
-  visibilityType    VisibilityType
-  privacyType       PrivacyType
-  tickets           Ticket[]
+  eventId            Int            @id @default(autoincrement())
+  eventName          String         @default("")
+  category           CategoryType[]
+  address            Address        @relation(fields: [addressId], references: [addressId])
+  addressId          Int
+  startDate          DateTime       @default(now())
+  endDate            DateTime       @default(now())
+  images             String[]
+  summary            String         @default("")
+  description        String         @default("")
+  visibilityType     VisibilityType
+  privacyType        PrivacyType
+  eventBannerPicture String         @default("")
+  eventImage         String         @default("")
+  maxAttendee        Int            @default(0)
+  publishType        PublishType
+  publishStartDate   DateTime       @default(now())
+  tickets            Ticket[]
+}
+
+enum PublishType {
+  NOW
+  LATER
+}
+
+model Address {
+  addressId    Int     @id @default(autoincrement())
+  locationName String
+  address1     String
+  address2     String
+  postalCode   String
+  Event        Event[]
 }
 
 model Ticket {
-  ticketId    Int         @id @default(autoincrement())
-  name        String
-  quantity    Int
-  price       Float
-  startDate   DateTime
-  endDate     DateTime
-  description String
-  event       Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
-  eventId     Int
-  promotion   Promotion[]
+  ticketId            Int         @id @default(autoincrement())
+  name                String      @default("")
+  totalTicketSupply   Int         @default(0)
+  currentTicketSupply Int         @default(0)
+  price               Float       @default(0)
+  startDate           DateTime    @default(now())
+  endDate             DateTime    @default(now())
+  description         String      @default("")
+  event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
+  eventId             Int
+  promotion           Promotion[]
+  users               User[]
 }
 
 model Promotion {
   promotionId    Int           @id @default(autoincrement())
-  name           String
+  name           String        @default("")
   promotionType  PromotionType
-  promotionValue Float
-  quantity       Int
-  startDate      DateTime
-  endDate        DateTime
+  promotionValue Float         @default(0)
+  quantity       Int           @default(0)
+  startDate      DateTime      @default(now())
+  endDate        DateTime      @default(now())
   ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
   ticketId       Int
 }
@@ -160,11 +182,6 @@ enum CategoryType {
   SEASONAL_HOLIDAY
   SPORTS_FITNESS
   TRAVEL_OUTDOOR
-}
-
-enum DurationType {
-  SINGLE
-  RECURRING
 }
 
 enum VisibilityType {
