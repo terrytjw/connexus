@@ -39,13 +39,6 @@ const PlaygroundPage = () => {
   const [profilePic, setProfilePic] = useState("");
   const [bannerPic, setBannerPic] = useState("");
 
-  const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<any>();
-
   return (
     <main className="min-h-screen bg-slate-50">
       <h1 className="mb-4 bg-gray-900 p-6 text-center text-3xl font-bold text-teal-300">
@@ -110,20 +103,10 @@ const PlaygroundPage = () => {
         </div>
         <Input
           type="text"
-          label="Input Name*"
-          name="inputName"
-          placeholder="Input Name"
-          register={register}
-          errors={errors}
-          required
-          // check with Terry on how to use customValidations, see https://react-hook-form.com/api/useform/register for more info
-          additionalValidations={{
-            maxLength: 10,
-            minLength: 2,
-            validate: {
-              numIsSmallerThan2: (val: string) => parseInt(val) > 2,
-            },
-          }} // checks if the value is greater than 1
+          label="text input"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder="placeholder"
           size="md"
           variant="bordered"
         />
@@ -131,10 +114,9 @@ const PlaygroundPage = () => {
         <InputGroup
           type="text"
           label="Input Group Name"
-          name="inputGroupName"
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
           placeholder="Input Group Name"
-          register={register}
-          errors={errors}
           size="md"
           variant="bordered"
         >
@@ -150,11 +132,10 @@ const PlaygroundPage = () => {
           </h1>
         </div>
         <TextArea
-          label="Your bio"
-          name="bio"
           placeholder="I am a 22 years old Software Engineer currently based in San Francisco."
-          register={register}
-          errors={errors}
+          label="Your bio"
+          value={textAreaContent}
+          onChange={(e) => setTextAreaContent(e.target.value)}
         />
       </section>
 
