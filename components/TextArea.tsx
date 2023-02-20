@@ -8,8 +8,8 @@ type TextAreaProps = {
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
-  placeholder?: string;
   label?: string;
+  placeholder?: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLTextAreaElement>) => void;
   errorMessage?: string;

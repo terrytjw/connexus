@@ -1,3 +1,6 @@
+import axios from "axios";
+import { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
@@ -14,7 +17,7 @@ import UserProfileCreations from "../../../components/UserProfileTabs/Creations"
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { profile, products } from "../../../utils/dummyData";
 
-const UserProfilePage = () => {
+const UserProfilePage = ({ user }: any) => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
 
@@ -100,3 +103,22 @@ const UserProfilePage = () => {
 };
 
 export default UserProfilePage;
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  console.log("session -> ", session);
+
+  const userId = session?.user.userId;
+
+  // use axios GET method to fetch data
+  const res = await axios.get(`http://localhost:3000/api/users/${userId}`);
+  console.log("res -> ", res.data);
+
+  return {
+    props: {
+      user: {
+        // id : session?.walletAddress,
+      },
+    },
+  };
+};
