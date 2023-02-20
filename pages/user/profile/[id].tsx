@@ -104,21 +104,21 @@ const UserProfilePage = ({ user }: any) => {
 
 export default UserProfilePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-  console.log("session -> ", session);
+// export const getServerSideProps: GetServerSideProps = async (context: any) => {
+//   const session = await getSession(context);
+//   console.log("session -> ", session);
 
-  const userId = session?.user.userId;
+//   const userId = session?.user.userId;
 
-  // use axios GET method to fetch data
-  const res = await axios.get(`http://localhost:3000/api/users/${userId}`);
-  console.log("res -> ", res.data);
+//   // use axios GET method to fetch data
+//   const res = await axios.get(`http://localhost:3000/api/users/${userId}`);
+//   console.log("res -> ", res.data);
 
-  return {
-    props: {
-      user: {
-        // id : session?.walletAddress,
-      },
-    },
-  };
-};
+//   return {
+//     props: {
+//       user: {
+//         // id : session?.walletAddress,
+//       },
+//     },
+//   };
+// };
