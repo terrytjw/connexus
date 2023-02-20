@@ -88,10 +88,10 @@ async function generatePost() {
         connect: {
           userId: 1,
         },
-        channel: {
-          connect: {
-            channelId: 1,
-          },
+      },
+      channel: {
+        connect: {
+          channelId: 1,
         },
       },
     },
