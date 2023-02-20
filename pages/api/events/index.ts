@@ -1,14 +1,17 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event } from "@prisma/client";
+import { PrismaClient, Event, Prisma } from "@prisma/client";
 import { Network, Alchemy, Wallet } from "alchemy-sdk";
 import { ethers, SigningKey } from "ethers";
 import fs from "fs";
 import { Networkish } from "ethers/types/providers";
 import path from "path";
 import EventJSON from "./Event.json";
+import axios from "axios";
 
 const prisma = new PrismaClient();
+
+type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 
 /**
  * @swagger
@@ -48,10 +51,10 @@ export default async function handler(
 
   switch (req.method) {
     case "GET":
-        await handleGET();
-        break;
+      await handleGET();
+      break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as Event;
+      const event = JSON.parse(JSON.stringify(req.body)) as EventWithTickets;
       await handlePOST(event);
       break;
     default:
@@ -70,26 +73,40 @@ export default async function handler(
     // console.log("The latest block number is", latestBlock);
 
     try {
-       const events = await prisma.event.findMany({
-         include: {
-           tickets: true,
-         },
-       });
-       res.status(200).json(events);
-     } catch (error) {
-       const errorResponse = handleError(error);
-       res.status(400).json(errorResponse);
-     }
+      const events = await prisma.event.findMany({
+        include: {
+          tickets: true,
+        },
+      });
+      res.status(200).json(events);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
   }
 
-  async function handlePOST(event: Event) {
+  async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
+      const { tickets, ...eventInfo } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket) => {
+        const { ticketId, eventId, ...ticketInfo } = ticket;
+        return ticketInfo;
+      });
+
       const response = await prisma.event.create({
-        data: { ...event, eventId: undefined },
+        data: {
+          ...eventInfo,
+          eventId: undefined,
+          tickets: { create: updatedTickets },
+        },
+        include: {
+          tickets: true,
+        },
       });
       res.status(200).json([response]);
-      //now create the contract
+      // now create the contract
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
