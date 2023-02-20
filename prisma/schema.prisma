@@ -42,11 +42,10 @@ model Post {
   date        DateTime  @default(now())
   media       String[]
   isPinned    Boolean   @default(false)
-  creator     User      @relation(name: "creator", fields: [userId], references: [userId])
-  userId      Int
-  channel     Channel   @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
+  creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
+  creatorId   Int
+  channel     Channel   @relation(fields: [channelId], references: [channelId])
+  channelId   Int
   likes       User[]    @relation(name: "likedPosts")
   comments    Comment[]
 }
@@ -66,6 +65,7 @@ model Community {
 }
 
 model Channel {
+  channelId   Int               @id @default(autoincrement())
   name        String
   description String
   channelType ChannelType       @default(REGULAR)
@@ -74,17 +74,16 @@ model Channel {
   communityId Int
   posts       Post[]
 
-  @@id([communityId, name])
+  @@unique([communityId, name])
 }
 
 model UsersOnChannels {
   user        User    @relation(fields: [userId], references: [userId])
   userId      Int
-  channel     Channel @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
+  channel     Channel @relation(fields: [channelId], references: [channelId])
+  channelId   Int
 
-  @@id([userId, communityId, name])
+  @@id([userId, channelId])
 }
 
 model Comment {

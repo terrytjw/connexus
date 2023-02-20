@@ -15,7 +15,7 @@ async function generateCommunity() {
       name: "AliceCommunity",
       description: "Alice's Community",
       profilePic: "",
-      tags: ["A", "B"],
+      tags: ["LIFESTYLE", "ENTERTAINMENT"],
       maxMembers: 10,
       creator: {
         connect: {
@@ -35,7 +35,7 @@ async function generateCommunity() {
       name: "BobCommunity",
       description: "Bob's Community",
       profilePic: "",
-      tags: ["A", "B"],
+      tags: ["LIFESTYLE"],
       maxMembers: 10,
       creator: {
         connect: {
@@ -88,12 +88,9 @@ async function generatePost() {
         connect: {
           userId: 1,
         },
-      },
-      channel: {
-        connect: {
-          communityId_name: {
-            communityId: 1,
-            name: "Home",
+        channel: {
+          connect: {
+            channelId: 1,
           },
         },
       },
@@ -108,10 +105,7 @@ async function generatePost() {
       isPinned: false,
       channel: {
         connect: {
-          communityId_name: {
-            communityId: 2,
-            name: "Home",
-          },
+          channelId: 1,
         },
       },
       creator: {

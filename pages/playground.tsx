@@ -18,9 +18,16 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { products, profile } from "../utils/dummyData";
+import { communities, events, products, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
+import AvatarInput from "../components/AvatarInput";
+import BannerInput from "../components/BannerInput";
+import Carousel from "../components/Carousel";
+import Post from "../components/CommunityPages/Post";
+import PostInput from "../components/CommunityPages/PostInput";
+import CommunityGrid from "../components/CommunityPages/CommunityGrid";
+import EventsGrid from "../components/EventPages/EventsGrid";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Layout from "../components/Layout";
 
@@ -31,6 +38,8 @@ const PlaygroundPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [value, setValue] = useState<string | number>("");
   const [textAreaContent, setTextAreaContent] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+  const [bannerPic, setBannerPic] = useState("");
 
   return (
     <ProtectedRoute>
@@ -172,6 +181,18 @@ const PlaygroundPage = () => {
           </section>
           <div className="divider" />
 
+          {/* Collection Grid */}
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Collection Grid
+              </h1>
+            </div>
+
+            <EventsGrid data={events} />
+          </section>
+          <div className="divider" />
+
           {/* Table */}
           <section className="p-8">
             <div className="flex justify-center">
@@ -303,7 +324,7 @@ const PlaygroundPage = () => {
             </div>
           </section>
           <div className="divider" />
-          <section className="p-8 pb-52">
+          <section className="p-8">
             <div className="flex justify-center">
               <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
                 Dropdown component
@@ -311,6 +332,94 @@ const PlaygroundPage = () => {
             </div>
             <div className="flex flex-col items-center justify-center gap-4 p-8">
               <Dropdown />
+            </div>
+          </section>
+
+          <div className="divider" />
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Avatar + Banner Input
+              </h1>
+            </div>
+            <div className="p-8">
+              <BannerInput
+                bannerPic={bannerPic}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    const reader = new FileReader();
+                    reader.addEventListener("load", () => {
+                      setBannerPic(reader.result as string);
+                    });
+                    reader.readAsDataURL(e.target.files[0]);
+                  }
+                }}
+                onClick={() => setBannerPic("")}
+              />
+              <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+                <div className="relative -mt-12 h-24 sm:-mt-16 sm:h-32">
+                  <AvatarInput
+                    profilePic={profilePic}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        const reader = new FileReader();
+                        reader.addEventListener("load", () => {
+                          setProfilePic(reader.result as string);
+                        });
+                        reader.readAsDataURL(e.target.files[0]);
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div className="divider" />
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Carousel
+              </h1>
+            </div>
+            <div className="p-8">
+              <Carousel images={communities[0].channels[0].posts[0].media} />
+            </div>
+          </section>
+
+          <div className="divider" />
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Post + Comment
+              </h1>
+            </div>
+            <div className="p-8">
+              <Post post={communities[0].channels[0].posts[0]} />
+            </div>
+          </section>
+
+          <div className="divider" />
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Create Post
+              </h1>
+            </div>
+            <div className="p-8">
+              <PostInput onSubmit={() => {}} />
+            </div>
+          </section>
+
+          <div className="divider" />
+          <section className="p-8">
+            <div className="flex justify-center">
+              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
+                Community Grid
+              </h1>
+            </div>
+            <div className="p-8">
+              <CommunityGrid communities={communities} />
             </div>
           </section>
         </main>

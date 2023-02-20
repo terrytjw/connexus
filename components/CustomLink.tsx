@@ -18,7 +18,7 @@ const CustomLink = ({
   return (
     <Link
       href={href}
-      className={`px-2 inline-flex items-center w-fit hover:text-gray-400 transition-all ${className}`}
+      className={`inline-flex w-fit items-center transition-all hover:text-gray-400 ${className}`}
       target={openInNewPage ? `_blank` : `_self`}
       rel="noreferrer"
       onClick={onClick}

@@ -102,7 +102,7 @@ const HomePage: NextPage = () => {
         <section className="mt-4 flex w-full flex-col flex-wrap">
           <Notification
             userId="1"
-            userProfilePic="https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg"
+            userProfilePic=""
             userName="Fan name"
             message="has sent you a message! Let's chat!"
             linkLabel="Go to chat room #1"
@@ -113,7 +113,7 @@ const HomePage: NextPage = () => {
               <li>
                 <Notification
                   userId="1"
-                  userProfilePic="https://imgv3.fotor.com/images/blog-cover-image/part-blurry-image.jpg"
+                  userProfilePic=""
                   userName="Creator name #1"
                   message="has rejected your chat request."
                 />

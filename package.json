@@ -24,6 +24,8 @@
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
     "@prisma/client": "^4.9.0",
+    "@react-google-maps/api": "^2.18.1",
+    "@types/google-map-react": "^2.1.7",
     "axios": "^1.2.1",
     "daisyui": "^2.46.1",
     "date-fns": "^2.29.3",
@@ -43,6 +45,7 @@
     "react-loading-skeleton": "^3.1.1",
     "react-spinners": "^0.13.8",
     "swagger-ui-react": "^4.15.5",
+    "swiper": "^9.0.4",
     "swr": "^2.0.0",
     "theme-change": "^2.3.0"
   },
