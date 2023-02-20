@@ -88,6 +88,12 @@
           "items": {
             "$ref": "#/definitions/Comment"
           }
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ticket"
+          }
         }
       }
     },
@@ -282,11 +288,12 @@
         "eventId": {
           "type": "integer"
         },
-        "title": {
-          "type": "string"
+        "eventName": {
+          "type": "string",
+          "default": ""
         },
         "category": {
-          "type": "string",
+          "type": "array",
           "enum": [
             "AUTO_BOAT_AIR",
             "BUSINESS_PROFESSIONAL",
@@ -309,15 +316,8 @@
             "TRAVEL_OUTDOOR"
           ]
         },
-        "location": {
-          "type": "string"
-        },
-        "eventDurationType": {
-          "type": "string",
-          "enum": [
-            "SINGLE",
-            "RECURRING"
-          ]
+        "address": {
+          "$ref": "#/definitions/Address"
         },
         "startDate": {
           "type": "string",
@@ -334,10 +334,12 @@
           }
         },
         "summary": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "visibilityType": {
           "type": "string",
@@ -353,10 +355,59 @@
             "PRIVATE"
           ]
         },
+        "eventBannerPicture": {
+          "type": "string",
+          "default": ""
+        },
+        "eventImage": {
+          "type": "string",
+          "default": ""
+        },
+        "maxAttendee": {
+          "type": "integer",
+          "default": 0
+        },
+        "publishType": {
+          "type": "string",
+          "enum": [
+            "NOW",
+            "LATER"
+          ]
+        },
+        "publishStartDate": {
+          "type": "string",
+          "format": "date-time"
+        },
         "tickets": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Ticket"
+          }
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "addressId": {
+          "type": "integer"
+        },
+        "locationName": {
+          "type": "string"
+        },
+        "address1": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "Event": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
           }
         }
       }
@@ -368,13 +419,20 @@
           "type": "integer"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "quantity": {
-          "type": "integer"
+        "totalTicketSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currentTicketSupply": {
+          "type": "integer",
+          "default": 0
         },
         "price": {
-          "type": "number"
+          "type": "number",
+          "default": 0
         },
         "startDate": {
           "type": "string",
@@ -385,7 +443,8 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -394,6 +453,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Promotion"
+          }
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
           }
         }
       }
@@ -405,7 +470,8 @@
           "type": "integer"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "promotionType": {
           "type": "string",
@@ -415,10 +481,12 @@
           ]
         },
         "promotionValue": {
-          "type": "number"
+          "type": "number",
+          "default": 0
         },
         "quantity": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0
         },
         "startDate": {
           "type": "string",
@@ -518,6 +586,9 @@
     },
     "event": {
       "$ref": "#/definitions/Event"
+    },
+    "address": {
+      "$ref": "#/definitions/Address"
     },
     "ticket": {
       "$ref": "#/definitions/Ticket"

@@ -1,10 +1,10 @@
 import {
   PrismaClient,
   CategoryType,
-  DurationType,
   PrivacyType,
   PromotionType,
   VisibilityType,
+  PublishType,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -198,10 +198,16 @@ async function generateCollection() {
 async function generateEvent() {
   await prisma.event.create({
     data: {
-      title: "Yoga Class",
+      eventName: "Yoga Class",
       category: CategoryType.HEALTH_WELLNESS,
-      location: "Singapore Zoo",
-      eventDurationType: DurationType.SINGLE,
+      address: {
+        create: {
+          address1: "123 Main St",
+          address2: "Apt 1",
+          locationName: "San Francisco",
+          postalCode: "31231",
+        },
+      },
       startDate: new Date(),
       endDate: new Date(),
       images: [],
@@ -214,7 +220,7 @@ async function generateEvent() {
         create: [
           {
             name: "General Admission",
-            quantity: 100,
+            totalTicketSupply: 100,
             price: 10,
             startDate: new Date(),
             endDate: new Date(),
@@ -242,7 +248,7 @@ async function generateEvent() {
           },
           {
             name: "VIP Pass",
-            quantity: 100,
+            totalTicketSupply: 100,
             price: 10,
             startDate: new Date(),
             endDate: new Date(),
@@ -270,15 +276,22 @@ async function generateEvent() {
           },
         ],
       },
+      publishType: PublishType.NOW,
     },
   });
 
   await prisma.event.create({
     data: {
-      title: "Spin Class",
+      eventName: "Spin Class",
       category: CategoryType.HEALTH_WELLNESS,
-      location: "UTown Square",
-      eventDurationType: DurationType.SINGLE,
+      address: {
+        create: {
+          address1: "123 Main St",
+          address2: "Apt 1",
+          locationName: "New York",
+          postalCode: "31231",
+        },
+      },
       startDate: new Date(),
       endDate: new Date(),
       images: [],
@@ -291,7 +304,7 @@ async function generateEvent() {
         create: [
           {
             name: "General Admission",
-            quantity: 100,
+            totalTicketSupply: 100,
             price: 10,
             startDate: new Date(),
             endDate: new Date(),
@@ -319,7 +332,7 @@ async function generateEvent() {
           },
           {
             name: "VIP Pass",
-            quantity: 100,
+            totalTicketSupply: 100,
             price: 10,
             startDate: new Date(),
             endDate: new Date(),
@@ -347,6 +360,91 @@ async function generateEvent() {
           },
         ],
       },
+      publishType: PublishType.NOW,
+    },
+  });
+
+  await prisma.event.create({
+    data: {
+      eventName: "Boxing Class",
+      category: CategoryType.HEALTH_WELLNESS,
+      address: {
+        create: {
+          address1: "123 Main St",
+          address2: "Apt 1",
+          locationName: "Tenderloin",
+          postalCode: "31231",
+        },
+      },
+      startDate: new Date(),
+      endDate: new Date(),
+      images: [],
+      summary:
+        "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
+      description: "This is a yoga class",
+      visibilityType: VisibilityType.DRAFT,
+      privacyType: PrivacyType.PUBLIC,
+      tickets: {
+        create: [
+          {
+            name: "General Admission",
+            totalTicketSupply: 100,
+            price: 10,
+            startDate: new Date(),
+            endDate: new Date(),
+            description: "General Admission",
+            promotion: {
+              create: [
+                {
+                  name: "Early Bird",
+                  promotionType: PromotionType.UNLIMITED,
+                  promotionValue: 10,
+                  quantity: 0,
+                  startDate: new Date(),
+                  endDate: new Date(),
+                },
+                {
+                  name: "Comedy Club",
+                  promotionType: PromotionType.LIMITED,
+                  promotionValue: 20,
+                  quantity: 50,
+                  startDate: new Date(),
+                  endDate: new Date(),
+                },
+              ],
+            },
+          },
+          {
+            name: "VIP Pass",
+            totalTicketSupply: 100,
+            price: 10,
+            startDate: new Date(),
+            endDate: new Date(),
+            description: "This is a VIP Pass",
+            promotion: {
+              create: [
+                {
+                  name: "Early Bird",
+                  promotionType: PromotionType.UNLIMITED,
+                  promotionValue: 10,
+                  quantity: 0,
+                  startDate: new Date(),
+                  endDate: new Date(),
+                },
+                {
+                  name: "Comedy Club",
+                  promotionType: PromotionType.LIMITED,
+                  promotionValue: 20,
+                  quantity: 50,
+                  startDate: new Date(),
+                  endDate: new Date(),
+                },
+              ],
+            },
+          },
+        ],
+      },
+      publishType: PublishType.NOW,
     },
   });
 }
