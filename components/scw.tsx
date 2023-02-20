@@ -30,11 +30,11 @@ const Home = () => {
     setConnectWeb3Loading(true);
 
     const sdk = new SocialLogin();
-    const signature1 = await sdk.whitelistUrl(
-      "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/"
-    );
 
     if (!socialLoginSDK) {
+      const signature1 = await sdk.whitelistUrl(
+        "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/"
+      );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
