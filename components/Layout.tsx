@@ -8,11 +8,13 @@ import {
   FaUser,
   FaBell,
   FaGripVertical,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
+import { signOut } from "next-auth/react";
 
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
@@ -138,6 +140,15 @@ const MobileNavbar = ({ children }: any) => {
               Playground
             </Link>
           </li>
+          <li className="mb-4">
+            <button
+              className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
+              onClick={() => signOut({ callbackUrl: "/" })}
+            >
+              <FaSignOutAlt className="ml-2" />
+              Logout
+            </button>
+          </li>
         </ul>
       </div>
     </div>
@@ -223,6 +234,15 @@ const DesktopSidebar = () => {
             Playground
           </Link>
         </li>
+        <li className="mb-4">
+          <button
+            className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
+            onClick={() => signOut({ callbackUrl: "/" })}
+          >
+            <FaSignOutAlt className="ml-2" />
+            Logout
+          </button>
+        </li>
       </ul>
     </div>
   );
@@ -236,7 +256,7 @@ const Layout = ({ children }: LayoutProps) => {
     <MobileNavbar>
       <div className="flex text-black">
         <DesktopSidebar />
-        <main className="w-full lg:ml-64">
+        <main className="debug-screens w-full lg:ml-64">
           <div className="min-h-screen bg-sky-100">{children}</div>
           <Footer />
         </main>

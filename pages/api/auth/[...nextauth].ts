@@ -56,6 +56,7 @@ export const authOptions: NextAuthOptions = {
   },
 };
 
+// Helper functions
 async function retrieveUserByWallet(walletAddress: string) {
   try {
     const user = await prisma.user.findUnique({

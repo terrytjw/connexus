@@ -1,9 +1,17 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import React from "react";
+import Layout from "../components/Layout";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const ChatsPage = ({}) => {
-  return <div>ChatsPage</div>;
+  return (
+    <ProtectedRoute>
+      <Layout>
+        <div>ChatsPage</div>
+      </Layout>
+    </ProtectedRoute>
+  );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

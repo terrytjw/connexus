@@ -6,9 +6,9 @@ import Badge from "../components/Badge";
 import { useState } from "react";
 import Notification from "../components/Notification";
 import CollectionItemInput from "../components/CollectionItemInput";
-import dynamic from "next/dynamic";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 
 type Item = {
   image: string;
@@ -21,6 +21,9 @@ const HomePage: NextPage = () => {
   const [items, setItems] = useState([
     { image: "", description: "", quantity: 1 },
   ]);
+
+  const { data: session, status } = useSession();
+  console.log("session [HOME PAGE] -> ", session);
 
   return (
     <div>
@@ -36,12 +39,7 @@ const HomePage: NextPage = () => {
         <h2 className="mt-10 mb-6 text-xl font-semibold">Authentication</h2>
 
         <section className="mb-8 flex flex-wrap gap-4">
-          <Button
-            variant="solid"
-            size="md"
-            className="mt-4"
-            onClick={() => router.push("/login")}
-          >
+          <Button variant="solid" size="md" className="mt-4" href="/auth">
             Login
           </Button>
         </section>
