@@ -5,7 +5,7 @@ import { ChainId } from "@biconomy/core-types";
 import SocialLogin from "@biconomy/web3-auth";
 import SmartAccount from "@biconomy/smart-account";
 import Button from "./Button";
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
@@ -20,6 +20,8 @@ const Home = () => {
   );
   const [connectWeb3Loading, setConnectWeb3Loading] = useState(false);
 
+  const { data: session, status } = useSession();
+  console.log("session -> ", session);
   // console.log("account -> ", account);
   // console.log("smartAccount -> ", smartAccount);
   // console.log("scwAddress -> ", scwAddress);
@@ -50,15 +52,16 @@ const Home = () => {
       const accounts = await web3Provider.listAccounts();
       setAccount(accounts[0]);
 
-      const retrievedUserInfo = await sdk.getUserInfo();
-      const userInfo = {
-        name: retrievedUserInfo?.name,
-        email: retrievedUserInfo?.email,
-        profileImage: retrievedUserInfo?.profileImage,
-        walletAddress: accounts[0],
-      };
-
-      signIn("credentials", { redirect: false, ...userInfo });
+      if (status === "unauthenticated") {
+        const retrievedUserInfo = await sdk.getUserInfo();
+        const userInfo = {
+          name: retrievedUserInfo?.name,
+          email: retrievedUserInfo?.email,
+          profileImage: retrievedUserInfo?.profileImage,
+          walletAddress: accounts[0],
+        };
+        signIn("credentials", { callbackUrl: "/merchandise", ...userInfo });
+      }
 
       return;
     }
@@ -107,7 +110,7 @@ const Home = () => {
       return;
     }
     await socialLoginSDK.logout();
-    signOut();
+    signOut({ callbackUrl: "/login" });
     socialLoginSDK.hideWallet();
     setProvider(undefined);
     setAccount(undefined);
@@ -151,77 +154,60 @@ const Home = () => {
   );
 
   return (
-    <div className="">
-      <div className="mt-96 p-10">
-        <h1 className="py-4 text-center font-semibold">
-          Biconomy SDK | Next.js | Web3Auth
-        </h1>
+    <div className="p-10">
+      <h1 className="py-4 text-center font-semibold">
+        Biconomy SDK | Next.js | Web3Auth
+      </h1>
 
-        <div className="flex justify-center">
-          {!account ? (
-            connectWeb3Loading || (socialLoginSDK?.provider && !scwAddress) ? (
-              <Button
-                variant="outlined"
-                size="md"
-                className="cursor-not-allowed"
-              >
-                <ButtonLoadingAnimation />
-              </Button>
-            ) : (
-              <div>
-                <Button
-                  className="m-auto"
-                  variant="outlined"
-                  size="md"
-                  onClick={connectWeb3}
-                >
-                  Login
-                </Button>
-                <Button href="/" className="mt-16" variant="solid" size="md">
-                  Back to home
-                </Button>
-              </div>
-            )
+      <div className="flex justify-center">
+        {!account ? (
+          connectWeb3Loading || (socialLoginSDK?.provider && !scwAddress) ? (
+            <Button variant="outlined" size="md" className="cursor-not-allowed">
+              <ButtonLoadingAnimation />
+            </Button>
           ) : (
             <div>
               <Button
                 className="m-auto"
                 variant="outlined"
                 size="md"
-                onClick={disconnectWeb3}
+                onClick={connectWeb3}
               >
-                Logout
-              </Button>
-              <section className="mt-10 rounded-lg bg-gray-300 p-6">
-                <div className="my-2">
-                  <h2 className="font-semibold">EOA Address</h2>
-                  {account && scwAddress ? (
-                    <p>{account}</p>
-                  ) : (
-                    <Skeleton width={400} />
-                  )}
-                </div>
-
-                <div className="my-2">
-                  <h2 className="font-semibold">Smart Account Addresss</h2>
-                  {account && scwAddress ? (
-                    <p>{scwAddress}</p>
-                  ) : (
-                    <Skeleton width={400} />
-                  )}
-                </div>
-              </section>
-              <Button
-                href="/merchandise"
-                className="mt-16"
-                variant="solid"
-                size="md"
-              >
-                Back to home
+                Login
               </Button>
             </div>
-          )}
-        </div>
+          )
+        ) : (
+          <div>
+            <Button
+              className="m-auto"
+              variant="outlined"
+              size="md"
+              onClick={disconnectWeb3}
+            >
+              Logout
+            </Button>
+            <section className="mt-10 rounded-lg bg-gray-100 p-6">
+              <div className="my-2">
+                <h2 className="font-semibold">EOA Address</h2>
+                {account && scwAddress ? (
+                  <p>{account}</p>
+                ) : (
+                  <Skeleton width={400} />
+                )}
+              </div>
+
+              <div className="my-2">
+                <h2 className="font-semibold">Smart Account Addresss</h2>
+                {account && scwAddress ? (
+                  <p>{scwAddress}</p>
+                ) : (
+                  <Skeleton width={400} />
+                )}
+              </div>
+            </section>
+          </div>
+        )}
       </div>
     </div>
   );

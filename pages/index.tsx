@@ -9,6 +9,7 @@ import CollectionItemInput from "../components/CollectionItemInput";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
 
 type Item = {
   image: string;
@@ -39,7 +40,7 @@ const HomePage: NextPage = () => {
         <h2 className="mt-10 mb-6 text-xl font-semibold">Authentication</h2>
 
         <section className="mb-8 flex flex-wrap gap-4">
-          <Button variant="solid" size="md" className="mt-4" href="/auth">
+          <Button href="/login" variant="solid" size="md" className="mt-4">
             Login
           </Button>
         </section>

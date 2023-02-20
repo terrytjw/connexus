@@ -10,12 +10,14 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useRouter();
   console.log("session -> ", session);
 
+  // comment away this for easier development
   if (status === "loading") {
     return <Loading />;
   }
 
+  // comment away this for easier development
   if (status === "unauthenticated") {
-    router.replace("/auth");
+    router.replace("/login");
     return <p className="p-4">Access Denied.</p>;
   }
 
