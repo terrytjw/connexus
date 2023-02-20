@@ -6,10 +6,13 @@ import SocialLogin from "@biconomy/web3-auth";
 import SmartAccount from "@biconomy/smart-account";
 import Button from "./Button";
 import { signIn, signOut, useSession } from "next-auth/react";
-import Skeleton from "react-loading-skeleton";
+// import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { useRouter } from "next/router";
+import Loading from "./Loading";
 
 const Home = () => {
+  const router = useRouter();
   const [provider, setProvider] = useState<any>();
   const [account, setAccount] = useState<string>();
   const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
@@ -21,17 +24,9 @@ const Home = () => {
   const [connectWeb3Loading, setConnectWeb3Loading] = useState(false);
 
   const { data: session, status } = useSession();
-  console.log("session -> ", session);
-  // console.log("account -> ", account);
-  // console.log("smartAccount -> ", smartAccount);
-  // console.log("scwAddress -> ", scwAddress);
-  // console.log("scwLoading -> ", scwLoading);
-  // console.log("socialLoginSDK -> ", socialLoginSDK);
 
   const connectWeb3 = useCallback(async () => {
     if (typeof window === "undefined") return;
-    console.log("socialLoginSDK ->", socialLoginSDK);
-
     setConnectWeb3Loading(true);
 
     const sdk = new SocialLogin();
@@ -75,15 +70,16 @@ const Home = () => {
     setConnectWeb3Loading(false);
 
     return socialLoginSDK;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socialLoginSDK]);
 
   useEffect(() => {
     connectWeb3();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // if wallet already connected close widget
   useEffect(() => {
-    console.log("hidelwallet");
     if (socialLoginSDK && socialLoginSDK.provider) {
       socialLoginSDK.hideWallet();
     }
@@ -106,11 +102,10 @@ const Home = () => {
 
   const disconnectWeb3 = async () => {
     if (!socialLoginSDK || !socialLoginSDK.web3auth) {
-      console.error("Web3Modal not initialized.");
       return;
     }
     await socialLoginSDK.logout();
-    signOut({ callbackUrl: "/login" });
+    signOut({ callbackUrl: "/" });
     socialLoginSDK.hideWallet();
     setProvider(undefined);
     setAccount(undefined);
@@ -133,7 +128,6 @@ const Home = () => {
     }
     if (!!provider && !!account) {
       setupSmartAccount();
-      console.log("Provider...", provider);
     }
   }, [account, provider]);
 
@@ -155,10 +149,6 @@ const Home = () => {
 
   return (
     <div className="p-10">
-      <h1 className="py-4 text-center font-semibold">
-        Biconomy SDK | Next.js | Web3Auth
-      </h1>
-
       <div className="flex justify-center">
         {!account ? (
           connectWeb3Loading || (socialLoginSDK?.provider && !scwAddress) ? (
@@ -167,6 +157,9 @@ const Home = () => {
             </Button>
           ) : (
             <div>
+              <h1 className="py-4 text-center font-semibold">
+                Welcome to Connexus.
+              </h1>
               <Button
                 className="m-auto"
                 variant="outlined"
@@ -178,16 +171,26 @@ const Home = () => {
             </div>
           )
         ) : (
-          <div>
-            <Button
-              className="m-auto"
-              variant="outlined"
-              size="md"
-              onClick={disconnectWeb3}
-            >
-              Logout
-            </Button>
-            <section className="mt-10 rounded-lg bg-gray-100 p-6">
+          <>
+            {router.pathname !== "/" ? (
+              <div>
+                <h1 className="py-4 text-center font-semibold">
+                  Are you sure you want to logout?
+                </h1>
+                <Button
+                  className="m-auto text-red-500 hover:bg-red-500 hover:text-white"
+                  variant="outlined"
+                  size="md"
+                  onClick={disconnectWeb3}
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <Loading className="!h-full" />
+            )}
+
+            {/* <section className="mt-10 rounded-lg bg-gray-100 p-6">
               <div className="my-2">
                 <h2 className="font-semibold">EOA Address</h2>
                 {account && scwAddress ? (
@@ -205,8 +208,8 @@ const Home = () => {
                   <Skeleton width={400} />
                 )}
               </div>
-            </section>
-          </div>
+            </section> */}
+          </>
         )}
       </div>
     </div>

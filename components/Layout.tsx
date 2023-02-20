@@ -16,10 +16,20 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import dynamic from "next/dynamic";
+import Loading from "./Loading";
+
+const SocialLoginDynamic = dynamic(
+  () => import("../components/scw").then((res) => res.default),
+  {
+    ssr: false,
+    loading: () => <Loading className="!h-full" />,
+  }
+);
 
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
   const checkboxRef = useRef<HTMLInputElement>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // to automatically close daisyUI side drawer when route changes
   useEffect(() => {
@@ -144,13 +154,16 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <button
               className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
-              onClick={() => router.push("/login")}
+              onClick={() => setIsAuthModalOpen(true)}
             >
               <FaSignOutAlt className="ml-2" />
               Logout
             </button>
           </li>
         </ul>
+        <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
+          <SocialLoginDynamic />
+        </Modal>
       </div>
     </div>
   );
@@ -159,14 +172,6 @@ const MobileNavbar = ({ children }: any) => {
 const DesktopSidebar = () => {
   const router = useRouter();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-
-  const SocialLoginDynamic = dynamic(
-    () => import("../components/scw").then((res) => res.default),
-    {
-      ssr: false,
-      loading: () => <div>loading!!!!!!!!!!!!</div>,
-    }
-  );
 
   return (
     <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">

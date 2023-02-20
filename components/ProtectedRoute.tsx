@@ -8,7 +8,6 @@ type ProtectedRouteProps = {
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
-  console.log("session -> ", session);
 
   // comment away this for easier development
   if (status === "loading") {
@@ -17,7 +16,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
   // comment away this for easier development
   if (status === "unauthenticated") {
-    router.replace("/login");
+    router.replace("/");
     return <p className="p-4">Access Denied.</p>;
   }
 
