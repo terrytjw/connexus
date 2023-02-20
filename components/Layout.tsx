@@ -143,7 +143,7 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <button
               className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={() => router.push("/auth")}
             >
               <FaSignOutAlt className="ml-2" />
               Logout
@@ -156,6 +156,8 @@ const MobileNavbar = ({ children }: any) => {
 };
 
 const DesktopSidebar = () => {
+  const router = useRouter();
+
   return (
     <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">
       <Link
@@ -237,7 +239,7 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <button
             className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => router.push("/auth")}
           >
             <FaSignOutAlt className="ml-2" />
             Logout

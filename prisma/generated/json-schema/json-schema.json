@@ -190,6 +190,9 @@
     "Channel": {
       "type": "object",
       "properties": {
+        "channelId": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },

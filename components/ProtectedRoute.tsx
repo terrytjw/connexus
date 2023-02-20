@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (status === "unauthenticated") {
-    router.replace("/login");
+    router.replace("/auth");
     return <p className="p-4">Access Denied.</p>;
   }
 

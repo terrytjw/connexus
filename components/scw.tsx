@@ -107,7 +107,7 @@ const Home = () => {
       return;
     }
     await socialLoginSDK.logout();
-    signOut({ callbackUrl: "/" });
+    signOut();
     socialLoginSDK.hideWallet();
     setProvider(undefined);
     setAccount(undefined);
@@ -168,9 +168,19 @@ const Home = () => {
                 <ButtonLoadingAnimation />
               </Button>
             ) : (
-              <Button variant="outlined" size="md" onClick={connectWeb3}>
-                Login
-              </Button>
+              <div>
+                <Button
+                  className="m-auto"
+                  variant="outlined"
+                  size="md"
+                  onClick={connectWeb3}
+                >
+                  Login
+                </Button>
+                <Button href="/" className="mt-16" variant="solid" size="md">
+                  Back to home
+                </Button>
+              </div>
             )
           ) : (
             <div>
@@ -201,6 +211,14 @@ const Home = () => {
                   )}
                 </div>
               </section>
+              <Button
+                href="/merchandise"
+                className="mt-16"
+                variant="solid"
+                size="md"
+              >
+                Back to home
+              </Button>
             </div>
           )}
         </div>
