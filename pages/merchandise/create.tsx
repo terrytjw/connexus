@@ -1,33 +1,25 @@
-import React, { useState } from "react";
+import React from "react";
 import Head from "next/head";
 import Button from "../../components/Button";
 import CollectionItemInput from "../../components/CollectionItemInput";
-import { Item } from "../index";
+import { Item } from "../../utils/types";
 import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
-import {
-  Controller,
-  useForm,
-  SubmitHandler,
-  useFieldArray,
-} from "react-hook-form";
+import { Controller, useForm, useFieldArray } from "react-hook-form";
+
+export type CreateMerchandiseForm = {
+  items: Item[];
+  collectionName: string;
+  collectionDescription: string;
+  price: number;
+};
 
 const CreateMerchandisePage = () => {
-  const [items, setItems] = useState([
-    { image: "", description: "", quantity: 1 },
-  ]);
-
-  type CreateMerchandiseForm = {
-    items: Item[];
-    collectionName: string;
-    collectionDescription: string;
-    price: number;
-  };
   const { handleSubmit, setValue, control, watch } =
     useForm<CreateMerchandiseForm>({
       defaultValues: {
-        items: [{ image: "", description: "", quantity: 1 }],
+        items: [{ image: "", name: "", quantity: 1 }],
         collectionName: "",
         collectionDescription: "",
         price: 0,
@@ -39,6 +31,8 @@ const CreateMerchandisePage = () => {
     name: "items",
   });
 
+  const [items] = watch(["items"]);
+
   return (
     <div className="debug-screens">
       <Head>
@@ -46,7 +40,7 @@ const CreateMerchandisePage = () => {
       </Head>
 
       <form
-        className="p-10"
+        className="py-12 px-4 sm:px-12"
         onSubmit={handleSubmit((val: any) => {
           console.log("Create merchandise form -> ", val);
         })}
@@ -54,62 +48,54 @@ const CreateMerchandisePage = () => {
         <h1 className="text-3xl font-bold">
           Create a New Merchandise Collection
         </h1>
-        <h2 className="py-6 text-gray-700">View your digital merchandise</h2>
+        <h2 className="py-6 text-gray-700">
+          Upload a digital merchandise collection
+        </h2>
 
-        <section className="mt-4 flex flex-wrap items-center gap-4">
-          <Button
-            variant="outlined"
-            size="md"
-            onClick={() => {
-              console.log(items);
-            }}
-          >
-            View items in console
-          </Button>
-          <Button
-            variant="outlined"
-            size="md"
-            className="rounded-full"
-            onClick={() => {
-              // setItems([...items, { image: "", description: "", quantity: 1 }]);
-              append({ image: "", description: "", quantity: 1 });
-            }}
-          >
-            Add item
-          </Button>
-        </section>
-        <p className="mt-8">Supported file formats: JPEG, GIF, MP4</p>
-        <section className="mt-2 flex flex-row flex-wrap justify-center gap-4 lg:flex-col">
-          {fields.map((item, index) => (
-            <CollectionItemInput
-              key={index}
-              item={item}
-              updateItem={(updatedItem: Item) => {
-                setItems(
-                  items.map((item1, index1) =>
-                    // need to compare index in order to update current item
-                    index == index1 ? updatedItem : item1
-                  )
-                );
+        <section className="flex w-full max-w-3xl flex-row flex-wrap gap-4 sm:flex-col">
+          <div className="flex w-full flex-col justify-between gap-2 sm:flex-row sm:items-end">
+            <div>
+              <label className="label pl-0">
+                <span className="label-text">Upload Files*</span>
+              </label>
+              <p className="label-text">
+                Supported file formats: JPEG, GIF, MP4
+              </p>
+            </div>
+
+            <Button
+              className="w-full sm:w-fit"
+              variant="solid"
+              size="sm"
+              type="button"
+              onClick={() => {
+                append({ image: "", name: "", quantity: 1 });
               }}
-              deleteItem={() => {
-                setItems(
-                  items.filter((item1) => {
-                    return item1 != item;
-                  })
-                );
-              }}
-            />
-          ))}
+            >
+              Add item
+            </Button>
+          </div>
+          <div className="grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2">
+            {fields.map((field, index) => (
+              <CollectionItemInput
+                key={index}
+                item={items[index]}
+                index={index}
+                setValue={setValue}
+                remove={remove}
+              />
+            ))}
+          </div>
         </section>
 
-        <section className="mt-8 lg:w-2/3">
+        <section className="mt-8">
           <Controller
             control={control}
             name="collectionName"
             rules={{ required: "Collection Name is required" }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <Input
+                className="max-w-3xl"
                 type="text"
                 label="Collection Name*"
                 value={value}
@@ -150,6 +136,7 @@ const CreateMerchandisePage = () => {
             }}
             render={({ field: { onChange, value }, fieldState: { error } }) => (
               <InputGroup
+                className="max-w-3xl"
                 type="text"
                 label="Price*"
                 value={value}
