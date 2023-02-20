@@ -2,7 +2,10 @@ import React from "react";
 import Image from "next/image";
 import { CSSProperties } from "react";
 import HashLoader from "react-spinners/HashLoader";
-const CONNEXUS_BLUE = "#1A7DFF";
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 const override: CSSProperties = {
   display: "block",
@@ -10,19 +13,25 @@ const override: CSSProperties = {
   borderColor: "red",
 };
 
+const CONNEXUS_BLUE = "#1A7DFF";
+
 type LoadingProps = {
   color?: string;
+  className?: string;
 };
-const Loading = ({ color }: LoadingProps) => {
+const Loading = ({ color = CONNEXUS_BLUE, className }: LoadingProps) => {
   return (
     <div
       aria-label="Loading..."
       role="status"
-      className="flex h-screen animate-pulse flex-col items-center justify-center bg-sky-100"
+      className={classNames(
+        "flex h-screen animate-pulse flex-col items-center justify-center bg-sky-100",
+        className ?? ""
+      )}
     >
       <div className="sweet-loading">
         <HashLoader
-          color={CONNEXUS_BLUE}
+          color={color}
           loading={true}
           cssOverride={override}
           size={50}

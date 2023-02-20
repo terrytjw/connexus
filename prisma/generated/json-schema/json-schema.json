@@ -11,19 +11,24 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "profilePic": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "bannerPic": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "displayName": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "username": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "email": {
           "type": "string"
@@ -185,6 +190,9 @@
     "Channel": {
       "type": "object",
       "properties": {
+        "channelId": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },

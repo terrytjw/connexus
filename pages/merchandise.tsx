@@ -1,7 +1,15 @@
 import React from "react";
+import Layout from "../components/Layout";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 const MerchandisePage = () => {
-  return <div>MerchandisePage</div>;
+  return (
+    <ProtectedRoute>
+      <Layout>
+        <div>MerchandisePage</div>
+      </Layout>
+    </ProtectedRoute>
+  );
 };
 
 export default MerchandisePage;
