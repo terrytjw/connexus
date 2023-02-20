@@ -17,7 +17,7 @@ import UserProfileCreations from "../../../components/UserProfileTabs/Creations"
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { profile, products } from "../../../utils/dummyData";
 
-const UserProfilePage = ({ user }: any) => {
+const UserProfilePage = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
 
