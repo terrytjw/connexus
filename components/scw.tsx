@@ -124,8 +124,8 @@ const Home = () => {
       setScwAddress("");
       setScwLoading(true);
       const smartAccount = new SmartAccount(provider, {
-        activeNetworkId: ChainId.GOERLI,
-        supportedNetworksIds: [ChainId.GOERLI],
+        activeNetworkId: ChainId.POLYGON_MUMBAI,
+        supportedNetworksIds: [ChainId.POLYGON_MUMBAI],
       });
       await smartAccount.init();
       const context = smartAccount.getSmartAccountContext();
