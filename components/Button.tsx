@@ -7,7 +7,6 @@ function classNames(...classes: string[]) {
 
 type ButtonProps = {
   className?: string;
-  type?: "submit" | "reset";
   href?: string;
   variant: "solid" | "outlined";
   size: "sm" | "md";

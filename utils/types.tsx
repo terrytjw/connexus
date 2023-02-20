@@ -50,3 +50,9 @@ export type Comment = {
   likes: number;
   replies: Comment[];
 };
+
+export type Item = {
+  image: string;
+  name: string;
+  quantity: number;
+};
