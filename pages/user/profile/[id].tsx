@@ -4,7 +4,7 @@ import { getSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { FaShareSquare } from "react-icons/fa";
+import { FaShareSquare, FaPen } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import Avatar from "../../../components/Avatar";
 import Banner from "../../../components/Banner";
@@ -15,10 +15,14 @@ import TabGroupBordered from "../../../components/TabGroupBordered";
 import UserProfileCollections from "../../../components/UserProfileTabs/Collections";
 import UserProfileCreations from "../../../components/UserProfileTabs/Creations";
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
-import { profile, products } from "../../../utils/dummyData";
+import { products } from "../../../utils/dummyData";
+import { User } from "@prisma/client";
 
-const UserProfilePage = () => {
-  const router = useRouter();
+type UserProfilePageProps = {
+  userData: User;
+};
+const UserProfilePage = ({ userData }: UserProfilePageProps) => {
+  console.log("userData -> ", userData);
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -28,16 +32,16 @@ const UserProfilePage = () => {
           <title>Profile | Connexus</title>
         </Head>
         <main>
-          <Banner coverImageUrl={profile.coverImageUrl} />
+          {/* <Banner coverImageUrl={userData.bannerPic} /> */}
 
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
-              <Avatar imageUrl={profile.imageUrl} />
+              {/* <Avatar imageUrl={userData.profilePic} /> */}
               <div className="">
                 {/* mobile view profile name*/}
                 <div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
                   <h1 className="truncate text-2xl font-bold text-gray-900">
-                    {profile.name} - mobile
+                    {userData.displayName} - mobile
                   </h1>
                   <p className="mt-1 text-gray-500 sm:hidden">
                     I'm fly, drippin' with dem peaches high ·{" "}
@@ -49,7 +53,7 @@ const UserProfilePage = () => {
             {/* desktop view profile name*/}
             <div className="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
               <h1 className="truncate text-2xl font-bold text-gray-900">
-                {profile.name} - desktop
+                {userData.displayName} - desktop
               </h1>
               <p className="mt-1 text-gray-500">
                 I'm fly, drippin' with dem peaches high ·{" "}
@@ -59,21 +63,21 @@ const UserProfilePage = () => {
 
             {/* button group */}
             <div className="mt-6 flex gap-2">
-              <Button variant="solid" size="md">
-                <span>Edit Profile</span>
+              <Button href="/user/settings/1" variant="solid" size="md">
+                <FaPen aria-hidden="true" />
+                <span className="hidden sm:inline-block">Edit Profile</span>
               </Button>
               <Button variant="solid" size="md">
                 <FaShareSquare aria-hidden="true" />
                 <span className="hidden sm:inline-block">Share</span>
               </Button>
-              <Button
+              {/* <Button
                 variant="solid"
                 size="md"
-                onClick={() => router.push("/user/settings/1")}
               >
                 <FiSettings aria-hidden="true" />
                 <span className="hidden sm:inline-block">Settings</span>
-              </Button>
+              </Button> */}
             </div>
 
             <TabGroupBordered
@@ -104,21 +108,18 @@ const UserProfilePage = () => {
 
 export default UserProfilePage;
 
-// export const getServerSideProps: GetServerSideProps = async (context: any) => {
-//   const session = await getSession(context);
-//   console.log("session -> ", session);
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  const userId = session?.user.userId;
 
-//   const userId = session?.user.userId;
+  // use axios GET method to fetch data
+  const { data: userData } = await axios.get(
+    `http://localhost:3000/api/users/${userId}`
+  );
 
-//   // use axios GET method to fetch data
-//   const res = await axios.get(`http://localhost:3000/api/users/${userId}`);
-//   console.log("res -> ", res.data);
-
-//   return {
-//     props: {
-//       user: {
-//         // id : session?.walletAddress,
-//       },
-//     },
-//   };
-// };
+  return {
+    props: {
+      userData,
+    },
+  };
+};

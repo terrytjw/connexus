@@ -62,7 +62,7 @@ const Home = () => {
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
         };
-        signIn("credentials", { callbackUrl: "/merchandise", ...userInfo });
+        signIn("credentials", { callbackUrl: "/communities", ...userInfo });
       }
 
       return;

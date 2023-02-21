@@ -8,23 +8,47 @@ import TextArea from "../TextArea";
 import { Controller, useForm } from "react-hook-form";
 import BannerInput from "../BannerInput";
 import InputGroup from "../InputGroup";
+import axios from "axios";
+import { User } from "@prisma/client";
 
 type ProfileSettingsProps = {
-  profile: any; // TODO: type this
+  userData: User;
 };
-const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
-  const { handleSubmit, setValue, control, watch } = useForm({
+const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
+  type EditProfileForm = {
+    displayName: string;
+    username: string;
+    bio: string;
+    email: string;
+    bannerPic: string;
+    profilePic: string;
+  };
+  const { handleSubmit, setValue, control, watch } = useForm<EditProfileForm>({
     defaultValues: {
-      name: "Anon Mfer",
-      username: "anonmfer",
-      bio: "I am a 22 years old Software Engineer currently based in San Francisco.",
-      email: "anonmfer@gmail.com",
-      bannerPic: profile.coverImageUrl,
-      profilePic: profile.imageUrl,
+      displayName: userData.displayName,
+      username: userData.username,
+      bio: userData.bio,
+      email: userData.email,
+      bannerPic: userData.bannerPic,
+      profilePic: userData.profilePic,
     },
   });
 
   const [bannerPic, profilePic] = watch(["bannerPic", "profilePic"]);
+  console.log("xxx -> ", userData);
+
+  const onSubmit = async (formData: EditProfileForm) => {
+    const updatedUserData = {
+      ...userData, // this is the user data from the database
+      ...formData, // this is the user data fields from the form overwriting the database data
+    };
+    const res = await axios.post(
+      "http://localhost:3000/api/users/1",
+      updatedUserData
+    );
+    const temp = res.data;
+    console.log("temp -> ", temp);
+  };
 
   return (
     <main>
@@ -32,11 +56,7 @@ const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
         Update your profile settings
       </h1>
       {/* <Banner coverImageUrl={profile.coverImageUrl} /> */}
-      <form
-        onSubmit={handleSubmit((data) => {
-          console.log("data -> ", data);
-        })}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <BannerInput
           bannerPic={bannerPic}
           onChange={(e) => {
@@ -69,24 +89,12 @@ const ProfileSettings = ({ profile }: ProfileSettingsProps) => {
                 }}
               />
             </div>
-            <div className="">
-              {/* mobile view profile name*/}
-              <div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
-                <h1 className="truncate text-2xl font-bold text-gray-900">
-                  {profile.name} - mobile
-                </h1>
-                <p className="mt-1 text-gray-500 sm:hidden">
-                  I'm fly, drippin' with dem peaches high ·{" "}
-                  <span className="italic">Joined 2 Sep 1969</span>
-                </p>
-              </div>
-            </div>
           </div>
 
           <div className="mt-8 sm:max-w-xl">
             <Controller
               control={control}
-              name="name"
+              name="displayName"
               rules={{ required: "Name is required" }}
               render={({
                 field: { onChange, value },

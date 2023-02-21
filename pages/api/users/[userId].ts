@@ -100,6 +100,8 @@ export default async function handler(
 
   async function handlePOST(userId: number, user: User) {
     try {
+      console.log("userId -> ", userId);
+      console.log("user -> ", user);
       const response = await prisma.user.update({
         where: {
           userId: userId,
