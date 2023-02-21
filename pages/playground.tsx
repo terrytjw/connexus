@@ -18,7 +18,7 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { communities, events, products, profile } from "../utils/dummyData";
+import { collections, communities, events, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
@@ -173,7 +173,7 @@ const PlaygroundPage = () => {
           </h1>
         </div>
 
-        <CollectionGrid data={products} />
+        <CollectionGrid data={collections} />
       </section>
       <div className="divider" />
 
