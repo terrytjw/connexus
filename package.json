@@ -17,6 +17,9 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@biconomy/core-types": "^1.0.0",
+    "@biconomy/smart-account": "^1.0.0",
+    "@biconomy/web3-auth": "^1.0.0",
     "@formkit/auto-animate": "^1.0.0-beta.5",
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
@@ -30,6 +33,7 @@
     "framer-motion": "^8.1.9",
     "lodash": "^4.17.21",
     "next": "^13.1.0",
+    "next-auth": "^4.19.2",
     "next-swagger-doc": "^0.3.6",
     "prisma": "^4.9.0",
     "react": "^18.2.0",

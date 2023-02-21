@@ -3,14 +3,30 @@ import Head from "next/head";
 import { FaGithub, FaShareSquare } from "react-icons/fa";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "../components/Notification";
+import "@biconomy/web3-auth/dist/src/style.css";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import dynamic from "next/dynamic";
+import Loading from "../components/Loading";
+import Modal from "../components/Modal";
 
 const HomePage: NextPage = () => {
+  const router = useRouter();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   const [selected, setSelected] = useState(false);
-  const [items, setItems] = useState([
-    { image: "", description: "", quantity: 1 },
-  ]);
+
+  const { data: session, status } = useSession();
+
+  const SocialLoginDynamic = dynamic(
+    () => import("../components/scw").then((res) => res.default),
+    {
+      ssr: false,
+      loading: () => <Loading className="!h-full" />,
+    }
+  );
 
   return (
     <div>
@@ -20,21 +36,37 @@ const HomePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="flex flex-col items-center justify-center tracking-widest">
+      <main className="flex flex-col items-center justify-center p-10 tracking-widest">
         <h1 className="animate-pulse text-3xl font-bold">Let's build. 🚀</h1>
+
+        <h2 className="mt-10 mb-6 text-xl font-semibold">Authentication</h2>
+
+        <section className="mb-8 flex flex-wrap gap-4">
+          <Button
+            variant="solid"
+            size="md"
+            className="mt-4"
+            onClick={
+              session
+                ? () => router.push("/merchandise")
+                : () => setIsAuthModalOpen(true)
+            }
+          >
+            Login
+          </Button>
+          <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
+            <SocialLoginDynamic />
+          </Modal>
+        </section>
+
+        <div className="divider" />
+
         <h2 className="mt-10 mb-6 text-xl font-semibold">
           Components showcase
         </h2>
 
         <div className="divider" />
 
-        {/* <CustomLink
-          href="https://github.com/terrytjw/t2-template"
-          className="flex gap-4 p-8"
-        >
-          <FaGithub />
-          Github repo
-        </CustomLink> */}
         <h3 className="font-bold">Buttons</h3>
         <section className="mb-8 flex flex-wrap gap-4">
           <Button variant="solid" size="md" className="mt-4">
