@@ -136,37 +136,79 @@ async function generateComment() {
 }
 
 async function generateUser() {
-  const alice = await prisma.user.upsert({
-    where: { email: "alice@prisma.io" },
+  await prisma.user.upsert({
+    where: { email: "tenderloin@prisma.io" },
     update: {},
     create: {
-      email: "alice@prisma.io",
-      username: "Alice",
-      walletAddress: "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BA5e5",
-      displayName: "Alice",
-      notificationBySMS: false,
-      notificationByEmail: false,
-      profilePic: "https://aliceinwonderland.fandom.com/wiki/Alice",
-      bannerPic: "https://aliceinwonderland.fandom.com/wiki/Alice",
-      phoneNumber: "8399712",
-    },
-  });
-
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@prisma.io" },
-    update: {},
-    create: {
-      email: "bob@prisma.io",
-      username: "Bob",
-      walletAddress: "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
-      displayName: "Bob",
+      email: "tenderloin@prisma.io",
+      username: "Tenderloin",
+      walletAddress: "0x95222290ssDD7278Aa3Ddd389Cc1E1d165CC4BA5e5",
+      displayName: "Permanent Homie",
       notificationBySMS: false,
       notificationByEmail: false,
       profilePic:
-        "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/pic1.jpg",
       bannerPic:
-        "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/banner1.jpg",
       phoneNumber: "8399712",
+      bio: "Hi i stay in the Tenderloin",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: "chinkchonk@prisma.io" },
+    update: {},
+    create: {
+      email: "chinkchonk@prisma.io",
+      username: "chinkchonk",
+      walletAddress: "0x95222dsds290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName: "chinkchonk ni de ding dong",
+      notificationBySMS: false,
+      notificationByEmail: false,
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/pic2.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/banner2.jpg",
+      phoneNumber: "8399712",
+      bio: "I am chinkchonk",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: "celine@prisma.io" },
+    update: {},
+    create: {
+      email: "celine@prisma.io",
+      username: "celine",
+      walletAddress: "0x9522ss2290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName: "chinkchonk ni de ding dong",
+      notificationBySMS: false,
+      notificationByEmail: false,
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/pic3.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/banner3.jpg",
+      phoneNumber: "8399712",
+      bio: "I am celine chinkchonk",
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: "allah@prisma.io" },
+    update: {},
+    create: {
+      email: "allah@prisma.io",
+      username: "allah",
+      walletAddress: "0x95222290DDsd7278Aa3Ddd389Cc1E1d165CC4BAfe5",
+      displayName: "allah ni de ding dong",
+      notificationBySMS: false,
+      notificationByEmail: false,
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/pic4.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/banner4.jpg",
+      phoneNumber: "8399712",
+      bio: "I am allah hehe",
     },
   });
 }

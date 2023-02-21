@@ -23,6 +23,7 @@ model User {
   displayName         String            @default("")
   username            String            @default("")
   email               String            @unique
+  bio                 String            @default("")
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
   createdCollections  Collection[]      @relation(name: "createdCollections")

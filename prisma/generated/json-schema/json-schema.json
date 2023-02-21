@@ -33,6 +33,10 @@
         "email": {
           "type": "string"
         },
+        "bio": {
+          "type": "string",
+          "default": ""
+        },
         "notificationBySMS": {
           "type": "boolean",
           "default": true
