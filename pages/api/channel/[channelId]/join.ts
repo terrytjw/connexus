@@ -58,10 +58,7 @@ export default async function handler(
         data: {
           members: {
             connect: {
-              userId_channelId: {
-                userId: userId,
-                channelId: channelId
-              }
+              userId: userId
             }
           }
         },

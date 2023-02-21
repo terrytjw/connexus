@@ -2,6 +2,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community } from "@prisma/client";
+import channelHandler from "../../channel/[channelId]/join";
+import axios from "axios";
+import { url } from "inspector";
 
 const prisma = new PrismaClient();
 
@@ -63,13 +66,25 @@ export default async function handler(
           }
         },
         include: {
-          members: true
+          members: true,
+          channels: {
+            orderBy: {
+              channelId: 'asc'
+            }
+          }
         }
       });
+      await addToHomeChannel(response.channels[0].channelId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
+  }
+
+  async function addToHomeChannel(channelId: number, userId: number) {
+    const response = await fetch(`http://localhost:3000/api/channel/${channelId}/join/?userId=${userId}`, {
+      method: "POST"
+    })
   }
 }
