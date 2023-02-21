@@ -3,22 +3,22 @@ import { useState } from "react";
 import { FaImage, FaTrashAlt } from "react-icons/fa";
 import { UseFieldArrayRemove, UseFormSetValue } from "react-hook-form";
 import Button from "./Button";
-import { CreateMerchandiseForm } from "../pages/merchandise/create";
-import { Item } from "../utils/types";
+import { CreateCollectionForm } from "../pages/merchandise/create";
+import { Collectible } from "../utils/types";
 
-type CollectionItemInputProps = {
-  item: Item;
+type CollectibleInputProps = {
+  collectible: Collectible;
   index: number;
-  setValue: UseFormSetValue<CreateMerchandiseForm>;
+  setValue: UseFormSetValue<CreateCollectionForm>;
   remove: UseFieldArrayRemove;
 };
 
-const CollectionItemInput = ({
-  item,
+const CollectibleInput = ({
+  collectible,
   index,
   setValue,
   remove,
-}: CollectionItemInputProps) => {
+}: CollectibleInputProps) => {
   const [imagePreview, setImagePreview] = useState("");
 
   return (
@@ -33,7 +33,10 @@ const CollectionItemInput = ({
               const reader = new FileReader();
               reader.addEventListener("load", () => {
                 setImagePreview(reader.result as string);
-                setValue(`items.${index}.image`, reader.result as string);
+                setValue(
+                  `collectibles.${index}.image`,
+                  reader.result as string
+                );
               });
               reader.readAsDataURL(e.target.files[0]);
             }
@@ -61,11 +64,14 @@ const CollectionItemInput = ({
               type="button"
               className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
               onClick={() => {
-                if (item.quantity && item.quantity > 1) {
-                  setValue(`items.${index}.quantity`, item.quantity - 1);
+                if (collectible.quantity && collectible.quantity > 1) {
+                  setValue(
+                    `collectibles.${index}.quantity`,
+                    collectible.quantity - 1
+                  );
                   return;
                 }
-                setValue(`items.${index}.quantity`, 1);
+                setValue(`collectibles.${index}.quantity`, 1);
               }}
             >
               <span className="m-auto text-2xl">-</span>
@@ -74,7 +80,7 @@ const CollectionItemInput = ({
               type="number"
               min={1}
               step={1}
-              value={item.quantity}
+              value={collectible.quantity}
               onKeyDown={(e) => {
                 // disallow decimal
                 // only allow numbers, backspace, arrow left and right for editing
@@ -89,7 +95,10 @@ const CollectionItemInput = ({
                 e.preventDefault();
               }}
               onChange={(e) => {
-                setValue(`items.${index}.quantity`, e.target.valueAsNumber);
+                setValue(
+                  `collectibles.${index}.quantity`,
+                  e.target.valueAsNumber
+                );
               }}
               className="w-full flex-shrink appearance-none rounded-none bg-gray-200 text-center outline-none"
             ></input>
@@ -97,11 +106,14 @@ const CollectionItemInput = ({
               type="button"
               className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
               onClick={() => {
-                if (item.quantity) {
-                  setValue(`items.${index}.quantity`, item.quantity + 1);
+                if (collectible.quantity) {
+                  setValue(
+                    `collectibles.${index}.quantity`,
+                    collectible.quantity + 1
+                  );
                   return;
                 }
-                setValue(`items.${index}.quantity`, 1);
+                setValue(`collectibles.${index}.quantity`, 1);
               }}
             >
               <span className="m-auto text-2xl font-thin">+</span>
@@ -123,7 +135,7 @@ const CollectionItemInput = ({
           className="input-bordered input h-full"
           placeholder="Name"
           onChange={(e) => {
-            setValue(`items.${index}.name`, e.target.value);
+            setValue(`collectibles.${index}.name`, e.target.value);
           }}
         />
       </div>
@@ -131,4 +143,4 @@ const CollectionItemInput = ({
   );
 };
 
-export default CollectionItemInput;
+export default CollectibleInput;

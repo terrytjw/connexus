@@ -1,12 +1,10 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import CustomLink from "../components/CustomLink";
 import { FaGithub, FaShareSquare } from "react-icons/fa";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
 import { useState } from "react";
 import Notification from "../components/Notification";
-import CollectionItemInput from "../components/CollectionItemInput";
 
 const HomePage: NextPage = () => {
   const [selected, setSelected] = useState(false);

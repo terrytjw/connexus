@@ -1,5 +1,5 @@
 import React from "react";
-import CollectionGrid from "../../CollectionGrid";
+import CollectibleGrid from "../../CollectibleGrid";
 
 type CollectedTabProps = {
   products: any; // TODO: type this
@@ -7,7 +7,7 @@ type CollectedTabProps = {
 const CollectedTab = ({ products }: CollectedTabProps) => {
   return (
     <div>
-      <CollectionGrid data={products} />
+      <CollectibleGrid data={products} collectedTab={true} />
     </div>
   );
 };

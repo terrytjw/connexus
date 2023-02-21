@@ -51,8 +51,25 @@ export type Comment = {
   replies: Comment[];
 };
 
-export type Item = {
+export type Collectible = {
+  collectibleId?: number;
   image: string;
   name: string;
   quantity: number;
+  collectionName?: string;
+};
+
+export type Collection = {
+  collectionId: number;
+  name: string;
+  description: string;
+  quantity: number;
+  price: number;
+  collectibles: Collectible[];
+  premiumChannel: Channel | null;
+  creator: {
+    userId: number;
+    displayName: string;
+    profilePic: string;
+  };
 };

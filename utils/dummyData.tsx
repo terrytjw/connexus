@@ -327,7 +327,7 @@ const posts = [
   },
 ];
 
-const channels = [
+export const channels = [
   {
     channelId: 1,
     name: "Home",
@@ -337,6 +337,18 @@ const channels = [
   {
     channelId: 2,
     name: "Premium Channel 1",
+    channelType: ChannelType.PREMIUM,
+    posts: posts,
+  },
+  {
+    channelId: 3,
+    name: "Premium Channel 2",
+    channelType: ChannelType.PREMIUM,
+    posts: posts,
+  },
+  {
+    channelId: 4,
+    name: "Premium Channel 3",
     channelType: ChannelType.PREMIUM,
     posts: posts,
   },
@@ -397,5 +409,88 @@ export const communities = [
     maxMembers: 2,
     numMembers: 200,
     channels: channels,
+  },
+];
+
+export const collectibles = [
+  {
+    collectibleId: 1,
+    image: "/images/bear.jpg",
+    name: "Basic Bear 1",
+    quantity: 1,
+    collectionName: "Collection #1",
+  },
+  {
+    collectibleId: 2,
+    image: "/images/bear.jpg",
+    name: "Basic Bear 2",
+    quantity: 2,
+    collectionName: "Collection #1",
+  },
+  {
+    collectibleId: 3,
+    image: "/images/bear.jpg",
+    name: "Basic Bear 3",
+    quantity: 3,
+    collectionName: "Collection #1",
+  },
+  {
+    collectibleId: 4,
+    image: "/images/bear.jpg",
+    name: "Basic Bear 4",
+    quantity: 4,
+    collectionName: "Collection #1",
+  },
+  {
+    collectibleId: 5,
+    image: "/images/bear.jpg",
+    name: "Basic Bear 5",
+    quantity: 5,
+    collectionName: "Collection #1",
+  },
+];
+
+export const collections = [
+  {
+    collectionId: 1,
+    name: "Collection #1",
+    description: "Description 1",
+    quantity: 5,
+    price: "$1",
+    collectibles: collectibles,
+    premiumChannel: channels[1],
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+  },
+  {
+    collectionId: 2,
+    name: "Collection #2",
+    description: "Description 2",
+    quantity: 100,
+    price: "$100",
+    collectibles: collectibles,
+    premiumChannel: channels[2],
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
+  },
+  {
+    collectionId: 3,
+    name: "Collection #3",
+    description: "Description 3",
+    quantity: 2000,
+    price: "$2000",
+    collectibles: collectibles,
+    premiumChannel: null,
+    creator: {
+      userId: "1",
+      displayName: "Creator",
+      profilePic: "/images/bear.jpg",
+    },
   },
 ];

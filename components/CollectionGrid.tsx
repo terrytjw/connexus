@@ -16,13 +16,14 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
   if (!item) return <Skeleton height={350} />;
 
   return (
-    <Link href={item.href} className="group text-sm">
-      <div className="relative w-full overflow-hidden rounded-lg bg-gray-100 transition-all group-hover:opacity-75">
+    <Link href={`/merchandise/${item.collectionId}`} className="group text-sm">
+      <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all group-hover:opacity-75">
         <Image
-          src={item.imageSrc}
-          alt={item.imageAlt}
-          width={500}
-          height={500}
+          fill
+          sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
+          className="object-cover object-center"
+          src={item.collectibles[0].image}
+          alt="Collection image"
         />
         <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
           <div
@@ -42,8 +43,17 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
         </div>
       </div>
       <h3 className="mt-4 font-medium text-gray-900">{item.name}</h3>
-      <p className="italic text-gray-500">{item.availability}</p>
       <p className="mt-2 text-sm text-gray-500">{item.description}</p>
+      {item.premiumChannel ? (
+        <div className="mt-2 text-sm font-semibold text-blue-600">
+          Linked to{" "}
+          <span className="underline">{item.premiumChannel.name}</span>
+        </div>
+      ) : (
+        <div className="mt-2 text-sm font-semibold text-red-500">
+          Not Linked
+        </div>
+      )}
     </Link>
   );
 };

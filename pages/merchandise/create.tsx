@@ -1,25 +1,25 @@
 import React from "react";
 import Head from "next/head";
 import Button from "../../components/Button";
-import CollectionItemInput from "../../components/CollectionItemInput";
-import { Item } from "../../utils/types";
+import CollectibleInput from "../../components/CollectibleInput";
+import { Collectible } from "../../utils/types";
 import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 
-export type CreateMerchandiseForm = {
-  items: Item[];
+export type CreateCollectionForm = {
+  collectibles: Collectible[];
   collectionName: string;
   collectionDescription: string;
   price: number;
 };
 
-const CreateMerchandisePage = () => {
+const CreateCollectionPage = () => {
   const { handleSubmit, setValue, control, watch } =
-    useForm<CreateMerchandiseForm>({
+    useForm<CreateCollectionForm>({
       defaultValues: {
-        items: [{ image: "", name: "", quantity: 1 }],
+        collectibles: [{ image: "", name: "", quantity: 1 }],
         collectionName: "",
         collectionDescription: "",
         price: 0,
@@ -28,10 +28,10 @@ const CreateMerchandisePage = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "items",
+    name: "collectibles",
   });
 
-  const [items] = watch(["items"]);
+  const [collectibles] = watch(["collectibles"]);
 
   return (
     <div className="debug-screens">
@@ -77,9 +77,9 @@ const CreateMerchandisePage = () => {
           </div>
           <div className="grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2">
             {fields.map((field, index) => (
-              <CollectionItemInput
+              <CollectibleInput
                 key={index}
-                item={items[index]}
+                collectible={collectibles[index]}
                 index={index}
                 setValue={setValue}
                 remove={remove}
@@ -155,7 +155,9 @@ const CreateMerchandisePage = () => {
         <section className="flex flex-col justify-between gap-y-6 pt-2 pb-20 lg:flex-row">
           <div>
             Total number of items:{" "}
-            <span className="ml-1 text-blue-600 underline">{items.length}</span>
+            <span className="ml-1 text-blue-600 underline">
+              {collectibles.length}
+            </span>
           </div>
           <Button type="submit" variant="solid" size="md" className="lg:w-40">
             Submit
@@ -166,4 +168,4 @@ const CreateMerchandisePage = () => {
   );
 };
 
-export default CreateMerchandisePage;
+export default CreateCollectionPage;
