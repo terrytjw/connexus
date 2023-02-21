@@ -74,7 +74,7 @@ export default async function handler(
           }
         }
       });
-      await addToHomeChannel(response.channels[0].channelId, userId);
+      await joinHomeChannel(response.channels[0].channelId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -82,7 +82,7 @@ export default async function handler(
     }
   }
 
-  async function addToHomeChannel(channelId: number, userId: number) {
+  async function joinHomeChannel(channelId: number, userId: number) {
     const response = await fetch(`http://localhost:3000/api/channel/${channelId}/join/?userId=${userId}`, {
       method: "POST"
     })
