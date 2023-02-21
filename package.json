@@ -25,6 +25,7 @@
     "@heroicons/react": "^2.0.13",
     "@prisma/client": "^4.9.0",
     "@react-google-maps/api": "^2.18.1",
+    "@supabase/supabase-js": "^2.8.0",
     "@types/google-map-react": "^2.1.7",
     "axios": "^1.2.1",
     "daisyui": "^2.46.1",
@@ -47,7 +48,8 @@
     "swagger-ui-react": "^4.15.5",
     "swiper": "^9.0.4",
     "swr": "^2.0.0",
-    "theme-change": "^2.3.0"
+    "theme-change": "^2.3.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",
@@ -55,6 +57,7 @@
     "@types/react": "18.0.27",
     "@types/react-dom": "^18.0.9",
     "@types/swagger-ui-react": "^4.11.0",
+    "@types/uuid": "^9.0.0",
     "autoprefixer": "^10.4.13",
     "cpy-cli": "4.2.0",
     "eslint": "^8.30.0",
