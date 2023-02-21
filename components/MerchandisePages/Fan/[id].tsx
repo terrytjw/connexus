@@ -1,5 +1,6 @@
 import Link from "next/link";
 import React, { useState } from "react";
+import { FaChevronLeft } from "react-icons/fa";
 import Badge from "../../Badge";
 import Button from "../../Button";
 import CollectibleGrid from "../../CollectibleGrid";
@@ -10,23 +11,22 @@ const FanCollectionPage = () => {
 
   return (
     <main className="py-12 px-4 sm:px-12">
-      <h1 className="text-3xl font-bold">{collections[0].name}</h1>
+      <div className="mb-8 flex items-center gap-4">
+        <Button
+          className="border-0"
+          variant="outlined"
+          size="md"
+          onClick={() => history.back()}
+        >
+          <FaChevronLeft />
+        </Button>
+        <h1 className="text-3xl font-bold">{collections[0].name}</h1>
+      </div>
 
       <div className="mt-6">
         <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
-          <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-            <h1 className="text-xl font-bold text-gray-700">
-              {collections[0].name}
-            </h1>
-            <Badge
-              className="h-min"
-              size="lg"
-              label="Unlocks Premium Channel"
-            />
-          </div>
-
-          <div className="flex flex-col justify-between gap-4 sm:flex-row">
-            <div className="flex flex-col gap-y-4">
+          <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row">
+            <div>
               <h2 className="text-gray-700">{collections[0].description}</h2>
               <span className="text-sm text-gray-700">
                 Created by{" "}
@@ -37,6 +37,17 @@ const FanCollectionPage = () => {
                   {collections[0].creator.displayName}
                 </Link>
               </span>
+            </div>
+
+            <Badge
+              className="h-min"
+              size="lg"
+              label={`Unlocks ${collections[0].premiumChannel?.name}`}
+            />
+          </div>
+
+          <div className="flex flex-col justify-between gap-4 sm:flex-row">
+            <div className="flex flex-col gap-y-4">
               <span>
                 <p className="text-sm text-gray-700">Price</p>
                 <p className="text-lg font-semibold text-blue-600">$5</p>

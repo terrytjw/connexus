@@ -2,17 +2,23 @@ import { Fragment, useState } from "react";
 import { Listbox, Transition } from "@headlessui/react";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 type SelectProps = {
   data: any;
   selected: any; // todo: type this better
   setSelected: (value: any) => void; // todo: type this better
+  className?: string;
 };
-const Select = ({ data, selected, setSelected }: SelectProps) => {
+
+const Select = ({ data, selected, setSelected, className }: SelectProps) => {
   return (
     <div className="w-full">
       <Listbox value={selected} onChange={setSelected}>
-        <div className="relative">
-          <Listbox.Button className="input-bordered input relative h-12 w-full cursor-default rounded-lg bg-white py-2 pl-4 pr-10 text-left text-sm text-gray-900">
+        <div className={classNames("relative", className ?? "")}>
+          <Listbox.Button className="input-bordered input relative h-12 w-full min-w-fit cursor-default rounded-lg bg-white py-2 pl-4 pr-10 text-left text-sm text-gray-900">
             <span className="block truncate">{selected.name}</span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon

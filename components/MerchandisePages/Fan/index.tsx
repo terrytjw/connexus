@@ -79,7 +79,7 @@ const FanCollectionsPage = () => {
               <FaSearch />
             </div>
             <input
-              className="input-outlined input input-md block w-full rounded-md pl-10"
+              className="input-outlined input input-md block w-48 rounded-md pl-10"
               type="text"
               value={searchString}
               placeholder="Search Collection"
@@ -92,6 +92,7 @@ const FanCollectionsPage = () => {
             data={filters}
             selected={filterSelected}
             setSelected={setFilterSelected}
+            className="w-64"
           />
         </div>
       </div>
