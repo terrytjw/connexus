@@ -55,14 +55,21 @@ const Home = () => {
       setAccount(accounts[0]);
 
       if (status === "unauthenticated") {
-        const retrievedUserInfo = await sdk.getUserInfo();
+        const retrievedUserInfo = await socialLoginSDK.getUserInfo();
+
         const userInfo = {
           name: retrievedUserInfo?.name,
           email: retrievedUserInfo?.email,
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
         };
-        signIn("credentials", { callbackUrl: "/communities", ...userInfo });
+        const response = await signIn("custom-login", {
+          redirect: false,
+          callbackUrl: "/communities",
+          ...userInfo,
+        });
+
+        if (response && response.url) router.push(response.url);
       }
 
       return;

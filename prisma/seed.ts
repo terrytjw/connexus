@@ -6,6 +6,7 @@ import {
   VisibilityType,
   PublishType,
 } from "@prisma/client";
+import { saveUser } from "../lib/user";
 
 const prisma = new PrismaClient();
 
@@ -136,10 +137,8 @@ async function generateComment() {
 }
 
 async function generateUser() {
-  await prisma.user.upsert({
-    where: { email: "tenderloin@prisma.io" },
-    update: {},
-    create: {
+  const users = [
+    {
       email: "tenderloin@prisma.io",
       username: "Tenderloin",
       walletAddress: "0x95222290ssDD7278Aa3Ddd389Cc1E1d165CC4BA5e5",
@@ -153,12 +152,7 @@ async function generateUser() {
       phoneNumber: "8399712",
       bio: "Hi i stay in the Tenderloin",
     },
-  });
-
-  await prisma.user.upsert({
-    where: { email: "chinkchonk@prisma.io" },
-    update: {},
-    create: {
+    {
       email: "chinkchonk@prisma.io",
       username: "chinkchonk",
       walletAddress: "0x95222dsds290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
@@ -172,12 +166,7 @@ async function generateUser() {
       phoneNumber: "8399712",
       bio: "I am chinkchonk",
     },
-  });
-
-  await prisma.user.upsert({
-    where: { email: "celine@prisma.io" },
-    update: {},
-    create: {
+    {
       email: "celine@prisma.io",
       username: "celine",
       walletAddress: "0x9522ss2290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
@@ -191,12 +180,7 @@ async function generateUser() {
       phoneNumber: "8399712",
       bio: "I am celine chinkchonk",
     },
-  });
-
-  await prisma.user.upsert({
-    where: { email: "allah@prisma.io" },
-    update: {},
-    create: {
+    {
       email: "allah@prisma.io",
       username: "allah",
       walletAddress: "0x95222290DDsd7278Aa3Ddd389Cc1E1d165CC4BAfe5",
@@ -210,7 +194,11 @@ async function generateUser() {
       phoneNumber: "8399712",
       bio: "I am allah hehe",
     },
-  });
+  ];
+
+  for (const user of users) {
+    await saveUser(user);
+  }
 }
 
 async function generateCollection() {

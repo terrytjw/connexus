@@ -11,31 +11,46 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "displayName": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "username": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "email": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bio": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "notificationBySMS": {
           "type": "boolean",
