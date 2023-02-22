@@ -70,7 +70,7 @@ const CollectibleGrid = ({ data, collectedTab }: CollectibleGridProps) => {
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
       {data.map((item) => (
         <CollectibleGridItem
-          key={item.id}
+          key={item.collectibleId}
           item={item}
           collectedTab={collectedTab}
         />
