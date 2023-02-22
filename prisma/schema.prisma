@@ -56,9 +56,8 @@ model Community {
   name          String
   description   String
   profilePic    String
-  tags          String[]
+  topics        CategoryType[]
   maxMembers    Int           @default(100)
-  communityType CommunityType @default(NFT)
   creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
   userId        Int
   members       User[]        @relation(name: "joinedCommunities")
@@ -68,7 +67,6 @@ model Community {
 model Channel {
   channelId   Int               @id @default(autoincrement())
   name        String
-  description String
   channelType ChannelType       @default(REGULAR)
   members     UsersOnChannels[]
   community   Community         @relation(fields: [communityId], references: [communityId])
@@ -192,11 +190,6 @@ enum VisibilityType {
 enum PrivacyType {
   PUBLIC
   PRIVATE
-}
-
-enum CommunityType {
-  NFT
-  CRYPTO
 }
 
 enum ChannelType {
