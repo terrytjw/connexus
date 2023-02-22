@@ -96,7 +96,7 @@ const CreateCollectionPage = () => {
                 <div className="grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2">
                   {fields.map((field, index) => (
                     <CollectibleInput
-                      key={index}
+                      key={field.id}
                       collectible={collectibles[index]}
                       index={index}
                       setValue={setValue}
