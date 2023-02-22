@@ -9,7 +9,7 @@ export function randomIntBetweenNumber(
 
 export async function generateUniqueUsername(username: string) {
   let randomNumber = randomIntBetweenNumber();
-  let uniqueName = `${username}#${randomNumber}`;
+  let uniqueName = `${username.toLowerCase()}#${randomNumber}`;
   while (true) {
     const response = await searchUser({
       username: uniqueName,

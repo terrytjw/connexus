@@ -57,14 +57,14 @@ const HomePage: NextPage = () => {
             className="mt-4"
             onClick={
               session
-                ? () => router.push("/merchandise")
+                ? () => router.push("/communities")
                 : () => setIsAuthModalOpen(true)
             }
           >
             Login
           </Button>
           <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
-            <SocialLoginDynamic />
+            <SocialLoginDynamic isAuthModalOpen={isAuthModalOpen}/>
           </Modal>
         </section>
 
