@@ -34,6 +34,10 @@ components:
         notificationByEmail:
           default: 'true'
           type: boolean
+        createdCollections:
+          items:
+            $ref: '#/components/schemas/Collection'
+          type: array
         createdCommunities:
           items:
             $ref: '#/components/schemas/Community'
@@ -61,6 +65,10 @@ components:
         likedComments:
           items:
             $ref: '#/components/schemas/Comment'
+          type: array
+        tickets:
+          items:
+            $ref: '#/components/schemas/Ticket'
           type: array
       type: object
     Post:
@@ -128,6 +136,8 @@ components:
       type: object
     Channel:
       properties:
+        channelId:
+          type: integer
         name:
           type: string
         description:
@@ -184,9 +194,10 @@ components:
       properties:
         eventId:
           type: integer
-        title:
+        eventName:
           type: string
         category:
+          items: {}
           enum:
             - AUTO_BOAT_AIR
             - BUSINESS_PROFESSIONAL
@@ -207,14 +218,9 @@ components:
             - SEASONAL_HOLIDAY
             - SPORTS_FITNESS
             - TRAVEL_OUTDOOR
-          type: string
-        location:
-          type: string
-        eventDurationType:
-          enum:
-            - SINGLE
-            - RECURRING
-          type: string
+          type: array
+        address:
+          $ref: '#/components/schemas/Address'
         startDate:
           type: string
         endDate:
@@ -237,17 +243,45 @@ components:
             - PUBLIC
             - PRIVATE
           type: string
+        eventBannerPicture:
+          type: string
+        eventImage:
+          type: string
+        maxAttendee:
+          type: integer
+        publishType:
+          enum:
+            - NOW
+            - LATER
+          type: string
+        publishStartDate:
+          type: string
         tickets:
           items:
             $ref: '#/components/schemas/Ticket'
           type: array
-        scAddress:
-          type: string
-        ticketCount:
-          type: integer
         ticketURIs:
           items:
             type: string
+          type: array
+        scAddress:
+          type: string
+      type: object
+    Address:
+      properties:
+        addressId:
+          type: integer
+        locationName:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        postalCode:
+          type: string
+        Event:
+          items:
+            $ref: '#/components/schemas/Event'
           type: array
       type: object
     Ticket:
@@ -256,7 +290,9 @@ components:
           type: integer
         name:
           type: string
-        quantity:
+        totalTicketSupply:
+          type: integer
+        currentTicketSupply:
           type: integer
         price:
           type: number
@@ -271,6 +307,10 @@ components:
         promotion:
           items:
             $ref: '#/components/schemas/Promotion'
+          type: array
+        users:
+          items:
+            $ref: '#/components/schemas/User'
           type: array
       type: object
     Promotion:
@@ -294,4 +334,47 @@ components:
           type: string
         ticket:
           $ref: '#/components/schemas/Ticket'
+      type: object
+    Collection:
+      properties:
+        collectionId:
+          type: integer
+        description:
+          type: string
+        fixedPrice:
+          type: number
+        currency:
+          enum:
+            - USD
+            - ETH
+            - BTC
+            - USDC
+          default: USD
+          type: string
+        collectionState:
+          enum:
+            - CREATED
+            - ON_SALE
+            - SOLD
+          default: CREATED
+          type: string
+        collections:
+          items:
+            $ref: '#/components/schemas/CollectionMedia'
+          type: array
+        creator:
+          $ref: '#/components/schemas/User'
+      type: object
+    CollectionMedia:
+      properties:
+        collectionMediaId:
+          type: integer
+        media:
+          type: string
+        description:
+          type: string
+        numOfMerch:
+          type: integer
+        collection:
+          $ref: '#/components/schemas/Collection'
       type: object

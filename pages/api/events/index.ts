@@ -1,13 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
-import { Network, Alchemy, Wallet } from "alchemy-sdk";
-import { ethers, SigningKey } from "ethers";
-import fs from "fs";
-import { Networkish } from "ethers/types/providers";
-import path from "path";
-import EventJSON from "./Event.json";
-import axios from "axios";
 
 const prisma = new PrismaClient();
 

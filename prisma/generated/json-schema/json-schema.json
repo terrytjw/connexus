@@ -11,19 +11,24 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "profilePic": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "bannerPic": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "displayName": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "username": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "email": {
           "type": "string"
@@ -35,6 +40,12 @@
         "notificationByEmail": {
           "type": "boolean",
           "default": true
+        },
+        "createdCollections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Collection"
+          }
         },
         "createdCommunities": {
           "type": "array",
@@ -76,6 +87,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Comment"
+          }
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ticket"
           }
         }
       }
@@ -179,6 +196,9 @@
     "Channel": {
       "type": "object",
       "properties": {
+        "channelId": {
+          "type": "integer"
+        },
         "name": {
           "type": "string"
         },
@@ -268,11 +288,12 @@
         "eventId": {
           "type": "integer"
         },
-        "title": {
-          "type": "string"
+        "eventName": {
+          "type": "string",
+          "default": ""
         },
         "category": {
-          "type": "string",
+          "type": "array",
           "enum": [
             "AUTO_BOAT_AIR",
             "BUSINESS_PROFESSIONAL",
@@ -295,15 +316,8 @@
             "TRAVEL_OUTDOOR"
           ]
         },
-        "location": {
-          "type": "string"
-        },
-        "eventDurationType": {
-          "type": "string",
-          "enum": [
-            "SINGLE",
-            "RECURRING"
-          ]
+        "address": {
+          "$ref": "#/definitions/Address"
         },
         "startDate": {
           "type": "string",
@@ -320,10 +334,12 @@
           }
         },
         "summary": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "visibilityType": {
           "type": "string",
@@ -339,22 +355,68 @@
             "PRIVATE"
           ]
         },
+        "eventBannerPicture": {
+          "type": "string",
+          "default": ""
+        },
+        "eventImage": {
+          "type": "string",
+          "default": ""
+        },
+        "maxAttendee": {
+          "type": "integer",
+          "default": 0
+        },
+        "publishType": {
+          "type": "string",
+          "enum": [
+            "NOW",
+            "LATER"
+          ]
+        },
+        "publishStartDate": {
+          "type": "string",
+          "format": "date-time"
+        },
         "tickets": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Ticket"
           }
         },
-        "scAddress": {
-          "type": "string"
-        },
-        "ticketCount": {
-          "type": "integer"
-        },
         "ticketURIs": {
           "type": "array",
           "items": {
             "type": "string"
+          }
+        },
+        "scAddress": {
+          "type": "string"
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "addressId": {
+          "type": "integer"
+        },
+        "locationName": {
+          "type": "string"
+        },
+        "address1": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "Event": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
           }
         }
       }
@@ -366,13 +428,20 @@
           "type": "integer"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "quantity": {
-          "type": "integer"
+        "totalTicketSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currentTicketSupply": {
+          "type": "integer",
+          "default": 0
         },
         "price": {
-          "type": "number"
+          "type": "number",
+          "default": 0
         },
         "startDate": {
           "type": "string",
@@ -383,7 +452,8 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -392,6 +462,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Promotion"
+          }
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
           }
         }
       }
@@ -403,7 +479,8 @@
           "type": "integer"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "promotionType": {
           "type": "string",
@@ -413,10 +490,12 @@
           ]
         },
         "promotionValue": {
-          "type": "number"
+          "type": "number",
+          "default": 0
         },
         "quantity": {
-          "type": "integer"
+          "type": "integer",
+          "default": 0
         },
         "startDate": {
           "type": "string",
@@ -428,6 +507,68 @@
         },
         "ticket": {
           "$ref": "#/definitions/Ticket"
+        }
+      }
+    },
+    "Collection": {
+      "type": "object",
+      "properties": {
+        "collectionId": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "fixedPrice": {
+          "type": "number"
+        },
+        "currency": {
+          "type": "string",
+          "default": "USD",
+          "enum": [
+            "USD",
+            "ETH",
+            "BTC",
+            "USDC"
+          ]
+        },
+        "collectionState": {
+          "type": "string",
+          "default": "CREATED",
+          "enum": [
+            "CREATED",
+            "ON_SALE",
+            "SOLD"
+          ]
+        },
+        "collections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionMedia"
+          }
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "CollectionMedia": {
+      "type": "object",
+      "properties": {
+        "collectionMediaId": {
+          "type": "integer"
+        },
+        "media": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "numOfMerch": {
+          "type": "integer"
+        },
+        "collection": {
+          "$ref": "#/definitions/Collection"
         }
       }
     }
@@ -455,11 +596,20 @@
     "event": {
       "$ref": "#/definitions/Event"
     },
+    "address": {
+      "$ref": "#/definitions/Address"
+    },
     "ticket": {
       "$ref": "#/definitions/Ticket"
     },
     "promotion": {
       "$ref": "#/definitions/Promotion"
+    },
+    "collection": {
+      "$ref": "#/definitions/Collection"
+    },
+    "collectionMedia": {
+      "$ref": "#/definitions/CollectionMedia"
     }
   }
 }

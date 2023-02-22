@@ -116,6 +116,24 @@ contract SimpleEvent is  Ownable, ReentrancyGuard, ERC721URIStorage {
 
     } 
 
+    function changeCategories(string[] memory new_categories, uint256[] memory new_categoryPrices, uint256[] memory new_categoryLimits) isOrganizer() public {
+        require(new_categories.length == new_categoryPrices.length, "Please key in again"); 
+        require(new_categories.length == new_categoryLimits.length, "Please key in again");
+        ticketSupply = 0 ; 
+        for(uint i = 0 ; i < categories.length; i ++){
+            uint256 existingSupply = 0 ; 
+            if(keccak256(abi.encodePacked( idToCategoryDetails[categories[i]].category))  == keccak256(abi.encodePacked(new_categories[i]))){
+                existingSupply = idToCategoryDetails[categories[i]].currentSupply;
+                require(existingSupply < new_categoryLimits[i], "Max supply insufficient, need higher limit");
+                
+            }
+            Category memory new_category_details = Category(
+            new_categories[i], new_categoryPrices[i], new_categoryLimits[i], existingSupply );
+            idToCategoryDetails[categories[i]] = new_category_details;
+            ticketSupply += categoryLimits[i];
+        }
+    }
+
     function setNewTokenURI(uint256 tokenId, string memory tokenURI) public{
        _setTokenURI(tokenId, tokenURI);
 

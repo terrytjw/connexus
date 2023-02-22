@@ -16,15 +16,16 @@ generator jsonSchema {
 
 model User {
   userId              Int               @id @default(autoincrement())
-  walletAddress       String
-  phoneNumber         String
-  profilePic          String
-  bannerPic           String
-  displayName         String
-  username            String
-  email               String
+  walletAddress       String            @unique
+  phoneNumber         String            @default("")
+  profilePic          String            @default("")
+  bannerPic           String            @default("")
+  displayName         String            @default("")
+  username            String            @default("")
+  email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
   createdCommunities  Community[]       @relation(name: "createdCommunities")
   joinedCommunities   Community[]       @relation(name: "joinedCommunities")
   joinedChannels      UsersOnChannels[]
@@ -32,22 +33,22 @@ model User {
   likedPosts          Post[]            @relation(name: "likedPosts")
   comments            Comment[]         @relation(name: "commenter")
   likedComments       Comment[]         @relation(name: "likedComments")
+  tickets             Ticket[]        
 }
 
 model Post {
-  postId      Int       @id @default(autoincrement())
-  title       String
-  content     String
-  date        DateTime  @default(now())
-  media       String[]
-  isPinned    Boolean   @default(false)
-  creator     User      @relation(name: "creator", fields: [creatorId], references: [userId])
-  creatorId   Int
-  channel     Channel   @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
-  likes       User[]    @relation(name: "likedPosts")
-  comments    Comment[]
+  postId    Int       @id @default(autoincrement())
+  title     String
+  content   String
+  date      DateTime  @default(now())
+  media     String[]
+  isPinned  Boolean   @default(false)
+  creator   User      @relation(name: "creator", fields: [creatorId], references: [userId])
+  creatorId Int
+  channel   Channel   @relation(fields: [channelId], references: [channelId])
+  channelId Int
+  likes     User[]    @relation(name: "likedPosts")
+  comments  Comment[]
 }
 
 model Community {
@@ -58,13 +59,14 @@ model Community {
   tags          String[]
   maxMembers    Int           @default(100)
   communityType CommunityType @default(NFT)
-  creator       User          @relation(name: "createdCommunities", fields: [creatorId], references: [userId])
-  creatorId     Int
+  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId        Int
   members       User[]        @relation(name: "joinedCommunities")
   channels      Channel[]
 }
 
 model Channel {
+  channelId   Int               @id @default(autoincrement())
   name        String
   description String
   channelType ChannelType       @default(REGULAR)
@@ -73,17 +75,16 @@ model Channel {
   communityId Int
   posts       Post[]
 
-  @@id([communityId, name])
+  @@unique([communityId, name])
 }
 
 model UsersOnChannels {
-  user        User    @relation(fields: [userId], references: [userId])
-  userId      Int
-  channel     Channel @relation(fields: [communityId, name], references: [communityId, name])
-  communityId Int
-  name        String
+  user      User    @relation(fields: [userId], references: [userId])
+  userId    Int
+  channel   Channel @relation(fields: [channelId], references: [channelId])
+  channelId Int
 
-  @@id([userId, communityId, name])
+  @@id([userId, channelId])
 }
 
 model Comment {
@@ -95,50 +96,70 @@ model Comment {
   commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
   userId          Int
   likes           User[]    @relation(name: "likedComments")
-  originalComment Comment?   @relation(name: "replies", fields: [commentId], references: [commentId])
+  originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
   replies         Comment[] @relation(name: "replies")
 }
 
 model Event {
-  eventId           Int            @id @default(autoincrement())
-  title             String
-  category          CategoryType
-  location          String
-  eventDurationType DurationType
-  startDate         DateTime
-  endDate           DateTime
-  images            String[]
-  summary           String
-  description       String
-  visibilityType    VisibilityType
-  privacyType       PrivacyType
-  tickets           Ticket[] 
-  scAddress         String
-  ticketCount       Int
-  ticketURIs        String[]
+  eventId            Int            @id @default(autoincrement())
+  eventName          String         @default("")
+  category           CategoryType[]
+  address            Address        @relation(fields: [addressId], references: [addressId])
+  addressId          Int
+  startDate          DateTime       @default(now())
+  endDate            DateTime       @default(now())
+  images             String[]
+  summary            String         @default("")
+  description        String         @default("")
+  visibilityType     VisibilityType
+  privacyType        PrivacyType
+  eventBannerPicture String         @default("")
+  eventImage         String         @default("")
+  maxAttendee        Int            @default(0)
+  publishType        PublishType
+  publishStartDate   DateTime       @default(now())
+  tickets            Ticket[]
+  ticketURIs         String[]
+  scAddress          String
+}
+
+enum PublishType {
+  NOW
+  LATER
+}
+
+model Address {
+  addressId    Int     @id @default(autoincrement())
+  locationName String
+  address1     String
+  address2     String
+  postalCode   String
+  Event        Event[]
 }
 
 model Ticket {
-  ticketId    Int         @id @default(autoincrement())
-  name        String
-  quantity    Int
-  price       Float
-  startDate   DateTime
-  endDate     DateTime
-  description String
-  event       Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
-  eventId     Int
-  promotion   Promotion[]
+  ticketId            Int         @id @default(autoincrement())
+  name                String      @default("")
+  totalTicketSupply   Int         @default(0)
+  currentTicketSupply Int         @default(0)
+  price               Float       @default(0)
+  startDate           DateTime    @default(now())
+  endDate             DateTime    @default(now())
+  description         String      @default("")
+  event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
+  eventId             Int
+  promotion           Promotion[]
+  users               User[]   
 }
 
 model Promotion {
   promotionId    Int           @id @default(autoincrement())
-  name           String
+  name           String        @default("")
   promotionType  PromotionType
-  promotionValue Float
-  quantity       Int
-  startDate      DateTime
-  endDate        DateTime
+  promotionValue Float         @default(0)
+  quantity       Int           @default(0)
+  startDate      DateTime      @default(now())
+  endDate        DateTime      @default(now())
   ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
   ticketId       Int
 }
@@ -165,11 +186,6 @@ enum CategoryType {
   TRAVEL_OUTDOOR
 }
 
-enum DurationType {
-  SINGLE
-  RECURRING
-}
-
 enum VisibilityType {
   DRAFT
   PUBLISHED
@@ -194,4 +210,37 @@ enum ChannelType {
 enum PromotionType {
   LIMITED
   UNLIMITED
+}
+
+model Collection {
+  collectionId    Int               @id @default(autoincrement())
+  description     String            @unique
+  fixedPrice      Float
+  currency        Currency          @default(USD)
+  collectionState CollectionState   @default(CREATED)
+  collections     CollectionMedia[]
+  creator         User              @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId       Int
+}
+
+enum CollectionState {
+  CREATED
+  ON_SALE
+  SOLD
+}
+
+enum Currency {
+  USD
+  ETH
+  BTC
+  USDC
+}
+
+model CollectionMedia {
+  collectionMediaId Int        @id @default(autoincrement())
+  media             String
+  description       String
+  numOfMerch        Int
+  collection        Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  collectionId      Int
 }

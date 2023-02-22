@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/colin/Desktop/creator-economy/contracts/SimpleEvent.sol": {
-      "lastModificationDate": 1676767034810,
-      "contentHash": "d8776e15e832da4e4285478e03074944",
+      "lastModificationDate": 1676893941633,
+      "contentHash": "c90906510491694497c11470249780c9",
       "sourceName": "contracts/SimpleEvent.sol",
       "solcConfig": {
         "version": "0.8.9",

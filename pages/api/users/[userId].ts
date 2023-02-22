@@ -1,124 +1,124 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { PrismaClient, User , Prisma} from "@prisma/client";
 
 const prisma = new PrismaClient();
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
-
+type UserWithTickets = Prisma.UserGetPayload<{ include: { tickets: true } }>;
 
 /**
  * @swagger
- * /api/events/{eventId}:
+ * /api/users/{userId}:
  *   get:
- *     description: Returns a single Event object
+ *     description: Returns a single User object
  *     parameters:
  *       - in: path
- *         name: eventId
+ *         name: userId
  *         required: true
- *         description: String ID of the Event to retrieve.
+ *         description: String ID of the User to retrieve.
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: A single Event object
+ *         description: A single User object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Event"
+ *               $ref: "#/components/schemas/User"
  *   post:
- *     description: Updates a single Event object
+ *     description: Updates a single User object
  *     parameters:
  *       - in: object
- *         name: Event
+ *         name: User
  *         required: true
- *         description: Event object to update
+ *         description: User object to update
  *         application/json:
  *          schema:
- *            $ref: "#/components/schemas/Event"
+ *            $ref: "#/components/schemas/User"
  *     responses:
  *       200:
- *         description: A single Event object
+ *         description: A single User object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Event"
+ *               $ref: "#/components/schemas/User"
  *   delete:
- *     description: Delete a single Event object
+ *     description: Delete a single User object
  *     parameters:
  *       - in: path
- *         name: eventId
+ *         name: userId
  *         required: true
- *         description: String ID of the Event to delete.
+ *         description: String ID of the User to delete.
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: The deleted Event object
+ *         description: The deleted User object
  *         content:
  *           application/json:
  *             schema:
- *               $ref: "#/components/schemas/Event"
+ *               $ref: "#/components/schemas/User"
  */
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Event | ErrorResponse | {}>
+  res: NextApiResponse<User | ErrorResponse | {}>
 ) {
   const { query, method } = req;
-  let eventId = parseInt(query.eventId as string);
+  let userId = parseInt(query.userId as string);
 
   switch (req.method) {
     case "GET":
-      await handleGET(eventId);
+      await handleGET(userId);
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as Event;
-      await handlePOST(eventId, event);
+      const user = JSON.parse(JSON.stringify(req.body)) as User;
+      await handlePOST(userId, user);
       break;
     case "DELETE":
-      await handleDELETE(eventId);
+      await handleDELETE(userId);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(eventId: number) {
+  async function handleGET(userId: number) {
     try {
-      const event = await prisma.event.findUnique({
+      const user = await prisma.user.findUnique({
         where: {
-          eventId: eventId,
+          userId: userId,
         },
         include: {tickets: true}
       });
 
-      if (!event) res.status(200).json({});
-      else res.status(200).json(event);
+      if (!user) res.status(200).json({});
+      else res.status(200).json(user);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
 
-  async function handlePOST(eventId: number, eventWithTickets: EventWithTickets) {
+  async function handlePOST(userId: number, userWithTickets: UserWithTickets) {
     try {
-      const { tickets, ...eventInfo } = eventWithTickets;
+      const { tickets, ...userInfo } = userWithTickets;
       const updatedTickets = tickets.map((ticket) => {
-        const { ticketId, eventId, ...ticketInfo } = ticket;
+        const { ticketId, userId, ...ticketInfo } = ticket;
         return ticketInfo;
       });
 
-      const response = await prisma.event.update({
+      const response = await prisma.user.update({
         where: {
-          eventId: eventId,
+          userId: userId,
         },
         data: {
-          ...eventInfo,
-          eventId: undefined,
-          tickets: { create: updatedTickets }, //how to change this
+          ...userInfo,
+          userId: undefined,
+          tickets: { create: updatedTickets },
         },
       });
+
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -126,11 +126,11 @@ export default async function handler(
     }
   }
 
-  async function handleDELETE(eventId: number) {
+  async function handleDELETE(userId: number) {
     try {
-      const response = await prisma.event.delete({
+      const response = await prisma.user.delete({
         where: {
-          eventId: eventId,
+          userId: userId,
         },
       });
       res.status(200).json(response);
