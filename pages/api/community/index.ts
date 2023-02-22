@@ -138,15 +138,17 @@ export default async function handler(
             },
             {   
               tags: {
-                has: keyword.toUpperCase() || filter?.toUpperCase()
+                has: keyword.toUpperCase()
               }
             }
-          ]
+          ],
+          tags: filter ? {
+            has: filter.toUpperCase()
+          } : undefined
         }
       })
       res.status(200).json(communities);
     } catch (error) {
-      console.log(error)
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
