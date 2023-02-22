@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaSearch } from "react-icons/fa";
 import CollectedTab from "./CollectedTab";
 import MarketplaceTab from "./MarketplaceTab";
@@ -10,19 +10,24 @@ const FanCollectionsPage = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
 
-  const filters =
-    activeTab === 0
-      ? [
-          { id: 1, name: "Filter By" },
-          { id: 2, name: "Free-of-Charge" },
-          { id: 3, name: "Purchased" },
-        ]
-      : [
-          { id: 1, name: "Filter By" },
-          { id: 2, name: "Linked to Premium Channel" },
-          { id: 3, name: "Not Linked" },
-        ];
-  const [filterSelected, setFilterSelected] = useState(filters[0]);
+  const collectedTabfilters = [
+    { id: 1, name: "Filter By" },
+    { id: 2, name: "Free-of-Charge" },
+    { id: 3, name: "Purchased" },
+  ];
+  const marketplaceTabfilters = [
+    { id: 4, name: "Filter By" },
+    { id: 5, name: "Linked to Premium Channel" },
+    { id: 6, name: "Not Linked" },
+  ];
+
+  const [collectedTabfilterSelected, setCollectedTabfilterSelected] = useState(
+    activeTab === 0 ? collectedTabfilters[0] : marketplaceTabfilters[0]
+  );
+  const [marketplaceTabfilterSelected, setMarketplaceTabfilterSelected] =
+    useState(
+      activeTab === 0 ? collectedTabfilters[0] : marketplaceTabfilters[0]
+    );
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -54,9 +59,17 @@ const FanCollectionsPage = () => {
           />
         </div>
         <Select
-          data={filters}
-          selected={filterSelected}
-          setSelected={setFilterSelected}
+          data={activeTab === 0 ? collectedTabfilters : marketplaceTabfilters}
+          selected={
+            activeTab === 0
+              ? collectedTabfilterSelected
+              : marketplaceTabfilterSelected
+          }
+          setSelected={
+            activeTab === 0
+              ? setCollectedTabfilterSelected
+              : setMarketplaceTabfilterSelected
+          }
         />
       </div>
 
@@ -89,9 +102,17 @@ const FanCollectionsPage = () => {
             />
           </div>
           <Select
-            data={filters}
-            selected={filterSelected}
-            setSelected={setFilterSelected}
+            data={activeTab === 0 ? collectedTabfilters : marketplaceTabfilters}
+            selected={
+              activeTab === 0
+                ? collectedTabfilterSelected
+                : marketplaceTabfilterSelected
+            }
+            setSelected={
+              activeTab === 0
+                ? setCollectedTabfilterSelected
+                : setMarketplaceTabfilterSelected
+            }
             className="w-64"
           />
         </div>
