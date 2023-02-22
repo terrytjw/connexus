@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
-import { PrismaClient, Community } from "@prisma/client";
+import { handleError, ErrorResponse, ConnexusError } from "../../../../lib/prisma-util";
+import { PrismaClient, Community, ChannelType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -50,6 +50,11 @@ export default async function handler(
   }
 
   async function handlePOST(communityId: number, userId: number) {
+    const check = await checkLeavable(communityId, userId);
+    if (check) {
+      const errorResponse = handleError(new ConnexusError('Leave premium channels before leaving community'));
+      res.status(400).json(errorResponse);
+    }
     try {
       const response = await prisma.community.update({
         where: {
@@ -71,5 +76,30 @@ export default async function handler(
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
+  }
+
+  async function checkLeavable(communityId: number, userId: number): Promise<boolean> {
+    let community: Community | null = null;
+    try {
+      community = await prisma.community.findFirst({
+        where: { 
+          communityId: communityId,
+          channels: {
+            some: {
+              channelType: ChannelType.PREMIUM,
+              members: {
+                some: {
+                  userId: userId
+                }
+              }
+            },
+          } 
+        },
+      });
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+    return community ? true : false;
   }
 }
