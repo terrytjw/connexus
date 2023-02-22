@@ -31,6 +31,12 @@ export function handleError(error: any): ErrorResponse {
       message: error.message,
     };
     return errorResponse;
+  } else if (error instanceof ConnexusError) {
+    const errorResponse: ErrorResponse = {
+      error: "400",
+      message: error.message,
+    };
+    return errorResponse;
   } else {
     const errorResponse: ErrorResponse = {
       error: "400",
@@ -44,3 +50,12 @@ export type ErrorResponse = {
   error: string;
   message: string;
 };
+
+export class ConnexusError extends Error {
+  
+  constructor(message: string) {
+    super(message);
+    Object.setPrototypeOf(this, ConnexusError.prototype)
+  } 
+
+}
