@@ -19,7 +19,10 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
         <thead>
           <tr>
             {columns.map((headerTitle, index) => (
-              <th className="bg-blue-gray-200 text-gray-700" key={index}>
+              <th
+                className="bg-blue-gray-200 !relative text-gray-700"
+                key={index}
+              >
                 {headerTitle}
               </th>
             ))}
