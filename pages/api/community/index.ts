@@ -153,10 +153,7 @@ export default async function handler(
     try {
       const response = await prisma.community.create({
         data: { 
-          ...community,
-          // for searching tags
-          tags: community.tags
-            .map(s => s.toUpperCase())
+          ...community
          },
       });
       res.status(200).json([response]);
