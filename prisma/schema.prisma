@@ -184,7 +184,7 @@ enum PrivacyType {
 }
 
 enum ChannelType {
-  HOME
+  REGULAR
   PREMIUM
   PRIVATE
 }
