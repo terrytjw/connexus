@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import StepsMobile from "../../../components/EventPages/StepsMobile";
 import StepsDesktop, {
@@ -10,6 +10,8 @@ import { StepStatus } from "../../../utils/enums";
 import ParticularsFormPage from "../../../components/EventPages/Fan/RegisterEventForms/ParticularsFormPage";
 import { Event } from "../create";
 import TicketSelectionFormPage from "../../../components/EventPages/Fan/RegisterEventForms/TicketSelectionFormPage";
+import Layout from "../../../components/Layout";
+import ProtectedRoute from "../../../components/ProtectedRoute";
 import { PrivacyType, VisibilityType } from "@prisma/client";
 import ConfirmationPage from "../../../components/EventPages/Fan/RegisterEventForms/ConfirmationPage";
 
@@ -170,72 +172,76 @@ const FanEventRegister = () => {
   );
 
   return (
-    <main className="py-12 px-4 sm:px-12">
-      {/* Header */}
-      <nav className="flex items-center gap-6">
-        {currentStep?.id !== "Step 1" && (
-          <FaChevronLeft
-            className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
-            onClick={reverseStep}
-          />
-        )}
-        <h2 className="text-2xl font-bold sm:text-4xl">
-          {currentStep?.id === "Step 1"
-            ? "Register for Event"
-            : currentStep?.id === "Step 2"
-            ? "Select Tickets"
-            : "Confirm Registration"}
-        </h2>
-      </nav>
+    <ProtectedRoute>
+      <Layout>
+        <main className="py-12 px-4 sm:px-12">
+          {/* Header */}
+          <nav className="flex items-center gap-6">
+            {currentStep?.id !== "Step 1" && (
+              <FaChevronLeft
+                className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
+                onClick={reverseStep}
+              />
+            )}
+            <h2 className="text-2xl font-bold sm:text-4xl">
+              {currentStep?.id === "Step 1"
+                ? "Register for Event"
+                : currentStep?.id === "Step 2"
+                ? "Select Tickets"
+                : "Confirm Registration"}
+            </h2>
+          </nav>
 
-      {/* Steps */}
-      <div className="justify-cente relative sm:py-8">
-        {/* conditionally rendered via css */}
-        <StepsDesktop steps={steps} />
-        <StepsMobile currentStep={currentStep} steps={steps} />
-      </div>
+          {/* Steps */}
+          <div className="justify-cente relative sm:py-8">
+            {/* conditionally rendered via css */}
+            <StepsDesktop steps={steps} />
+            <StepsMobile currentStep={currentStep} steps={steps} />
+          </div>
 
-      {/* Form */}
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <form
-          onSubmit={handleSubmit((data: Attendee) =>
-            console.log("Submitting Form Data", data)
-          )}
-        >
-          {/* Step 1 */}
-          {currentStep?.id === "Step 1" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <ParticularsFormPage
-                control={control}
-                trigger={trigger}
-                proceedStep={proceedStep}
-              />
-            )}
-          {/* Step 2 */}
-          {currentStep?.id === "Step 2" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <TicketSelectionFormPage
-                event={event}
-                setValue={setValue}
-                watch={watch}
-                control={control}
-                trigger={trigger}
-                proceedStep={proceedStep}
-              />
-            )}
-          {/* Step 3 */}
-          {currentStep?.id === "Step 3" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <ConfirmationPage
-                watch={watch}
-                control={control}
-                trigger={trigger}
-                proceedStep={proceedStep}
-              />
-            )}
-        </form>
-      </div>
-    </main>
+          {/* Form */}
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <form
+              onSubmit={handleSubmit((data: Attendee) =>
+                console.log("Submitting Form Data", data)
+              )}
+            >
+              {/* Step 1 */}
+              {currentStep?.id === "Step 1" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <ParticularsFormPage
+                    control={control}
+                    trigger={trigger}
+                    proceedStep={proceedStep}
+                  />
+                )}
+              {/* Step 2 */}
+              {currentStep?.id === "Step 2" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <TicketSelectionFormPage
+                    event={event}
+                    setValue={setValue}
+                    watch={watch}
+                    control={control}
+                    trigger={trigger}
+                    proceedStep={proceedStep}
+                  />
+                )}
+              {/* Step 3 */}
+              {currentStep?.id === "Step 3" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <ConfirmationPage
+                    watch={watch}
+                    control={control}
+                    trigger={trigger}
+                    proceedStep={proceedStep}
+                  />
+                )}
+            </form>
+          </div>
+        </main>
+      </Layout>
+    </ProtectedRoute>
   );
 };
 

@@ -9,6 +9,9 @@ import PublishFormPage from "../../components/EventPages/Creator/CreateEventForm
 import { FaChevronLeft } from "react-icons/fa";
 import { Ticket, PrivacyType, Promotion, VisibilityType } from "@prisma/client";
 import { StepStatus } from "../../utils/enums";
+import ProtectedRoute from "../../components/ProtectedRoute";
+import Layout from "../../components/Layout";
+import React from "react";
 
 // hard coded tag type, will be replaced with prisma type
 export type Venue = {
@@ -118,7 +121,8 @@ const CreatorEventCreate = () => {
       name: "",
       description: "",
       price: null as unknown as number,
-      quantity: null as unknown as number,
+      totalTicketSupply: null as unknown as number,
+      currentTicketSupply: null as unknown as number,
       startDate: null as unknown as Date,
       endDate: null as unknown as Date,
       eventId: Number.MIN_VALUE,
@@ -210,75 +214,79 @@ const CreatorEventCreate = () => {
   );
 
   return (
-    <main className="py-12 px-4 sm:px-12">
-      {/* Header */}
-      <nav className="flex items-center gap-6">
-        {currentStep?.id !== "Step 1" && (
-          <FaChevronLeft
-            className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
-            onClick={reverseStep}
-          />
-        )}
-        <h2 className="text-2xl font-bold sm:text-4xl">
-          {currentStep?.id === "Step 1"
-            ? "Create a New Event"
-            : currentStep?.id === "Step 2"
-            ? "Create New Tickets"
-            : "Publish Event"}
-        </h2>
-      </nav>
+    <ProtectedRoute>
+      <Layout>
+        <main className="py-12 px-4 sm:px-12">
+          {/* Header */}
+          <nav className="flex items-center gap-6">
+            {currentStep?.id !== "Step 1" && (
+              <FaChevronLeft
+                className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
+                onClick={reverseStep}
+              />
+            )}
+            <h2 className="text-2xl font-bold sm:text-4xl">
+              {currentStep?.id === "Step 1"
+                ? "Create a New Event"
+                : currentStep?.id === "Step 2"
+                ? "Create New Tickets"
+                : "Publish Event"}
+            </h2>
+          </nav>
 
-      {/* Steps */}
-      <div className="justify-cente relative sm:py-8">
-        {/* conditionally rendered via css */}
-        <StepsDesktop steps={steps} />
-        <StepsMobile currentStep={currentStep} steps={steps} />
-      </div>
+          {/* Steps */}
+          <div className="justify-cente relative sm:py-8">
+            {/* conditionally rendered via css */}
+            <StepsDesktop steps={steps} />
+            <StepsMobile currentStep={currentStep} steps={steps} />
+          </div>
 
-      {/* Form */}
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <form
-          onSubmit={handleSubmit((data: Event) =>
-            console.log("Submitting Form Data", data)
-          )}
-        >
-          {/* Step 1 */}
-          {currentStep?.id === "Step 1" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <EventFormPage
-                watch={watch}
-                labels={labels}
-                setValue={setValue}
-                control={control}
-                trigger={trigger}
-                proceedStep={proceedStep}
-              />
-            )}
-          {/* Step 2 */}
-          {currentStep?.id === "Step 2" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <TicketFormPage
-                control={control}
-                trigger={trigger}
-                fields={fields}
-                addNewTicket={addNewTicket}
-                removeTicket={removeTicket}
-                proceedStep={proceedStep}
-              />
-            )}
-          {/* Step 3 */}
-          {currentStep?.id === "Step 3" &&
-            currentStep?.status === StepStatus.CURRENT && (
-              <PublishFormPage
-                watch={watch}
-                setValue={setValue}
-                privacy={privacy}
-                publish={publish}
-              />
-            )}
-        </form>
-      </div>
-    </main>
+          {/* Form */}
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+            <form
+              onSubmit={handleSubmit((data: Event) =>
+                console.log("Submitting Form Data", data)
+              )}
+            >
+              {/* Step 1 */}
+              {currentStep?.id === "Step 1" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <EventFormPage
+                    watch={watch}
+                    labels={labels}
+                    setValue={setValue}
+                    control={control}
+                    trigger={trigger}
+                    proceedStep={proceedStep}
+                  />
+                )}
+              {/* Step 2 */}
+              {currentStep?.id === "Step 2" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <TicketFormPage
+                    control={control}
+                    trigger={trigger}
+                    fields={fields}
+                    addNewTicket={addNewTicket}
+                    removeTicket={removeTicket}
+                    proceedStep={proceedStep}
+                  />
+                )}
+              {/* Step 3 */}
+              {currentStep?.id === "Step 3" &&
+                currentStep?.status === StepStatus.CURRENT && (
+                  <PublishFormPage
+                    watch={watch}
+                    setValue={setValue}
+                    privacy={privacy}
+                    publish={publish}
+                  />
+                )}
+            </form>
+          </div>
+        </main>
+      </Layout>
+    </ProtectedRoute>
   );
 };
 
