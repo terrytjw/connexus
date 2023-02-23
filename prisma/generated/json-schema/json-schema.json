@@ -421,6 +421,32 @@
         }
       }
     },
+    "Address": {
+      "type": "object",
+      "properties": {
+        "addressId": {
+          "type": "integer"
+        },
+        "locationName": {
+          "type": "string"
+        },
+        "address1": {
+          "type": "string"
+        },
+        "address2": {
+          "type": "string"
+        },
+        "postalCode": {
+          "type": "string"
+        },
+        "Event": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
+        }
+      }
+    },
     "Ticket": {
       "type": "object",
       "properties": {

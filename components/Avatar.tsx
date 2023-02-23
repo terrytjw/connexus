@@ -1,3 +1,4 @@
+import Image from "next/image";
 import React from "react";
 
 function classNames(...classes: string[]) {
@@ -12,14 +13,17 @@ type AvatarProps = {
 
 const Avatar = ({ imageUrl, className, alt }: AvatarProps) => {
   return (
-    <div className="flex">
-      <img
-        className={classNames(
-          "h-24 w-24 rounded-full ring-4 ring-white sm:h-32 sm:w-32",
-          className ?? ""
-        )}
+    <div
+      className={classNames(
+        "relative h-24 w-24 overflow-hidden rounded-full ring-4 ring-white sm:h-32 sm:w-32",
+        className ?? ""
+      )}
+    >
+      <Image
+        fill
+        sizes="(min-width: 640px) 128, 96"
         src={imageUrl}
-        alt={alt}
+        alt={alt || "Avatar"}
       />
     </div>
   );

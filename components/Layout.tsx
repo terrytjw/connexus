@@ -8,15 +8,28 @@ import {
   FaUser,
   FaBell,
   FaGripVertical,
+  FaSignOutAlt,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import Modal from "./Modal";
+import dynamic from "next/dynamic";
+import Loading from "./Loading";
+
+const SocialLoginDynamic = dynamic(
+  () => import("../components/scw").then((res) => res.default),
+  {
+    ssr: false,
+    loading: () => <Loading className="!h-full" />,
+  }
+);
 
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
   const checkboxRef = useRef<HTMLInputElement>(null);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   // to automatically close daisyUI side drawer when route changes
   useEffect(() => {
@@ -35,7 +48,7 @@ const MobileNavbar = ({ children }: any) => {
         type="checkbox"
         className="drawer-toggle"
       />
-      <div className="drawer-content">
+      <div id="scrollable" className="drawer-content">
         {/* <!-- Page content here --> */}
         <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
           <label
@@ -138,13 +151,28 @@ const MobileNavbar = ({ children }: any) => {
               Playground
             </Link>
           </li>
+          <li className="mb-4">
+            <button
+              className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
+              onClick={() => setIsAuthModalOpen(true)}
+            >
+              <FaSignOutAlt className="ml-2" />
+              Logout
+            </button>
+          </li>
         </ul>
+        <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
+          <SocialLoginDynamic />
+        </Modal>
       </div>
     </div>
   );
 };
 
 const DesktopSidebar = () => {
+  const router = useRouter();
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   return (
     <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">
       <Link
@@ -223,7 +251,19 @@ const DesktopSidebar = () => {
             Playground
           </Link>
         </li>
+        <li className="mb-4">
+          <button
+            className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
+            onClick={() => setIsAuthModalOpen(true)}
+          >
+            <FaSignOutAlt className="ml-2" />
+            Logout
+          </button>
+        </li>
       </ul>
+      <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
+        <SocialLoginDynamic />
+      </Modal>
     </div>
   );
 };
@@ -236,7 +276,7 @@ const Layout = ({ children }: LayoutProps) => {
     <MobileNavbar>
       <div className="flex text-black">
         <DesktopSidebar />
-        <main className="w-full lg:ml-64">
+        <main className="debug-screens w-full lg:ml-64">
           <div className="min-h-screen bg-sky-100">{children}</div>
           <Footer />
         </main>

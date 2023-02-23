@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: Converted from json-schema.swagger.yaml with typeconv
-  version: '1'
+  version: "1"
   x-id: json-schema.swagger.yaml
   x-comment: >-
     Generated from prisma/generated/json-schema/json-schema.json by
@@ -29,46 +29,46 @@ components:
         email:
           type: string
         notificationBySMS:
-          default: 'true'
+          default: "true"
           type: boolean
         notificationByEmail:
-          default: 'true'
+          default: "true"
           type: boolean
         createdCollections:
           items:
-            $ref: '#/components/schemas/Collection'
+            $ref: "#/components/schemas/Collection"
           type: array
         createdCommunities:
           items:
-            $ref: '#/components/schemas/Community'
+            $ref: "#/components/schemas/Community"
           type: array
         joinedCommunities:
           items:
-            $ref: '#/components/schemas/Community'
+            $ref: "#/components/schemas/Community"
           type: array
         joinedChannels:
           items:
-            $ref: '#/components/schemas/UsersOnChannels'
+            $ref: "#/components/schemas/UsersOnChannels"
           type: array
         posts:
           items:
-            $ref: '#/components/schemas/Post'
+            $ref: "#/components/schemas/Post"
           type: array
         likedPosts:
           items:
-            $ref: '#/components/schemas/Post'
+            $ref: "#/components/schemas/Post"
           type: array
         comments:
           items:
-            $ref: '#/components/schemas/Comment'
+            $ref: "#/components/schemas/Comment"
           type: array
         likedComments:
           items:
-            $ref: '#/components/schemas/Comment'
+            $ref: "#/components/schemas/Comment"
           type: array
         tickets:
           items:
-            $ref: '#/components/schemas/Ticket'
+            $ref: "#/components/schemas/Ticket"
           type: array
       type: object
     Post:
@@ -88,16 +88,16 @@ components:
         isPinned:
           type: boolean
         creator:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
         channel:
-          $ref: '#/components/schemas/Channel'
+          $ref: "#/components/schemas/Channel"
         likes:
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
           type: array
         comments:
           items:
-            $ref: '#/components/schemas/Comment'
+            $ref: "#/components/schemas/Comment"
           type: array
       type: object
     Community:
@@ -115,7 +115,7 @@ components:
             type: string
           type: array
         maxMembers:
-          default: '100'
+          default: "100"
           type: integer
         communityType:
           enum:
@@ -124,14 +124,14 @@ components:
           default: NFT
           type: string
         creator:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
         members:
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
           type: array
         channels:
           items:
-            $ref: '#/components/schemas/Channel'
+            $ref: "#/components/schemas/Channel"
           type: array
       type: object
     Channel:
@@ -151,21 +151,21 @@ components:
           type: string
         members:
           items:
-            $ref: '#/components/schemas/UsersOnChannels'
+            $ref: "#/components/schemas/UsersOnChannels"
           type: array
         community:
-          $ref: '#/components/schemas/Community'
+          $ref: "#/components/schemas/Community"
         posts:
           items:
-            $ref: '#/components/schemas/Post'
+            $ref: "#/components/schemas/Post"
           type: array
       type: object
     UsersOnChannels:
       properties:
         user:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
         channel:
-          $ref: '#/components/schemas/Channel'
+          $ref: "#/components/schemas/Channel"
       type: object
     Comment:
       properties:
@@ -174,20 +174,20 @@ components:
         date:
           type: string
         post:
-          $ref: '#/components/schemas/Post'
+          $ref: "#/components/schemas/Post"
         commenter:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
         likes:
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
           type: array
         originalComment:
           anyOf:
-            - $ref: '#/components/schemas/Comment'
+            - $ref: "#/components/schemas/Comment"
             - nullable: true
         replies:
           items:
-            $ref: '#/components/schemas/Comment'
+            $ref: "#/components/schemas/Comment"
           type: array
       type: object
     Event:
@@ -220,7 +220,7 @@ components:
             - TRAVEL_OUTDOOR
           type: array
         address:
-          $ref: '#/components/schemas/Address'
+          $ref: "#/components/schemas/Address"
         startDate:
           type: string
         endDate:
@@ -258,7 +258,7 @@ components:
           type: string
         tickets:
           items:
-            $ref: '#/components/schemas/Ticket'
+            $ref: "#/components/schemas/Ticket"
           type: array
         ticketURIs:
           items:
@@ -281,7 +281,7 @@ components:
           type: string
         Event:
           items:
-            $ref: '#/components/schemas/Event'
+            $ref: "#/components/schemas/Event"
           type: array
       type: object
     Ticket:
@@ -303,14 +303,14 @@ components:
         description:
           type: string
         event:
-          $ref: '#/components/schemas/Event'
+          $ref: "#/components/schemas/Event"
         promotion:
           items:
-            $ref: '#/components/schemas/Promotion'
+            $ref: "#/components/schemas/Promotion"
           type: array
         users:
           items:
-            $ref: '#/components/schemas/User'
+            $ref: "#/components/schemas/User"
           type: array
       type: object
     Promotion:
@@ -333,7 +333,7 @@ components:
         endDate:
           type: string
         ticket:
-          $ref: '#/components/schemas/Ticket'
+          $ref: "#/components/schemas/Ticket"
       type: object
     Collection:
       properties:
@@ -360,10 +360,10 @@ components:
           type: string
         collections:
           items:
-            $ref: '#/components/schemas/CollectionMedia'
+            $ref: "#/components/schemas/CollectionMedia"
           type: array
         creator:
-          $ref: '#/components/schemas/User'
+          $ref: "#/components/schemas/User"
       type: object
     CollectionMedia:
       properties:
@@ -376,5 +376,5 @@ components:
         numOfMerch:
           type: integer
         collection:
-          $ref: '#/components/schemas/Collection'
+          $ref: "#/components/schemas/Collection"
       type: object

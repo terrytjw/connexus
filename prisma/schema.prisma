@@ -23,8 +23,16 @@ model User {
   displayName         String            @default("")
   username            String            @default("")
   email               String            @unique
+  walletAddress       String            @unique
+  phoneNumber         String            @default("")
+  profilePic          String            @default("")
+  bannerPic           String            @default("")
+  displayName         String            @default("")
+  username            String            @default("")
+  email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
   createdCollections  Collection[]      @relation(name: "createdCollections")
   createdCommunities  Community[]       @relation(name: "createdCommunities")
   joinedCommunities   Community[]       @relation(name: "joinedCommunities")
@@ -33,10 +41,23 @@ model User {
   likedPosts          Post[]            @relation(name: "likedPosts")
   comments            Comment[]         @relation(name: "commenter")
   likedComments       Comment[]         @relation(name: "likedComments")
+  tickets             Ticket[]
   tickets             Ticket[]        
 }
 
 model Post {
+  postId    Int       @id @default(autoincrement())
+  title     String
+  content   String
+  date      DateTime  @default(now())
+  media     String[]
+  isPinned  Boolean   @default(false)
+  creator   User      @relation(name: "creator", fields: [creatorId], references: [userId])
+  creatorId Int
+  channel   Channel   @relation(fields: [channelId], references: [channelId])
+  channelId Int
+  likes     User[]    @relation(name: "likedPosts")
+  comments  Comment[]
   postId    Int       @id @default(autoincrement())
   title     String
   content   String
@@ -61,11 +82,14 @@ model Community {
   communityType CommunityType @default(NFT)
   creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
   userId        Int
+  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId        Int
   members       User[]        @relation(name: "joinedCommunities")
   channels      Channel[]
 }
 
 model Channel {
+  channelId   Int               @id @default(autoincrement())
   channelId   Int               @id @default(autoincrement())
   name        String
   description String
@@ -76,6 +100,7 @@ model Channel {
   posts       Post[]
 
   @@unique([communityId, name])
+  @@unique([communityId, name])
 }
 
 model UsersOnChannels {
@@ -83,7 +108,12 @@ model UsersOnChannels {
   userId    Int
   channel   Channel @relation(fields: [channelId], references: [channelId])
   channelId Int
+  user      User    @relation(fields: [userId], references: [userId])
+  userId    Int
+  channel   Channel @relation(fields: [channelId], references: [channelId])
+  channelId Int
 
+  @@id([userId, channelId])
   @@id([userId, channelId])
 }
 
@@ -96,6 +126,7 @@ model Comment {
   commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
   userId          Int
   likes           User[]    @relation(name: "likedComments")
+  originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
   originalComment Comment?  @relation(name: "replies", fields: [commentId], references: [commentId])
   replies         Comment[] @relation(name: "replies")
 }
@@ -149,13 +180,30 @@ model Ticket {
   event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
   promotion           Promotion[]
+  users               User[]
+  ticketId            Int         @id @default(autoincrement())
+  name                String      @default("")
+  totalTicketSupply   Int         @default(0)
+  currentTicketSupply Int         @default(0)
+  price               Float       @default(0)
+  startDate           DateTime    @default(now())
+  endDate             DateTime    @default(now())
+  description         String      @default("")
+  event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
+  eventId             Int
+  promotion           Promotion[]
   users               User[]   
 }
 
 model Promotion {
   promotionId    Int           @id @default(autoincrement())
   name           String        @default("")
+  name           String        @default("")
   promotionType  PromotionType
+  promotionValue Float         @default(0)
+  quantity       Int           @default(0)
+  startDate      DateTime      @default(now())
+  endDate        DateTime      @default(now())
   promotionValue Float         @default(0)
   quantity       Int           @default(0)
   startDate      DateTime      @default(now())

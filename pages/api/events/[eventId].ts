@@ -2,10 +2,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
-
 
 /**
  * @swagger
@@ -65,6 +66,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Event | ErrorResponse | {}>
 ) {
+  const session = await getServerSession(req, res, authOptions);
+  console.log(session);
+
+  if (!session) {
+    res.status(401).json({ error: "401", message: "Unauthorized" });
+  }
+
   const { query, method } = req;
   let eventId = parseInt(query.eventId as string);
 
@@ -90,7 +98,7 @@ export default async function handler(
         where: {
           eventId: eventId,
         },
-        include: {tickets: true}
+        include: { tickets: true },
       });
 
       if (!event) res.status(200).json({});
@@ -101,7 +109,10 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(eventId: number, eventWithTickets: EventWithTickets) {
+  async function handlePOST(
+    eventId: number,
+    eventWithTickets: EventWithTickets
+  ) {
     try {
       const { tickets, ...eventInfo } = eventWithTickets;
       const updatedTickets = tickets.map((ticket) => {
@@ -109,8 +120,8 @@ export default async function handler(
         return ticketInfo;
       });
 
-      console.log("test")
-      console.log(updatedTickets)
+      console.log("test");
+      console.log(updatedTickets);
 
       const response = await prisma.event.update({
         where: {
@@ -120,19 +131,16 @@ export default async function handler(
           ...eventInfo,
           eventId: undefined,
           tickets: {
-            deleteMany: {eventId : eventId},
-            createMany : { data : updatedTickets}
+            deleteMany: { eventId: eventId },
+            createMany: { data: updatedTickets },
           }, //how to change this
         },
-        include: {tickets: true}
+        include: { tickets: true },
       });
 
       //for loop thru ticket in as well
 
-
-
-      await prisma.ticket.update
-
+      await prisma.ticket.update;
 
       res.status(200).json(response);
     } catch (error) {

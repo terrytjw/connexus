@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, User , Prisma} from "@prisma/client";
+import { PrismaClient, User, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 type UserWithTickets = Prisma.UserGetPayload<{ include: { tickets: true } }>;
@@ -89,7 +89,7 @@ export default async function handler(
         where: {
           userId: userId,
         },
-        include: {tickets: true}
+        include: { tickets: true },
       });
 
       if (!user) res.status(200).json({});
