@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/community/{communityId}:
  *   get:
- *     description: Returns a single Community object
+ *     description: Returns a single Community object. Returns channels associated with the community as well
  *     parameters:
  *       - in: path
  *         name: communityId
@@ -94,6 +94,21 @@ export default async function handler(
         where: {
           communityId: communityId,
         },
+        include: {
+          channels: {
+            include: {
+              _count: {
+                select: { members: true }
+              }
+            }
+          },
+          creator: {
+            select: { profilePic: true, username: true }
+          },
+          _count: {
+            select: { members: true }
+          }
+        }
       });
 
       if (!community) res.status(200).json({});
