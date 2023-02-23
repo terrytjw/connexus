@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/post:
  *   get:
- *     description: Returns a list of Post objects in a specific channel
+ *     description: Returns a list of Post objects in a specific channel. Includes list of userIds liking the post
  *     parameters:
  *       - in: query
  *         name: channelId
@@ -66,6 +66,13 @@ export default async function handler(
       const posts = await prisma.post.findMany({
         where: {
           channelId: channelId
+        },
+        include: {
+          likes: {
+            select: {
+              userId: true
+            }
+          }
         }
       });
       res.status(200).json(posts);
