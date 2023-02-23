@@ -37,7 +37,7 @@ const prisma = new PrismaClient();
  *     requestBody:
  *       name: Post
  *       required: true
- *       description: Post object to create
+ *       description: Post object to update
  *       application/json:
  *         schema:
  *           $ref: "#/components/schemas/Post" 
