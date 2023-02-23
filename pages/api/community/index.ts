@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Community } from "@prisma/client";
+import { PrismaClient, Community, CategoryType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +19,7 @@ const prisma = new PrismaClient();
  *         name: filter
  *         description: The tag to filter communities by. Optional parameter.
  *         schema:
- *           type: string
+ *           type: CategoryType
  *       - in: query
  *         name: cursor
  *         description: The communityId of the last community in the previous page. Pass 0 or don't pass to retrieve first X results
@@ -57,7 +57,7 @@ export default async function handler(
 ) {
   const { method, body, query } = req;
   const keyword = query.keyword as string;
-  const filter = query.filter as string;
+  const filter = query.filter as CategoryType;
   const cursor = parseInt(query.cursor as string);
 
   switch (method) {
@@ -77,7 +77,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter?: string) {
+  async function handleGET(cursor: number, filter?: CategoryType) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -88,7 +88,7 @@ export default async function handler(
         },
         where: filter ? {
           tags: {
-            has: filter.toUpperCase()
+            has: filter
           }
         } : undefined
       });
@@ -136,14 +136,9 @@ export default async function handler(
                 }
               }
             },
-            {   
-              tags: {
-                has: keyword.toUpperCase()
-              }
-            }
           ],
           tags: filter ? {
-            has: filter.toUpperCase()
+            has: filter
           } : undefined
         }
       })
