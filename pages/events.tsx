@@ -250,12 +250,7 @@ const EventsPage = (props: any) => {
           "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
           ticket
         );
-        //how to update tickets in users?
-        let ticket_data = await axios.get(
-          "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString()
-        );
-        console.log(ticket_data);
-        console.log(user_tickets);
+        //how to update tickets in users? -> returns error as well 
 
         /*
         user_tickets.push(tickets[j].ticketId) 
@@ -299,9 +294,6 @@ const EventsPage = (props: any) => {
   }
 
   async function getTicket(ipfs_link) {
-    //will have to do for users to retrieve all the tickets they have
-    //perhaps store all their ticketURIs within themselves?
-    //or just do a query on chain to get all their erc721 tokens -> contract address -> get tokenURI -> show
     let response = await axios.get(ipfs_link, {
       headers: {
         Accept: "text/plain",
@@ -314,10 +306,10 @@ const EventsPage = (props: any) => {
   async function updateEvent() {
     let response_event = await axios.get("http://localhost:3000/api/events/1");
     const eventInfo = response_event.data as EventWithTickets;
-    const { scAddress, /*ticketURIs,*/ tickets } = eventInfo;
+    const { scAddress, ticketURIs, tickets } = eventInfo;
     console.log(eventInfo);
 
-    const ticket_categories = [
+    const ticket_categories = [ //sample ticket categories
       {
         name: "Genera",
         totalTicketSupply: 100,
@@ -432,13 +424,10 @@ const EventsPage = (props: any) => {
     console.log(category_info);
 
     var newticketURIs = [];
-    const ticketURIs = [
-      "https://gateway.pinata.cloud/ipfs/bafkreigqp37qsksqgrf42snchf25hbh22teak2guw5wnlxismbwotipdcq",
-    ]; //sample
 
     //delete ticket categories so can just create again
 
-    const updated_event: EventWithTickets = {
+    const updated_event: EventWithTickets = { //whatever the updated ticket details are 
       eventName: "This is a new event",
       addressId: eventInfo.addressId,
       category: CategoryType.AUTO_BOAT_AIR,
@@ -455,59 +444,64 @@ const EventsPage = (props: any) => {
       tickets: ticket_categories,
     };
 
-    //need to get the URI
+    if (ticketURIs.length > 0){
+    
 
-    for (let i = 0; i < ticketURIs.length; i++) {
-      var ticketURI = ticketURIs[i];
-      console.log(ticketURI);
-      let response_metadata = await getTicket(
-        "https://gateway.pinata.cloud/ipfs/bafkreigqp37qsksqgrf42snchf25hbh22teak2guw5wnlxismbwotipdcq"
+      for (let i = 0; i < ticketURIs.length; i++) {
+        var ticketURI = ticketURIs[i];
+        console.log(ticketURI);
+        let response_metadata = await getTicket(
+        ticketURI
+        );
+        console.log(response_metadata.data);
+        let existing_user_ticket_category = response_metadata.data.category;
+        var new_user_ticket_category = map[existing_user_ticket_category];
+
+        let category_chosen = new_user_ticket_category;
+        console.log(category_chosen);
+        const event_contract = new ethers.Contract(scAddress, abi, signer);
+        let response_pinning = await mintOnChain(updated_event, category_chosen);
+        let ipfsHash = response_pinning.data.IpfsHash;
+        console.log(ipfsHash);
+
+        if (ipfsHash == "") return;
+
+        const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
+        console.log("IPFS Hash Link  : ", link);
+        var changeTokenURI = await event_contract.setNewTokenURI(i, link, {
+          gasLimit: 2100000,
+        });
+        console.log("Changed for Token ", i);
+        newticketURIs.push(link);
+      }
+      console.log(newticketURIs);
+
+      const updated_event_withuri: EventWithTickets = {
+        eventName: "This is a new event",
+        addressId: eventInfo.addressId,
+        category: CategoryType.AUTO_BOAT_AIR,
+        startDate: new Date(),
+        endDate: new Date(),
+        images: [],
+        summary: "This is just a summary",
+        description: "This is just a description",
+        visibilityType: VisibilityType.DRAFT,
+        privacyType: PrivacyType.PUBLIC,
+        publishStartDate: new Date(),
+        ticketURIs: newticketURIs,
+        publishType: "NOW",
+        tickets: ticket_categories,
+      };
+      let updated_response = await axios.post(
+        "http://localhost:3000/api/events/1",
+        updated_event_withuri
       );
-      console.log(response_metadata.data);
-      let existing_user_ticket_category = response_metadata.data.category;
-      var new_user_ticket_category = map[existing_user_ticket_category];
-
-      let category_chosen = new_user_ticket_category;
-      console.log(category_chosen);
-      const event_contract = new ethers.Contract(scAddress, abi, signer);
-      let response_pinning = await mintOnChain(updated_event, category_chosen);
-      let ipfsHash = response_pinning.data.IpfsHash;
-      console.log(ipfsHash);
-
-      if (ipfsHash == "") return;
-
-      const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
-      console.log("IPFS Hash Link  : ", link);
-      var changeTokenURI = await event_contract.setNewTokenURI(i, link, {
-        gasLimit: 2100000,
-      });
-      console.log("Changed for Token ", i);
-      newticketURIs.push(link);
+      let updated_data = updated_response.data;
+      console.log("Data uploaded");
+    }else{
+      console.log("Nothing to update for tokenURIs in event");
     }
-    console.log(newticketURIs);
 
-    const updated_event_withuri: EventWithTickets = {
-      eventName: "This is a new event",
-      addressId: eventInfo.addressId,
-      category: CategoryType.AUTO_BOAT_AIR,
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary: "This is just a summary",
-      description: "This is just a description",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PUBLIC,
-      publishStartDate: new Date(),
-      ticketURIs: newticketURIs,
-      publishType: "NOW",
-      tickets: ticket_categories,
-    };
-    let updated_response = await axios.post(
-      "http://localhost:3000/api/events/1",
-      updated_event_withuri
-    );
-    let updated_data = updated_response.data;
-    console.log("Data uploaded");
   }
 
   const { data, error, isLoading } = useSWR(

@@ -109,6 +109,9 @@ export default async function handler(
         return ticketInfo;
       });
 
+      console.log("test")
+      console.log(updatedTickets)
+
       const response = await prisma.event.update({
         where: {
           eventId: eventId,
@@ -116,9 +119,21 @@ export default async function handler(
         data: {
           ...eventInfo,
           eventId: undefined,
-          tickets: { create: updatedTickets }, //how to change this
+          tickets: {
+            deleteMany: {eventId : eventId},
+            createMany : { data : updatedTickets}
+          }, //how to change this
         },
+        include: {tickets: true}
       });
+
+      //for loop thru ticket in as well
+
+
+
+      await prisma.ticket.update
+
+
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
