@@ -99,7 +99,7 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: string) {
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
