@@ -8,7 +8,14 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/comment:
  *   get:
- *     description: Returns a list of Comment objects
+ *     description: Returns a list of Comment objects in a Post
+ *     parameters:
+ *       - in: query
+ *         name: postId
+ *         required: true
+ *         description: String ID of the Post to retrieve comments from
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: A list of Comment objects
@@ -38,11 +45,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Comment[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
 
   switch (method) {
     case "GET":
-      await handleGET();
+      const postId = parseInt(query.postId as string);
+      await handleGET(postId);
       break;
     case "POST":
       const comment = JSON.parse(JSON.stringify(body)) as Comment
@@ -53,10 +61,23 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(postId: number) {
     try {
-      const communities = await prisma.comment.findMany({
-        
+      const communities = await prisma.comment.findMany({  
+        where: {
+          postId: postId
+        },
+        include: {
+          _count: {
+            select: { likes: true }
+          },
+          likes: {
+            select: { userId: true }
+          },
+          commenter: {
+            select: { username: true, profilePic: true }
+          }
+        }
       });
       res.status(200).json(communities);
     } catch (error) {
