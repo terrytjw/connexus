@@ -55,7 +55,6 @@ async function generateChannel() {
   await prisma.channel.create({
     data: {
       name: "Home",
-      description: "Home Channel",
       community: {
         connect: {
           communityId: 1,
@@ -67,7 +66,6 @@ async function generateChannel() {
   await prisma.channel.create({
     data: {
       name: "Home",
-      description: "Home Channel",
       community: {
         connect: {
           communityId: 2,
@@ -80,7 +78,6 @@ async function generateChannel() {
 async function generatePost() {
   await prisma.post.create({
     data: {
-      title: "Check out Prisma with Next.js",
       content: "https://www.prisma.io/nextjs",
       media: ["A", "B"],
       isPinned: false,
@@ -99,7 +96,6 @@ async function generatePost() {
 
   await prisma.post.create({
     data: {
-      title: "Follow Prisma on Twitter",
       content: "https://twitter.com/prisma",
       media: ["A", "B"],
       isPinned: false,
