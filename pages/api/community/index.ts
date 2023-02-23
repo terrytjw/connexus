@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Community, CategoryType } from "@prisma/client";
+import { PrismaClient, Community, CategoryType, ChannelType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -153,8 +153,16 @@ export default async function handler(
     try {
       const response = await prisma.community.create({
         data: { 
-          ...community
-         },
+          ...community,
+          channels: {
+            create: [
+              {
+                name: "Home Channel",
+                channelType: ChannelType.REGULAR
+              }
+            ]
+          }
+        }
       });
       res.status(200).json([response]);
     } catch (error) {
