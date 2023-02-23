@@ -15,24 +15,24 @@ generator jsonSchema {
 }
 
 model User {
-  userId              Int               @id @default(autoincrement())
-  walletAddress       String            @unique
-  phoneNumber         String            @default("")
-  profilePic          String            @default("")
-  bannerPic           String            @default("")
-  displayName         String            @default("")
-  username            String            @default("")
-  email               String            @unique
-  notificationBySMS   Boolean           @default(true)
-  notificationByEmail Boolean           @default(true)
-  createdCollections  Collection[]      @relation(name: "createdCollections")
-  createdCommunities  Community[]       @relation(name: "createdCommunities")
-  joinedCommunities   Community[]       @relation(name: "joinedCommunities")
+  userId              Int          @id @default(autoincrement())
+  walletAddress       String       @unique
+  phoneNumber         String       @default("")
+  profilePic          String       @default("")
+  bannerPic           String       @default("")
+  displayName         String       @default("")
+  username            String       @default("")
+  email               String       @unique
+  notificationBySMS   Boolean      @default(true)
+  notificationByEmail Boolean      @default(true)
+  createdCollections  Collection[] @relation(name: "createdCollections")
+  createdCommunities  Community[]  @relation(name: "createdCommunities")
+  joinedCommunities   Community[]  @relation(name: "joinedCommunities")
   joinedChannels      Channel[]
-  posts               Post[]            @relation(name: "creator")
-  likedPosts          Post[]            @relation(name: "likedPosts")
-  comments            Comment[]         @relation(name: "commenter")
-  likedComments       Comment[]         @relation(name: "likedComments")
+  posts               Post[]       @relation(name: "creator")
+  likedPosts          Post[]       @relation(name: "likedPosts")
+  comments            Comment[]    @relation(name: "commenter")
+  likedComments       Comment[]    @relation(name: "likedComments")
   tickets             Ticket[]
 }
 
@@ -56,7 +56,7 @@ model Community {
   description String         @default("")
   profilePic  String         @default("")
   bannerPic   String         @default("")
-  topics      CategoryType[]
+  tags        CategoryType[]
   maxMembers  Int            @default(100)
   creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
   userId      Int
@@ -65,11 +65,11 @@ model Community {
 }
 
 model Channel {
-  channelId   Int               @id @default(autoincrement())
+  channelId   Int         @id @default(autoincrement())
   name        String
-  channelType ChannelType       @default(PREMIUM)
+  channelType ChannelType @default(PREMIUM)
   members     User[]
-  community   Community         @relation(fields: [communityId], references: [communityId])
+  community   Community   @relation(fields: [communityId], references: [communityId])
   communityId Int
   posts       Post[]
 
