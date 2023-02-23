@@ -8,7 +8,14 @@ const prisma = new PrismaClient();
  * @swagger
  * /api/post:
  *   get:
- *     description: Returns a list of Post objects
+ *     description: Returns a list of Post objects in a specific channel
+ *     parameters:
+ *       - in: query
+ *         name: channelId
+ *         required: true
+ *         description: Channel ID of the channel
+ *         schema:
+ *           type: string
  *     responses:
  *       200:
  *         description: A list of Post objects
@@ -38,11 +45,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Post[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
 
   switch (method) {
     case "GET":
-      await handleGET();
+      const channelId = parseInt(query.channelId as string);
+      await handleGET(channelId);
       break;
     case "POST":
       const post = JSON.parse(JSON.stringify(body)) as Post
@@ -53,9 +61,12 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(channelId: number) {
     try {
       const posts = await prisma.post.findMany({
+        where: {
+          channelId: channelId
+        }
       });
       res.status(200).json(posts);
     } catch (error) {
