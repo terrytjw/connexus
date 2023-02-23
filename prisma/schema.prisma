@@ -28,7 +28,7 @@ model User {
   createdCollections  Collection[]      @relation(name: "createdCollections")
   createdCommunities  Community[]       @relation(name: "createdCommunities")
   joinedCommunities   Community[]       @relation(name: "joinedCommunities")
-  joinedChannels      UsersOnChannels[]
+  joinedChannels      Channel[]
   posts               Post[]            @relation(name: "creator")
   likedPosts          Post[]            @relation(name: "likedPosts")
   comments            Comment[]         @relation(name: "commenter")
@@ -38,7 +38,6 @@ model User {
 
 model Post {
   postId    Int       @id @default(autoincrement())
-  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
@@ -52,37 +51,29 @@ model Post {
 }
 
 model Community {
-  communityId   Int           @id @default(autoincrement())
-  name          String
-  description   String
-  profilePic    String
-  topics        CategoryType[]
-  maxMembers    Int           @default(100)
-  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
-  userId        Int
-  members       User[]        @relation(name: "joinedCommunities")
-  channels      Channel[]
+  communityId Int            @id @default(autoincrement())
+  name        String
+  description String         @default("")
+  profilePic  String         @default("")
+  bannerPic   String         @default("")
+  topics      CategoryType[]
+  maxMembers  Int            @default(100)
+  creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId      Int
+  members     User[]         @relation(name: "joinedCommunities")
+  channels    Channel[]
 }
 
 model Channel {
   channelId   Int               @id @default(autoincrement())
   name        String
-  channelType ChannelType       @default(REGULAR)
-  members     UsersOnChannels[]
+  channelType ChannelType       @default(PREMIUM)
+  members     User[]
   community   Community         @relation(fields: [communityId], references: [communityId])
   communityId Int
   posts       Post[]
 
   @@unique([communityId, name])
-}
-
-model UsersOnChannels {
-  user      User    @relation(fields: [userId], references: [userId])
-  userId    Int
-  channel   Channel @relation(fields: [channelId], references: [channelId])
-  channelId Int
-
-  @@id([userId, channelId])
 }
 
 model Comment {
@@ -193,7 +184,7 @@ enum PrivacyType {
 }
 
 enum ChannelType {
-  REGULAR
+  HOME
   PREMIUM
   PRIVATE
 }
