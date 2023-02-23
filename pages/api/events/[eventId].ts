@@ -109,38 +109,21 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(
-    eventId: number,
-    eventWithTickets: EventWithTickets
-  ) {
+  async function handlePOST(eventId: number, eventWithTickets: Event) {
     try {
-      const { tickets, ...eventInfo } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket) => {
-        const { ticketId, eventId, ...ticketInfo } = ticket;
-        return ticketInfo;
-      });
-
-      console.log("test");
-      console.log(updatedTickets);
-
       const response = await prisma.event.update({
         where: {
           eventId: eventId,
         },
         data: {
-          ...eventInfo,
+          ...eventWithTickets,
           eventId: undefined,
-          tickets: {
-            deleteMany: { eventId: eventId },
-            createMany: { data: updatedTickets },
-          }, //how to change this
         },
-        include: { tickets: true },
       });
 
       //for loop thru ticket in as well
 
-      await prisma.ticket.update;
+      // await prisma.ticket.update;
 
       res.status(200).json(response);
     } catch (error) {

@@ -250,17 +250,18 @@ const EventsPage = (props: any) => {
           "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
           ticket
         );
-        //how to update tickets in users? -> returns error as well 
 
-        /*
-        user_tickets.push(tickets[j].ticketId) 
-        const updated_user : UserWithTickets ={
-          tickets            : user_tickets
+        user_tickets.push(tickets[j]);
+        const updated_user = {
+          ...userInfo,
+          tickets: user_tickets,
         };
         console.log(updated_user);
-        let user_update = await axios.post("http://localhost:3000/api/users/1", updated_user);
-        console.log(user_update) 
-        */
+        let user_update = await axios.post(
+          "http://localhost:3000/api/users/1",
+          updated_user
+        );
+        console.log(user_update);
 
         break;
       }
@@ -269,7 +270,7 @@ const EventsPage = (props: any) => {
 
     //updates
 
-    const updated_event: EventWithTickets = {
+    const updated_event = {
       eventName: eventInfo.eventName,
       addressId: eventInfo.addressId,
       category: eventInfo.category,
@@ -283,8 +284,10 @@ const EventsPage = (props: any) => {
       publishStartDate: eventInfo.publishStartDate,
       ticketURIs: ticketURIs,
       publishType: eventInfo.publishType,
-      tickets: eventInfo.tickets,
+      // tickets: eventInfo.tickets,
     };
+
+    console.log(updated_event);
     let updated_response = await axios.post(
       "http://localhost:3000/api/events/2",
       updated_event
@@ -309,7 +312,8 @@ const EventsPage = (props: any) => {
     const { scAddress, ticketURIs, tickets } = eventInfo;
     console.log(eventInfo);
 
-    const ticket_categories = [ //sample ticket categories
+    const ticket_categories = [
+      //sample ticket categories
       {
         name: "Genera",
         totalTicketSupply: 100,
@@ -427,7 +431,8 @@ const EventsPage = (props: any) => {
 
     //delete ticket categories so can just create again
 
-    const updated_event: EventWithTickets = { //whatever the updated ticket details are 
+    const updated_event: EventWithTickets = {
+      //whatever the updated ticket details are
       eventName: "This is a new event",
       addressId: eventInfo.addressId,
       category: CategoryType.AUTO_BOAT_AIR,
@@ -444,15 +449,11 @@ const EventsPage = (props: any) => {
       tickets: ticket_categories,
     };
 
-    if (ticketURIs.length > 0){
-    
-
+    if (ticketURIs.length > 0) {
       for (let i = 0; i < ticketURIs.length; i++) {
         var ticketURI = ticketURIs[i];
         console.log(ticketURI);
-        let response_metadata = await getTicket(
-        ticketURI
-        );
+        let response_metadata = await getTicket(ticketURI);
         console.log(response_metadata.data);
         let existing_user_ticket_category = response_metadata.data.category;
         var new_user_ticket_category = map[existing_user_ticket_category];
@@ -460,7 +461,10 @@ const EventsPage = (props: any) => {
         let category_chosen = new_user_ticket_category;
         console.log(category_chosen);
         const event_contract = new ethers.Contract(scAddress, abi, signer);
-        let response_pinning = await mintOnChain(updated_event, category_chosen);
+        let response_pinning = await mintOnChain(
+          updated_event,
+          category_chosen
+        );
         let ipfsHash = response_pinning.data.IpfsHash;
         console.log(ipfsHash);
 
@@ -498,10 +502,9 @@ const EventsPage = (props: any) => {
       );
       let updated_data = updated_response.data;
       console.log("Data uploaded");
-    }else{
+    } else {
       console.log("Nothing to update for tokenURIs in event");
     }
-
   }
 
   const { data, error, isLoading } = useSWR(

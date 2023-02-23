@@ -1,3 +1,4 @@
+import { Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
@@ -102,10 +103,10 @@ export default async function handler(
 
   async function handlePOST(userId: number, userWithTickets: UserWithTickets) {
     try {
-      const { tickets, ...userInfo } = userWithTickets;
-      const updatedTickets = tickets.map((ticket) => {
-        const { ticketId, userId, ...ticketInfo } = ticket;
-        return ticketInfo;
+      const { tickets, walletAddress, email, ...userInfo } = userWithTickets;
+      const ticketIdArray = tickets.map((ticket) => {
+        const { ticketId } = ticket;
+        return { ticketId: ticketId };
       });
 
       const response = await prisma.user.update({
@@ -115,7 +116,7 @@ export default async function handler(
         data: {
           ...userInfo,
           userId: undefined,
-          tickets: { create: updatedTickets },
+          tickets: { connect: [...ticketIdArray] },
         },
       });
 

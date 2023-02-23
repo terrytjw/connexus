@@ -22,6 +22,7 @@ model User {
   bannerPic           String            @default("")
   displayName         String            @default("")
   username            String            @default("")
+  bio                 String            @default("")
   email               String            @unique
   notificationBySMS   Boolean           @default(true)
   notificationByEmail Boolean           @default(true)
@@ -120,7 +121,7 @@ model Event {
   publishStartDate   DateTime       @default(now())
   tickets            Ticket[]
   ticketURIs         String[]
-  scAddress          String
+  scAddress          String?
 }
 
 enum PublishType {

@@ -43,11 +43,11 @@ export default async function handler(
   res: NextApiResponse<Event[] | ErrorResponse>
 ) {
   const session = await getServerSession(req, res, authOptions);
-  console.log(session);
+  // console.log(session);
 
-  if (!session) {
-    res.status(401).json({ error: "401", message: "Unauthorized" });
-  }
+  // if (!session) {
+  //   res.status(401).json({ error: "401", message: "Unauthorized" });
+  // }
 
   const { method } = req;
 
