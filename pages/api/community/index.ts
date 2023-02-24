@@ -90,7 +90,12 @@ export default async function handler(
           tags: {
             has: filter
           }
-        } : undefined
+        } : undefined,
+        include: {
+          _count: {
+            select: { members: true }
+          }
+        }
       });
       res.status(200).json(communities);
     } catch (error) {
@@ -139,7 +144,12 @@ export default async function handler(
           ],
           tags: filter ? {
             has: filter
-          } : undefined
+          } : undefined,
+        },
+        include: {
+          _count: {
+            select: { members: true }
+          }
         }
       })
       res.status(200).json(communities);
