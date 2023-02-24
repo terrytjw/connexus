@@ -74,6 +74,9 @@ export default async function handler(
           commenter: {
             select: { username: true, profilePic: true }
           }
+        },
+        orderBy: {
+          date: 'asc'
         }
       });
       res.status(200).json(communities);
