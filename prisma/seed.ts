@@ -177,14 +177,15 @@ async function generateCollection() {
     update: {},
     create: {
       description: "very cool collection",
-      fixedPrice: 20.0,
       currency: "USD",
       collectionState: "CREATED",
-      collections: {
+      merchandise: {
         create: {
           media: "....com",
           description: "cool items",
-          numOfMerch: 200,
+          totalMerchSupply: 200,
+          price: 10,
+
         },
       },
       creator: {

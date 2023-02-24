@@ -1,10 +1,17 @@
 {
   "_format": "hh-sol-cache-2",
   "files": {
+<<<<<<< Updated upstream
     "/Users/colin/Desktop/creator-economy/contracts/SimpleEvent.sol": {
       "lastModificationDate": 1676893941633,
       "contentHash": "c90906510491694497c11470249780c9",
       "sourceName": "contracts/SimpleEvent.sol",
+=======
+    "/Users/colin/Desktop/creator-economy/contracts/Collection.sol": {
+      "lastModificationDate": 1677160288496,
+      "contentHash": "b552da68cea2f63569cb7b50a7c39589",
+      "sourceName": "contracts/Collection.sol",
+>>>>>>> Stashed changes
       "solcConfig": {
         "version": "0.8.9",
         "settings": {
@@ -40,7 +47,11 @@
         "^0.8.0"
       ],
       "artifacts": [
+<<<<<<< Updated upstream
         "SimpleEvent"
+=======
+        "Collection"
+>>>>>>> Stashed changes
       ]
     },
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/security/ReentrancyGuard.sol": {
@@ -78,6 +89,81 @@
         "ReentrancyGuard"
       ]
     },
+<<<<<<< Updated upstream
+=======
+    "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/utils/Counters.sol": {
+      "lastModificationDate": 1676471595767,
+      "contentHash": "74654e3ae5d7f39555055dfe244dab7a",
+      "sourceName": "@openzeppelin/contracts/utils/Counters.sol",
+      "solcConfig": {
+        "version": "0.8.9",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Counters"
+      ]
+    },
+    "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
+      "lastModificationDate": 1676471595094,
+      "contentHash": "e436cea06129be2c73cda4b1acc848b5",
+      "sourceName": "@openzeppelin/contracts/access/Ownable.sol",
+      "solcConfig": {
+        "version": "0.8.9",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "../utils/Context.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Ownable"
+      ]
+    },
+>>>>>>> Stashed changes
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/token/ERC721/ERC721.sol": {
       "lastModificationDate": 1676471595707,
       "contentHash": "190f627b9302b9602d3a313e28205cc5",
@@ -121,6 +207,7 @@
         "ERC721"
       ]
     },
+<<<<<<< Updated upstream
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/access/Ownable.sol": {
       "lastModificationDate": 1676471595094,
       "contentHash": "e436cea06129be2c73cda4b1acc848b5",
@@ -193,6 +280,8 @@
         "Counters"
       ]
     },
+=======
+>>>>>>> Stashed changes
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol": {
       "lastModificationDate": 1676471595709,
       "contentHash": "c22d4395e33763de693fd440c6fd10e1",
@@ -265,6 +354,44 @@
         "ERC721URIStorage"
       ]
     },
+<<<<<<< Updated upstream
+=======
+    "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1676471595763,
+      "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.9",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.0"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
+>>>>>>> Stashed changes
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/utils/Strings.sol": {
       "lastModificationDate": 1676471595788,
       "contentHash": "396031251978f8febfd90cb62cb240ec",
@@ -302,6 +429,7 @@
         "Strings"
       ]
     },
+<<<<<<< Updated upstream
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/utils/Context.sol": {
       "lastModificationDate": 1676471595763,
       "contentHash": "5f2c5c4b6af2dd4551027144797bc8be",
@@ -337,6 +465,8 @@
         "Context"
       ]
     },
+=======
+>>>>>>> Stashed changes
     "/Users/colin/Desktop/creator-economy/node_modules/@openzeppelin/contracts/utils/Address.sol": {
       "lastModificationDate": 1676471595720,
       "contentHash": "f31ad6fc4bbf9c06203987220156a6ba",

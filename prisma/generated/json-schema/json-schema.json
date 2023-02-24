@@ -98,6 +98,12 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "merchandise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Merchandise"
+          }
         }
       }
     },
@@ -395,10 +401,7 @@
           }
         },
         "scAddress": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     },
@@ -526,9 +529,6 @@
         "description": {
           "type": "string"
         },
-        "fixedPrice": {
-          "type": "number"
-        },
         "currency": {
           "type": "string",
           "default": "USD",
@@ -548,10 +548,26 @@
             "SOLD"
           ]
         },
-        "collections": {
+        "merchandise": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CollectionMedia"
+            "$ref": "#/definitions/Merchandise"
+          }
+        },
+        "fixedPrice": {
+          "type": "number",
+          "default": 0
+        },
+        "scAddress": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "merchURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "creator": {
@@ -559,23 +575,39 @@
         }
       }
     },
-    "CollectionMedia": {
+    "Merchandise": {
       "type": "object",
       "properties": {
-        "collectionMediaId": {
+        "merchId": {
           "type": "integer"
         },
         "media": {
           "type": "string"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "numOfMerch": {
-          "type": "integer"
+        "price": {
+          "type": "number",
+          "default": 0
+        },
+        "totalMerchSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currMerchSupply": {
+          "type": "integer",
+          "default": 0
         },
         "collection": {
           "$ref": "#/definitions/Collection"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     }
@@ -615,8 +647,8 @@
     "collection": {
       "$ref": "#/definitions/Collection"
     },
-    "collectionMedia": {
-      "$ref": "#/definitions/CollectionMedia"
+    "merchandise": {
+      "$ref": "#/definitions/Merchandise"
     }
   }
 }

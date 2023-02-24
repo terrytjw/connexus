@@ -5,7 +5,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, User, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
-type UserWithTickets = Prisma.UserGetPayload<{ include: { tickets: true } }>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true, merchandise: true } }>;
 
 /**
  * @swagger
@@ -90,7 +90,7 @@ export default async function handler(
         where: {
           userId: userId,
         },
-        include: { tickets: true },
+        include: { tickets: true , merchandise : true},
       });
 
       if (!user) res.status(200).json({});
@@ -101,12 +101,17 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(userId: number, userWithTickets: UserWithTickets) {
+  async function handlePOST(userId: number, userWithTicketsandMerch: UserWithTicketsandMerch) {
     try {
-      const { tickets, walletAddress, email, ...userInfo } = userWithTickets;
+      const { tickets, merchandise, walletAddress, email, ...userInfo } = userWithTicketsandMerch;
       const ticketIdArray = tickets.map((ticket) => {
         const { ticketId } = ticket;
         return { ticketId: ticketId };
+      });
+
+      const merchIdArray = merchandise.map((merch) => {
+        const { merchId } = merch;
+        return { merchId: merchId };
       });
 
       const response = await prisma.user.update({
@@ -117,6 +122,7 @@ export default async function handler(
           ...userInfo,
           userId: undefined,
           tickets: { connect: [...ticketIdArray] },
+          merchandise: { connect: [...merchIdArray] },
         },
       });
 

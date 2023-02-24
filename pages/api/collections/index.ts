@@ -1,8 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection } from "@prisma/client";
+import { PrismaClient, Collection , Prisma} from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
+
+type CollectionwithMerch = Prisma.EventGetPayload<{ include: { merchandise: true } }>;
 
 /**
  * @swagger
@@ -38,6 +42,13 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Collection[] | ErrorResponse>
 ) {
+  const session = await getServerSession(req, res, authOptions);
+  // console.log(session);
+
+  // if (!session) {
+  //   res.status(401).json({ error: "401", message: "Unauthorized" });
+  // }
+
   const { method } = req;
 
   switch (req.method) {
@@ -45,8 +56,8 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const collection = JSON.parse(JSON.stringify(req.body)) as Collection;
-      await handlePOST(collection);
+      const event = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
+      await handlePOST(event);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -55,7 +66,11 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const collections = await prisma.collection.findMany();
+      const collections = await prisma.collection.findMany({
+        include: {
+          merchandise: true,
+        },
+      });
       res.status(200).json(collections);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -63,13 +78,27 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(collection: Collection) {
+  async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
+      const { merchs, ...collectionInfo } = collectionwithMerch;
+      const updatedMerchs = merchs.map((merchandise) => {
+        const { merchId, collectionId, ...merchInfo } = merchandise;
+        return merchInfo;
+      });
+
       const response = await prisma.collection.create({
-        data: { ...collection, collectionId: undefined },
+        data: {
+          ...collectionInfo,
+          collectionId: undefined,
+          merchandise: { create: updatedMerchs },
+        },
+        include: {
+          merchandise: true,
+        },
       });
       res.status(200).json([response]);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }

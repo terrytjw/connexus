@@ -15,7 +15,7 @@ import { smartContract } from "./const";
 import { ethers } from "ethers";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
-type UserWithTickets = Prisma.UserGetPayload<{ include: { tickets: true } }>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true } }>;
 
 const BigNumber = require("bignumber.js");
 
@@ -200,7 +200,7 @@ const EventsPage = (props: any) => {
     let user_response = await axios.get(
       "http://localhost:3000/api/users/" + userId.toString()
     );
-    const userInfo = user_response.data as UserWithTickets;
+    const userInfo = user_response.data as UserWithTicketsandMerch;
     var user_tickets = userInfo.tickets;
 
     //Mint + IPFS
