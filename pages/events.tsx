@@ -10,36 +10,23 @@ import {
 } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";
-import { ethers } from "ethers";
 import React from "react";
+import { smartContract } from "./const";
+import { ethers } from "ethers";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTickets = Prisma.UserGetPayload<{ include: { tickets: true } }>;
 
 const BigNumber = require("bignumber.js");
 
-//Pinata
-const pinataApiKey = "be74f69d81d8435228e2";
-const pinataSecretApiKey =
-  "9556c5997d472165edae4fd15461a8bac3d454bd73088101a95ae45657ea4bdf";
-const JWT =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiIzNWRhMWQzNS0xZjc0LTRhNTUtODBlMC04NTMwNzE2OGU5Y2EiLCJlbWFpbCI6ImNjd2hoOThAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9LHsiaWQiOiJOWUMxIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZSwic3RhdHVzIjoiQUNUSVZFIn0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImJlNzRmNjlkODFkODQzNTIyOGUyIiwic2NvcGVkS2V5U2VjcmV0IjoiOTU1NmM1OTk3ZDQ3MjE2NWVkYWU0ZmQxNTQ2MWE4YmFjM2Q0NTRiZDczMDg4MTAxYTk1YWU0NTY1N2VhNGJkZiIsImlhdCI6MTY3NjYwMzU2Nn0.kGTRDcG0Xe0Be8yfzT9A4Vuc2jkxs32JqjJF0XqOOmY";
-
 //Smart Contract Stuff:
 const contract = require("../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json");
-console.log("ABI");
-const abi = contract.abi;
-const bytecode = contract.bytecode;
-// for provider
 const provider = new ethers.providers.JsonRpcProvider(
   "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
 );
-// for signer
-var privateKey =
-  "3340e2f92064b7494823da63fcaa1dd1515e87e72aaa2d18e461238ce4133cf9";
-var signer = new ethers.Wallet(privateKey, provider);
-//for polygon explorer - verification of contract
-const polygon_explorer_api = "RRZFZGGV2K9VB7CGAT92981EAPBSSD4RZ7";
+const abi = contract.abi;
+const bytecode = contract.bytecode;
+var signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const EventsPage = (props: any) => {
   async function fetchEvents(url: string) {
@@ -49,7 +36,14 @@ const EventsPage = (props: any) => {
   }
 
   async function createEvent() {
+    /*
+    Inputs: 
+    1. Event Info
+    2. Ticket Info
+    */
+
     const Event_contract = new ethers.ContractFactory(abi, bytecode, signer);
+
     const address = {
       address1: "123 Main St",
       address2: "Apt 1",
@@ -77,15 +71,15 @@ const EventsPage = (props: any) => {
       },
     ];
 
-    var categories = [];
-    var category_quantity = [];
-    var category_price = [];
+    let categories = [];
+    let category_quantity = [];
+    let category_price = [];
 
     for (let i = 0; i < ticket_categories.length; i++) {
-      var cat = ticket_categories[i];
+      let cat = ticket_categories[i];
       categories.push(cat.name);
       category_quantity.push(cat.totalTicketSupply);
-      var input = cat.price;
+      let input = cat.price;
       category_price.push(input);
       /* issues with big number
       if (input < 0.1){
@@ -108,13 +102,7 @@ const EventsPage = (props: any) => {
       eventName
     ); //1 ticket max per person
 
-    console.log(event_contract.address);
-    console.log("Contract successfully deployed");
-    //https://mumbai.polygonscan.com/address/0x56efFE82a73515C0559ED8daE55e4Aa58c79B8Ea
-    /*
-    Minted : https://mumbai.polygonscan.com/tx/0x0955287ce5f43dbf38639a1e46bc48d01b283dc651ac025badbd8f2b9885acf3 
-    Max Minting : https://mumbai.polygonscan.com/tx/0xa0b27dc693e9c20625ec395f0396f0dec29f16e4aa7877c34a700f7d5b2a9cc2 
-    */
+    console.log("Contract successfully deployed => ", event_contract.address);
 
     const event: EventWithTickets = {
       eventId: 1,
@@ -144,20 +132,18 @@ const EventsPage = (props: any) => {
 
     let response = await axios.post("http://localhost:3000/api/events", event);
     let data = response.data;
-    console.log(data);
+    console.log("Event Created");
   }
 
   async function deleteEvent() {
     let response = await axios.delete("http://localhost:3000/api/events/3");
     let data = response.data;
-    console.log(data);
+    console.log("Event Deleted");
   }
 
   async function mintOnChain(eventInfo: EventWithTickets, ticket_category) {
     console.log(ticket_category);
     const { eventName, addressId, startDate, endDate } = eventInfo;
-    console.log("Event Info");
-    console.log(eventInfo);
     let response_location = await axios.get(
       "http://localhost:3000/api/addresses/" + addressId
     );
@@ -187,35 +173,42 @@ const EventsPage = (props: any) => {
     return axios.post(url, metaData, {
       headers: {
         "Content-Type": "application/json",
-        pinata_api_key: pinataApiKey,
-        pinata_secret_api_key: pinataSecretApiKey,
+        pinata_api_key: smartContract.pinataApiKey,
+        pinata_secret_api_key: smartContract.pinataSecretApiKey,
       },
     });
   }
 
   async function mintTicket() {
-    //promotion will be separately applied
-    //get event details -> fish out to put into metadata
-    //once pinned -> go to smart contract mint function  -> input the ipfs link as tokenuri to mint
+    /*
+    Inputs: 
+    1. Event id 
+    2. Ticket category 
+    3. User id
+    */
 
-    console.log("Pinning metadata");
-    let response = await axios.get("http://localhost:3000/api/events/2");
+    const userId = 1;
+    const eventId = 2;
+    const ticket_category = "VIP Pass";
+
+    let response = await axios.get(
+      "http://localhost:3000/api/events/" + eventId.toString()
+    );
     const eventInfo = response.data as EventWithTickets;
     const { scAddress, ticketURIs, tickets } = eventInfo;
 
-    const ticket_category = "VIP Pass";
-
-    const userId = 1;
-    let user_response = await axios.get("http://localhost:3000/api/users/2");
+    let user_response = await axios.get(
+      "http://localhost:3000/api/users/" + userId.toString()
+    );
     const userInfo = user_response.data as UserWithTickets;
     var user_tickets = userInfo.tickets;
 
+    //Mint + IPFS
     response = await mintOnChain(eventInfo, ticket_category);
     let ipfsHash = response.data.IpfsHash;
     console.log(ipfsHash);
 
     if (ipfsHash == "") return;
-
     const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
     console.log("IPFS Hash Link  : ", link);
     const event_contract = new ethers.Contract(scAddress, abi, signer);
@@ -235,7 +228,6 @@ const EventsPage = (props: any) => {
     for (let j = 0; j < tickets.length; j++) {
       if (tickets[j].name == ticket_category) {
         console.log(tickets[j].currentTicketSupply);
-        //to update the tickets -> but it creates a new set of tickets each time
         var ticket: Ticket = {
           ticketId: tickets[j].ticketId,
           name: tickets[j].name,
@@ -250,7 +242,6 @@ const EventsPage = (props: any) => {
           "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
           ticket
         );
-
         user_tickets.push(tickets[j]);
         const updated_user = {
           ...userInfo,
@@ -258,7 +249,7 @@ const EventsPage = (props: any) => {
         };
         console.log(updated_user);
         let user_update = await axios.post(
-          "http://localhost:3000/api/users/1",
+          "http://localhost:3000/api/users/" + userId.toString(),
           updated_user
         );
         console.log(user_update);
@@ -267,8 +258,6 @@ const EventsPage = (props: any) => {
       }
     }
     ticketURIs.push(link);
-
-    //updates
 
     const updated_event = {
       eventName: eventInfo.eventName,
@@ -284,16 +273,15 @@ const EventsPage = (props: any) => {
       publishStartDate: eventInfo.publishStartDate,
       ticketURIs: ticketURIs,
       publishType: eventInfo.publishType,
-      // tickets: eventInfo.tickets,
     };
 
     console.log(updated_event);
     let updated_response = await axios.post(
-      "http://localhost:3000/api/events/2",
+      "http://localhost:3000/api/events/" + eventId.toString(),
       updated_event
     );
     let updated_data = updated_response.data;
-    console.log("Data uploaded");
+    console.log("Data uploaded for both event + user");
   }
 
   async function getTicket(ipfs_link) {
@@ -307,13 +295,24 @@ const EventsPage = (props: any) => {
   }
 
   async function updateEvent() {
-    let response_event = await axios.get("http://localhost:3000/api/events/1");
+    /*
+    Inputs: 
+    1. Event Id
+    2. Ticket Id
+    3. Event Info
+    4. Ticket Info
+    */
+
+    const event_id = 2;
+    let response_event = await axios.get(
+      "http://localhost:3000/api/events/" + event_id.toString()
+    );
     const eventInfo = response_event.data as EventWithTickets;
     const { scAddress, ticketURIs, tickets } = eventInfo;
     console.log(eventInfo);
 
+    //updating ticket categories
     const ticket_categories = [
-      //sample ticket categories
       {
         name: "Genera",
         totalTicketSupply: 100,
@@ -339,29 +338,34 @@ const EventsPage = (props: any) => {
         description: "",
       },
     ];
-    console.log("Tickets => ", tickets);
-    var map = {};
+    let map = {};
 
     for (let k = 0; k < ticket_categories.length; k++) {
       if (k > tickets.length - 1) {
-        //create new ones
-        var new_category: EventWithTickets = {
-          eventId: 1,
-          tickets: [ticket_categories[k]],
+        //create new ticket category
+        console.log(tickets);
+        var new_ticket: Ticket = {
+          name: ticket_categories[k].name,
+          totalTicketSupply: ticket_categories[k].totalTicketSupply,
+          currentTicketSupply: 0,
+          price: ticket_categories[k].price,
+          startDate: ticket_categories[k].startDate,
+          endDate: ticket_categories[k].endDate,
+          description: ticket_categories[k].description,
+          eventId : event_id
         };
-        console.log(new_category);
-        let response = await axios.post(
-          "http://localhost:3000/api/events/1",
-          new_category
+        tickets.push(new_ticket);
+        await axios.post(
+          "http://localhost:3000/api/tickets",
+          new_ticket
         );
-        console.log(response);
       } else {
         if (
           tickets[k].currentTicketSupply >=
           ticket_categories[k].totalTicketSupply
         ) {
           console.log("Not allowed to change");
-          //return "Not allowed to change"
+          //return ""
         }
         //time to update
         var ticket: Ticket = {
@@ -377,10 +381,13 @@ const EventsPage = (props: any) => {
           "http://localhost:3000/api/tickets/" + tickets[k].ticketId.toString(),
           ticket
         );
+        console.log(ticket);
         console.log("Updated existing");
         map[tickets[k].name] = ticket_categories[k].name;
       }
     }
+
+    console.log("updating tickets");
     if (ticket_categories.length < tickets.length) {
       //new set of categories is less the original set -> time to go through the remaining and delete acordingly
       for (let j = ticket_categories.length - 1; j <= tickets.length; j++) {
@@ -395,9 +402,9 @@ const EventsPage = (props: any) => {
         }
       }
     }
-    var categories = [];
-    var category_quantity = [];
-    var category_price = [];
+    let categories = [];
+    let category_quantity = [];
+    let category_price = [];
 
     for (let i = 0; i < ticket_categories.length; i++) {
       var cat = ticket_categories[i];
@@ -413,10 +420,8 @@ const EventsPage = (props: any) => {
       } */
       //rounds off to 1 matic bcos bigint > float
     }
-    console.log(category_price);
 
     const event_contract = new ethers.Contract(scAddress, abi, signer);
-    console.log(event_contract);
     const category_info = await event_contract.changeCategories(
       categories,
       category_price,
@@ -425,12 +430,12 @@ const EventsPage = (props: any) => {
         gasLimit: 2100000,
       }
     );
-    console.log(category_info);
+    console.log("Contract for ticket categories updated");
 
-    var newticketURIs = [];
+    //Updating Event Information + repin all ipfs links again
+    console.log("Event Info");
 
-    //delete ticket categories so can just create again
-
+    let newticketURIs = [];
     const updated_event: EventWithTickets = {
       //whatever the updated ticket details are
       eventName: "This is a new event",
@@ -446,8 +451,8 @@ const EventsPage = (props: any) => {
       publishStartDate: new Date(),
       ticketURIs: [],
       publishType: "NOW",
-      tickets: ticket_categories,
     };
+   
 
     if (ticketURIs.length > 0) {
       for (let i = 0; i < ticketURIs.length; i++) {
@@ -478,8 +483,8 @@ const EventsPage = (props: any) => {
         console.log("Changed for Token ", i);
         newticketURIs.push(link);
       }
-      console.log(newticketURIs);
 
+      console.log("Updated Tickets => ", tickets);
       const updated_event_withuri: EventWithTickets = {
         eventName: "This is a new event",
         addressId: eventInfo.addressId,
@@ -492,12 +497,13 @@ const EventsPage = (props: any) => {
         visibilityType: VisibilityType.DRAFT,
         privacyType: PrivacyType.PUBLIC,
         publishStartDate: new Date(),
-        ticketURIs: newticketURIs,
+        ticketURIs: newticketURIs, //redo again to add the new URI arr
         publishType: "NOW",
-        tickets: ticket_categories,
       };
+      console.log("updated event:");
+      console.log(updated_event_withuri);
       let updated_response = await axios.post(
-        "http://localhost:3000/api/events/1",
+        "http://localhost:3000/api/events/" + event_id.toString(),
         updated_event_withuri
       );
       let updated_data = updated_response.data;

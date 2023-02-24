@@ -66,12 +66,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Event | ErrorResponse | {}>
 ) {
+
+  /*
   const session = await getServerSession(req, res, authOptions);
   console.log(session);
 
   if (!session) {
     res.status(401).json({ error: "401", message: "Unauthorized" });
   }
+  */
 
   const { query, method } = req;
   let eventId = parseInt(query.eventId as string);
@@ -121,9 +124,6 @@ export default async function handler(
         },
       });
 
-      //for loop thru ticket in as well
-
-      // await prisma.ticket.update;
 
       res.status(200).json(response);
     } catch (error) {

@@ -65,15 +65,6 @@ export default async function handler(
   }
 
   async function handleGET() {
-    // Optional Config object, but defaults to demo api-key and eth-mainnet.
-    // const settings = {
-    //   apiKey: "6ycDX83NnrwWaaZZDB8ic_xPMc88ClwD", // Replace with your Alchemy API Key.
-    //   network: Network.MATIC_MUMBAI, // Replace with your network.
-    // };
-    // const alchemy = new Alchemy(settings);
-    // const latestBlock = await alchemy.core.getBlockNumber();
-    // console.log("The latest block number is", latestBlock);
-
     try {
       const events = await prisma.event.findMany({
         include: {
