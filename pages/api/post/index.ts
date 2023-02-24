@@ -73,6 +73,9 @@ export default async function handler(
               userId: true
             }
           }
+        },
+        orderBy: {
+          date: 'desc'
         }
       });
       res.status(200).json(posts);
