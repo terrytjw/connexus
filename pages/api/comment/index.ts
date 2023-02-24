@@ -68,9 +68,6 @@ export default async function handler(
           postId: postId
         },
         include: {
-          _count: {
-            select: { likes: true }
-          },
           likes: {
             select: { userId: true }
           },
