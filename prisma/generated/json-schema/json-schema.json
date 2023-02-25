@@ -11,27 +11,40 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "displayName": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "username": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "email": {
           "type": "string"
+        },
+        "bio": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "notificationBySMS": {
           "type": "boolean",
@@ -103,6 +116,9 @@
         "postId": {
           "type": "integer"
         },
+        "title": {
+          "type": "string"
+        },
         "content": {
           "type": "string"
         },
@@ -150,16 +166,22 @@
           "type": "string"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "tags": {
           "type": "array",
@@ -182,7 +204,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "maxMembers": {
@@ -288,8 +321,7 @@
           "type": "integer"
         },
         "eventName": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "category": {
           "type": "array",
@@ -312,7 +344,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "address": {
@@ -333,12 +376,16 @@
           }
         },
         "summary": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "visibilityType": {
           "type": "string",
@@ -355,12 +402,16 @@
           ]
         },
         "eventBannerPicture": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "eventImage": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "maxAttendee": {
           "type": "integer",
@@ -398,7 +449,10 @@
           "type": "string"
         },
         "address2": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "postalCode": {
           "type": "string"
@@ -418,8 +472,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "totalTicketSupply": {
           "type": "integer",
@@ -442,8 +495,10 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -469,8 +524,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "promotionType": {
           "type": "string",
@@ -506,8 +560,14 @@
         "collectionId": {
           "type": "integer"
         },
-        "description": {
+        "name": {
           "type": "string"
+        },
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "fixedPrice": {
           "type": "number"
