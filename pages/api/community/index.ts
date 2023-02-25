@@ -92,8 +92,8 @@ export default async function handler(
           }
         } : undefined,
         include: {
-          _count: {
-            select: { members: true }
+          members: {
+            select: { userId: true }
           }
         }
       });

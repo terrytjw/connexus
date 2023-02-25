@@ -105,8 +105,8 @@ export default async function handler(
           creator: {
             select: { profilePic: true, username: true }
           },
-          _count: {
-            select: { members: true }
+          members: {
+            select: { userId: true }
           }
         }
       });
