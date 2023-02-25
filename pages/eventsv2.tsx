@@ -1,12 +1,9 @@
 import {
-  Event,
-  DurationType,
   PrivacyType,
   VisibilityType,
   Prisma,
   CategoryType,
   Ticket,
-  User,
 } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";

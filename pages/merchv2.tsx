@@ -2,7 +2,6 @@ import {
   Prisma,
   Merchandise,
   CollectionState,
-  User,
 } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";
