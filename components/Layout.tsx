@@ -62,7 +62,7 @@ const MobileNavbar = ({ children }: any) => {
             className="absolute top-4 left-[50%] -translate-x-[50%] transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
           >
             <Image
-              src="/images/logo-icon.png"
+              src="/svgs/mobile-connexus-logo.svg"
               alt="Connexus logo"
               width={35}
               height={35}
@@ -82,7 +82,7 @@ const MobileNavbar = ({ children }: any) => {
             className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
           >
             <Image
-              src="/images/logo.png"
+              src="/svgs/desktop-connexus-logo.svg"
               alt="Connexus logo"
               width={160}
               height={50}
@@ -180,7 +180,7 @@ const DesktopSidebar = () => {
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
       >
         <Image
-          src="/images/logo.png"
+          src="/svgs/desktop-connexus-logo.svg"
           alt="Connexus logo"
           width={160}
           height={50}
