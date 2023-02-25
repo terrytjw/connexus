@@ -104,7 +104,7 @@ const EventsPage = (props: any) => {
     const event: EventWithTickets = {
       eventId: 1,
       eventName: "This is a new event",
-      category: CategoryType.AUTO_BOAT_AIR,
+      category: "AUTO_BOAT_AIR",
       address: {
         create: {
           address1: address.address1,
