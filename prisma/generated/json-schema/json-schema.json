@@ -15,10 +15,6 @@
             "string",
             "null"
           ]
-          "type": [
-            "string",
-            "null"
-          ]
         },
         "profilePic": {
           "type": [
@@ -39,20 +35,10 @@
           ]
         },
         "username": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "email": {
-          "type": [
-            "string",
-            "null"
-          ]
-        },
-        "bio": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "bio": {
           "type": [

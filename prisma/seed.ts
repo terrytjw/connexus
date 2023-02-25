@@ -265,18 +265,11 @@ async function generateUser() {
       phoneNumber: "++6594745436",
       bio: "I do full days of filming and I also schedule livestreams to create a stronger connection with my audience.",
     },
-  });
-
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@prisma.io" },
-    update: {},
-    create: {
-      email: "bob@prisma.io",
-      username: "Bob",
-      walletAddress: "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
-      displayName: "Bob",
-      notificationBySMS: false,
-      notificationByEmail: false,
+    {
+      email: "asauvan2@gmail.com",
+      username: "asauvan2#322",
+      walletAddress: "0xc45166980e7bf4921668777ca27ea15aef859001",
+      displayName: "Alene Sauvan",
       profilePic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-profilePic.jpg",
       bannerPic:
@@ -289,8 +282,6 @@ async function generateUser() {
   for (const user of users) {
     await saveUser(user);
   }
-}
-
 }
 
 async function generateCollection() {
