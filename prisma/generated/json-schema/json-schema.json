@@ -11,16 +11,28 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "displayName": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "username": {
           "type": "string"
@@ -29,7 +41,10 @@
           "type": "string"
         },
         "bio": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "notificationBySMS": {
           "type": "boolean",
@@ -157,13 +172,22 @@
           "type": "string"
         },
         "description": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "tags": {
           "type": "array",
@@ -233,7 +257,11 @@
         "channelType": {
           "type": "string",
           "default": "PREMIUM",
-          "enum": ["REGULAR", "PREMIUM", "PRIVATE"]
+          "enum": [
+            "REGULAR",
+            "PREMIUM",
+            "PRIVATE"
+          ]
         },
         "members": {
           "type": "array",
@@ -354,24 +382,42 @@
           }
         },
         "summary": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "visibilityType": {
           "type": "string",
-          "enum": ["DRAFT", "PUBLISHED"]
+          "enum": [
+            "DRAFT",
+            "PUBLISHED"
+          ]
         },
         "privacyType": {
           "type": "string",
-          "enum": ["PUBLIC", "PRIVATE"]
+          "enum": [
+            "PUBLIC",
+            "PRIVATE"
+          ]
         },
         "eventBannerPicture": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "eventImage": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "maxAttendee": {
           "type": "integer",
@@ -379,7 +425,10 @@
         },
         "publishType": {
           "type": "string",
-          "enum": ["NOW", "LATER"]
+          "enum": [
+            "NOW",
+            "LATER"
+          ]
         },
         "publishStartDate": {
           "type": "string",
@@ -415,7 +464,10 @@
           "type": "string"
         },
         "address2": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "postalCode": {
           "type": "string"
@@ -458,7 +510,10 @@
           "format": "date-time"
         },
         "description": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -488,7 +543,10 @@
         },
         "promotionType": {
           "type": "string",
-          "enum": ["LIMITED", "UNLIMITED"]
+          "enum": [
+            "LIMITED",
+            "UNLIMITED"
+          ]
         },
         "promotionValue": {
           "type": "number",
@@ -517,24 +575,33 @@
         "collectionId": {
           "type": "integer"
         },
-        "name": {
+        "collectionName": {
           "type": "string"
         },
         "description": {
-          "type": ["string", "null"]
-        },
-        "fixedPrice": {
-          "type": "number"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "currency": {
           "type": "string",
           "default": "USD",
-          "enum": ["USD", "ETH", "BTC", "USDC"]
+          "enum": [
+            "USD",
+            "ETH",
+            "BTC",
+            "USDC"
+          ]
         },
         "collectionState": {
           "type": "string",
           "default": "CREATED",
-          "enum": ["CREATED", "ON_SALE", "SOLD"]
+          "enum": [
+            "CREATED",
+            "ON_SALE",
+            "SOLD"
+          ]
         },
         "merchandise": {
           "type": "array",
@@ -570,7 +637,10 @@
           "type": "string"
         },
         "media": {
-          "type": ["string", "null"]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
           "type": "string",
