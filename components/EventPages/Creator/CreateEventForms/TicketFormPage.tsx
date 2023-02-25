@@ -90,7 +90,7 @@ const TicketFormPage = ({
                     <textarea
                       className="input-group textarea-bordered textarea w-full max-w-3xl bg-white"
                       placeholder="Tell us the perks of owning this ticket"
-                      value={value}
+                      value={value ?? ""}
                       onChange={onChange}
                     />
                     <label className="label">
