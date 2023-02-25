@@ -69,6 +69,7 @@ const EventsPage = (props: any) => {
         description: "This is a VIP Pass",
       },
     ];
+    //till here ^^event and ticket input
 
     let categories = [];
     let category_quantity = [];
@@ -321,7 +322,7 @@ const EventsPage = (props: any) => {
         description: "General Admission",
       },
       {
-        name: "VIP Pass",
+        name: "VI",
         totalTicketSupply: 1,
         price: 1,
         startDate: new Date(),
