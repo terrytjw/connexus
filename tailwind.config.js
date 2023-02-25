@@ -21,7 +21,9 @@ module.exports = {
         "teal-500": "#67BD8B",
         "sky-100": "#F9FBFF",
         "sky-300": "#87DBFF",
+        "blue-100": "#E4F5FF", // use for outlined button hover state bg color
         "blue-600": "#1A7DFF",
+        "blue-900": "#1A54C2", // use for solid button hover state bg color
         "gray-700": "#616B79",
         "gray-900": "#34383F",
         "neutral-50": "#FFFFFF",

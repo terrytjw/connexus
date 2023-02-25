@@ -15,31 +15,30 @@ generator jsonSchema {
 }
 
 model User {
-  userId              Int               @id @default(autoincrement())
-  walletAddress       String            @unique
-  phoneNumber         String            @default("")
-  profilePic          String            @default("")
-  bannerPic           String            @default("")
-  displayName         String            @default("")
-  username            String            @default("")
-  email               String            @unique
-  bio                 String            @default("")
-  notificationBySMS   Boolean           @default(true)
-  notificationByEmail Boolean           @default(true)
-  createdCollections  Collection[]      @relation(name: "createdCollections")
-  createdCommunities  Community[]       @relation(name: "createdCommunities")
-  joinedCommunities   Community[]       @relation(name: "joinedCommunities")
-  joinedChannels      UsersOnChannels[]
-  posts               Post[]            @relation(name: "creator")
-  likedPosts          Post[]            @relation(name: "likedPosts")
-  comments            Comment[]         @relation(name: "commenter")
-  likedComments       Comment[]         @relation(name: "likedComments")
+  userId              Int          @id @default(autoincrement())
+  walletAddress       String       @unique
+  phoneNumber         String       @default("")
+  profilePic          String       @default("")
+  bannerPic           String       @default("")
+  displayName         String       @default("")
+  username            String       @default("")
+  email               String       @unique
+  bio                 String       @default("")
+  notificationBySMS   Boolean      @default(true)
+  notificationByEmail Boolean      @default(true)
+  createdCollections  Collection[] @relation(name: "createdCollections")
+  createdCommunities  Community[]  @relation(name: "createdCommunities")
+  joinedCommunities   Community[]  @relation(name: "joinedCommunities")
+  joinedChannels      Channel[]
+  posts               Post[]       @relation(name: "creator")
+  likedPosts          Post[]       @relation(name: "likedPosts")
+  comments            Comment[]    @relation(name: "commenter")
+  likedComments       Comment[]    @relation(name: "likedComments")
   tickets             Ticket[]
 }
 
 model Post {
   postId    Int       @id @default(autoincrement())
-  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
@@ -53,39 +52,29 @@ model Post {
 }
 
 model Community {
-  communityId   Int           @id @default(autoincrement())
-  name          String
-  description   String
-  profilePic    String
-  tags          String[]
-  maxMembers    Int           @default(100)
-  communityType CommunityType @default(NFT)
-  creator       User          @relation(name: "createdCommunities", fields: [userId], references: [userId])
-  userId        Int
-  members       User[]        @relation(name: "joinedCommunities")
-  channels      Channel[]
+  communityId Int            @id @default(autoincrement())
+  name        String
+  description String         @default("")
+  profilePic  String         @default("")
+  bannerPic   String         @default("")
+  tags        CategoryType[]
+  maxMembers  Int            @default(100)
+  creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId      Int
+  members     User[]         @relation(name: "joinedCommunities")
+  channels    Channel[]
 }
 
 model Channel {
-  channelId   Int               @id @default(autoincrement())
+  channelId   Int         @id @default(autoincrement())
   name        String
-  description String
-  channelType ChannelType       @default(REGULAR)
-  members     UsersOnChannels[]
-  community   Community         @relation(fields: [communityId], references: [communityId])
+  channelType ChannelType @default(PREMIUM)
+  members     User[]
+  community   Community   @relation(fields: [communityId], references: [communityId])
   communityId Int
   posts       Post[]
 
   @@unique([communityId, name])
-}
-
-model UsersOnChannels {
-  user      User    @relation(fields: [userId], references: [userId])
-  userId    Int
-  channel   Channel @relation(fields: [channelId], references: [channelId])
-  channelId Int
-
-  @@id([userId, channelId])
 }
 
 model Comment {
@@ -193,11 +182,6 @@ enum VisibilityType {
 enum PrivacyType {
   PUBLIC
   PRIVATE
-}
-
-enum CommunityType {
-  NFT
-  CRYPTO
 }
 
 enum ChannelType {

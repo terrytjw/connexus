@@ -66,7 +66,7 @@
         "joinedChannels": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/Channel"
           }
         },
         "posts": {
@@ -106,9 +106,6 @@
       "properties": {
         "postId": {
           "type": "integer"
-        },
-        "title": {
-          "type": "string"
         },
         "content": {
           "type": "string"
@@ -157,28 +154,44 @@
           "type": "string"
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
         "profilePic": {
-          "type": "string"
+          "type": "string",
+          "default": ""
+        },
+        "bannerPic": {
+          "type": "string",
+          "default": ""
         },
         "tags": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "enum": [
+            "AUTO_BOAT_AIR",
+            "BUSINESS_PROFESSIONAL",
+            "CHARITY_CAUSES",
+            "COMMUNITY_CULTURE",
+            "FAMILY_EDUCATION",
+            "FASHION_BEAUTY",
+            "FILM_MEDIA_ENTERTAINMENT",
+            "FOOD_DRINK",
+            "GOVERNMENT_POLITICS",
+            "HEALTH_WELLNESS",
+            "HOBBIES_SPECIAL_INTEREST",
+            "HOME_LIFESTYLE",
+            "PERFORMING_VISUAL_ARTS",
+            "RELIGION_SPIRITUALITY",
+            "SCHOOL_ACTIVITIES",
+            "SCIENCE_TECHNOLOGY",
+            "SEASONAL_HOLIDAY",
+            "SPORTS_FITNESS",
+            "TRAVEL_OUTDOOR"
+          ]
         },
         "maxMembers": {
           "type": "integer",
           "default": 100
-        },
-        "communityType": {
-          "type": "string",
-          "default": "NFT",
-          "enum": [
-            "NFT",
-            "CRYPTO"
-          ]
         },
         "creator": {
           "$ref": "#/definitions/User"
@@ -206,12 +219,9 @@
         "name": {
           "type": "string"
         },
-        "description": {
-          "type": "string"
-        },
         "channelType": {
           "type": "string",
-          "default": "REGULAR",
+          "default": "PREMIUM",
           "enum": [
             "REGULAR",
             "PREMIUM",
@@ -221,7 +231,7 @@
         "members": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/User"
           }
         },
         "community": {
@@ -232,17 +242,6 @@
           "items": {
             "$ref": "#/definitions/Post"
           }
-        }
-      }
-    },
-    "UsersOnChannels": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "channel": {
-          "$ref": "#/definitions/Channel"
         }
       }
     },
@@ -581,9 +580,6 @@
     },
     "channel": {
       "$ref": "#/definitions/Channel"
-    },
-    "usersOnChannels": {
-      "$ref": "#/definitions/UsersOnChannels"
     },
     "comment": {
       "$ref": "#/definitions/Comment"

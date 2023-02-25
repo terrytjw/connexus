@@ -17,6 +17,7 @@ import UserProfileCreations from "../../../components/UserProfileTabs/Creations"
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { products } from "../../../utils/dummyData";
 import { User } from "@prisma/client";
+import { profile, collections } from "../../../utils/dummyData";
 
 type UserProfilePageProps = {
   userData: User;
@@ -93,9 +94,11 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 setActiveTab(index);
               }}
             >
-              {activeTab == 0 && <UserProfileFeatured products={products} />}
+              {activeTab == 0 && <UserProfileFeatured products={collections} />}
               {activeTab == 1 && <UserProfileCreations />}
-              {activeTab == 2 && <UserProfileCollections products={products} />}
+              {activeTab == 2 && (
+                <UserProfileCollections products={collections} />
+              )}
               {activeTab == 3 && <h1>Coming soon...</h1>}
               {activeTab == 4 && <h1>Coming soon...</h1>}
             </TabGroupBordered>
