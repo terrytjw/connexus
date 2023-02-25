@@ -12,7 +12,9 @@ import { smartContract } from "./const";
 import { ethers } from "ethers";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
-type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true } }>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{
+  include: { tickets: true };
+}>;
 
 const BigNumber = require("bignumber.js");
 //Smart Contract Stuff:
@@ -101,7 +103,7 @@ const EventsPage = (props: any) => {
 
     console.log("Contract successfully deployed => ", event_contract.address);
 
-    const event: EventWithTickets = {
+    const event = {
       eventId: 1,
       eventName: "This is a new event",
       category: [CategoryType.AUTO_BOAT_AIR],
@@ -349,13 +351,10 @@ const EventsPage = (props: any) => {
           startDate: ticket_categories[k].startDate,
           endDate: ticket_categories[k].endDate,
           description: ticket_categories[k].description,
-          eventId : event_id
+          eventId: event_id,
         };
         tickets.push(new_ticket);
-        await axios.post(
-          "http://localhost:3000/api/tickets",
-          new_ticket
-        );
+        await axios.post("http://localhost:3000/api/tickets", new_ticket);
       } else {
         if (
           tickets[k].currentTicketSupply >=
@@ -369,7 +368,7 @@ const EventsPage = (props: any) => {
           ticketId: tickets[k].ticketId,
           name: ticket_categories[k].name,
           totalTicketSupply: ticket_categories[k].totalTicketSupply,
-          currentTicketSupply : tickets[k].currentTicketSupply,
+          currentTicketSupply: tickets[k].currentTicketSupply,
           price: ticket_categories[k].price,
           startDate: ticket_categories[k].startDate,
           endDate: ticket_categories[k].endDate,
@@ -450,7 +449,6 @@ const EventsPage = (props: any) => {
       ticketURIs: [],
       publishType: "NOW",
     };
-   
 
     if (ticketURIs.length > 0) {
       for (let i = 0; i < ticketURIs.length; i++) {
