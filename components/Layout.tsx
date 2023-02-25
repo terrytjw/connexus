@@ -32,7 +32,6 @@ function classNames(...classes: string[]) {
 
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
-  console.log("router.pathname -> ", router.pathname);
   const checkboxRef = useRef<HTMLInputElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
