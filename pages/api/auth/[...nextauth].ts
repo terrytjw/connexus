@@ -1,12 +1,13 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
 import { PrismaClient } from "@prisma/client";
+import { saveUser, searchUser } from "../../../lib/user";
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
+      id: "custom-login",
       name: "Credentials",
       credentials: {
         name: { label: "Name", type: "text", placeholder: "Name" },
@@ -19,10 +20,12 @@ export const authOptions: NextAuthOptions = {
         walletAddress: { label: "Wallet Address", type: "text" },
       },
       async authorize(credentials, req) {
+        // console.log(credentials);
         if (!credentials) return null;
 
         const { name, email, profileImage, walletAddress } = credentials;
         const user = await retrieveUserByWallet(walletAddress);
+
         if (user) return user;
 
         const createdUser = await createUserUsingWallet(
@@ -31,8 +34,7 @@ export const authOptions: NextAuthOptions = {
           profileImage,
           walletAddress
         );
-
-        if (createdUser) return user;
+        if (createdUser) return createdUser;
 
         return null;
       },
@@ -59,10 +61,8 @@ export const authOptions: NextAuthOptions = {
 // Helper functions
 async function retrieveUserByWallet(walletAddress: string) {
   try {
-    const user = await prisma.user.findUnique({
-      where: {
-        walletAddress: walletAddress,
-      },
+    const user = await searchUser({
+      walletAddress: walletAddress,
     });
 
     if (user) {
@@ -83,21 +83,14 @@ async function createUserUsingWallet(
   walletAddress: string
 ) {
   try {
-    const user = await prisma.user.create({
-      data: {
-        username: name,
-        email: email,
-        profilePic: profilePicture,
-        walletAddress: walletAddress,
-      },
-    });
-
-    if (user) {
-      return {
-        id: user.userId,
-        walletAddress: walletAddress,
-      } as any;
-    } else return null;
+    const userInfo = {
+      username: name,
+      email: email,
+      profilePic: profilePicture,
+      walletAddress: walletAddress,
+    };
+    const user = await saveUser(userInfo);
+    return user;
   } catch (error) {
     return null;
   }

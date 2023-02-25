@@ -9,6 +9,7 @@ import {
   Currency,
   CollectionState,
 } from "@prisma/client";
+import { saveUser } from "../lib/user";
 
 const prisma = new PrismaClient();
 
@@ -264,7 +265,6 @@ async function generateUser() {
       phoneNumber: "++6594745436",
       bio: "I do full days of filming and I also schedule livestreams to create a stronger connection with my audience.",
     },
-
     {
       email: "asauvan2@gmail.com",
       username: "asauvan2#322",
@@ -280,9 +280,7 @@ async function generateUser() {
   ];
 
   for (const user of users) {
-    await prisma.user.create({
-      data: user,
-    });
+    await saveUser(user);
   }
 }
 

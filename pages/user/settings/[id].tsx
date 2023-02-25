@@ -6,10 +6,24 @@ import TabGroupBordered from "../../../components/TabGroupBordered";
 import EmailPreferenceSettings from "../../../components/UserSettingsTabs/EmailPreference";
 import ProfileSettings from "../../../components/UserSettingsTabs/Profile";
 import SMSPreferenceSettings from "../../../components/UserSettingsTabs/SMSPreference";
-import { profile, products } from "../../../utils/dummyData";
+import useSWR from "swr";
+import Loading from "../../../components/Loading";
+import { swrFetcher } from "../../../lib/swrFetcher";
+import { useSession } from "next-auth/react";
 
 const UserSettingsPage = () => {
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
+
+  const {
+    data: userData,
+    error,
+    isLoading,
+  } = useSWR(`http://localhost:3000/api/users/${userId}`, swrFetcher);
+
   const [activeTab, setActiveTab] = useState(0);
+
+  if (isLoading) return <Loading />;
 
   return (
     <ProtectedRoute>
@@ -27,7 +41,7 @@ const UserSettingsPage = () => {
               setActiveTab(index);
             }}
           >
-            {activeTab == 0 && <ProfileSettings profile={profile} />}
+            {activeTab == 0 && <ProfileSettings userData={userData} />}
             {activeTab == 1 && <SMSPreferenceSettings />}
             {activeTab == 2 && <EmailPreferenceSettings />}
           </TabGroupBordered>
