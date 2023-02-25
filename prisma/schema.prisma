@@ -17,12 +17,13 @@ generator jsonSchema {
 model User {
   userId              Int          @id @default(autoincrement())
   walletAddress       String       @unique
-  phoneNumber         String       @default("")
-  profilePic          String       @default("")
-  bannerPic           String       @default("")
-  displayName         String       @default("")
-  username            String       @default("")
+  phoneNumber         String?
+  profilePic          String?
+  bannerPic           String?
+  displayName         String?
+  username            String       @unique
   email               String       @unique
+  bio                 String?
   notificationBySMS   Boolean      @default(true)
   notificationByEmail Boolean      @default(true)
   createdCollections  Collection[] @relation(name: "createdCollections")
@@ -38,6 +39,7 @@ model User {
 
 model Post {
   postId    Int       @id @default(autoincrement())
+  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
@@ -171,6 +173,18 @@ enum CategoryType {
   SEASONAL_HOLIDAY
   SPORTS_FITNESS
   TRAVEL_OUTDOOR
+
+  NFT
+  FITNESS
+  FASHION
+  TRAVEL
+  HEALTH
+  PHOTOGRAPHY
+  LIFESTYLE
+  ENTERTAINMENT
+  ANIMALS
+  EDUCATION
+  FOOD
 }
 
 enum VisibilityType {

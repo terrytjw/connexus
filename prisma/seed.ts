@@ -5,18 +5,22 @@ import {
   PromotionType,
   VisibilityType,
   PublishType,
+  ChannelType,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 async function generateCommunity() {
-  await prisma.community.create({
-    data: {
-      name: "AliceCommunity",
-      description: "Alice's Community",
-      profilePic: "",
-      tags: [CategoryType.HOME_LIFESTYLE, CategoryType.FILM_MEDIA_ENTERTAINMENT],
-      maxMembers: 10,
+  const communities = [
+    {
+      name: "Valorant",
+      description: "Hi there!  Welcome to the Valo Community!",
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profilePic.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-bannerPic.png",
+      maxMembers: 67,
+      tags: [CategoryType.ENTERTAINMENT],
       creator: {
         connect: {
           userId: 1,
@@ -28,58 +32,97 @@ async function generateCommunity() {
         },
       },
     },
-  });
+    {
+      name: "Cosplay Kawaii",
+      description: "Hi there!  Welcome to the Cosplay Community!",
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profilePic.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-bannerPic.jpg",
+      maxMembers: 51,
+      tags: [CategoryType.ENTERTAINMENT],
+      creator: {
+        connect: {
+          userId: 2,
+        },
+      },
+    },
+    {
+      name: "Travley",
+      description: "Hi there!  Welcome to the Travley Community!",
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travley-profilePic.png",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travley-bannerPic.jpg",
+      maxMembers: 74,
+      tags: [CategoryType.TRAVEL],
+      creator: {
+        connect: {
+          userId: 3,
+        },
+      },
+      members: {
+        connect: [{ userId: 1 }, { userId: 2 }],
+      },
+    },
+  ];
 
-  await prisma.community.create({
-    data: {
-      name: "BobCommunity",
-      description: "Bob's Community",
-      profilePic: "",
-      tags: [CategoryType.HOME_LIFESTYLE],
-      maxMembers: 10,
-      creator: {
-        connect: {
-          userId: 2,
-        },
-      },
-      members: {
-        connect: {
-          userId: 1,
-        },
-      },
-    },
-  });
+  for (const community of communities) {
+    await prisma.community.create({
+      data: community,
+    });
+  }
 }
 
 async function generateChannel() {
-  await prisma.channel.create({
-    data: {
+  const channels = [
+    {
       name: "Home",
       community: {
         connect: {
           communityId: 1,
         },
       },
+      members: {
+        connect: { userId: 1 },
+      },
+      channelType: ChannelType.REGULAR,
     },
-  });
-
-  await prisma.channel.create({
-    data: {
+    {
       name: "Home",
       community: {
         connect: {
           communityId: 2,
         },
       },
+      channelType: ChannelType.REGULAR,
     },
-  });
+    {
+      name: "Home",
+      community: {
+        connect: {
+          communityId: 3,
+        },
+      },
+      channelType: ChannelType.REGULAR,
+    },
+  ];
+
+  for (const channel of channels) {
+    await prisma.channel.create({
+      data: channel,
+    });
+  }
 }
 
 async function generatePost() {
-  await prisma.post.create({
-    data: {
-      content: "https://www.prisma.io/nextjs",
-      media: ["A", "B"],
+  const posts = [
+    {
+      title: "New valorant map",
+      content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
+      media: [
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorantnewmap-media.jpg",
+      ],
       isPinned: false,
       creator: {
         connect: {
@@ -91,32 +134,59 @@ async function generatePost() {
           channelId: 1,
         },
       },
+      date: new Date("2023-02-22"),
     },
-  });
+    {
+      title: "Anime Fanart",
+      content: "I just drew this, what do yall think?",
+      media: [
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+      ],
+      isPinned: false,
+      channel: {
+        connect: {
+          channelId: 1,
+        },
+      },
+      creator: {
+        connect: {
+          userId: 1,
+        },
+      },
+      date: new Date("2023-02-23"),
+    },
+    {
+      title: "Travelling",
+      content: "Would love to experience living in a cabin during winter!",
+      media: [
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+      ],
+      isPinned: false,
+      channel: {
+        connect: {
+          channelId: 1,
+        },
+      },
+      creator: {
+        connect: {
+          userId: 1,
+        },
+      },
+      date: new Date("2023-02-24"),
+    },
+  ];
 
-  await prisma.post.create({
-    data: {
-      content: "https://twitter.com/prisma",
-      media: ["A", "B"],
-      isPinned: false,
-      channel: {
-        connect: {
-          channelId: 1,
-        },
-      },
-      creator: {
-        connect: {
-          userId: 1,
-        },
-      },
-    },
-  });
+  for (const post of posts) {
+    await prisma.post.create({
+      data: post,
+    });
+  }
 }
 
 async function generateComment() {
   await prisma.comment.create({
     data: {
-      content: "First",
+      content: "I'm gonna get that!",
       commenter: {
         connect: {
           userId: 1,
@@ -132,39 +202,51 @@ async function generateComment() {
 }
 
 async function generateUser() {
-  const alice = await prisma.user.upsert({
-    where: { email: "alice@prisma.io" },
-    update: {},
-    create: {
-      email: "alice@prisma.io",
-      username: "Alice",
-      walletAddress: "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BA5e5",
-      displayName: "Alice",
-      notificationBySMS: false,
-      notificationByEmail: false,
-      profilePic: "https://aliceinwonderland.fandom.com/wiki/Alice",
-      bannerPic: "https://aliceinwonderland.fandom.com/wiki/Alice",
-      phoneNumber: "8399712",
-    },
-  });
-
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@prisma.io" },
-    update: {},
-    create: {
-      email: "bob@prisma.io",
-      username: "Bob",
-      walletAddress: "0x95222290DD7278Aa3Ddd389Cc1E1d165CC4BAfe5",
-      displayName: "Bob",
-      notificationBySMS: false,
-      notificationByEmail: false,
+  const users = [
+    {
+      email: "jcarrott0@gmail.com",
+      username: "jcarrott0#123",
+      walletAddress: "0x50fa33ac31a6cb71c3ff6da8d38bd0a1a489e933",
+      displayName: "Josh Carrott",
       profilePic:
-        "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/josh-profilePic.jpg",
       bannerPic:
-        "https://en.wikipedia.org/wiki/Bob_the_Builder#/media/File:Bob_the_Builder_logo.svg",
-      phoneNumber: "8399712",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/josh-bannerPic.jpg",
+      phoneNumber: "+6591896606",
+      bio: "Can you swim in Jello?",
     },
-  });
+    {
+      email: "mmaru1@gmail.com",
+      username: "mmaru1#321",
+      walletAddress: "0xdc52e59d80b3bb31e071cb6564a2812d672f7c9e",
+      displayName: "Malanie Maru",
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/malanie-profilePic.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/malanie-bannerPic.jpg",
+      phoneNumber: "++6594745436",
+      bio: "I do full days of filming and I also schedule livestreams to create a stronger connection with my audience.",
+    },
+
+    {
+      email: "asauvan2@gmail.com",
+      username: "asauvan2#322",
+      walletAddress: "0xc45166980e7bf4921668777ca27ea15aef859001",
+      displayName: "Alene Sauvan",
+      profilePic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-profilePic.jpg",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
+      phoneNumber: "++6589212984",
+      bio: "I flim videos for 2 to 3 hours a day when the weather is good!",
+    },
+  ];
+
+  for (const user of users) {
+    await prisma.user.create({
+      data: user,
+    });
+  }
 }
 
 async function generateCollection() {
