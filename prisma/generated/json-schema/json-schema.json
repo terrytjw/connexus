@@ -11,31 +11,25 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "displayName": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "username": {
-          "type": "string",
-          "default": ""
-        },
-        "bio": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "email": {
           "type": "string"
+        },
+        "bio": {
+          "type": ["string", "null"]
         },
         "notificationBySMS": {
           "type": "boolean",
@@ -66,7 +60,7 @@
         "joinedChannels": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/Channel"
           }
         },
         "posts": {
@@ -163,28 +157,52 @@
           "type": "string"
         },
         "description": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "profilePic": {
-          "type": "string"
+          "type": ["string", "null"]
+        },
+        "bannerPic": {
+          "type": ["string", "null"]
         },
         "tags": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "enum": [
+            "AUTO_BOAT_AIR",
+            "BUSINESS_PROFESSIONAL",
+            "CHARITY_CAUSES",
+            "COMMUNITY_CULTURE",
+            "FAMILY_EDUCATION",
+            "FASHION_BEAUTY",
+            "FILM_MEDIA_ENTERTAINMENT",
+            "FOOD_DRINK",
+            "GOVERNMENT_POLITICS",
+            "HEALTH_WELLNESS",
+            "HOBBIES_SPECIAL_INTEREST",
+            "HOME_LIFESTYLE",
+            "PERFORMING_VISUAL_ARTS",
+            "RELIGION_SPIRITUALITY",
+            "SCHOOL_ACTIVITIES",
+            "SCIENCE_TECHNOLOGY",
+            "SEASONAL_HOLIDAY",
+            "SPORTS_FITNESS",
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
+          ]
         },
         "maxMembers": {
           "type": "integer",
           "default": 100
-        },
-        "communityType": {
-          "type": "string",
-          "default": "NFT",
-          "enum": [
-            "NFT",
-            "CRYPTO"
-          ]
         },
         "creator": {
           "$ref": "#/definitions/User"
@@ -212,22 +230,15 @@
         "name": {
           "type": "string"
         },
-        "description": {
-          "type": "string"
-        },
         "channelType": {
           "type": "string",
-          "default": "REGULAR",
-          "enum": [
-            "REGULAR",
-            "PREMIUM",
-            "PRIVATE"
-          ]
+          "default": "PREMIUM",
+          "enum": ["REGULAR", "PREMIUM", "PRIVATE"]
         },
         "members": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/User"
           }
         },
         "community": {
@@ -238,17 +249,6 @@
           "items": {
             "$ref": "#/definitions/Post"
           }
-        }
-      }
-    },
-    "UsersOnChannels": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "channel": {
-          "$ref": "#/definitions/Channel"
         }
       }
     },
@@ -299,8 +299,7 @@
           "type": "integer"
         },
         "eventName": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "category": {
           "type": "array",
@@ -323,7 +322,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "address": {
@@ -344,34 +354,24 @@
           }
         },
         "summary": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "visibilityType": {
           "type": "string",
-          "enum": [
-            "DRAFT",
-            "PUBLISHED"
-          ]
+          "enum": ["DRAFT", "PUBLISHED"]
         },
         "privacyType": {
           "type": "string",
-          "enum": [
-            "PUBLIC",
-            "PRIVATE"
-          ]
+          "enum": ["PUBLIC", "PRIVATE"]
         },
         "eventBannerPicture": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "eventImage": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "maxAttendee": {
           "type": "integer",
@@ -379,10 +379,7 @@
         },
         "publishType": {
           "type": "string",
-          "enum": [
-            "NOW",
-            "LATER"
-          ]
+          "enum": ["NOW", "LATER"]
         },
         "publishStartDate": {
           "type": "string",
@@ -418,7 +415,7 @@
           "type": "string"
         },
         "address2": {
-          "type": "string"
+          "type": ["string", "null"]
         },
         "postalCode": {
           "type": "string"
@@ -438,8 +435,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "totalTicketSupply": {
           "type": "integer",
@@ -462,8 +458,7 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": ["string", "null"]
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -489,15 +484,11 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "promotionType": {
           "type": "string",
-          "enum": [
-            "LIMITED",
-            "UNLIMITED"
-          ]
+          "enum": ["LIMITED", "UNLIMITED"]
         },
         "promotionValue": {
           "type": "number",
@@ -526,30 +517,24 @@
         "collectionId": {
           "type": "integer"
         },
-        "collectionName": {
+        "name": {
           "type": "string"
         },
         "description": {
-          "type": "string"
+          "type": ["string", "null"]
+        },
+        "fixedPrice": {
+          "type": "number"
         },
         "currency": {
           "type": "string",
           "default": "USD",
-          "enum": [
-            "USD",
-            "ETH",
-            "BTC",
-            "USDC"
-          ]
+          "enum": ["USD", "ETH", "BTC", "USDC"]
         },
         "collectionState": {
           "type": "string",
           "default": "CREATED",
-          "enum": [
-            "CREATED",
-            "ON_SALE",
-            "SOLD"
-          ]
+          "enum": ["CREATED", "ON_SALE", "SOLD"]
         },
         "merchandise": {
           "type": "array",
@@ -585,10 +570,7 @@
           "type": "string"
         },
         "media": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": ["string", "null"]
         },
         "description": {
           "type": "string",
@@ -631,9 +613,6 @@
     },
     "channel": {
       "$ref": "#/definitions/Channel"
-    },
-    "usersOnChannels": {
-      "$ref": "#/definitions/UsersOnChannels"
     },
     "comment": {
       "$ref": "#/definitions/Comment"
