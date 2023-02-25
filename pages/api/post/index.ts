@@ -72,6 +72,13 @@ export default async function handler(
             select: {
               userId: true
             }
+          },
+          creator: {
+            select: {
+              userId: true,
+              profilePic: true,
+              username: true
+            }
           }
         },
         orderBy: {
