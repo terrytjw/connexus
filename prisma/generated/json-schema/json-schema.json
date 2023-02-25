@@ -15,6 +15,10 @@
             "string",
             "null"
           ]
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
           "type": [
@@ -35,12 +39,16 @@
           ]
         },
         "username": {
+          "type": "string",
+          "default": ""
+        },
+        "email": {
           "type": [
             "string",
             "null"
           ]
         },
-        "email": {
+        "bio": {
           "type": [
             "string",
             "null"
@@ -113,6 +121,12 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "merchandise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Merchandise"
+          }
         }
       }
     },
@@ -121,6 +135,9 @@
       "properties": {
         "postId": {
           "type": "integer"
+        },
+        "title": {
+          "type": "string"
         },
         "content": {
           "type": "string"
@@ -169,16 +186,22 @@
           "type": "string"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "tags": {
           "type": "array",
@@ -201,7 +224,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "maxMembers": {
@@ -307,8 +341,7 @@
           "type": "integer"
         },
         "eventName": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "category": {
           "type": "array",
@@ -331,7 +364,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "address": {
@@ -352,12 +396,16 @@
           }
         },
         "summary": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "visibilityType": {
           "type": "string",
@@ -374,12 +422,16 @@
           ]
         },
         "eventBannerPicture": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "eventImage": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "maxAttendee": {
           "type": "integer",
@@ -401,6 +453,15 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "ticketURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scAddress": {
+          "type": "string"
         }
       }
     },
@@ -417,7 +478,10 @@
           "type": "string"
         },
         "address2": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "postalCode": {
           "type": "string"
@@ -437,8 +501,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "totalTicketSupply": {
           "type": "integer",
@@ -461,8 +524,10 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -488,8 +553,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "promotionType": {
           "type": "string",
@@ -525,11 +589,14 @@
         "collectionId": {
           "type": "integer"
         },
-        "description": {
+        "collectionName": {
           "type": "string"
         },
-        "fixedPrice": {
-          "type": "number"
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "currency": {
           "type": "string",
@@ -550,10 +617,23 @@
             "SOLD"
           ]
         },
-        "collections": {
+        "merchandise": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CollectionMedia"
+            "$ref": "#/definitions/Merchandise"
+          }
+        },
+        "fixedPrice": {
+          "type": "number",
+          "default": 0
+        },
+        "scAddress": {
+          "type": "string"
+        },
+        "merchURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "creator": {
@@ -561,23 +641,45 @@
         }
       }
     },
-    "CollectionMedia": {
+    "Merchandise": {
       "type": "object",
       "properties": {
-        "collectionMediaId": {
+        "merchId": {
           "type": "integer"
+        },
+        "name": {
+          "type": "string"
         },
         "media": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "numOfMerch": {
-          "type": "integer"
+        "price": {
+          "type": "number",
+          "default": 0
+        },
+        "totalMerchSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currMerchSupply": {
+          "type": "integer",
+          "default": 0
         },
         "collection": {
           "$ref": "#/definitions/Collection"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     }
@@ -614,8 +716,8 @@
     "collection": {
       "$ref": "#/definitions/Collection"
     },
-    "collectionMedia": {
-      "$ref": "#/definitions/CollectionMedia"
+    "merchandise": {
+      "$ref": "#/definitions/Merchandise"
     }
   }
 }

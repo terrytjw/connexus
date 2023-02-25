@@ -41,7 +41,7 @@ const Loading = ({ color = CONNEXUS_BLUE, className }: LoadingProps) => {
       </div>
       <div className="mt-4">
         <Image
-          src={"/images/logo.png"}
+          src={"/svgs/desktop-connexus-logo.svg"}
           alt="Connexus Logo"
           width={150}
           height={150}
