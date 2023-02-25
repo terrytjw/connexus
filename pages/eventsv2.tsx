@@ -8,8 +8,8 @@ import {
 import useSWR from "swr";
 import axios from "axios";
 import React from "react";
-import { smartContract } from "./const";
 import { ethers } from "ethers";
+import { smartContract } from "../lib/constants";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{

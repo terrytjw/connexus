@@ -2,8 +2,8 @@ import { Prisma, Merchandise, CollectionState, Currency } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";
 import React from "react";
-import { smartContract } from "./const";
 import { ethers } from "ethers";
+import { smartContract } from "../lib/constants";
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
