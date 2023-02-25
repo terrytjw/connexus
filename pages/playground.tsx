@@ -18,7 +18,7 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { communities, events, products, profile } from "../utils/dummyData";
+import { collections, communities, events, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
@@ -167,8 +167,6 @@ const PlaygroundPage = () => {
           </div>
           <div className="divider" />
 
-          <div className="divider" />
-
           {/* Collection Grid */}
           <section className="p-8">
             <div className="flex justify-center">
@@ -177,15 +175,15 @@ const PlaygroundPage = () => {
               </h1>
             </div>
 
-            <CollectionGrid data={products} />
+            <CollectionGrid data={collections} />
           </section>
           <div className="divider" />
 
-          {/* Collection Grid */}
+          {/* Events Grid */}
           <section className="p-8">
             <div className="flex justify-center">
               <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
-                Collection Grid
+                Events Grid
               </h1>
             </div>
 
