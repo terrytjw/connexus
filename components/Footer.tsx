@@ -17,7 +17,7 @@ const Footer = () => {
           className="block transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
         >
           <Image
-            src="/images/logo.png"
+            src="/svgs/desktop-connexus-logo.svg"
             alt="Connexus logo"
             width={160}
             height={50}
