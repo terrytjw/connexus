@@ -11,7 +11,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { useRouter } from "next/router";
 import Loading from "./Loading";
 
-const Home = () => {
+const Home = ({ isAuthModalOpen }: any) => {
   const router = useRouter();
   const [provider, setProvider] = useState<any>();
   const [account, setAccount] = useState<string>();
@@ -55,14 +55,22 @@ const Home = () => {
       setAccount(accounts[0]);
 
       if (status === "unauthenticated") {
-        const retrievedUserInfo = await sdk.getUserInfo();
+        const retrievedUserInfo = await socialLoginSDK.getUserInfo();
+
         const userInfo = {
           name: retrievedUserInfo?.name,
           email: retrievedUserInfo?.email,
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
         };
-        signIn("credentials", { callbackUrl: "/communities", ...userInfo });
+        const response = await signIn("custom-login", {
+          redirect: false,
+          callbackUrl: "/communities",
+          ...userInfo,
+        });
+
+        socialLoginSDK.hideWallet();
+        if (response && response.url) router.push(response.url);
       }
 
       return;
@@ -82,7 +90,17 @@ const Home = () => {
 
   useEffect(() => {
     connectWeb3();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // if (isAuthModalOpen) {
+    //   connectWeb3();
+    // }
+    // // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // connectWeb3();
+    // console.log(isAuthModalOpen);
+    // console.log("hehehe");
+    // return () => {
+    //   socialLoginSDK?.hideWallet();
+    // };
   }, []);
 
   // if wallet already connected close widget
@@ -90,6 +108,10 @@ const Home = () => {
     if (socialLoginSDK && socialLoginSDK.provider) {
       socialLoginSDK.hideWallet();
     }
+
+    return () => {
+      socialLoginSDK?.hideWallet();
+    };
   }, [account, socialLoginSDK]);
 
   // after metamask login -> get provider event
@@ -104,6 +126,7 @@ const Home = () => {
     }, 1000);
     return () => {
       clearInterval(interval);
+      socialLoginSDK?.hideWallet();
     };
   }, [account, connectWeb3, socialLoginSDK]);
 
