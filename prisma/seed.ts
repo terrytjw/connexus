@@ -6,6 +6,8 @@ import {
   VisibilityType,
   PublishType,
   ChannelType,
+  Currency,
+  CollectionState,
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -184,8 +186,8 @@ async function generatePost() {
 }
 
 async function generateComment() {
-  await prisma.comment.create({
-    data: {
+  const comments = [
+    {
       content: "I'm gonna get that!",
       commenter: {
         connect: {
@@ -197,8 +199,43 @@ async function generateComment() {
           postId: 2,
         },
       },
+      date: new Date("2023-02-28"),
     },
-  });
+    {
+      content: "So cute!",
+      commenter: {
+        connect: {
+          userId: 1,
+        },
+      },
+      post: {
+        connect: {
+          postId: 2,
+        },
+      },
+      date: new Date("2023-03-1"),
+    },
+    {
+      content: "Ahhh hot cocoa in that weather",
+      commenter: {
+        connect: {
+          userId: 1,
+        },
+      },
+      post: {
+        connect: {
+          postId: 2,
+        },
+      },
+      date: new Date("2023-03-2"),
+    },
+  ];
+
+  for (const comment of comments) {
+    await prisma.comment.create({
+      data: comment,
+    });
+  }
 }
 
 async function generateUser() {
@@ -250,19 +287,19 @@ async function generateUser() {
 }
 
 async function generateCollection() {
-  const collection1 = await prisma.collection.upsert({
-    where: { description: "very cool collection" },
-    update: {},
-    create: {
-      description: "very cool collection",
+  const collections = [
+    {
+      name: "Valo Skin Collection",
+      description: "This is Valo Skin Collection.",
       fixedPrice: 20.0,
-      currency: "USD",
-      collectionState: "CREATED",
+      currency: Currency.USD,
+      collectionState: CollectionState.ON_SALE,
       collections: {
         create: {
-          media: "....com",
-          description: "cool items",
-          numOfMerch: 200,
+          media:
+            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
+          description: "Sovereign Knife Skin",
+          numOfMerch: 100,
         },
       },
       creator: {
@@ -271,260 +308,238 @@ async function generateCollection() {
         },
       },
     },
-  });
+    {
+      name: "Cosplay Collection",
+      description: "This is Cosplay Collection.",
+      fixedPrice: 20.0,
+      currency: Currency.USD,
+      collectionState: CollectionState.ON_SALE,
+      collections: {
+        create: {
+          media:
+            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.png",
+          description: "Hotel Transylvania Cosplay",
+          numOfMerch: 100,
+        },
+      },
+      creator: {
+        connect: {
+          userId: 1,
+        },
+      },
+    },
+    {
+      name: "Travel Picture Collection",
+      description: "This is Travel Picture Collection.",
+      fixedPrice: 20.0,
+      currency: Currency.USD,
+      collectionState: CollectionState.SOLD,
+      collections: {
+        create: {
+          media:
+            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.png",
+          description: "Exploring Monument Valley",
+          numOfMerch: 100,
+        },
+      },
+      creator: {
+        connect: {
+          userId: 1,
+        },
+      },
+    },
+  ];
+
+  for (const collection of collections) {
+    await prisma.collection.create({
+      data: collection,
+    });
+  }
 }
 async function generateEvent() {
-  await prisma.event.create({
-    data: {
-      eventName: "Yoga Class",
-      category: CategoryType.HEALTH_WELLNESS,
+  const events = [
+    {
+      eventName: "Live Valorant Session with Josh",
+      category: CategoryType.ENTERTAINMENT,
       address: {
         create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "San Francisco",
-          postalCode: "31231",
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          locationName: "Expo Hall 1",
+          postalCode: "486065",
         },
       },
-      startDate: new Date(),
-      endDate: new Date(),
+      startDate: new Date("2023-03-22"),
+      endDate: new Date("2023-03-25"),
       images: [],
       summary:
-        "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
-      description: "This is a yoga class",
-      visibilityType: VisibilityType.DRAFT,
+        "This is a live valorant seesion with Josh. He will be playing with his fans and answering questions.",
+      description:
+        "This is a live valorant seesion with Josh. He will be playing with his fans and answering questions.",
+      visibilityType: VisibilityType.PUBLISHED,
       privacyType: PrivacyType.PUBLIC,
       tickets: {
         create: [
           {
             name: "General Admission",
-            totalTicketSupply: 100,
+            totalTicketSupply: 45,
             price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            startDate: new Date("2023-02-22"),
+            endDate: new Date("2023-02-25"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: { userId: 1 } },
+            currentTicketSupply: 1,
           },
           {
             name: "VIP Pass",
-            totalTicketSupply: 100,
+            totalTicketSupply: 50,
             price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
+            startDate: new Date("2023-02-22"),
+            endDate: new Date("2023-02-25"),
             description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 10,
+            startDate: new Date("2023-02-22"),
+            endDate: new Date("2023-02-25"),
+            description: "This is a VVIP Pass",
           },
         ],
       },
       publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-02-22"),
+      eventBannerPicture:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
+      eventImage:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
     },
-  });
+    {
+      eventName: "Malanie Cosplaying with You",
+      category: CategoryType.ENTERTAINMENT,
+      address: {
+        create: {
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          locationName: "Expo Hall 2",
+          postalCode: "486065",
+        },
+      },
+      startDate: new Date("2023-03-23"),
+      endDate: new Date("2023-03-26"),
+      images: [],
+      summary:
+        "This is a cosplaying event with Malanie. She will be cosplaying as her favourite character and taking photos with her fans.",
+      description:
+        "This is a cosplaying event with Malanie. She will be cosplaying as her favourite character and taking photos with her fans.",
+      visibilityType: VisibilityType.PUBLISHED,
+      privacyType: PrivacyType.PUBLIC,
+      tickets: {
+        create: [
+          {
+            name: "General Admission",
+            totalTicketSupply: 45,
+            price: 10,
+            startDate: new Date("2023-01-23"),
+            endDate: new Date("2023-02-26"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+          },
+          {
+            name: "VIP Pass",
+            totalTicketSupply: 50,
+            price: 100,
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VIP Pass",
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 1000,
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VVIP Pass",
+          },
+        ],
+      },
+      publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-01-22"),
+      eventBannerPicture:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
+      eventImage:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
+    },
+    {
+      eventName:
+        "Planning to travel soon? Learn more about Travely that will help solve your itinerary planning troubles and find the best recommendations.",
+      category: CategoryType.TRAVEL,
+      address: {
+        create: {
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          locationName: "Expo Hall 3",
+          postalCode: "486065",
+        },
+      },
+      startDate: new Date("2023-03-24"),
+      endDate: new Date("2023-03-27"),
+      images: [],
+      summary:
+        "This is a travel fair with Travely. They will be showcasing their new app and taking photos with their fans.",
+      description:
+        "This is a travel fair with Travely. They will be showcasing their new app and taking photos with their fans.",
+      visibilityType: VisibilityType.PUBLISHED,
+      privacyType: PrivacyType.PUBLIC,
+      tickets: {
+        create: [
+          {
+            name: "General Admission",
+            totalTicketSupply: 45,
+            price: 10,
+            startDate: new Date("2023-01-24"),
+            endDate: new Date("2023-02-26"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+          },
+          {
+            name: "VIP Pass",
+            totalTicketSupply: 50,
+            price: 100,
+            startDate: new Date("2023-01-24"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VIP Pass",
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 1000,
+            startDate: new Date("2023-01-24"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VVIP Pass",
+          },
+        ],
+      },
+      publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-02-22"),
+      eventBannerPicture:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
+      eventImage:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
+    },
+  ];
 
-  await prisma.event.create({
-    data: {
-      eventName: "Spin Class",
-      category: CategoryType.HEALTH_WELLNESS,
-      address: {
-        create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "New York",
-          postalCode: "31231",
-        },
-      },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary:
-        "A spin class is a high-intensity, group fitness class that typically takes place on stationary bicycles. Participants follow a guided workout that simulates outdoor cycling and can include intervals of high-intensity sprints and hill climbs, as well as periods of recovery. ",
-      description: "This is a spin class",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PUBLIC,
-      tickets: {
-        create: [
-          {
-            name: "General Admission",
-            totalTicketSupply: 100,
-            price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
-          },
-          {
-            name: "VIP Pass",
-            totalTicketSupply: 100,
-            price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
-          },
-        ],
-      },
-      publishType: PublishType.NOW,
-    },
-  });
-
-  await prisma.event.create({
-    data: {
-      eventName: "Boxing Class",
-      category: CategoryType.HEALTH_WELLNESS,
-      address: {
-        create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "Tenderloin",
-          postalCode: "31231",
-        },
-      },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary:
-        "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
-      description: "This is a yoga class",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PUBLIC,
-      tickets: {
-        create: [
-          {
-            name: "General Admission",
-            totalTicketSupply: 100,
-            price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
-          },
-          {
-            name: "VIP Pass",
-            totalTicketSupply: 100,
-            price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
-          },
-        ],
-      },
-      publishType: PublishType.NOW,
-    },
-  });
+  for (const event of events) {
+    await prisma.event.create({
+      data: event,
+    });
+  }
 }
 
 async function main() {

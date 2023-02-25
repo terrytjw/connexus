@@ -55,9 +55,9 @@ model Post {
 model Community {
   communityId Int            @id @default(autoincrement())
   name        String
-  description String         @default("")
-  profilePic  String         @default("")
-  bannerPic   String         @default("")
+  description String?
+  profilePic  String?
+  bannerPic   String?
   tags        CategoryType[]
   maxMembers  Int            @default(100)
   creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
@@ -93,19 +93,19 @@ model Comment {
 
 model Event {
   eventId            Int            @id @default(autoincrement())
-  eventName          String         @default("")
+  eventName          String
   category           CategoryType[]
   address            Address        @relation(fields: [addressId], references: [addressId])
   addressId          Int
   startDate          DateTime       @default(now())
   endDate            DateTime       @default(now())
   images             String[]
-  summary            String         @default("")
-  description        String         @default("")
+  summary            String?
+  description        String?
   visibilityType     VisibilityType
   privacyType        PrivacyType
-  eventBannerPicture String         @default("")
-  eventImage         String         @default("")
+  eventBannerPicture String?
+  eventImage         String?
   maxAttendee        Int            @default(0)
   publishType        PublishType
   publishStartDate   DateTime       @default(now())
@@ -121,20 +121,20 @@ model Address {
   addressId    Int     @id @default(autoincrement())
   locationName String
   address1     String
-  address2     String
+  address2     String?
   postalCode   String
   Event        Event[]
 }
 
 model Ticket {
   ticketId            Int         @id @default(autoincrement())
-  name                String      @default("")
+  name                String
   totalTicketSupply   Int         @default(0)
   currentTicketSupply Int         @default(0)
   price               Float       @default(0)
   startDate           DateTime    @default(now())
   endDate             DateTime    @default(now())
-  description         String      @default("")
+  description         String?
   event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
   promotion           Promotion[]
@@ -143,7 +143,7 @@ model Ticket {
 
 model Promotion {
   promotionId    Int           @id @default(autoincrement())
-  name           String        @default("")
+  name           String
   promotionType  PromotionType
   promotionValue Float         @default(0)
   quantity       Int           @default(0)
@@ -210,7 +210,8 @@ enum PromotionType {
 
 model Collection {
   collectionId    Int               @id @default(autoincrement())
-  description     String            @unique
+  name            String
+  description     String?
   fixedPrice      Float
   currency        Currency          @default(USD)
   collectionState CollectionState   @default(CREATED)
