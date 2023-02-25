@@ -1,9 +1,11 @@
+import { Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient, User, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true, merchandise: true } }>;
 
 /**
  * @swagger
@@ -71,7 +73,7 @@ export default async function handler(
       await handleGET(userId);
       break;
     case "POST":
-      const user = JSON.parse(JSON.stringify(req.body)) as User;
+      const user = JSON.parse(JSON.stringify(req.body)) as UserWithTicketsandMerch;
       await handlePOST(userId, user);
       break;
     case "DELETE":
@@ -88,6 +90,7 @@ export default async function handler(
         where: {
           userId: userId,
         },
+        include: { tickets: true , merchandise : true},
       });
 
       if (!user) res.status(200).json({});
@@ -98,14 +101,31 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(userId: number, user: User) {
+  async function handlePOST(userId: number, userWithTicketsandMerch: UserWithTicketsandMerch) {
     try {
+      const { tickets, merchandise, walletAddress, email, ...userInfo } = userWithTicketsandMerch;
+      const ticketIdArray = tickets.map((ticket) => {
+        const { ticketId } = ticket;
+        return { ticketId: ticketId };
+      });
+
+      const merchIdArray = merchandise.map((merch) => {
+        const { merchId } = merch;
+        return { merchId: merchId };
+      });
+
       const response = await prisma.user.update({
         where: {
           userId: userId,
         },
-        data: { ...user, userId: undefined },
+        data: {
+          ...userInfo,
+          userId: undefined,
+          tickets: { connect: [...ticketIdArray] },
+          merchandise: { connect: [...merchIdArray] },
+        },
       });
+
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

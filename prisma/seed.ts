@@ -289,17 +289,19 @@ async function generateUser() {
 async function generateCollection() {
   const collections = [
     {
-      name: "Valo Skin Collection",
+      collectionName: "Valo Skin Collection",
       description: "This is Valo Skin Collection.",
       fixedPrice: 20.0,
       currency: Currency.USD,
       collectionState: CollectionState.ON_SALE,
-      collections: {
+      merchandise: {
         create: {
+          name: "Sovereign Knife Skin",
           media:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
           description: "Sovereign Knife Skin",
-          numOfMerch: 100,
+          totalMerchSupply: 100,
+          price: 10,
         },
       },
       creator: {
@@ -307,19 +309,22 @@ async function generateCollection() {
           userId: 1,
         },
       },
+      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
     {
-      name: "Cosplay Collection",
+      collectionName: "Cosplay Collection",
       description: "This is Cosplay Collection.",
       fixedPrice: 20.0,
       currency: Currency.USD,
       collectionState: CollectionState.ON_SALE,
-      collections: {
+      merchandise: {
         create: {
+          name: "Hotel Transylvania Cosplay",
           media:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.png",
           description: "Hotel Transylvania Cosplay",
-          numOfMerch: 100,
+          totalMerchSupply: 100,
+          price: 10,
         },
       },
       creator: {
@@ -327,19 +332,22 @@ async function generateCollection() {
           userId: 1,
         },
       },
+      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
     {
-      name: "Travel Picture Collection",
+      collectionName: "Travel Picture Collection",
       description: "This is Travel Picture Collection.",
       fixedPrice: 20.0,
       currency: Currency.USD,
       collectionState: CollectionState.SOLD,
-      collections: {
+      merchandise: {
         create: {
+          name: "Exploring Monument Valley",
           media:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.png",
-          description: "Exploring Monument Valley",
-          numOfMerch: 100,
+          description: "cool items",
+          totalMerchSupply: 100,
+          price: 10,
         },
       },
       creator: {
@@ -347,6 +355,7 @@ async function generateCollection() {
           userId: 1,
         },
       },
+      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
   ];
 
@@ -415,6 +424,7 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
       eventImage:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
+      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
     {
       eventName: "Malanie Cosplaying with You",
@@ -473,6 +483,7 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
       eventImage:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
+      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
     {
       eventName:
@@ -532,6 +543,7 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
       eventImage:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
+      scAddress: "0xax",
     },
   ];
 

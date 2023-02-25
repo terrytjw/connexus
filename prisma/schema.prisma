@@ -15,26 +15,27 @@ generator jsonSchema {
 }
 
 model User {
-  userId              Int          @id @default(autoincrement())
-  walletAddress       String       @unique
+  userId              Int           @id @default(autoincrement())
+  walletAddress       String        @unique
   phoneNumber         String?
   profilePic          String?
   bannerPic           String?
   displayName         String?
-  username            String       @unique
-  email               String       @unique
+  username            String        @unique
+  email               String        @unique
   bio                 String?
-  notificationBySMS   Boolean      @default(true)
-  notificationByEmail Boolean      @default(true)
-  createdCollections  Collection[] @relation(name: "createdCollections")
-  createdCommunities  Community[]  @relation(name: "createdCommunities")
-  joinedCommunities   Community[]  @relation(name: "joinedCommunities")
+  notificationBySMS   Boolean       @default(true)
+  notificationByEmail Boolean       @default(true)
+  createdCollections  Collection[]  @relation(name: "createdCollections")
+  createdCommunities  Community[]   @relation(name: "createdCommunities")
+  joinedCommunities   Community[]   @relation(name: "joinedCommunities")
   joinedChannels      Channel[]
-  posts               Post[]       @relation(name: "creator")
-  likedPosts          Post[]       @relation(name: "likedPosts")
-  comments            Comment[]    @relation(name: "commenter")
-  likedComments       Comment[]    @relation(name: "likedComments")
+  posts               Post[]        @relation(name: "creator")
+  likedPosts          Post[]        @relation(name: "likedPosts")
+  comments            Comment[]     @relation(name: "commenter")
+  likedComments       Comment[]     @relation(name: "likedComments")
   tickets             Ticket[]
+  merchandise         Merchandise[]
 }
 
 model Post {
@@ -110,6 +111,8 @@ model Event {
   publishType        PublishType
   publishStartDate   DateTime       @default(now())
   tickets            Ticket[]
+  ticketURIs         String[]
+  scAddress          String
 }
 
 enum PublishType {
@@ -209,14 +212,16 @@ enum PromotionType {
 }
 
 model Collection {
-  collectionId    Int               @id @default(autoincrement())
-  name            String
+  collectionId    Int             @id @default(autoincrement())
+  collectionName  String          @unique
   description     String?
-  fixedPrice      Float
-  currency        Currency          @default(USD)
-  collectionState CollectionState   @default(CREATED)
-  collections     CollectionMedia[]
-  creator         User              @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  currency        Currency        @default(USD)
+  collectionState CollectionState @default(CREATED)
+  merchandise     Merchandise[]
+  fixedPrice      Float           @default(0)
+  scAddress       String
+  merchURIs       String[]
+  creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
 }
 
@@ -233,11 +238,15 @@ enum Currency {
   USDC
 }
 
-model CollectionMedia {
-  collectionMediaId Int        @id @default(autoincrement())
-  media             String
-  description       String
-  numOfMerch        Int
-  collection        Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
-  collectionId      Int
+model Merchandise {
+  merchId          Int        @id @default(autoincrement())
+  name             String
+  media            String?
+  description      String     @default("")
+  price            Float      @default(0)
+  totalMerchSupply Int        @default(0)
+  currMerchSupply  Int        @default(0)
+  collection       Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
+  collectionId     Int
+  users            User[]
 }

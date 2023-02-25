@@ -107,6 +107,12 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "merchandise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Merchandise"
+          }
         }
       }
     },
@@ -433,6 +439,15 @@
           "items": {
             "$ref": "#/definitions/Ticket"
           }
+        },
+        "ticketURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "scAddress": {
+          "type": "string"
         }
       }
     },
@@ -560,7 +575,7 @@
         "collectionId": {
           "type": "integer"
         },
-        "name": {
+        "collectionName": {
           "type": "string"
         },
         "description": {
@@ -568,9 +583,6 @@
             "string",
             "null"
           ]
-        },
-        "fixedPrice": {
-          "type": "number"
         },
         "currency": {
           "type": "string",
@@ -591,10 +603,23 @@
             "SOLD"
           ]
         },
-        "collections": {
+        "merchandise": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CollectionMedia"
+            "$ref": "#/definitions/Merchandise"
+          }
+        },
+        "fixedPrice": {
+          "type": "number",
+          "default": 0
+        },
+        "scAddress": {
+          "type": "string"
+        },
+        "merchURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "creator": {
@@ -602,23 +627,45 @@
         }
       }
     },
-    "CollectionMedia": {
+    "Merchandise": {
       "type": "object",
       "properties": {
-        "collectionMediaId": {
+        "merchId": {
           "type": "integer"
+        },
+        "name": {
+          "type": "string"
         },
         "media": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "numOfMerch": {
-          "type": "integer"
+        "price": {
+          "type": "number",
+          "default": 0
+        },
+        "totalMerchSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currMerchSupply": {
+          "type": "integer",
+          "default": 0
         },
         "collection": {
           "$ref": "#/definitions/Collection"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     }
@@ -655,8 +702,8 @@
     "collection": {
       "$ref": "#/definitions/Collection"
     },
-    "collectionMedia": {
-      "$ref": "#/definitions/CollectionMedia"
+    "merchandise": {
+      "$ref": "#/definitions/Merchandise"
     }
   }
 }

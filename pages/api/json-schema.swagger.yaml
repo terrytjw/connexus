@@ -10,13 +10,200 @@ info:
 paths: {}
 components:
   schemas:
+    User:
+      properties:
+        userId:
+          type: integer
+        walletAddress:
+          type: string
+        phoneNumber:
+          type: string
+        profilePic:
+          type: string
+        bannerPic:
+          type: string
+        displayName:
+          type: string
+        username:
+          type: string
+        bio:
+          type: string
+        email:
+          type: string
+        notificationBySMS:
+          default: 'true'
+          type: boolean
+        notificationByEmail:
+          default: 'true'
+          type: boolean
+        createdCollections:
+          items:
+            $ref: '#/components/schemas/Collection'
+          type: array
+        createdCommunities:
+          items:
+            $ref: '#/components/schemas/Community'
+          type: array
+        joinedCommunities:
+          items:
+            $ref: '#/components/schemas/Community'
+          type: array
+        joinedChannels:
+          items:
+            $ref: '#/components/schemas/UsersOnChannels'
+          type: array
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+        likedPosts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+        comments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+        likedComments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+        tickets:
+          items:
+            $ref: '#/components/schemas/Ticket'
+          type: array
+        merchandise:
+          items:
+            $ref: '#/components/schemas/Merchandise'
+          type: array
+      type: object
+    Post:
+      properties:
+        postId:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        date:
+          type: string
+        media:
+          items:
+            type: string
+          type: array
+        isPinned:
+          type: boolean
+        creator:
+          $ref: '#/components/schemas/User'
+        channel:
+          $ref: '#/components/schemas/Channel'
+        likes:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        comments:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+      type: object
+    Community:
+      properties:
+        communityId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        profilePic:
+          type: string
+        tags:
+          items:
+            type: string
+          type: array
+        maxMembers:
+          default: '100'
+          type: integer
+        communityType:
+          enum:
+            - NFT
+            - CRYPTO
+          default: NFT
+          type: string
+        creator:
+          $ref: '#/components/schemas/User'
+        members:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        channels:
+          items:
+            $ref: '#/components/schemas/Channel'
+          type: array
+      type: object
+    Channel:
+      properties:
+        channelId:
+          type: integer
+        name:
+          type: string
+        description:
+          type: string
+        channelType:
+          enum:
+            - REGULAR
+            - PREMIUM
+            - PRIVATE
+          default: REGULAR
+          type: string
+        members:
+          items:
+            $ref: '#/components/schemas/UsersOnChannels'
+          type: array
+        community:
+          $ref: '#/components/schemas/Community'
+        posts:
+          items:
+            $ref: '#/components/schemas/Post'
+          type: array
+      type: object
+    UsersOnChannels:
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        channel:
+          $ref: '#/components/schemas/Channel'
+      type: object
+    Comment:
+      properties:
+        content:
+          type: string
+        date:
+          type: string
+        post:
+          $ref: '#/components/schemas/Post'
+        commenter:
+          $ref: '#/components/schemas/User'
+        likes:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
+        originalComment:
+          anyOf:
+            - $ref: '#/components/schemas/Comment'
+            - nullable: true
+        replies:
+          items:
+            $ref: '#/components/schemas/Comment'
+          type: array
+      type: object
     Event:
       properties:
         eventId:
           type: integer
-        title:
+        eventName:
           type: string
         category:
+          items: {}
           enum:
             - AUTO_BOAT_AIR
             - BUSINESS_PROFESSIONAL
@@ -37,14 +224,9 @@ components:
             - SEASONAL_HOLIDAY
             - SPORTS_FITNESS
             - TRAVEL_OUTDOOR
-          type: string
-        location:
-          type: string
-        eventDurationType:
-          enum:
-            - SINGLE
-            - RECURRING
-          type: string
+          type: array
+        address:
+          $ref: '#/components/schemas/Address'
         startDate:
           type: string
         endDate:
@@ -67,9 +249,45 @@ components:
             - PUBLIC
             - PRIVATE
           type: string
+        eventBannerPicture:
+          type: string
+        eventImage:
+          type: string
+        maxAttendee:
+          type: integer
+        publishType:
+          enum:
+            - NOW
+            - LATER
+          type: string
+        publishStartDate:
+          type: string
         tickets:
           items:
             $ref: '#/components/schemas/Ticket'
+          type: array
+        ticketURIs:
+          items:
+            type: string
+          type: array
+        scAddress:
+          type: string
+      type: object
+    Address:
+      properties:
+        addressId:
+          type: integer
+        locationName:
+          type: string
+        address1:
+          type: string
+        address2:
+          type: string
+        postalCode:
+          type: string
+        Event:
+          items:
+            $ref: '#/components/schemas/Event'
           type: array
       type: object
     Ticket:
@@ -78,7 +296,9 @@ components:
           type: integer
         name:
           type: string
-        quantity:
+        totalTicketSupply:
+          type: integer
+        currentTicketSupply:
           type: integer
         price:
           type: number
@@ -93,6 +313,10 @@ components:
         promotion:
           items:
             $ref: '#/components/schemas/Promotion'
+          type: array
+        users:
+          items:
+            $ref: '#/components/schemas/User'
           type: array
       type: object
     Promotion:
@@ -117,43 +341,14 @@ components:
         ticket:
           $ref: '#/components/schemas/Ticket'
       type: object
-    User:
-      properties:
-        userId:
-          type: integer
-        email:
-          type: string
-        name:
-          type: string
-        username:
-          type: string
-        walletAddress:
-          type: string
-        profilePic:
-          type: string
-        bannerPic:
-          type: string
-        displayName:
-          type: string
-        notificationBySMS:
-          type: boolean
-        notificationByEmail:
-          type: boolean
-        twitterURL:
-          type: string
-        posts:
-          items:
-            $ref: '#/components/schemas/Post'
-          type: array
-      type: object
     Collection:
       properties:
         collectionId:
           type: integer
+        collectionName:
+          type: string
         description:
           type: string
-        fixedPrice:
-          type: number
         currency:
           enum:
             - USD
@@ -169,34 +364,41 @@ components:
             - SOLD
           default: CREATED
           type: string
-        collections:
+        merchandise:
           items:
-            $ref: '#/components/schemas/CollectionMedia'
+            $ref: '#/components/schemas/Merchandise'
           type: array
+        fixedPrice:
+          type: number
+        scAddress:
+          type: string
+        merchURIs:
+          items:
+            type: string
+          type: array
+        creator:
+          $ref: '#/components/schemas/User'
       type: object
-    CollectionMedia:
+    Merchandise:
       properties:
-        collectionMediaId:
+        merchId:
           type: integer
+        name:
+          type: string
         media:
           type: string
         description:
           type: string
-        numOfMerch:
+        price:
+          type: number
+        totalMerchSupply:
+          type: integer
+        currMerchSupply:
           type: integer
         collection:
           $ref: '#/components/schemas/Collection'
-      type: object
-    Post:
-      properties:
-        postId:
-          type: integer
-        title:
-          type: string
-        content:
-          type: string
-        published:
-          type: boolean
-        user:
-          $ref: '#/components/schemas/User'
+        users:
+          items:
+            $ref: '#/components/schemas/User'
+          type: array
       type: object
