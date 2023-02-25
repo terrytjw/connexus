@@ -25,12 +25,12 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
   };
   const { handleSubmit, setValue, control, watch } = useForm<EditProfileForm>({
     defaultValues: {
-      displayName: userData.displayName,
-      username: userData.username,
-      bio: userData.bio,
+      displayName: userData.displayName ?? "",
+      username: userData.username ?? "",
+      bio: userData.bio ?? "",
       email: userData.email,
-      bannerPic: userData.bannerPic,
-      profilePic: userData.profilePic,
+      bannerPic: userData.bannerPic ?? "",
+      profilePic: userData.profilePic ?? "",
     },
   });
 
