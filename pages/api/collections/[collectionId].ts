@@ -6,7 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
-type CollectionwithMerch = Prisma.EventGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
 
 /**
  * @swagger
@@ -91,6 +91,7 @@ export default async function handler(
         where: {
           collectionId: collectionId,
         },
+        include: { merchandise: true },
       });
 
       if (!collection) res.status(200).json({});
@@ -101,13 +102,18 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(collectionId: number, collection: Collection) {
+  async function handlePOST(collectionId: number, collectionwithMerch: Collection) {
     try {
+      
+      console.log("collectionUpdate")
+
+      console.log(collectionwithMerch); 
+      console.log(collectionId); 
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,
         },
-        data: { ...collection, collectionId: undefined },
+        data: { ...collectionwithMerch, collectionId: undefined },
       });
       res.status(200).json(response);
     } catch (error) {

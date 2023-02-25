@@ -8,7 +8,7 @@ type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true,
 
 /**
  * @swagger
- * /api/merchandises/{merchId}:
+ * /api/merch/{merchId}:
  *   get:
  *     description: Returns a single Merchandise object
  *     parameters:

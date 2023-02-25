@@ -173,14 +173,17 @@ async function generateUser() {
 
 async function generateCollection() {
   const collection1 = await prisma.collection.upsert({
-    where: { description: "very cool collection" },
+    where: { collectionName : "Collection"},
     update: {},
     create: {
       description: "very cool collection",
       currency: "USD",
       collectionState: "CREATED",
+      collectionName : "Collection",
+      scAddress : "0xa",
       merchandise: {
         create: {
+          name: "Jacket", 
           media: "....com",
           description: "cool items",
           totalMerchSupply: 200,

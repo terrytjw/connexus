@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/merchandises:
+ * /api/merch:
  *   get:
  *     description: Returns a list of Merchandise objects
  *     responses:
@@ -66,8 +66,12 @@ export default async function handler(
 
   async function handlePOST(merch: Merchandise) {
     try {
+
+      console.log("test")
+      console.log(merch)
+
       const response = await prisma.merchandise.create({
-        data: { ...merch }
+        data: { ...merch, merchId:undefined }
       });
       res.status(200).json([response]);
     } catch (error) {

@@ -216,12 +216,13 @@ enum PromotionType {
 
 model Collection {
   collectionId    Int               @id @default(autoincrement())
-  description     String            @unique
+  collectionName  String            @unique
+  description     String            
   currency        Currency          @default(USD)
   collectionState CollectionState   @default(CREATED)
   merchandise     Merchandise[]
   fixedPrice      Float             @default(0)
-  scAddress       String[]
+  scAddress       String
   merchURIs       String[]
   creator         User              @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
@@ -241,8 +242,9 @@ enum Currency {
 }
 
 model Merchandise {
-  merchId Int        @id @default(autoincrement())
-  media             String
+  merchId           Int        @id @default(autoincrement())
+  name              String
+  media             String?
   description       String  @default("")
   price             Float   @default(0)
   totalMerchSupply  Int     @default(0) 

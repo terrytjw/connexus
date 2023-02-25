@@ -6,7 +6,7 @@ import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
 
-type CollectionwithMerch = Prisma.EventGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
 
 /**
  * @swagger
@@ -56,8 +56,8 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
-      await handlePOST(event);
+      const collection = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
+      await handlePOST(collection);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
@@ -80,11 +80,14 @@ export default async function handler(
 
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
-      const { merchs, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = merchs.map((merchandise) => {
-        const { merchId, collectionId, ...merchInfo } = merchandise;
+      const { merchandise, ...collectionInfo } = collectionwithMerch;
+      const updatedMerchs = merchandise.map((merch) => {
+        const { merchId, collectionId, ...merchInfo } = merch;
         return merchInfo;
       });
+
+      console.log(updatedMerchs); 
+      console.log(collectionInfo); 
 
       const response = await prisma.collection.create({
         data: {

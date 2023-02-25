@@ -526,6 +526,9 @@
         "collectionId": {
           "type": "integer"
         },
+        "collectionName": {
+          "type": "string"
+        },
         "description": {
           "type": "string"
         },
@@ -559,10 +562,7 @@
           "default": 0
         },
         "scAddress": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "type": "string"
         },
         "merchURIs": {
           "type": "array",
@@ -581,8 +581,14 @@
         "merchId": {
           "type": "integer"
         },
-        "media": {
+        "name": {
           "type": "string"
+        },
+        "media": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
           "type": "string",

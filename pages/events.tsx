@@ -18,7 +18,6 @@ type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true } }>;
 
 const BigNumber = require("bignumber.js");
-
 //Smart Contract Stuff:
 const contract = require("../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json");
 const provider = new ethers.providers.JsonRpcProvider(
@@ -372,6 +371,7 @@ const EventsPage = (props: any) => {
           ticketId: tickets[k].ticketId,
           name: ticket_categories[k].name,
           totalTicketSupply: ticket_categories[k].totalTicketSupply,
+          currentTicketSupply : tickets[k].currentTicketSupply,
           price: ticket_categories[k].price,
           startDate: ticket_categories[k].startDate,
           endDate: ticket_categories[k].endDate,

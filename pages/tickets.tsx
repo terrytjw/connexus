@@ -1,11 +1,5 @@
 import {
-  Event,
-  DurationType,
-  PrivacyType,
-  VisibilityType,
   Prisma,
-  CategoryType,
-  Ticket,
   Merchandise,
   CollectionState,
   User,
@@ -16,8 +10,8 @@ import React from "react";
 import { smartContract } from "./const";
 import { ethers } from "ethers";
 
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
-type CollectionwithMerch = Prisma.EventGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true } }>;
 
 
 const BigNumber = require("bignumber.js");
@@ -47,41 +41,39 @@ const CollectionsPage = (props: any) => {
 
     const Collection_Contract = new ethers.ContractFactory(abi, bytecode, signer);
 
-    const address = {
-      address1: "123 Main St",
-      address2: "Apt 1",
-      locationName: "Tenderloin",
-      postalCode: "31231",
-    };
-    const eventName = "Connexus";
-    const date = new Date();
-    const ticket_categories = [
+    //Whole list of collection and merch info
+    const description = "NFT merch digital";
+    const currency = "USD";
+    const collectionState= "CREATED";
+    const creator_id = 1; 
+    const collectionName = "collection1"; 
+
+    const merchandise_categories = [
       {
-        name: "General Admission",
-        totalTicketSupply: 100,
-        price: 1,
-        startDate: new Date(),
-        endDate: new Date(),
-        description: "General Admission",
+        name: "Merch1",
+        media: "....com",
+        description: "cool items",
+        totalMerchSupply: 200,
+        price: 10,
       },
       {
-        name: "VIP Pass",
-        totalTicketSupply: 100,
-        price: 1,
-        startDate: new Date(),
-        endDate: new Date(),
-        description: "This is a VIP Pass",
+        name : "Merch2",
+        media: "....com",
+        description: "cool items 2",
+        totalMerchSupply: 200,
+        price: 50,
       },
-    ];
+    ]
+    //ends here 
 
     let categories = [];
     let category_quantity = [];
     let category_price = [];
 
-    for (let i = 0; i < ticket_categories.length; i++) {
-      let cat = ticket_categories[i];
+    for (let i = 0; i < merchandise_categories.length; i++) {
+      let cat = merchandise_categories[i];
       categories.push(cat.name);
-      category_quantity.push(cat.totalTicketSupply);
+      category_quantity.push(cat.totalMerchSupply);
       let input = cat.price;
       category_price.push(input);
       /* issues with big number
@@ -97,60 +89,42 @@ const CollectionsPage = (props: any) => {
       categories,
       category_price,
       category_quantity,
-      eventName,
-      date,
-      address.locationName,
-      1,
-      100,
-      eventName
-    ); //1 ticket max per person
+      collectionName,
+      description,
+      2, 
+      collectionName
+    ); //1 merch max per person
 
     console.log("Contract successfully deployed => ", collection_contract.address);
 
-    const event: EventWithTickets = {
-      eventId: 1,
-      eventName: "This is a new event",
-      category: CategoryType.AUTO_BOAT_AIR,
-      address: {
-        create: {
-          address1: address.address1,
-          address2: address.address2,
-          locationName: address.locationName,
-          postalCode: address.postalCode,
-        },
-      },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary: "This is just a summary",
-      description: "This is just a description",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PUBLIC,
-      publishStartDate: new Date(),
+    const new_collection: CollectionwithMerch = {
+      collectionName: collectionName,
+      description : description, 
+      currency : "USD", 
+      collectionState : CollectionState.CREATED,
       scAddress: collection_contract.address,
-      ticketURIs: [],
-      publishType: "NOW",
-      tickets: ticket_categories,
+      merchURIs: [],
+      merchandise: merchandise_categories,
+      creatorId : creator_id
     };
+    console.log(new_collection);
 
-    let response = await axios.post("http://localhost:3000/api/collections", event);
+    let response = await axios.post("http://localhost:3000/api/collections", new_collection);
     let data = response.data;
     console.log("Collection Created");
   }
 
   async function deleteCollection() {
-    let response = await axios.delete("http://localhost:3000/api/collections/3");
+    let response = await axios.delete("http://localhost:3000/api/collections/2");
     let data = response.data;
     console.log("Collection Deleted");
   }
 
-  async function mintOnChain(eventInfo: EventWithTickets, ticket_category) {
-    console.log(ticket_category);
-    const { eventName, addressId, startDate, endDate } = eventInfo;
-    let response_location = await axios.get(
-      "http://localhost:3000/api/addresses/" + addressId
-    );
+  async function mintOnChain(collectioInfo: CollectionwithMerch, merch_category) {
 
+    console.log("IPFS");
+    const { collectionName, description } = collectioInfo;
+    console.log(description);
     let metaData = JSON.stringify({
       pinataOptions: {
         cidVersion: 1,
@@ -163,11 +137,9 @@ const CollectionsPage = (props: any) => {
         },
       },
       pinataContent: {
-        event: eventName,
-        location: response_location.data.locationName,
-        startDate: startDate,
-        endDate: endDate,
-        category: ticket_category,
+        collectionName: collectionName,
+        description: description,
+        category: merch_category,
       },
     });
 
@@ -185,70 +157,73 @@ const CollectionsPage = (props: any) => {
   async function mintMerch() {
     /*
     Inputs: 
-    1. Event id 
-    2. Ticket category 
+    1. Collection id 
+    2. Merch category 
     3. User id
     */
 
     const userId = 1;
-    const eventId = 2;
-    const ticket_category = "VIP Pass";
+    const collectionId = 2;
+    const merch_category = "Merch2";
 
     let response = await axios.get(
-      "http://localhost:3000/api/events/" + eventId.toString()
+      "http://localhost:3000/api/collections/" + collectionId.toString()
     );
-    const eventInfo = response.data as EventWithTickets;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const collectionInfo = response.data as CollectionwithMerch;
+    const { scAddress, merchURIs, merchandise } = collectionInfo;
 
     let user_response = await axios.get(
       "http://localhost:3000/api/users/" + userId.toString()
     );
-    const userInfo = user_response.data as UserWithTicketsandMerchc;
-    var user_tickets = userInfo.tickets;
+    const userInfo = user_response.data as UserWithTicketsandMerch;
+    var user_merch = userInfo.merchandise;
 
     //Mint + IPFS
-    response = await mintOnChain(eventInfo, ticket_category);
+    response = await mintOnChain(collectionInfo, merch_category);
     let ipfsHash = response.data.IpfsHash;
     console.log(ipfsHash);
 
     if (ipfsHash == "") return;
     const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
     console.log("IPFS Hash Link  : ", link);
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
     console.log(scAddress);
-    const category_info = await event_contract.getCategoryInformation(
-      ticket_category
+    const collection_contract = new ethers.Contract(scAddress, abi, signer);
+
+    const category_info = await collection_contract.getMerchinformation(
+      merch_category
     );
     const price_needed = category_info._price._hex;
     console.log(price_needed);
     console.log("output : ", parseInt(price_needed, 16));
-    const mint_ticket = await event_contract.mint(ticket_category, link, {
+    const mint_merch = await collection_contract.mint(merch_category, link, {
       gasLimit: 2100000,
       value: price_needed,
     });
-    console.log(mint_ticket.hash);
+    console.log(mint_merch.hash);
 
-    for (let j = 0; j < tickets.length; j++) {
-      if (tickets[j].name == ticket_category) {
-        console.log(tickets[j].currentTicketSupply);
-        var ticket: Ticket = {
-          ticketId: tickets[j].ticketId,
-          name: tickets[j].name,
-          totalTicketSupply: tickets[j].totalTicketSupply,
-          currentTicketSupply: tickets[j].currentTicketSupply + 1,
-          price: tickets[j].price,
-          startDate: tickets[j].startDate,
-          endDate: tickets[j].endDate,
-          description: tickets[j].description,
+    for (let j = 0; j < merchandise.length; j++) {
+      console.log(merchandise[j].name);
+      if (merchandise[j].name == merch_category) {
+        console.log(merchandise[j].currentMerchSupply);
+        var new_merch: Merchandise = {   
+          merchId: merchandise[j].merchId,
+          name : merchandise[j].name,
+          totalMerchSupply: merchandise[j].totalMerchSupply,
+          currMerchSupply: merchandise[j].currMerchSupply + 1,
+          price: merchandise[j].price,
+          media: merchandise[j].media,
+          description: merchandise[j].description,
         };
-        let response_tickets = await axios.post(
-          "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
-          ticket
+        console.log(new_merch);
+        let response_merch = await axios.post(
+          "http://localhost:3000/api/merch/" + merchandise[j].merchId.toString(),
+          new_merch
         );
-        user_tickets.push(tickets[j]);
+        console.log(response_merch); 
+        user_merch.push(merchandise[j]);
         const updated_user = {
           ...userInfo,
-          tickets: user_tickets,
+          merchandise: user_merch,
         };
         console.log(updated_user);
         let user_update = await axios.post(
@@ -260,34 +235,28 @@ const CollectionsPage = (props: any) => {
         break;
       }
     }
-    ticketURIs.push(link);
+    merchURIs.push(link);
 
-    const updated_event = {
-      eventName: eventInfo.eventName,
-      addressId: eventInfo.addressId,
-      category: eventInfo.category,
-      startDate: eventInfo.startDate,
-      endDate: eventInfo.endDate,
-      images: eventInfo.images,
-      summary: eventInfo.summary,
-      description: eventInfo.description,
-      visibilityType: eventInfo.visibilityType,
-      privacyType: eventInfo.privacyType,
-      publishStartDate: eventInfo.publishStartDate,
-      ticketURIs: ticketURIs,
-      publishType: eventInfo.publishType,
+    const updated_collection = {
+      collectionName: collectionInfo.collectionName,
+      description: collectionInfo.description,
+      currency: collectionInfo.currency,
+      collectionState:collectionInfo.collectionState,
+      fixedPrice: collectionInfo.fixedPrice,
+      scAddress: collectionInfo.scAddress, 
+      merchURIs: merchURIs,
     };
 
-    console.log(updated_event);
+    console.log(updated_collection);
     let updated_response = await axios.post(
-      "http://localhost:3000/api/events/" + eventId.toString(),
-      updated_event
+      "http://localhost:3000/api/collections/" + collectionId.toString(),
+      updated_collection
     );
     let updated_data = updated_response.data;
-    console.log("Data uploaded for both event + user");
+    console.log("Data uploaded for both collection + user");
   }
 
-  async function getTicket(ipfs_link) {
+  async function getMerch(ipfs_link) {
     let response = await axios.get(ipfs_link, {
       headers: {
         Accept: "text/plain",
@@ -300,128 +269,118 @@ const CollectionsPage = (props: any) => {
   async function updateCollection() {
     /*
     Inputs: 
-    1. Event Id
-    2. Ticket Id
-    3. Event Info
-    4. Ticket Info
+    1. Merch Id
+    2. Collection Id
+    3. Collection Info
+    4. Merch Info
     */
 
-    const event_id = 2;
-    let response_event = await axios.get(
-      "http://localhost:3000/api/events/" + event_id.toString()
+    const collection_id = 2;
+    let response_collection = await axios.get(
+      "http://localhost:3000/api/collections/" + collection_id.toString()
     );
-    const eventInfo = response_event.data as EventWithTickets;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
-    console.log(eventInfo);
+    const collectionInfo = response_collection.data as CollectionwithMerch;
+    const { scAddress, merchURIs, merchandise } = collectionInfo;
+    console.log(collectionInfo);
 
-    //updating ticket categories
-    const ticket_categories = [
+    //updating merch categories -> new merch
+    const merch_categories = [
       {
-        name: "Genera",
-        totalTicketSupply: 100,
-        price: 1,
-        startDate: new Date(),
-        endDate: new Date(),
-        description: "General Admission",
+        name: "jacketsssss",
+        media: "....com",
+        description: "cool items",
+        totalMerchSupply: 200,
+        price: 10,
       },
       {
-        name: "VIP Pass",
-        totalTicketSupply: 1,
-        price: 1,
-        startDate: new Date(),
-        endDate: new Date(),
-        description: "This is a VIP Pass",
-      },
-      {
-        name: "Club Pengu",
-        totalTicketSupply: 0,
-        price: 1,
-        startDate: new Date(),
-        endDate: new Date(),
-        description: "",
-      },
+        name : "lightstics",
+        media: "....com",
+        description: "cool items 2",
+        totalMerchSupply: 10,
+        price: 50,
+      }, 
     ];
     let map = {};
 
-    for (let k = 0; k < ticket_categories.length; k++) {
-      if (k > tickets.length - 1) {
-        //create new ticket category
-        console.log(tickets);
-        var new_ticket: Ticket = {
-          name: ticket_categories[k].name,
-          totalTicketSupply: ticket_categories[k].totalTicketSupply,
-          currentTicketSupply: 0,
-          price: ticket_categories[k].price,
-          startDate: ticket_categories[k].startDate,
-          endDate: ticket_categories[k].endDate,
-          description: ticket_categories[k].description,
-          eventId : event_id
+    for (let k = 0; k < merch_categories.length; k++) {
+      if (k > merchandise.length - 1) {
+        //create new merch category
+        console.log(merchandise);
+        var new_merch: Merchandise = {
+          name: merch_categories[k].name, 
+          totalMerchSupply: merch_categories[k].totalMerchSupply,
+          currMerchSupply: 0,
+          price: merch_categories[k].price,
+          description: merch_categories[k].description,
+          collectionId : collection_id
         };
-        tickets.push(new_ticket);
+        merchandise.push(new_merch);
         await axios.post(
-          "http://localhost:3000/api/tickets",
-          new_ticket
+          "http://localhost:3000/api/merch",
+          new_merch
         );
       } else {
         if (
-          tickets[k].currentTicketSupply >=
-          ticket_categories[k].totalTicketSupply
+          merchandise[k].currMerchSupply >=
+          merch_categories[k].totalMerchSupply
         ) {
           console.log("Not allowed to change");
           //return ""
         }
-        //time to update
-        var ticket: Ticket = {
-          ticketId: tickets[k].ticketId,
-          name: ticket_categories[k].name,
-          totalTicketSupply: ticket_categories[k].totalTicketSupply,
-          price: ticket_categories[k].price,
-          startDate: ticket_categories[k].startDate,
-          endDate: ticket_categories[k].endDate,
-          description: ticket_categories[k].description,
+        
+        
+        //Update existing merch category
+        var merch: Merchandise = {
+          merchId: merchandise[k].merchId,
+          name: merch_categories[k].name, 
+          totalMerchSupply: merch_categories[k].totalMerchSupply,
+          currMerchSupply: merchandise[k].currMerchSupply,
+          price: merch_categories[k].price,
+          description: merch_categories[k].description,
         };
         await axios.post(
-          "http://localhost:3000/api/tickets/" + tickets[k].ticketId.toString(),
-          ticket
+          "http://localhost:3000/api/merch/" + merchandise[k].merchId.toString(),
+          merch
         );
-        console.log(ticket);
+        console.log(merch);
         console.log("Updated existing");
-        map[tickets[k].name] = ticket_categories[k].name;
+        map[merchandise[k].name] = merch_categories[k].name;
       }
     }
 
-    console.log("updating tickets");
-    if (ticket_categories.length < tickets.length) {
+    if (merch_categories.length < merchandise.length) {
       //new set of categories is less the original set -> time to go through the remaining and delete acordingly
-      for (let j = ticket_categories.length - 1; j <= tickets.length; j++) {
-        if (tickets[j].currentTicketSupply > 0) {
+      for (let j = merch_categories.length - 1; j < merchandise.length; j++) {
+        if (merchandise[j].currMerchSupply > 0) {
           console.log("Not allowed to change");
           // return ""
         } else {
           await axios.delete(
-            "http://localhost:3000/api/tickets/" +
-              tickets[j].ticketId.toString()
+            "http://localhost:3000/api/merch/" +
+            merchandise[j].merchId.toString()
           );
         }
       }
     }
+    
     let categories = [];
     let category_quantity = [];
     let category_price = [];
 
-    for (let i = 0; i < ticket_categories.length; i++) {
-      var cat = ticket_categories[i];
+    for (let i = 0; i < merch_categories.length; i++) {
+      var cat = merch_categories[i];
       categories.push(cat.name);
-      category_quantity.push(cat.totalTicketSupply);
+      category_quantity.push(cat.totalMerchSupply);
       var input = cat.price;
       category_price.push(input);
-      /* issues with big number
+      /*
+      issues with big number
       if (input < 0.1){
         category_price.push(input * 10**(18));
       } else{
         category_price.push(ethers.BigNumber.from(input).mul(BigNumber.from(10).pow(18)));
-      } */
-      //rounds off to 1 matic bcos bigint > float
+      } 
+      //rounds off to 1 matic bcos bigint > float*/
     }
 
     const event_contract = new ethers.Contract(scAddress, abi, signer);
@@ -433,44 +392,39 @@ const CollectionsPage = (props: any) => {
         gasLimit: 2100000,
       }
     );
-    console.log("Contract for ticket categories updated");
+    console.log("Contract for merch categories updated");
+    
 
-    //Updating Event Information + repin all ipfs links again
-    console.log("Event Info");
+    //Updating Collection Information + repin all ipfs links again -> new collection info
+    console.log("Collection Info");
 
-    let newticketURIs = [];
-    const updated_event: EventWithTickets = {
-      //whatever the updated ticket details are
-      eventName: "This is a new event",
-      addressId: eventInfo.addressId,
-      category: CategoryType.AUTO_BOAT_AIR,
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
-      summary: "This is just a summary",
+    let newMerchURI = [];
+    const updated_collection: CollectionwithMerch = {
+      collectionName: "This is a new collection",
       description: "This is just a description",
-      visibilityType: VisibilityType.DRAFT,
-      privacyType: PrivacyType.PUBLIC,
-      publishStartDate: new Date(),
-      ticketURIs: [],
-      publishType: "NOW",
+      currency : "SGD", 
+      collectionState : CollectionState.CREATED,
     };
    
-
-    if (ticketURIs.length > 0) {
-      for (let i = 0; i < ticketURIs.length; i++) {
-        var ticketURI = ticketURIs[i];
-        console.log(ticketURI);
-        let response_metadata = await getTicket(ticketURI);
+    console.log("Map");
+    console.log(map);
+    if (merchURIs.length > 0) {
+      for (let i = 0; i < merchURIs.length; i++) {
+        var merchURI = merchURIs[i];
+        console.log(merchURI);
+        let response_metadata = await getMerch(merchURI);
         console.log(response_metadata.data);
-        let existing_user_ticket_category = response_metadata.data.category;
-        var new_user_ticket_category = map[existing_user_ticket_category];
+        let existing_user_merch_category = response_metadata.data.category;
+        console.log("Existing merch");
+        console.log(existing_user_merch_category);
 
-        let category_chosen = new_user_ticket_category;
-        console.log(category_chosen);
+        var new_user_merch_category = map[existing_user_merch_category];
+
+        let category_chosen = new_user_merch_category;
+        console.log("Updated Category => ", category_chosen);
         const event_contract = new ethers.Contract(scAddress, abi, signer);
         let response_pinning = await mintOnChain(
-          updated_event,
+          updated_collection,
           category_chosen
         );
         let ipfsHash = response_pinning.data.IpfsHash;
@@ -484,30 +438,22 @@ const CollectionsPage = (props: any) => {
           gasLimit: 2100000,
         });
         console.log("Changed for Token ", i);
-        newticketURIs.push(link);
+        newMerchURI.push(link);
       }
 
-      console.log("Updated Tickets => ", tickets);
-      const updated_event_withuri: EventWithTickets = {
-        eventName: "This is a new event",
-        addressId: eventInfo.addressId,
-        category: CategoryType.AUTO_BOAT_AIR,
-        startDate: new Date(),
-        endDate: new Date(),
-        images: [],
-        summary: "This is just a summary",
+      console.log("Updated Merch => ", merchandise);
+      const updated_collection_withuri: CollectionwithMerch = {
+        collectionName: "This is a new collection",
         description: "This is just a description",
-        visibilityType: VisibilityType.DRAFT,
-        privacyType: PrivacyType.PUBLIC,
-        publishStartDate: new Date(),
-        ticketURIs: newticketURIs, //redo again to add the new URI arr
-        publishType: "NOW",
+        currency : "USD", 
+        collectionState : CollectionState.CREATED,
+        merchURIs: newMerchURI, 
       };
-      console.log("updated event:");
-      console.log(updated_event_withuri);
+      console.log("updated collection:");
+      console.log(updated_collection_withuri);
       let updated_response = await axios.post(
-        "http://localhost:3000/api/events/" + event_id.toString(),
-        updated_event_withuri
+        "http://localhost:3000/api/collections/" + collection_id.toString(),
+        updated_collection_withuri
       );
       let updated_data = updated_response.data;
       console.log("Data uploaded");

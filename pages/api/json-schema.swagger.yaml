@@ -345,6 +345,8 @@ components:
       properties:
         collectionId:
           type: integer
+        collectionName:
+          type: string
         description:
           type: string
         currency:
@@ -369,9 +371,7 @@ components:
         fixedPrice:
           type: number
         scAddress:
-          items:
-            type: string
-          type: array
+          type: string
         merchURIs:
           items:
             type: string
@@ -383,6 +383,8 @@ components:
       properties:
         merchId:
           type: integer
+        name:
+          type: string
         media:
           type: string
         description:
