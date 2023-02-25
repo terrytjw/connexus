@@ -73,7 +73,7 @@ export default async function handler(
       await handleGET(userId);
       break;
     case "POST":
-      const user = JSON.parse(JSON.stringify(req.body)) as User;
+      const user = JSON.parse(JSON.stringify(req.body)) as UserWithTicketsandMerch;
       await handlePOST(userId, user);
       break;
     case "DELETE":
