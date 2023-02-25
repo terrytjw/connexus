@@ -41,6 +41,14 @@ const prisma = new PrismaClient();
  *               $ref: "#/components/schemas/Post"
  */
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb'
+    }
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Post[] | ErrorResponse>
