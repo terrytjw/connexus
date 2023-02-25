@@ -72,7 +72,7 @@ export default async function handler(
             select: { userId: true }
           },
           commenter: {
-            select: { username: true, profilePic: true }
+            select: { userId: true, username: true, profilePic: true }
           }
         },
         orderBy: {
