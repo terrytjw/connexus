@@ -32,8 +32,8 @@ const Button = ({
         className={classNames(
           "btn flex gap-x-2",
           variant === "solid"
-            ? "border-white/0 bg-blue-600 text-white hover:border-white/0 hover:bg-blue-700"
-            : "btn-outline text-blue-600 hover:border-white/0 hover:bg-blue-600",
+            ? "border-white/0 bg-blue-600 text-white hover:border-white/0 hover:bg-blue-900"
+            : "btn-outline text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600",
           `btn-${size}`,
           "rounded-md normal-case",
           className ?? ""
@@ -48,8 +48,8 @@ const Button = ({
       className={classNames(
         "btn flex gap-x-2",
         variant === "solid"
-          ? "border-white/0 bg-blue-600 text-white hover:border-white/0 hover:bg-blue-700"
-          : "btn-outline text-blue-600 hover:border-white/0 hover:bg-blue-600",
+          ? "border-white/0 bg-blue-600 text-white hover:border-white/0 hover:bg-blue-900"
+          : "btn-outline text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600",
         `btn-${size}`,
         "rounded-md normal-case",
         className ?? ""
