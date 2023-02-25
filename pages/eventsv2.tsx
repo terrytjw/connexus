@@ -140,7 +140,10 @@ const EventsPage = (props: any) => {
     console.log("Event Deleted");
   }
 
-  async function mintOnChain(eventInfo: EventWithTickets, ticket_category) {
+  async function mintOnChain(
+    eventInfo: Partial<EventWithTickets>,
+    ticket_category: string
+  ) {
     console.log(ticket_category);
     const { eventName, addressId, startDate, endDate } = eventInfo;
     let response_location = await axios.get(
@@ -227,7 +230,7 @@ const EventsPage = (props: any) => {
     for (let j = 0; j < tickets.length; j++) {
       if (tickets[j].name == ticket_category) {
         console.log(tickets[j].currentTicketSupply);
-        var ticket: Ticket = {
+        var ticket = {
           ticketId: tickets[j].ticketId,
           name: tickets[j].name,
           totalTicketSupply: tickets[j].totalTicketSupply,
@@ -283,7 +286,7 @@ const EventsPage = (props: any) => {
     console.log("Data uploaded for both event + user");
   }
 
-  async function getTicket(ipfs_link) {
+  async function getTicket(ipfs_link: string) {
     let response = await axios.get(ipfs_link, {
       headers: {
         Accept: "text/plain",
@@ -337,13 +340,15 @@ const EventsPage = (props: any) => {
         description: "",
       },
     ];
-    let map = {};
+    let map = {} as any;
+
+    const updatedTickets: Partial<Ticket>[] = [...tickets];
 
     for (let k = 0; k < ticket_categories.length; k++) {
       if (k > tickets.length - 1) {
         //create new ticket category
         console.log(tickets);
-        var new_ticket: Ticket = {
+        var new_ticket = {
           name: ticket_categories[k].name,
           totalTicketSupply: ticket_categories[k].totalTicketSupply,
           currentTicketSupply: 0,
@@ -353,7 +358,7 @@ const EventsPage = (props: any) => {
           description: ticket_categories[k].description,
           eventId: event_id,
         };
-        tickets.push(new_ticket);
+        updatedTickets.push(new_ticket);
         await axios.post("http://localhost:3000/api/tickets", new_ticket);
       } else {
         if (
@@ -364,7 +369,7 @@ const EventsPage = (props: any) => {
           //return ""
         }
         //time to update
-        var ticket: Ticket = {
+        var ticket = {
           ticketId: tickets[k].ticketId,
           name: ticket_categories[k].name,
           totalTicketSupply: ticket_categories[k].totalTicketSupply,
@@ -380,7 +385,11 @@ const EventsPage = (props: any) => {
         );
         console.log(ticket);
         console.log("Updated existing");
-        map[tickets[k].name] = ticket_categories[k].name;
+
+        if (updatedTickets[k].name !== undefined) {
+          const updatedTicketName = updatedTickets[k].name as string;
+          map[updatedTicketName] = ticket_categories[k].name;
+        }
       }
     }
 
@@ -433,7 +442,7 @@ const EventsPage = (props: any) => {
     console.log("Event Info");
 
     let newticketURIs = [];
-    const updated_event: EventWithTickets = {
+    const updated_event: Partial<EventWithTickets> = {
       //whatever the updated ticket details are
       eventName: "This is a new event",
       addressId: eventInfo.addressId,
@@ -481,10 +490,10 @@ const EventsPage = (props: any) => {
       }
 
       console.log("Updated Tickets => ", tickets);
-      const updated_event_withuri: EventWithTickets = {
+      const updated_event_withuri: Partial<EventWithTickets> = {
         eventName: "This is a new event",
         addressId: eventInfo.addressId,
-        category: CategoryType.AUTO_BOAT_AIR,
+        category: [CategoryType.AUTO_BOAT_AIR],
         startDate: new Date(),
         endDate: new Date(),
         images: [],
