@@ -1,17 +1,16 @@
-import {
-  Prisma,
-  Merchandise,
-  CollectionState,
-} from "@prisma/client";
+import { Prisma, Merchandise, CollectionState, Currency } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { smartContract } from "./const";
 import { ethers } from "ethers";
 
-type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
-type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true } }>;
-
+type CollectionwithMerch = Prisma.CollectionGetPayload<{
+  include: { merchandise: true };
+}>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{
+  include: { tickets: true; merchandise: true };
+}>;
 
 const BigNumber = require("bignumber.js");
 
@@ -38,14 +37,18 @@ const CollectionsPage = (props: any) => {
     2. Merch Info
     */
 
-    const Collection_Contract = new ethers.ContractFactory(abi, bytecode, signer);
+    const Collection_Contract = new ethers.ContractFactory(
+      abi,
+      bytecode,
+      signer
+    );
 
     //Whole list of collection and merch info
     const description = "NFT merch digital";
     const currency = "USD";
-    const collectionState= "CREATED";
-    const creator_id = 1; 
-    const collectionName = "collection1"; 
+    const collectionState = "CREATED";
+    const creator_id = 1;
+    const collectionName = "collection1";
 
     const merchandise_categories = [
       {
@@ -56,14 +59,14 @@ const CollectionsPage = (props: any) => {
         price: 10,
       },
       {
-        name : "Merch2",
+        name: "Merch2",
         media: "....com",
         description: "cool items 2",
         totalMerchSupply: 200,
         price: 50,
       },
-    ]
-    //ends here 
+    ];
+    //ends here
 
     let categories = [];
     let category_quantity = [];
@@ -90,37 +93,47 @@ const CollectionsPage = (props: any) => {
       category_quantity,
       collectionName,
       description,
-      2, 
+      2,
       collectionName
     ); //1 merch max per person
 
-    console.log("Contract successfully deployed => ", collection_contract.address);
+    console.log(
+      "Contract successfully deployed => ",
+      collection_contract.address
+    );
 
-    const new_collection: CollectionwithMerch = {
+    const new_collection = {
       collectionName: collectionName,
-      description : description, 
-      currency : "USD", 
-      collectionState : CollectionState.CREATED,
+      description: description,
+      currency: "USD",
+      collectionState: CollectionState.CREATED,
       scAddress: collection_contract.address,
       merchURIs: [],
       merchandise: merchandise_categories,
-      creatorId : creator_id
+      creatorId: creator_id,
     };
     console.log(new_collection);
 
-    let response = await axios.post("http://localhost:3000/api/collections", new_collection);
+    let response = await axios.post(
+      "http://localhost:3000/api/collections",
+      new_collection
+    );
     let data = response.data;
     console.log("Collection Created");
   }
 
   async function deleteCollection() {
-    let response = await axios.delete("http://localhost:3000/api/collections/2");
+    let response = await axios.delete(
+      "http://localhost:3000/api/collections/2"
+    );
     let data = response.data;
     console.log("Collection Deleted");
   }
 
-  async function mintOnChain(collectioInfo: CollectionwithMerch, merch_category) {
-
+  async function mintOnChain(
+    collectioInfo: Partial<CollectionwithMerch>,
+    merch_category: string
+  ) {
     console.log("IPFS");
     const { collectionName, description } = collectioInfo;
     console.log(description);
@@ -203,10 +216,10 @@ const CollectionsPage = (props: any) => {
     for (let j = 0; j < merchandise.length; j++) {
       console.log(merchandise[j].name);
       if (merchandise[j].name == merch_category) {
-        console.log(merchandise[j].currentMerchSupply);
-        var new_merch: Merchandise = {   
+        console.log(merchandise[j].currMerchSupply);
+        var new_merch: Partial<Merchandise> = {
           merchId: merchandise[j].merchId,
-          name : merchandise[j].name,
+          name: merchandise[j].name,
           totalMerchSupply: merchandise[j].totalMerchSupply,
           currMerchSupply: merchandise[j].currMerchSupply + 1,
           price: merchandise[j].price,
@@ -215,10 +228,11 @@ const CollectionsPage = (props: any) => {
         };
         console.log(new_merch);
         let response_merch = await axios.post(
-          "http://localhost:3000/api/merch/" + merchandise[j].merchId.toString(),
+          "http://localhost:3000/api/merch/" +
+            merchandise[j].merchId.toString(),
           new_merch
         );
-        console.log(response_merch); 
+        console.log(response_merch);
         user_merch.push(merchandise[j]);
         const updated_user = {
           ...userInfo,
@@ -240,9 +254,9 @@ const CollectionsPage = (props: any) => {
       collectionName: collectionInfo.collectionName,
       description: collectionInfo.description,
       currency: collectionInfo.currency,
-      collectionState:collectionInfo.collectionState,
+      collectionState: collectionInfo.collectionState,
       fixedPrice: collectionInfo.fixedPrice,
-      scAddress: collectionInfo.scAddress, 
+      scAddress: collectionInfo.scAddress,
       merchURIs: merchURIs,
     };
 
@@ -255,7 +269,7 @@ const CollectionsPage = (props: any) => {
     console.log("Data uploaded for both collection + user");
   }
 
-  async function getMerch(ipfs_link) {
+  async function getMerch(ipfs_link: string) {
     let response = await axios.get(ipfs_link, {
       headers: {
         Accept: "text/plain",
@@ -292,58 +306,60 @@ const CollectionsPage = (props: any) => {
         price: 10,
       },
       {
-        name : "lightstics",
+        name: "lightstics",
         media: "....com",
         description: "cool items 2",
         totalMerchSupply: 10,
         price: 50,
-      }, 
+      },
     ];
-    let map = {};
+    let map = {} as any;
+
+    const updatedMerchandise: Partial<Merchandise>[] = [...merchandise];
 
     for (let k = 0; k < merch_categories.length; k++) {
       if (k > merchandise.length - 1) {
         //create new merch category
         console.log(merchandise);
-        var new_merch: Merchandise = {
-          name: merch_categories[k].name, 
+        var new_merch: Partial<Merchandise> = {
+          name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: 0,
           price: merch_categories[k].price,
           description: merch_categories[k].description,
-          collectionId : collection_id
+          collectionId: collection_id,
         };
-        merchandise.push(new_merch);
-        await axios.post(
-          "http://localhost:3000/api/merch",
-          new_merch
-        );
+        updatedMerchandise.push(new_merch);
+        await axios.post("http://localhost:3000/api/merch", new_merch);
       } else {
         if (
-          merchandise[k].currMerchSupply >=
-          merch_categories[k].totalMerchSupply
+          merchandise[k].currMerchSupply >= merch_categories[k].totalMerchSupply
         ) {
           console.log("Not allowed to change");
           //return ""
         }
-        
-        
+
         //Update existing merch category
-        var merch: Merchandise = {
+        var merch: Partial<Merchandise> = {
           merchId: merchandise[k].merchId,
-          name: merch_categories[k].name, 
+          name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: merchandise[k].currMerchSupply,
           price: merch_categories[k].price,
           description: merch_categories[k].description,
         };
         await axios.post(
-          "http://localhost:3000/api/merch/" + merchandise[k].merchId.toString(),
+          "http://localhost:3000/api/merch/" +
+            merchandise[k].merchId.toString(),
           merch
         );
         console.log(merch);
         console.log("Updated existing");
-        map[merchandise[k].name] = merch_categories[k].name;
+
+        if (updatedMerchandise[k].name !== undefined) {
+          const updatedMerchandiseName = updatedMerchandise[k].name as string;
+          map[updatedMerchandiseName] = merch_categories[k].name;
+        }
       }
     }
 
@@ -356,12 +372,12 @@ const CollectionsPage = (props: any) => {
         } else {
           await axios.delete(
             "http://localhost:3000/api/merch/" +
-            merchandise[j].merchId.toString()
+              merchandise[j].merchId.toString()
           );
         }
       }
     }
-    
+
     let categories = [];
     let category_quantity = [];
     let category_price = [];
@@ -392,19 +408,18 @@ const CollectionsPage = (props: any) => {
       }
     );
     console.log("Contract for merch categories updated");
-    
 
     //Updating Collection Information + repin all ipfs links again -> new collection info
     console.log("Collection Info");
 
     let newMerchURI = [];
-    const updated_collection: CollectionwithMerch = {
+    const updated_collection: Partial<CollectionwithMerch> = {
       collectionName: "This is a new collection",
       description: "This is just a description",
-      currency : "SGD", 
-      collectionState : CollectionState.CREATED,
+      currency: Currency.USD,
+      collectionState: CollectionState.CREATED,
     };
-   
+
     console.log("Map");
     console.log(map);
     if (merchURIs.length > 0) {
@@ -441,12 +456,12 @@ const CollectionsPage = (props: any) => {
       }
 
       console.log("Updated Merch => ", merchandise);
-      const updated_collection_withuri: CollectionwithMerch = {
+      const updated_collection_withuri: Partial<CollectionwithMerch> = {
         collectionName: "This is a new collection",
         description: "This is just a description",
-        currency : "USD", 
-        collectionState : CollectionState.CREATED,
-        merchURIs: newMerchURI, 
+        currency: "USD",
+        collectionState: CollectionState.CREATED,
+        merchURIs: newMerchURI,
       };
       console.log("updated collection:");
       console.log(updated_collection_withuri);
