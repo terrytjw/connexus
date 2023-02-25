@@ -71,7 +71,7 @@ const FanCommunityPage = () => {
               <Button
                 variant="solid"
                 size="sm"
-                className="!bg-orange-300 hover:!bg-orange-400"
+                className="!bg-orange-400 hover:!bg-orange-500"
               >
                 Submit Chat Request
               </Button>
