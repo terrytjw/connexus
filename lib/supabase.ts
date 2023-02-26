@@ -29,3 +29,7 @@ export const dataUrlToFile = async (dataUrl: string): Promise<Blob> => {
 export const extractFileExtension = (dataUrl: string): string => {
   return dataUrl.substring("data:image/".length, dataUrl.indexOf(";base64"));
 };
+
+export const checkIfStringIsBase64 = (url: string): boolean => {
+  return url.startsWith("data:image/");
+};

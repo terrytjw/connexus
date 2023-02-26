@@ -15,7 +15,6 @@ import TabGroupBordered from "../../../components/TabGroupBordered";
 import UserProfileCollections from "../../../components/UserProfileTabs/Collections";
 import UserProfileCreations from "../../../components/UserProfileTabs/Creations";
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
-import { products } from "../../../utils/dummyData";
 import { User } from "@prisma/client";
 import { profile, collections } from "../../../utils/dummyData";
 
@@ -33,14 +32,18 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
           <title>Profile | Connexus</title>
         </Head>
         <main>
-          {/* <Banner coverImageUrl={userData.bannerPic} /> */}
+          {userData.bannerPic ? (
+            <Banner coverImageUrl={userData.bannerPic} />
+          ) : (
+            <Banner coverImageUrl={"/images/default-banner.jpg"} />
+          )}
 
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="-mt-12 sm:-mt-16 sm:flex sm:items-end sm:space-x-5">
-              {/* <Avatar imageUrl={userData.profilePic} /> */}
+              <Avatar imageUrl={userData.profilePic ?? ""} />
               <div className="">
                 {/* mobile view profile name*/}
-                <div className="mt-6 min-w-0 flex-1 sm:hidden 2xl:block">
+                <div className="mt-6 min-w-0 flex-1 sm:hidden">
                   <h1 className="truncate text-2xl font-bold text-gray-900">
                     {userData.displayName} - mobile
                   </h1>
@@ -52,7 +55,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
               </div>
             </div>
             {/* desktop view profile name*/}
-            <div className="mt-6 hidden min-w-0 flex-1 sm:block 2xl:hidden">
+            <div className="mt-6 hidden min-w-0 flex-1 sm:block">
               <h1 className="truncate text-2xl font-bold text-gray-900">
                 {userData.displayName} - desktop
               </h1>
@@ -64,7 +67,11 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
 
             {/* button group */}
             <div className="mt-6 flex gap-2">
-              <Button href="/user/settings/1" variant="solid" size="md">
+              <Button
+                href={`/user/settings/${userData.userId}`}
+                variant="solid"
+                size="md"
+              >
                 <FaPen aria-hidden="true" />
                 <span className="hidden sm:inline-block">Edit Profile</span>
               </Button>
