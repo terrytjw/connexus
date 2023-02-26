@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community } from "@prisma/client";
 import { COMMUNITY_BUCKET } from "../../../../lib/constant";
-import { retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import { isValidHttpUrl, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -132,10 +132,10 @@ export default async function handler(
   async function handlePOST(communityId: number, community: Community) {
     try {
       const { profilePic, bannerPic } = community;
-      let profilePictureUrl = "";
-      let bannerPicUrl = "";
+      let profilePictureUrl = profilePic;
+      let bannerPicUrl = bannerPic;
 
-      if (profilePic) {
+      if (profilePic && ! isValidHttpUrl(profilePic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           profilePic
@@ -153,7 +153,7 @@ export default async function handler(
           );
       }
 
-      if (bannerPic) {
+      if (bannerPic && ! isValidHttpUrl(bannerPic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           bannerPic
