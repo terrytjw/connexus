@@ -133,10 +133,11 @@ export default async function handler(
         media: updatedMedia
       };
       const response = await prisma.post.create({
-        data: { ...post, postId: undefined }
+        data: { ...updatedPostInfo, postId: undefined }
       });
       res.status(200).json([response]);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }

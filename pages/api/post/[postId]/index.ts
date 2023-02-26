@@ -153,7 +153,7 @@ export default async function handler(
         where: {
           postId: postId
         },
-        data: { ...post },
+        data: { ...updatedPostInfo },
       });
       res.status(200).json(response);
     } catch (error) {
