@@ -58,7 +58,8 @@ const Home = ({ isAuthModalOpen }: any) => {
         const retrievedUserInfo = await socialLoginSDK.getUserInfo();
 
         const userInfo = {
-          name: retrievedUserInfo?.name,
+          displayName: retrievedUserInfo?.name,
+          username: retrievedUserInfo?.name,
           email: retrievedUserInfo?.email,
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
