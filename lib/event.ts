@@ -1,29 +1,17 @@
-import { PrismaClient, Event, CategoryType } from "@prisma/client";
+import { PrismaClient, Event } from "@prisma/client";
 
 export interface EventPartialType extends Partial<Event> {}
 
 const prisma = new PrismaClient();
 
 export async function searchEvent(searchType: EventPartialType) {
-
-  const {category, ticketURIs, ...searchFilter} = searchType 
+  const { category, ticketURIs, ...searchFilter } = searchType;
 
   return prisma.event.findFirst({
     where: {
       ...searchFilter,
     },
   });
-
-  /*
-
-  prisma.event.findMany({
-    where: {
-      category: {
-        has: CategoryType.ANIMALS
-      }
-    }
-  })
-  */
 }
 
 export async function findAllEvent() {
@@ -38,7 +26,10 @@ export async function deleteEvent(eventId: number) {
   });
 }
 
-export async function updateEvent(eventId: number, updateType: EventPartialType) {
+export async function updateEvent(
+  eventId: number,
+  updateType: EventPartialType
+) {
   return prisma.event.update({
     where: {
       eventId: eventId,
