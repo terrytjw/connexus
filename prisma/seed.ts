@@ -206,15 +206,16 @@ async function generateEvent() {
       category: CategoryType.HEALTH_WELLNESS,
       address: {
         create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "San Francisco",
-          postalCode: "31231",
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          locationName: "Expo Hall 1",
+          postalCode: "486065",
+          lat : 1.01, 
+          lng: 1.2,
         },
       },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
+      startDate: new Date("2023-03-22"),
+      endDate: new Date("2023-03-25"),
       summary:
         "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
       description: "This is a yoga class",
@@ -281,6 +282,12 @@ async function generateEvent() {
         ],
       },
       publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-02-22"),
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
+      eventPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
   });
@@ -291,15 +298,16 @@ async function generateEvent() {
       category: CategoryType.HEALTH_WELLNESS,
       address: {
         create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "New York",
-          postalCode: "31231",
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          lat : 1.01, 
+          lng: 1.2,
+          locationName: "Expo Hall 2",
+          postalCode: "486065",
         },
       },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
+      startDate: new Date("2023-03-23"),
+      endDate: new Date("2023-03-26"),
       summary:
         "A spin class is a high-intensity, group fitness class that typically takes place on stationary bicycles. Participants follow a guided workout that simulates outdoor cycling and can include intervals of high-intensity sprints and hill climbs, as well as periods of recovery. ",
       description: "This is a spin class",
@@ -366,6 +374,12 @@ async function generateEvent() {
         ],
       },
       publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-01-22"),
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
+      eventPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
   });
@@ -376,15 +390,16 @@ async function generateEvent() {
       category: CategoryType.HEALTH_WELLNESS,
       address: {
         create: {
-          address1: "123 Main St",
-          address2: "Apt 1",
-          locationName: "Tenderloin",
-          postalCode: "31231",
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          lat : 1.01, 
+          lng: 1.2,
+          locationName: "Expo Hall 3",
+          postalCode: "486065",
         },
       },
-      startDate: new Date(),
-      endDate: new Date(),
-      images: [],
+      startDate: new Date("2023-03-24"),
+      endDate: new Date("2023-03-27"),
       summary:
         "A yoga class typically involves physical postures, breathing exercises, meditation, and relaxation techniques.",
       description: "This is a yoga class",
@@ -451,6 +466,12 @@ async function generateEvent() {
         ],
       },
       publishType: PublishType.NOW,
+      maxAttendee: 50,
+      publishStartDate: new Date("2023-02-22"),
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
+      eventPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
       scAddress: "0xax",
     },
   });

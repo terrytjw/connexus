@@ -337,12 +337,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "summary": {
           "type": "string",
           "default": ""
@@ -365,13 +359,17 @@
             "PRIVATE"
           ]
         },
-        "eventBannerPicture": {
-          "type": "string",
-          "default": ""
+        "eventPic": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
-        "eventImage": {
-          "type": "string",
-          "default": ""
+        "bannerPic": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "maxAttendee": {
           "type": "integer",
@@ -428,6 +426,12 @@
           "items": {
             "$ref": "#/definitions/Event"
           }
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
         }
       }
     },

@@ -6,7 +6,7 @@ datasource db {
 
 generator client {
   provider      = "prisma-client-js"
-  binaryTargets = ["linux-arm64-openssl-1.1.x", "darwin-arm64"]
+  binaryTargets = ["linux-arm64-openssl-1.1.x", "darwin-arm64", "darwin"]
 }
 
 generator jsonSchema {
@@ -110,13 +110,12 @@ model Event {
   addressId          Int
   startDate          DateTime       @default(now())
   endDate            DateTime       @default(now())
-  images             String[]
-  summary            String         @default("")
-  description        String         @default("")
+  summary            String?
+  description        String?
   visibilityType     VisibilityType
   privacyType        PrivacyType
-  eventBannerPicture String         @default("")
-  eventImage         String         @default("")
+  eventPic           String?
+  bannerPic          String?
   maxAttendee        Int            @default(0)
   publishType        PublishType
   publishStartDate   DateTime       @default(now())
@@ -137,6 +136,8 @@ model Address {
   address2     String
   postalCode   String
   Event        Event[]
+  lat          Float
+  lng          Float
 }
 
 model Ticket {

@@ -10,7 +10,7 @@ import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
 import { smartContract } from "../lib/constants";
-
+import {img} from "../lib/image";
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
   include: { tickets: true };
@@ -48,6 +48,9 @@ const EventsPage = (props: any) => {
       locationName: "Tenderloin",
       postalCode: "31231",
     };
+
+    const eventPic = img;
+    const bannerPic = img;
     const eventName = "Connexus";
     const date = new Date();
     const ticket_categories = [
@@ -106,18 +109,21 @@ const EventsPage = (props: any) => {
     const event = {
       eventId: 1,
       eventName: "This is a new event",
+      eventPic : eventPic, 
+      bannerPic: bannerPic,
       category: [CategoryType.AUTO_BOAT_AIR],
       address: {
         create: {
           address1: address.address1,
           address2: address.address2,
+          lat : 1.91, 
+          lng : 1.91,
           locationName: address.locationName,
           postalCode: address.postalCode,
         },
       },
       startDate: new Date(),
       endDate: new Date(),
-      images: [],
       summary: "This is just a summary",
       description: "This is just a description",
       visibilityType: VisibilityType.DRAFT,
