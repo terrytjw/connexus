@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection , Prisma} from "@prisma/client";
+import { PrismaClient, Collection , Prisma, Merchandise} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
@@ -80,7 +80,7 @@ export default async function handler(
     }
   }
 
-  async function updateMerchMedia(media, merchInfo : MerchandisePartialType ){
+  async function updateMerchMedia(media: string | null, merchInfo : MerchandisePartialType ){
     let mediaUrl = ""; 
         if(media){
           const{data, error} = await uploadImage(
@@ -107,7 +107,7 @@ export default async function handler(
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
       const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = await Promise.all(merchandise.map(async (merch) => {
+      const updatedMerchs = await Promise.all(merchandise.map(async (merch : Merchandise) => {
         const { merchId, collectionId, media, ...merchInfo } = merch;
         let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
         return updatedMerchInfo;
