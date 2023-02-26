@@ -65,7 +65,7 @@ export default async function handler(
 ) {
   const { method, body, query } = req;
   const keyword = query.keyword as string;
-  const filter = query.filter as CategoryType;
+  const filter = query.filter as CategoryType[];
   const cursor = parseInt(query.cursor as string);
 
   switch (method) {
@@ -85,7 +85,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter?: CategoryType) {
+  async function handleGET(cursor: number, filter: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -94,11 +94,11 @@ export default async function handler(
         orderBy: {
           communityId: 'asc'
         },
-        where: filter ? {
+        where: {
           tags: {
-            has: filter
+            hasEvery: filter
           }
-        } : undefined,
+        },
         include: {
           members: {
             select: { userId: true }
@@ -107,12 +107,13 @@ export default async function handler(
       });
       res.status(200).json(communities);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType) {
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -150,9 +151,9 @@ export default async function handler(
               }
             },
           ],
-          tags: filter ? {
-            has: filter
-          } : undefined,
+          tags: {
+            hasEvery: filter
+          },
         },
         include: {
           _count: {
