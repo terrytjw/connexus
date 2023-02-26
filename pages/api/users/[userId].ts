@@ -5,7 +5,6 @@ import { PrismaClient, User, Prisma } from "@prisma/client";
 import { deleteUser, searchUser, updateUser } from "../../../lib/user";
 import { USER_PROFILE_BUCKET } from "../../../lib/constant";
 import { uploadImage, retrieveImageUrl } from "../../../lib/supabase";
-import queryString from "query-string";
 
 const prisma = new PrismaClient();
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
