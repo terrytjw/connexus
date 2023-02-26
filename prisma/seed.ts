@@ -124,7 +124,7 @@ async function generatePost() {
       title: "New valorant map",
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorantnewmap-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/valorantnewmap-media.jpg",
       ],
       isPinned: false,
       creator: {
@@ -143,7 +143,7 @@ async function generatePost() {
       title: "Anime Fanart",
       content: "I just drew this, what do yall think?",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
@@ -162,7 +162,7 @@ async function generatePost() {
       title: "Travelling",
       content: "Would love to experience living in a cabin during winter!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
