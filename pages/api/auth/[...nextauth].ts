@@ -2,6 +2,7 @@ import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
 import { saveUser, searchUser } from "../../../lib/user";
+import { capitaliseFirstLetter } from "../../../lib/prisma-util";
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {
@@ -10,7 +11,12 @@ export const authOptions: NextAuthOptions = {
       id: "custom-login",
       name: "Credentials",
       credentials: {
-        name: { label: "Name", type: "text", placeholder: "Name" },
+        displayName: {
+          label: "DisplayName",
+          type: "text",
+          placeholder: "Display Name",
+        },
+        username: { label: "Username", type: "text", placeholder: "Username" },
         email: { label: "Email", type: "email", placeholder: "Email" },
         profileImage: {
           label: "Profile Image",
@@ -20,16 +26,18 @@ export const authOptions: NextAuthOptions = {
         walletAddress: { label: "Wallet Address", type: "text" },
       },
       async authorize(credentials, req) {
-        // console.log(credentials);
+        console.log(credentials);
         if (!credentials) return null;
 
-        const { name, email, profileImage, walletAddress } = credentials;
+        const { displayName, username, email, profileImage, walletAddress } =
+          credentials;
         const user = await retrieveUserByWallet(walletAddress);
 
         if (user) return user;
 
         const createdUser = await createUserUsingWallet(
-          name,
+          displayName,
+          username,
           email,
           profileImage,
           walletAddress
@@ -49,8 +57,9 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token, user }) {
-      session.user.userId = token.id as string;
+      session.user.userId = token.userId as string;
       session.user.walletAddress = token.walletAddress as string;
+      console.log("session [SERVER SIDE] ->", session);
       return {
         ...session,
       };
@@ -67,8 +76,9 @@ async function retrieveUserByWallet(walletAddress: string) {
 
     if (user) {
       return {
-        id: user.userId,
+        userId: user.userId,
         walletAddress: walletAddress,
+        email: user.email,
       } as any;
     } else return null;
   } catch (error) {
@@ -77,21 +87,25 @@ async function retrieveUserByWallet(walletAddress: string) {
 }
 
 async function createUserUsingWallet(
-  name: string,
+  displayname: string,
+  username: string,
   email: string,
   profilePicture: string,
   walletAddress: string
 ) {
   try {
     const userInfo = {
-      username: name,
+      displayName: capitaliseFirstLetter(displayname),
+      username: username,
       email: email,
       profilePic: profilePicture,
       walletAddress: walletAddress,
     };
+
     const user = await saveUser(userInfo);
     return user;
   } catch (error) {
+    console.log(error);
     return null;
   }
 }
