@@ -2,6 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community } from "@prisma/client";
+import { COMMUNITY_BUCKET } from "../../../../lib/constant";
+import { retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -129,11 +131,53 @@ export default async function handler(
 
   async function handlePOST(communityId: number, community: Community) {
     try {
+      const { profilePic, bannerPic } = community;
+      let profilePictureUrl = "";
+      let bannerPicUrl = "";
+
+      if (profilePic) {
+        const { data, error } = await uploadImage(
+          COMMUNITY_BUCKET,
+          profilePic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+          profilePictureUrl = await retrieveImageUrl(
+            COMMUNITY_BUCKET,
+            data.path
+          );
+      }
+
+      if (bannerPic) {
+        const { data, error } = await uploadImage(
+          COMMUNITY_BUCKET,
+          bannerPic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+        if (data)
+          bannerPicUrl = await retrieveImageUrl(COMMUNITY_BUCKET, data.path);
+      }
+
+      const updatedCommunityInfo = {
+        ...community,
+        profilePic: profilePictureUrl,
+        bannerPic: bannerPicUrl,
+      };
+      
       const response = await prisma.community.update({
         where: {
           communityId: communityId,
         },
-        data: { ...community, communityId: undefined },
+        data: { ...updatedCommunityInfo, communityId: undefined },
       });
       res.status(200).json(response);
     } catch (error) {
