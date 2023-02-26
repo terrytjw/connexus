@@ -374,11 +374,12 @@ async function generateEvent() {
           address2: "Singapore",
           locationName: "Expo Hall 1",
           postalCode: "486065",
+          lat : 1.01, 
+          lng: 1.2,
         },
       },
       startDate: new Date("2023-03-22"),
       endDate: new Date("2023-03-25"),
-      images: [],
       summary:
         "This is a live valorant seesion with Josh. He will be playing with his fans and answering questions.",
       description:
@@ -418,9 +419,9 @@ async function generateEvent() {
       publishType: PublishType.NOW,
       maxAttendee: 50,
       publishStartDate: new Date("2023-02-22"),
-      eventBannerPicture:
+      bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
-      eventImage:
+      eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
@@ -431,13 +432,14 @@ async function generateEvent() {
         create: {
           address1: "1 Singapore Expo",
           address2: "Singapore",
+          lat : 1.01, 
+          lng: 1.2,
           locationName: "Expo Hall 2",
           postalCode: "486065",
         },
       },
       startDate: new Date("2023-03-23"),
       endDate: new Date("2023-03-26"),
-      images: [],
       summary:
         "This is a cosplaying event with Malanie. She will be cosplaying as her favourite character and taking photos with her fans.",
       description:
@@ -477,9 +479,9 @@ async function generateEvent() {
       publishType: PublishType.NOW,
       maxAttendee: 50,
       publishStartDate: new Date("2023-01-22"),
-      eventBannerPicture:
+      bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
-      eventImage:
+      eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
@@ -491,13 +493,14 @@ async function generateEvent() {
         create: {
           address1: "1 Singapore Expo",
           address2: "Singapore",
+          lat : 1.01, 
+          lng: 1.2,
           locationName: "Expo Hall 3",
           postalCode: "486065",
         },
       },
       startDate: new Date("2023-03-24"),
       endDate: new Date("2023-03-27"),
-      images: [],
       summary:
         "This is a travel fair with Travely. They will be showcasing their new app and taking photos with their fans.",
       description:
@@ -537,9 +540,9 @@ async function generateEvent() {
       publishType: PublishType.NOW,
       maxAttendee: 50,
       publishStartDate: new Date("2023-02-22"),
-      eventBannerPicture:
+      bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
-      eventImage:
+      eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
       scAddress: "0xax",
     },
