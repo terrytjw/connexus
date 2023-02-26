@@ -41,9 +41,13 @@ export default async function handler(
 ) {
   const { method, query } = req;
 
+  const keyword = query.keyword as string;
+  const filter = query.filter as string;
+  const cursor = parseInt(query.cursor as string);
+
   switch (req.method) {
     case "GET":
-      await handleGET(query as Partial<User>);
+      await handleGET(keyword, cursor);
       break;
     case "POST":
       const user = JSON.parse(JSON.stringify(req.body)) as User;
@@ -54,10 +58,9 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(filterQuery: Partial<User>) {
-    console.log(filterQuery.notificationBySMS);
+  async function handleGET(keyword: string, cursor: number) {
     try {
-      const users = await findAllUser(filterQuery);
+      const users = await findAllUser(cursor, keyword);
       res.status(200).json(users);
     } catch (error) {
       const errorResponse = handleError(error);
