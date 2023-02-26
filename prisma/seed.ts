@@ -262,7 +262,7 @@ async function generateUser() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/malanie-profilePic.jpg",
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/malanie-bannerPic.jpg",
-      phoneNumber: "++6594745436",
+      phoneNumber: "+6594745436",
       bio: "I do full days of filming and I also schedule livestreams to create a stronger connection with my audience.",
     },
     {
@@ -274,7 +274,7 @@ async function generateUser() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-profilePic.jpg",
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
-      phoneNumber: "++6589212984",
+      phoneNumber: "+6589212984",
       bio: "I flim videos for 2 to 3 hours a day when the weather is good!",
     },
   ];
