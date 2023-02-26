@@ -152,12 +152,12 @@ export default async function handler(
 
       const { tickets, merchandise, walletAddress, email, ...userInfo } =
         userWithTicketsandMerch;
-      const ticketIdArray = tickets.map((ticket) => {
+      const ticketIdArray = tickets.map((ticket: Ticket) => {
         const { ticketId } = ticket;
         return { ticketId: ticketId };
       });
 
-      const merchIdArray = merchandise.map((merch) => {
+      const merchIdArray = merchandise.map((merch: Merchandis) => {
         const { merchId } = merch;
         return { merchId: merchId };
       });
