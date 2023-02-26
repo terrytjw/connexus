@@ -11,6 +11,7 @@ import React from "react";
 import { ethers } from "ethers";
 import { smartContract } from "../lib/constants";
 import {img} from "../lib/image";
+import { swrFetcher } from "../lib/swrFetcher";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
@@ -529,7 +530,7 @@ const EventsPage = (props: any) => {
 
   const { data, error, isLoading } = useSWR(
     "http://localhost:3000/api/events",
-    fetchEvents
+    swrFetcher
   );
 
   console.log(data);

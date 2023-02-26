@@ -4,7 +4,7 @@ import { PrismaClient, Collection , Prisma} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteMerchandise, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import { deleteMerchandise, MerchandisePartialType, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
 import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 const prisma = new PrismaClient();
 
@@ -80,7 +80,7 @@ export default async function handler(
     }
   }
 
-  async function updateMerchMedia(media, merchInfo){
+  async function updateMerchMedia(media, merchInfo : MerchandisePartialType ){
     let mediaUrl = ""; 
         if(media){
           const{data, error} = await uploadImage(
