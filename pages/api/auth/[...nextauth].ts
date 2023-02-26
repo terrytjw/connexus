@@ -59,6 +59,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token, user }) {
       session.user.userId = token.userId as string;
       session.user.walletAddress = token.walletAddress as string;
+      console.log("session [SERVER SIDE] ->", session);
       return {
         ...session,
       };
