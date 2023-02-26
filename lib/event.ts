@@ -14,9 +14,7 @@ export async function searchEvent(searchType: EventPartialType) {
   });
 }
 
-export async function findAllEvent() {
-  return prisma.user.findMany();
-}
+
 
 export async function deleteEvent(eventId: number) {
   return prisma.event.delete({

@@ -600,7 +600,8 @@
           "enum": [
             "CREATED",
             "ON_SALE",
-            "SOLD"
+            "SOLD",
+            "PAUSED"
           ]
         },
         "merchandise": {
