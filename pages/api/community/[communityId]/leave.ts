@@ -2,6 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
+import { leaveChannel } from "../../../../lib/channel";
 
 const prisma = new PrismaClient();
 
@@ -63,9 +64,15 @@ export default async function handler(
           }
         },
         include: {
-          members: true
+          members: true,
+          channels: {
+            orderBy: {
+              channelId: 'asc'
+            }
+          }
         }
       });
+      await leaveChannel(response.channels[0].channelId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
