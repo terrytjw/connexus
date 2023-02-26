@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
+import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
+import { POST_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -102,8 +104,36 @@ export default async function handler(
 
   async function handlePOST(post: Post) {
     try {
+      const { media } = post;
+      let updatedMedia = [];
+
+      for (let pic of media) {
+        let picPath = "";
+        const { data, error } = await uploadImage(
+          POST_BUCKET,
+          pic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+          picPath = await retrieveImageUrl(
+            POST_BUCKET,
+            data.path
+          );
+        
+        updatedMedia.push(picPath);
+      }
+
+      const updatedPostInfo = {
+        ...post,
+        media: updatedMedia
+      };
       const response = await prisma.post.create({
-        data: { ...post }
+        data: { ...post, postId: undefined }
       });
       res.status(200).json([response]);
     } catch (error) {
