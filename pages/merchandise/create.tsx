@@ -10,6 +10,9 @@ import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
 import { Collectible } from "../../utils/types";
+import { createCollection } from "../../lib/merchandise-helpers";
+import { useSession } from "next-auth/react";
+import Loading from "../../components/Loading";
 
 export type CreateCollectionForm = {
   collectibles: Collectible[];
@@ -19,10 +22,12 @@ export type CreateCollectionForm = {
 };
 
 const CreateCollectionPage = () => {
+  const { data: session, status } = useSession();
+  console.log("session -> ", session?.user.userId);
   const { handleSubmit, setValue, control, watch } =
     useForm<CreateCollectionForm>({
       defaultValues: {
-        collectibles: [{ image: "", name: "", quantity: 1 }],
+        collectibles: [{ image: "", name: "", totalMerchSupply: 1 }],
         collectionName: "",
         collectionDescription: "",
         price: 0,
@@ -48,6 +53,20 @@ const CreateCollectionPage = () => {
             className="py-12 px-4 sm:px-12"
             onSubmit={handleSubmit((val: any) => {
               console.log("Create merchandise form -> ", val);
+
+              const collectionName = val.collectionName;
+              const description = val.collectionDescription;
+              const creator_id = parseInt(session!.user.userId);
+              const price = val.price;
+              const collectibleArray = val.collectibles;
+
+              createCollection(
+                collectionName,
+                description,
+                creator_id,
+                price,
+                collectibleArray
+              );
             })}
           >
             <div className="mb-8 flex items-center gap-4">
@@ -87,7 +106,7 @@ const CreateCollectionPage = () => {
                     size="sm"
                     type="button"
                     onClick={() => {
-                      append({ image: "", name: "", quantity: 1 });
+                      append({ image: "", name: "", totalMerchSupply: 1 });
                     }}
                   >
                     Add item

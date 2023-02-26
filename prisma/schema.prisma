@@ -243,8 +243,7 @@ enum Currency {
 model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
-  media            String?
-  description      String     @default("")
+  image            String?
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
   currMerchSupply  Int        @default(0)
