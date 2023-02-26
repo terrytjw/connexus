@@ -375,12 +375,6 @@
           "type": "string",
           "format": "date-time"
         },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "summary": {
           "type": [
             "string",
@@ -407,13 +401,13 @@
             "PRIVATE"
           ]
         },
-        "eventBannerPicture": {
+        "eventPic": {
           "type": [
             "string",
             "null"
           ]
         },
-        "eventImage": {
+        "bannerPic": {
           "type": [
             "string",
             "null"
@@ -477,6 +471,12 @@
           "items": {
             "$ref": "#/definitions/Event"
           }
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
         }
       }
     },

@@ -1,5 +1,4 @@
-import {} from "./../../../lib/supabase";
-import { Ticket } from "@prisma/client";
+import { Merchandise, Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
@@ -157,14 +156,14 @@ export default async function handler(
 
       const { tickets, merchandise, ...userInfo } = userWithTicketsandMerch;
 
-      const ticketIdArray = tickets.map((ticket) => {
+      const ticketIdArray = tickets.map((ticket: Ticket) => {
         const { ticketId } = ticket;
         ({
           ticketId: ticketId,
         });
       });
 
-      const merchIdArray = merchandise.map((merch) => {
+      const merchIdArray = merchandise.map((merch: Merchandise) => {
         const { merchId } = merch;
         ({
           merchId: merchId,

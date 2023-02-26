@@ -100,13 +100,12 @@ model Event {
   addressId          Int
   startDate          DateTime       @default(now())
   endDate            DateTime       @default(now())
-  images             String[]
   summary            String?
   description        String?
   visibilityType     VisibilityType
   privacyType        PrivacyType
-  eventBannerPicture String?
-  eventImage         String?
+  eventPic           String?
+  bannerPic          String?
   maxAttendee        Int            @default(0)
   publishType        PublishType
   publishStartDate   DateTime       @default(now())
@@ -127,6 +126,8 @@ model Address {
   address2     String?
   postalCode   String
   Event        Event[]
+  lat          Float
+  lng          Float
 }
 
 model Ticket {
@@ -229,6 +230,7 @@ enum CollectionState {
   CREATED
   ON_SALE
   SOLD
+  PAUSED
 }
 
 enum Currency {
