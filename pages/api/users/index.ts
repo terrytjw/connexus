@@ -39,11 +39,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User[] | ErrorResponse>
 ) {
-  const { method } = req;
+  const { method, query } = req;
 
   switch (req.method) {
     case "GET":
-      await handleGET();
+      await handleGET(query as Partial<User>);
       break;
     case "POST":
       const user = JSON.parse(JSON.stringify(req.body)) as User;
@@ -54,9 +54,10 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(filterQuery: Partial<User>) {
+    console.log(filterQuery.notificationBySMS);
     try {
-      const users = await findAllUser();
+      const users = await findAllUser(filterQuery);
       res.status(200).json(users);
     } catch (error) {
       const errorResponse = handleError(error);

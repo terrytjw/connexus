@@ -77,6 +77,7 @@ export default async function handler(
   res: NextApiResponse<User | ErrorResponse | {}>
 ) {
   const { query, method } = req;
+
   let userId = parseInt(query.userId as string);
 
   switch (req.method) {

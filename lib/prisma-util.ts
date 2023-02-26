@@ -44,3 +44,19 @@ export type ErrorResponse = {
   error: string;
   message: string;
 };
+
+export function castAppropriateType(object: any) {
+  try {
+    const castObject = {} as any;
+    for (const property in object) {
+      console.log(object[property]);
+      if (Boolean(object[property]))
+        castObject[property] = Boolean(object[property]);
+      if (Number(object[property]))
+        castObject[property] = Number(object[property]);
+    }
+    return castObject;
+  } catch (error) {
+    console.log(error);
+  }
+}
