@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { PrismaClient, Event, Prisma, Ticket } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -80,16 +83,51 @@ export default async function handler(
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
-      const { tickets, ...eventInfo } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket) => {
+      const { tickets,  eventPic, bannerPic , ...eventInfo } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket : Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
       });
+      let eventImageUrl = ""; 
+      let eventBannerPictureUrl = ""; 
 
+      if(eventPic){
+        const{data, error} = await uploadImage(
+          EVENT_PROFILE_BUCKET, 
+          eventPic
+        );
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+        eventImageUrl = await retrieveImageUrl(
+          EVENT_PROFILE_BUCKET,
+            data.path
+          );
+      }
+
+      if (bannerPic) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
+          bannerPic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+        if (data) eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+      }
+
+      console.log(eventBannerPictureUrl, eventImageUrl);
       const response = await prisma.event.create({
         data: {
           ...eventInfo,
           eventId: undefined,
+          eventPic : eventImageUrl, 
+          bannerPic : eventBannerPictureUrl,
           tickets: { create: updatedTickets },
         },
         include: {

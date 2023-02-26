@@ -45,42 +45,10 @@ export type ErrorResponse = {
   message: string;
 };
 
-export function castAppropriateType(object: any) {
-  try {
-    console.log("original", object);
-    const castObject = {} as any;
-    for (const property in object) {
-      // if (Boolean(object[property])) {
-      //   castObject[property] =
-      //     (object[property] == "false") != Boolean(object[property]);
-      // } else if (Number(object[property]))
-      //   castObject[property] = Number(object[property]);
-
-      if (Number(object[property])) {
-        castObject[property] = Number(object[property]);
-      } else if (Boolean(object[property])) {
-        castObject[property] =
-          (object[property] == "false") != Boolean(object[property]);
-      }
-    }
-    return castObject;
-  } catch (error) {
-    console.log(error);
+export function capitaliseFirstLetter(string: string) {
+  const words = string.split(" ");
+  for (let i = 0; i < words.length; i++) {
+    words[i] = words[i][0].toUpperCase() + words[i].slice(1);
   }
-}
-export function checkIfRequireSuggestions(url: string): Boolean {
-  if (url.includes("suggestions")) return true;
-  else return false;
-}
-
-export function transformPropertyToContains(object: any) {
-  const castObject = {} as any;
-
-  console.log(object);
-  for (const property in object) {
-    castObject[property] = {
-      contains: object[property],
-    };
-  }
-  return castObject;
+  return words.join(" ");
 }

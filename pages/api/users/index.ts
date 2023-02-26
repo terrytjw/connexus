@@ -74,6 +74,7 @@ export default async function handler(
       let profilePictureUrl = "";
       let bannerPicUrl = "";
 
+
       if (profilePic) {
         const { data, error } = await uploadImage(
           USER_PROFILE_BUCKET,

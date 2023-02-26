@@ -19,6 +19,7 @@ export async function searchUser(searchType: UserPartialType) {
     where: {
       ...searchType,
     },
+    include: { tickets: true, merchandise: true },
   });
 }
 
