@@ -85,7 +85,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter: CategoryType[]) {
+  async function handleGET(cursor: number, filter?: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -95,9 +95,9 @@ export default async function handler(
           communityId: 'asc'
         },
         where: {
-          tags: {
+          tags: filter ? {
             hasEvery: filter
-          }
+          } : undefined,
         },
         include: {
           members: {
@@ -113,7 +113,7 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter: CategoryType[]) {
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -151,9 +151,9 @@ export default async function handler(
               }
             },
           ],
-          tags: {
+          tags: filter ? {
             hasEvery: filter
-          },
+          } : undefined,
         },
         include: {
           _count: {
