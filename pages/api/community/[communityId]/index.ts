@@ -107,8 +107,8 @@ export default async function handler(
         include: {
           channels: {
             include: {
-              _count: {
-                select: { members: true }
+              members: {
+                select: { userId: true, username: true, profilePic: true }
               }
             }
           },

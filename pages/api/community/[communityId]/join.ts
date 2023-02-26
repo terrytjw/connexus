@@ -63,7 +63,16 @@ export default async function handler(
           }
         },
         include: {
-          members: true
+          members: {
+            select: { userId: true }
+          },
+          channels: {
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
+            }
+          }
         }
       });
       res.status(200).json(response);
