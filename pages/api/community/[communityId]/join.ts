@@ -55,7 +55,7 @@ export default async function handler(
 
   async function handlePOST(communityId: number, userId: number) {
     try {
-      const response = await prisma.community.update({
+      const communityToJoin = await prisma.community.update({
         where: {
           communityId: communityId,
         },
@@ -64,7 +64,20 @@ export default async function handler(
             connect: {
               userId: userId
             }
+          },
+        },
+        include: {
+          channels: {
+            orderBy: {
+              channelId: 'asc'
+            }
           }
+        }
+      });
+      await joinChannel(communityToJoin.channels[0].channelId, userId);
+      const response = await prisma.community.findFirst({
+        where: {
+          communityId: communityId
         },
         include: {
           members: true,
@@ -74,9 +87,8 @@ export default async function handler(
             }
           }
         }
-      });
-      await joinChannel(response.channels[0].channelId, userId);
-      res.status(200).json(response);
+      })
+      res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
