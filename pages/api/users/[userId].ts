@@ -81,6 +81,7 @@ export default async function handler(
   res: NextApiResponse<User | ErrorResponse | {}>
 ) {
   const { query, method } = req;
+
   let userId = parseInt(query.userId as string);
 
   switch (req.method) {
@@ -165,7 +166,7 @@ export default async function handler(
 
       const merchIdArray = merchandise.map((merch: Merchandise) => {
         const { merchId } = merch;
-        return{
+        return {
           merchId: merchId,
         };
       });
@@ -174,16 +175,15 @@ export default async function handler(
         ...userWithTicketsandMerch,
 
         tickets: {
-          connect:[...ticketIdArray] },
+          connect: [...ticketIdArray],
+        },
         merchandise: {
-          connect: [...merchIdArray] }
-          
-        
+          connect: [...merchIdArray],
+        },
       };
 
       if (profilePictureUrl) updatedUserInfo.profilePic = profilePictureUrl;
       if (bannerPicUrl) updatedUserInfo.bannerPic = bannerPicUrl;
-      console.log(updatedUserInfo);
       const response = await updateUser(userId, updatedUserInfo);
       res.status(200).json(response);
     } catch (error) {

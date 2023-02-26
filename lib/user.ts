@@ -23,9 +23,23 @@ export async function searchUser(searchType: UserPartialType) {
   });
 }
 
-export async function findAllUser() {
+export async function findAllUser(cursor: number, filter?: string) {
+  const filterCondition = filter
+    ? {
+        OR: [
+          { username: { contains: filter } },
+          { displayName: { contains: filter } },
+          { email: { contains: filter } },
+          { bio: { contains: filter } },
+        ],
+      }
+    : undefined;
+
   return prisma.user.findMany({
-    include: { tickets: true, merchandise: true },
+    take: 10,
+    skip: cursor ? 1 : undefined, // Skip cursor
+    cursor: cursor ? { userId: cursor } : undefined,
+    where: { ...filterCondition },
   });
 }
 
