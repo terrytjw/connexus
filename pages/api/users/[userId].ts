@@ -1,11 +1,25 @@
+import { UserPartialType } from "./../../../lib/user";
 import { Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+  checkIfRequireSuggestion,
+  checkIfRequireSuggestions,
+  transformPropertyToContains,
+  castAppropriateType,
+} from "../../../lib/prisma-util";
 import { PrismaClient, User, Prisma } from "@prisma/client";
-import { deleteUser, searchUser, updateUser } from "../../../lib/user";
+import {
+  deleteUser,
+  searchUser,
+  searchUserAutocompletion,
+  updateUser,
+} from "../../../lib/user";
 import { USER_PROFILE_BUCKET } from "../../../lib/constant";
 import { uploadImage, retrieveImageUrl } from "../../../lib/supabase";
+import queryString from "query-string";
 
 const prisma = new PrismaClient();
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
@@ -76,7 +90,25 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User | ErrorResponse | {}>
 ) {
-  const { query, method } = req;
+  const { method } = req;
+  const { query, url } = queryString.parseUrl(req.url as string);
+
+  if (checkIfRequireSuggestions(url as string)) {
+    try {
+
+      
+
+      const castedObject = castAppropriateType(query) as UserPartialType;
+      const user = await searchUserAutocompletion(
+        transformPropertyToContains(castedObject)
+      );
+      if (!user) res.status(200).json({});
+      else res.status(200).json(user);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
 
   let userId = parseInt(query.userId as string);
 

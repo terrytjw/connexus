@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
-import { castAppropriateType } from "./prisma-util";
+import { castAppropriateType, instanceFromJSON } from "./prisma-util";
 import { generateUniqueUsername } from "./user-util";
 
 export interface UserPartialType extends Partial<User> {}
@@ -23,19 +23,16 @@ export async function searchUser(searchType: UserPartialType) {
   });
 }
 
+export async function searchUserAutocompletion(searchType: UserPartialType) {
+  return prisma.user.findMany({
+    where: {
+      ...searchType,
+    },
+  });
+}
+
 export async function findAllUser(filterQuery: UserPartialType) {
-  // console.log(filterQuery.userId, filterQuery.notificationBySMS);
-
-  console.log(castAppropriateType(filterQuery));
-
   const filterObj = castAppropriateType(filterQuery);
-  console.log("heelo");
-  // const filterObj = {} as UserPartialType;
-  // if (filterQuery.userId) filterObj["userId"] = Number(filterQuery.userId);
-  // if (filterQuery.notificationBySMS)
-  //   filterObj["notificationBySMS"] = Boolean(filterQuery.notificationBySMS);
-  // if (filterQuery.notificationByEmail)
-  //   filterObj["notificationByEmail"] = Boolean(filterQuery.notificationByEmail);
   return prisma.user.findMany({
     where: { ...filterObj },
   });

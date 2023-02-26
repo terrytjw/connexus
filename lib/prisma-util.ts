@@ -47,16 +47,40 @@ export type ErrorResponse = {
 
 export function castAppropriateType(object: any) {
   try {
+    console.log("original", object);
     const castObject = {} as any;
     for (const property in object) {
-      console.log(object[property]);
-      if (Boolean(object[property]))
-        castObject[property] = Boolean(object[property]);
-      if (Number(object[property]))
+      // if (Boolean(object[property])) {
+      //   castObject[property] =
+      //     (object[property] == "false") != Boolean(object[property]);
+      // } else if (Number(object[property]))
+      //   castObject[property] = Number(object[property]);
+
+      if (Number(object[property])) {
         castObject[property] = Number(object[property]);
+      } else if (Boolean(object[property])) {
+        castObject[property] =
+          (object[property] == "false") != Boolean(object[property]);
+      }
     }
     return castObject;
   } catch (error) {
     console.log(error);
   }
+}
+export function checkIfRequireSuggestions(url: string): Boolean {
+  if (url.includes("suggestions")) return true;
+  else return false;
+}
+
+export function transformPropertyToContains(object: any) {
+  const castObject = {} as any;
+
+  console.log(object);
+  for (const property in object) {
+    castObject[property] = {
+      contains: object[property],
+    };
+  }
+  return castObject;
 }
