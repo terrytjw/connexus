@@ -81,6 +81,7 @@ export default async function handler(
   res: NextApiResponse<User | ErrorResponse | {}>
 ) {
   const { query, method } = req;
+
   let userId = parseInt(query.userId as string);
 
   switch (req.method) {
@@ -158,38 +159,31 @@ export default async function handler(
 
       const ticketIdArray = tickets.map((ticket: Ticket) => {
         const { ticketId } = ticket;
-        ({
+        return {
           ticketId: ticketId,
-        });
+        };
       });
 
       const merchIdArray = merchandise.map((merch: Merchandise) => {
         const { merchId } = merch;
-        ({
+        return {
           merchId: merchId,
-        });
+        };
       });
 
       const updatedUserInfo = {
         ...userWithTicketsandMerch,
 
         tickets: {
-          connect:
-            [...ticketIdArray].length > 0
-              ? { connect: [...ticketIdArray] }
-              : undefined,
+          connect: [...ticketIdArray],
         },
         merchandise: {
-          connect:
-            [...merchIdArray].length > 0
-              ? { connect: [...merchIdArray] }
-              : undefined,
+          connect: [...merchIdArray],
         },
       };
 
       if (profilePictureUrl) updatedUserInfo.profilePic = profilePictureUrl;
       if (bannerPicUrl) updatedUserInfo.bannerPic = bannerPicUrl;
-
       const response = await updateUser(userId, updatedUserInfo);
       res.status(200).json(response);
     } catch (error) {
