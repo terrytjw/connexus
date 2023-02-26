@@ -57,7 +57,7 @@ export const authOptions: NextAuthOptions = {
       return { ...token, ...user };
     },
     async session({ session, token, user }) {
-      session.user.userId = token.id as string;
+      session.user.userId = token.userId as string;
       session.user.walletAddress = token.walletAddress as string;
       return {
         ...session,
@@ -75,8 +75,9 @@ async function retrieveUserByWallet(walletAddress: string) {
 
     if (user) {
       return {
-        id: user.userId,
+        userId: user.userId,
         walletAddress: walletAddress,
+        email: user.email,
       } as any;
     } else return null;
   } catch (error) {
