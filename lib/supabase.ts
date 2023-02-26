@@ -31,10 +31,11 @@ export const extractFileExtension = (dataUrl: string): string => {
 };
 
 export const isValidHttpUrl = (url: string): boolean => {
+  let check;
   try {
-    const check = new URL(url);
+    check = new URL(url);
   } catch (error) {
     return false;
   }
-  return true;
+  return check.protocol === 'http:' || check.protocol === 'https:';
 }
