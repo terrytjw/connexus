@@ -77,10 +77,14 @@ export default async function handler(
           communityId: communityId
         },
         include: {
-          members: true,
+          members: {
+            select: { userId: true }
+          },
           channels: {
-            orderBy: {
-              channelId: 'asc'
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
             }
           }
         }
