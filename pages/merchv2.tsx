@@ -177,7 +177,7 @@ const CollectionsPage = (props: any) => {
     */
 
     const userId = 1;
-    const collectionId = 5;
+    const collectionId = 4;
     const merch_category = "Merch2";
 
     let response = await axios.get(
