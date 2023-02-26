@@ -123,34 +123,10 @@ export default async function handler(
           communityId: 'asc'
         },
         where: {
-          OR: [
-            {
-              name: {
-                contains: keyword,
-                mode: 'insensitive'
-              }
-            },
-            {
-              creator: {
-                is: {
-                  OR: [
-                    {
-                      displayName: {
-                        contains: keyword,
-                        mode: 'insensitive'
-                      }
-                    },
-                    {
-                      username: {
-                        contains: keyword,
-                        mode: 'insensitive'
-                      }
-                    }
-                  ],
-                }
-              }
-            },
-          ],
+          name: {
+            contains: keyword,
+            mode: 'insensitive'
+          },
           tags: filter ? {
             hasEvery: filter
           } : undefined,
