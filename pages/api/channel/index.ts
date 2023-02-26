@@ -55,8 +55,8 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const communities = await prisma.channel.findMany();
-      res.status(200).json(communities);
+      const channels = await prisma.channel.findMany();
+      res.status(200).json(channels);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
