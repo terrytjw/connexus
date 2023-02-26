@@ -121,7 +121,7 @@ export default async function handler(
         data: {
           ...collectionInfo,
           collectionId: undefined,
-          merchandise: { create: updatedMerchs },
+          merchandise: { create: updatedMerchs as Merchandise[] },
         },
         include: {
           merchandise: true,

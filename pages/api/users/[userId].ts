@@ -1,4 +1,4 @@
-import { Ticket } from "@prisma/client";
+import { Merchandise, Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
@@ -157,7 +157,7 @@ export default async function handler(
         return { ticketId: ticketId };
       });
 
-      const merchIdArray = merchandise.map((merch: Merchandis) => {
+      const merchIdArray = merchandise.map((merch: Merchandise) => {
         const { merchId } = merch;
         return { merchId: merchId };
       });

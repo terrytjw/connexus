@@ -51,7 +51,7 @@ const CollectionsPage = (props: any) => {
     const currency = "USD";
     const collectionState = "CREATED";
     const creator_id = 1;
-    const collectionName = "collection10";
+    const collectionName = "collections123";
 
     const merchandise_categories = [
       {
