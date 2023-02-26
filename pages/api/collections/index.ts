@@ -3,7 +3,9 @@ import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Collection , Prisma} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-
+import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteMerchandise, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
@@ -81,10 +83,31 @@ export default async function handler(
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
       const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = merchandise.map((merch) => {
-        const { merchId, collectionId, ...merchInfo } = merch;
-        return merchInfo;
+      const updatedMerchs = merchandise.map(async (merch) => {
+        const { merchId, collectionId, media, ...merchInfo } = merch;
+        let mediaUrl = ""; 
+        if(media){
+          const{data, error} = await uploadImage(
+            MERCH_PROFILE_BUCKET, 
+            media
+          );
+          if (error) {
+            const errorResponse = handleError(error);
+            res.status(400).json(errorResponse);
+          }
+  
+          if (data)
+          mediaUrl = await retrieveImageUrl(
+            MERCH_PROFILE_BUCKET,
+              data.path
+            );
+        }
+  
+        console.log(mediaUrl)
+        if(mediaUrl) merchInfo.media = mediaUrl;
+        return merchInfo
       });
+  
 
       console.log(updatedMerchs); 
       console.log(collectionInfo); 

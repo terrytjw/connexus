@@ -4,6 +4,8 @@ import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
 import { smartContract } from "../lib/constants";
+import {img} from "../lib/image";
+
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -48,19 +50,19 @@ const CollectionsPage = (props: any) => {
     const currency = "USD";
     const collectionState = "CREATED";
     const creator_id = 1;
-    const collectionName = "collection1";
+    const collectionName = "collection10";
 
     const merchandise_categories = [
       {
         name: "Merch1",
-        media: "....com",
+        media: img,
         description: "cool items",
         totalMerchSupply: 200,
         price: 10,
       },
       {
         name: "Merch2",
-        media: "....com",
+        media: img,
         description: "cool items 2",
         totalMerchSupply: 200,
         price: 50,
@@ -175,7 +177,7 @@ const CollectionsPage = (props: any) => {
     */
 
     const userId = 1;
-    const collectionId = 2;
+    const collectionId = 5;
     const merch_category = "Merch2";
 
     let response = await axios.get(
@@ -288,7 +290,7 @@ const CollectionsPage = (props: any) => {
     4. Merch Info
     */
 
-    const collection_id = 2;
+    const collection_id = 5;
     let response_collection = await axios.get(
       "http://localhost:3000/api/collections/" + collection_id.toString()
     );
@@ -300,14 +302,14 @@ const CollectionsPage = (props: any) => {
     const merch_categories = [
       {
         name: "jacketsssss",
-        media: "....com",
+        media: img,
         description: "cool items",
         totalMerchSupply: 200,
         price: 10,
       },
       {
         name: "lightstics",
-        media: "....com",
+        media: img,
         description: "cool items 2",
         totalMerchSupply: 10,
         price: 50,
@@ -325,6 +327,7 @@ const CollectionsPage = (props: any) => {
           name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: 0,
+          media : img, 
           price: merch_categories[k].price,
           description: merch_categories[k].description,
           collectionId: collection_id,
@@ -342,6 +345,7 @@ const CollectionsPage = (props: any) => {
         //Update existing merch category
         var merch: Partial<Merchandise> = {
           merchId: merchandise[k].merchId,
+          media : merch_categories[k].media,
           name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: merchandise[k].currMerchSupply,

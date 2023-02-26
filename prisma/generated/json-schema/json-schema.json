@@ -338,12 +338,16 @@
           "format": "date-time"
         },
         "summary": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "visibilityType": {
           "type": "string",

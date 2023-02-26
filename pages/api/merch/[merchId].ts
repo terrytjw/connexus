@@ -128,6 +128,7 @@ export default async function handler(
       const updatedMerchInfo = {
         ...merch
       }
+      console.log(merchUrl);
 
       if (merchUrl) updatedMerchInfo.media = merchUrl;
       const response = await updatedMerchandise(merchId, updatedMerchInfo);

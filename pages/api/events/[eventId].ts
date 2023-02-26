@@ -158,7 +158,7 @@ export default async function handler(
       }
 
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
-      if (eventBannerPictureUrl) updatedEventInfo.eventBannerPic = eventBannerPictureUrl;
+      if (eventBannerPictureUrl) updatedEventInfo.bannerPic = eventBannerPictureUrl;
       const response = await updateEvent(eventId, updatedEventInfo);
       
       res.status(200).json(response);
