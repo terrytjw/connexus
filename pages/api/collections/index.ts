@@ -1,14 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection , Prisma, Merchandise} from "@prisma/client";
+import { PrismaClient, Collection, Prisma, Merchandise } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteMerchandise, MerchandisePartialType, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import {
+  deleteMerchandise,
+  MerchandisePartialType,
+  searchMerchandise,
+  updatedMerchandise,
+} from "../../../lib/merch";
 import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 const prisma = new PrismaClient();
 
-type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{
+  include: { merchandise: true };
+}>;
 
 /**
  * @swagger
@@ -58,7 +65,9 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const collection = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
+      const collection = JSON.parse(
+        JSON.stringify(req.body)
+      ) as CollectionwithMerch;
       await handlePOST(collection);
       break;
     default:
@@ -80,42 +89,40 @@ export default async function handler(
     }
   }
 
-  async function updateMerchMedia(media: string | null, merchInfo : MerchandisePartialType ){
-    let mediaUrl = ""; 
-        if(media){
-          const{data, error} = await uploadImage(
-            MERCH_PROFILE_BUCKET, 
-            media
-          );
-          if (error) {
-            const errorResponse = handleError(error);
-            res.status(400).json(errorResponse);
-          }
-  
-          if (data)
-          mediaUrl = await retrieveImageUrl(
-            MERCH_PROFILE_BUCKET,
-              data.path
-            );
-        }
-  
-        console.log(mediaUrl)
-        if(mediaUrl) merchInfo.media = mediaUrl;
-        return merchInfo
-  };
+  async function updateMerchMedia(
+    image: string | null,
+    merchInfo: MerchandisePartialType
+  ) {
+    let imageUrl = "";
+    if (image) {
+      const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
+      if (error) {
+        const errorResponse = handleError(error);
+        res.status(400).json(errorResponse);
+      }
+
+      if (data)
+        imageUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
+    }
+
+    console.log(imageUrl);
+    if (imageUrl) merchInfo.image = imageUrl;
+    return merchInfo;
+  }
 
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
       const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = await Promise.all(merchandise.map(async (merch : Merchandise) => {
-        const { merchId, collectionId, media, ...merchInfo } = merch;
-        let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
-        return updatedMerchInfo;
-      }));
-  
+      const updatedMerchs = await Promise.all(
+        merchandise.map(async (merch: Merchandise) => {
+          const { merchId, collectionId, image, ...merchInfo } = merch;
+          let updatedMerchInfo = await updateMerchMedia(image, merchInfo);
+          return updatedMerchInfo;
+        })
+      );
 
-      console.log(updatedMerchs); 
-      console.log(collectionInfo); 
+      console.log(updatedMerchs);
+      console.log(collectionInfo);
 
       const response = await prisma.collection.create({
         data: {

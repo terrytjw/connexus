@@ -9,8 +9,17 @@ import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collections, channels } from "../../../utils/dummyData";
 import { ChannelType, Collection } from "../../../utils/types";
+import useSWR from "swr";
+import { swrFetcher } from "../../../lib/swrFetcher";
+import Loading from "../../Loading";
+import { updateCollection } from "../../../lib/merchandise-helpers";
 
 const CreatorCollectionsPage = () => {
+  const {
+    data: collectionData,
+    error,
+    isLoading: isCollectionDataLoading,
+  } = useSWR("http://localhost:3000/api/collections", swrFetcher);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +29,7 @@ const CreatorCollectionsPage = () => {
       name: "",
       description: "",
       premiumChannel: null,
+      collectionId: 0,
     },
   });
 
@@ -29,6 +39,8 @@ const CreatorCollectionsPage = () => {
     "premiumChannel",
   ]);
 
+  if (isCollectionDataLoading) return <Loading />;
+  console.log("collection data -> ", collectionData);
   return (
     <main className="py-12 px-4 sm:px-12">
       <Modal
@@ -39,6 +51,8 @@ const CreatorCollectionsPage = () => {
         <form
           onSubmit={handleSubmit((val: any) => {
             console.log("Edit collection: ", val);
+
+            updateCollection(val.name, val.description, 2); // TO REPLACE WITH DYNAMIC COLLECTION ID
           })}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -175,7 +189,7 @@ const CreatorCollectionsPage = () => {
       >
         {activeTab == 0 && (
           <CollectionTable
-            data={collections}
+            data={collectionData}
             columns={[
               "Collection No.",
               "Collection Name",
@@ -185,16 +199,16 @@ const CreatorCollectionsPage = () => {
               "Premium Channel",
             ]}
             onEdit={(index: number) => {
-              setValue("name", collections[index].name);
-              setValue("description", collections[index].description);
-              setValue("premiumChannel", collections[index].premiumChannel);
+              setValue("name", collectionData[index].collectionName);
+              setValue("description", collectionData[index].description);
+              setValue("premiumChannel", collectionData[index].premiumChannel);
               setIsModalOpen(true);
             }}
           />
         )}
         {activeTab == 1 && (
           <CollectionTable
-            data={collections}
+            data={collectionData}
             columns={[
               "Collection No.",
               "Collection Name",
@@ -207,6 +221,7 @@ const CreatorCollectionsPage = () => {
               setValue("name", collections[index].name);
               setValue("description", collections[index].description);
               setValue("premiumChannel", collections[index].premiumChannel);
+              setValue("collectionId", index);
               setIsModalOpen(true);
             }}
           />

@@ -47,7 +47,7 @@ const CollectionsPage = () => {
           {isCreator ? (
             <CreatorCollectionsPage />
           ) : (
-            <FanCollectionsPage merchandise={userData.merchandise} />
+            <FanCollectionsPage merchandise={[]} />
           )}
         </div>
       </Layout>

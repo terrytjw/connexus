@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import { FaEdit, FaPauseCircle } from "react-icons/fa";
+import { pauseCollectionMint } from "../../lib/merchandise-helpers";
 import Badge from "../Badge";
 
 type CollectionTableProps = {
@@ -42,14 +43,18 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
               className="cursor-pointer"
             >
               <td className="text-gray-700">{data.collectionId}</td>
-              <td className="text-gray-700">{data.name}</td>
+              <td className="text-gray-700">{data.collectionName}</td>
               <td className="text-gray-700">{data.description}</td>
-              <td className="text-gray-700">{data.quantity}</td>
-              <td className="text-gray-700">{data.price}</td>
+              <td className="text-gray-700">
+                {data.merchandise[0].totalMerchSupply}
+              </td>
+              <td className="text-gray-700">{data.merchandise[0].price}</td>
               <td className="text-gray-700">
                 {data.premiumChannel ? (
                   <Badge size="sm" label={data.premiumChannel.name} />
-                ) : null}
+                ) : (
+                  <span className="ml-12">-</span>
+                )}
               </td>
 
               {onEdit ? (
@@ -70,6 +75,7 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                       className="btn-ghost btn-xs btn"
                       onClick={(e) => {
                         e.stopPropagation();
+                        pauseCollectionMint(1); // TO REPLACE WITH DYNAMIC COLLECTION ID
                       }}
                     >
                       <FaPauseCircle className="text-lg text-blue-600" />

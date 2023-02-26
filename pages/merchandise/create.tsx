@@ -57,7 +57,7 @@ const CreateCollectionPage = () => {
               const collectionName = val.collectionName;
               const description = val.collectionDescription;
               const creator_id = parseInt(session!.user.userId);
-              const price = val.price;
+              const price = parseInt(val.price);
               const collectibleArray = val.collectibles;
 
               createCollection(
