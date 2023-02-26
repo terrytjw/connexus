@@ -80,12 +80,8 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(collectionwithMerch: CollectionwithMerch) {
-    try {
-      const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = merchandise.map(async (merch) => {
-        const { merchId, collectionId, media, ...merchInfo } = merch;
-        let mediaUrl = ""; 
+  async function updateMerchMedia(media, merchInfo){
+    let mediaUrl = ""; 
         if(media){
           const{data, error} = await uploadImage(
             MERCH_PROFILE_BUCKET, 
@@ -106,7 +102,16 @@ export default async function handler(
         console.log(mediaUrl)
         if(mediaUrl) merchInfo.media = mediaUrl;
         return merchInfo
-      });
+  };
+
+  async function handlePOST(collectionwithMerch: CollectionwithMerch) {
+    try {
+      const { merchandise, ...collectionInfo } = collectionwithMerch;
+      const updatedMerchs = await Promise.all(merchandise.map(async (merch) => {
+        const { merchId, collectionId, media, ...merchInfo } = merch;
+        let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
+        return updatedMerchInfo;
+      }));
   
 
       console.log(updatedMerchs); 

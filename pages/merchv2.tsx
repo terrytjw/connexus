@@ -290,7 +290,7 @@ const CollectionsPage = (props: any) => {
     4. Merch Info
     */
 
-    const collection_id = 5;
+    const collection_id = 4;
     let response_collection = await axios.get(
       "http://localhost:3000/api/collections/" + collection_id.toString()
     );
@@ -317,7 +317,7 @@ const CollectionsPage = (props: any) => {
     ];
     let map = {} as any;
 
-    const updatedMerchandise: Partial<Merchandise>[] = [...merchandise];
+    const updatedMerchandise: Partial<Merchandise>[] = merchandise;
 
     for (let k = 0; k < merch_categories.length; k++) {
       if (k > merchandise.length - 1) {
