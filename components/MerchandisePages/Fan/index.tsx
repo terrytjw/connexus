@@ -5,6 +5,10 @@ import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
+import {
+  filterByMerchandisePurchaseType,
+  MerchandisePriceType,
+} from "../../../pages/api/merch";
 
 const FanCollectionsPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -28,6 +32,23 @@ const FanCollectionsPage = () => {
     useState(
       activeTab === 0 ? collectedTabfilters[0] : marketplaceTabfilters[0]
     );
+
+  useEffect(() => {
+    console.log(
+      "collectedTabfilterSelected -> ",
+      collectedTabfilterSelected.name.toLowerCase()
+    );
+
+    if (collectedTabfilterSelected.name.toLowerCase() === "free-of-charge") {
+      // call some endpoint
+      filterByMerchandisePurchaseType(1, 1, MerchandisePriceType.FREE);
+    }
+
+    if (collectedTabfilterSelected.name.toLowerCase() === "purchased") {
+      // call some endpoint
+      // filterByMerchandisePurchaseType(1, 1, MerchandisePriceType.PAID);
+    }
+  }, [collectedTabfilterSelected.name]);
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -98,6 +119,9 @@ const FanCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
+                // call some endpoint
+                // console.log("val -> ", e.target.value);
+                // filterByMerchandisePurchaseType(e.target.value)
               }}
             />
           </div>
