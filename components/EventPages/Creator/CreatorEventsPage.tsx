@@ -2,49 +2,64 @@ import React, { useState } from "react";
 import Button from "../../Button";
 import EventsTable from "../EventsTable";
 
-const events = [
-  {
-    eventId: 0,
-    title: "string",
-    category: "AUTO_BOAT_AIR",
-    location: "string",
-    eventDurationType: "SINGLE",
-    startDate: "string",
-    endDate: "string",
-    images: ["/images/bear.jpg"],
-    summary: "string",
-    description: "string",
-    visibilityType: "DRAFT",
-    privacyType: "PUBLIC",
-    tickets: [
-      {
-        ticketId: 0,
-        name: "string",
-        quantity: 0,
-        price: 0,
-        startDate: "string",
-        endDate: "string",
-        description: "string",
-        event: "string",
-        promotion: [
-          {
-            promotionId: 0,
-            name: "string",
-            promotionType: "LIMITED",
-            promotionValue: 0,
-            quantity: 0,
-            startDate: "string",
-            endDate: "string",
-            ticket: "string",
-          },
-        ],
-      },
-    ],
-  },
-];
+// const events = [
+//   {
+//     eventId: 0,
+//     title: "string",
+//     category: "AUTO_BOAT_AIR",
+//     location: "string",
+//     eventDurationType: "SINGLE",
+//     startDate: "string",
+//     endDate: "string",
+//     images: ["/images/bear.jpg"],
+//     summary: "string",
+//     description: "string",
+//     visibilityType: "DRAFT",
+//     privacyType: "PUBLIC",
+//     tickets: [
+//       {
+//         ticketId: 0,
+//         name: "string",
+//         quantity: 0,
+//         price: 0,
+//         startDate: "string",
+//         endDate: "string",
+//         description: "string",
+//         event: "string",
+//         promotion: [
+//           {
+//             promotionId: 0,
+//             name: "string",
+//             promotionType: "LIMITED",
+//             promotionValue: 0,
+//             quantity: 0,
+//             startDate: "string",
+//             endDate: "string",
+//             ticket: "string",
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// ];
 
-const CreatorEventsPage = () => {
+import {
+  Event,
+  Ticket,
+  PrivacyType,
+  Promotion,
+  VisibilityType,
+} from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../../utils/types";
+
+type CreatorEventsPageProps = {
+  events: EventWithTicketsandAddress[];
+};
+
+const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [activeTab, setActiveTab] = useState(0);
+
+  console.log(events);
 
   return (
     <div>
@@ -81,7 +96,6 @@ const CreatorEventsPage = () => {
           <EventsTable
             data={events}
             columns={[
-              "Registration No.",
               "Event Name",
               "Date",
               "Attendees Number",

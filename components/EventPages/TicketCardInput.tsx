@@ -1,26 +1,25 @@
 import React from "react";
 import { Ticket } from "@prisma/client";
-import {
-  FieldArrayWithId,
-  UseFieldArrayAppend,
-  UseFormSetValue,
-} from "react-hook-form";
-import { Attendee } from "../../pages/events/register/[id]";
+import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UserWithSelectedTicket } from "../../pages/events/register/[id]";
 
 type TicketCardInputProps = {
   ticket: Ticket;
-  setValue: UseFormSetValue<Attendee>;
-  fields: FieldArrayWithId<Attendee, "attendeeTickets", "id">[];
-  append: UseFieldArrayAppend<Attendee, "attendeeTickets">;
+  watch: UseFormWatch<UserWithSelectedTicket>;
+  setValue: UseFormSetValue<UserWithSelectedTicket>;
+  reset: UseFormReset<UserWithSelectedTicket>;
 };
 
 const TicketCardInput = ({
   ticket,
+  watch,
   setValue,
-  fields,
-  append,
+  reset,
 }: TicketCardInputProps) => {
-  console.log("attendeeTickets ", fields);
+  // form data from parent component
+  const {
+    selectedTicket: { ticketName, qty },
+  } = watch();
   return (
     <div>
       <div className="pb-2 sm:pb-4">
@@ -48,26 +47,27 @@ const TicketCardInput = ({
             <div className="flex h-10 w-32 flex-row">
               {/* decrease button */}
               <button
+                type="button" // prevent form submission
                 className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
                 onClick={() => {
-                  // if (item.quantity && item.quantity > 1) {
-                  //   updateItem({ ...item, quantity: item.quantity - 1 });
-                  //   return;
-                  // }
-                  // updateItem({ ...item, quantity: 1 });
+                  // only allow resetting of selected ticket if ticket name matches
+                  if (ticket.name === ticketName) {
+                    setValue("selectedTicket", {
+                      ticketName: "",
+                      qty: 0,
+                      price: 0,
+                    });
+                  }
                 }}
               >
                 <span className="m-auto text-2xl">-</span>
               </button>
               <input
                 type="number"
+                disabled
                 min={1}
                 step={1}
-                value={
-                  fields.find(
-                    (attendeeTicket) => attendeeTicket.name === ticket.name
-                  )?.qty ?? 0
-                }
+                value={ticket.name === ticketName ? 1 : 0}
                 onKeyDown={(e) => {
                   // disallow decimal
                   // only allow numbers, backspace, arrow left and right for editing
@@ -81,40 +81,20 @@ const TicketCardInput = ({
                   }
                   e.preventDefault();
                 }}
-                onChange={(e) => {
-                  // updateItem({ ...item, quantity: e.target.valueAsNumber });
-                }}
                 className="w-full appearance-none bg-gray-200 text-center outline-none"
               ></input>
               {/* increase button */}
               <button
+                type="button" // prevent form submission
                 className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
                 onClick={() => {
-                  // if ticket category exist, update array
-                  // else add a new object representing a new ticket category
-                  if (
-                    fields.find(
-                      (attendeeTicket) => attendeeTicket.name === ticket.name
-                    )
-                  ) {
-                    // To change depending on schema
-                    setValue(
-                      "attendeeTickets",
-                      fields.map((attendeeTicket) =>
-                        attendeeTicket.name === ticket.name
-                          ? {
-                              ...attendeeTicket,
-                              ticketIds: [
-                                ...attendeeTicket.ticketIds,
-                                "new id",
-                              ],
-                              qty: attendeeTicket.qty + 1,
-                            }
-                          : attendeeTicket
-                      )
-                    );
-                  } else {
-                    append({ name: ticket.name, ticketIds: ["id1"], qty: 1 });
+                  // only replace selected ticket if no existing tickets are selected
+                  if (qty === 0) {
+                    setValue("selectedTicket", {
+                      ticketName: ticket.name,
+                      qty: 1,
+                      price: ticket.price,
+                    });
                   }
                 }}
               >

@@ -1,4 +1,4 @@
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   FaCalendar,
@@ -14,26 +14,26 @@ import Avatar from "../../../Avatar";
 import Badge from "../../../Badge";
 import Banner from "../../../Banner";
 import Button from "../../../Button";
-import { Event } from "../../../../pages/events/create";
 import TicketCard from "../../TicketCard";
 import { UseFormWatch } from "react-hook-form";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
 
 type EventPreviewPageProps = {
-  watch: UseFormWatch<Event>;
+  watch: UseFormWatch<EventWithTicketsandAddress>;
   setIsPreview: Dispatch<SetStateAction<boolean>>;
 };
 
 const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
   const {
-    name,
+    eventName,
     description,
-    profilePic,
+    eventPic,
     bannerPic,
+    startDate,
+    endDate,
+    category,
     tickets,
-    startDateTime,
-    endDateTime,
-    venue,
-    tags,
+    address,
   } = watch();
   useEffect(() => {
     // scroll to ticket
@@ -77,7 +77,7 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
 
         <div className="z-30 mx-auto px-16">
           <div className="relative z-30 -mt-12 sm:-mt-16">
-            <Avatar imageUrl={profilePic ? profilePic : ""} />
+            <Avatar imageUrl={eventPic ? eventPic : ""} />
           </div>
         </div>
 
@@ -85,10 +85,10 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           <section>
             <div className="mt-4 flex flex-wrap justify-between">
               <div className="flex flex-col">
-                <h1 className="text-2xl font-bold sm:text-4xl">{name}</h1>
+                <h1 className="text-2xl font-bold sm:text-4xl">{eventName}</h1>
                 <h3 className="mt-4">{description}</h3>
               </div>
-              <Button variant="solid" size="md" className="max-w-xs">
+              <Button variant="solid" size="md" className="max-w-xs" disabled>
                 Register for event
               </Button>
             </div>
@@ -104,8 +104,15 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
                 <span className="sm:text-md ml-2 flex-col text-sm">
                   <p className="font-bold">Date and Time</p>
                   <p>
-                    {format(new Date(startDateTime), "PPPPpppp")} -
-                    {format(new Date(endDateTime), "PPPPpppp")}
+                    {`${
+                      isValid(startDate)
+                        ? format(startDate, "PPPPpppp")
+                        : format(new Date(startDate), "PPPPpppp")
+                    } - ${
+                      isValid(endDate)
+                        ? format(endDate, "PPPPpppp")
+                        : format(new Date(endDate), "PPPPpppp")
+                    }`}
                   </p>
                 </span>
               </div>
@@ -115,7 +122,7 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
                 <span className="sm:text-md ml-2 flex-col text-sm">
                   <p className="font-bold">Location</p>
                   {/* TODO: format address from address components */}
-                  <p>{venue.venueName}</p>
+                  <p>{address.locationName}</p>
                 </span>
               </div>
             </div>
@@ -125,19 +132,24 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
             <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
               Ticket Options (Types)
             </h1>
-            {tickets.map((ticket) => (
-              <TicketCard key={ticket.ticketId} ticket={ticket} />
-            ))}
+            <div className="pt-6">
+              {tickets.map((ticket) => (
+                <TicketCard key={ticket.ticketId} ticket={ticket} />
+              ))}
+            </div>
           </section>
 
           <section>
             <h1 className="mt-12 text-xl font-semibold sm:text-2xl">Topics</h1>
             <div className="flex flex-wrap gap-6 py-4">
-              {tags.map((tag, index) => (
+              {category.length === 0 && (
+                <p className="text-gray-500">No Topics Selected</p>
+              )}
+              {category.map((label, index) => (
                 <Badge
                   key={index}
                   className="text-white"
-                  label={tag}
+                  label={label}
                   size="lg"
                   selected={false}
                 />

@@ -6,36 +6,47 @@ import {
 } from "react-hook-form";
 import Button from "../../../Button";
 import Input from "../../../Input";
-
 import InputGroup from "../../../InputGroup";
-import { Attendee } from "../../../../pages/events/register/[id]";
+import {
+  SelectedTicket,
+  UserWithSelectedTicket,
+} from "../../../../pages/events/register/[id]";
+import { User } from "@prisma/client";
+import Modal from "../../../Modal";
 
-type ParticularsFormPageProps = {
-  watch: UseFormWatch<Attendee>;
-  control: Control<Attendee, any>;
-  trigger: UseFormTrigger<Attendee>;
-  proceedStep: () => void;
+type ConfirmationFormProps = {
+  watch: UseFormWatch<UserWithSelectedTicket>;
+  control: Control<UserWithSelectedTicket, any>;
+  trigger: UseFormTrigger<UserWithSelectedTicket>;
+  setIsRegisterSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const ParitcularsFormPage = ({
+const ConfirmationFormProps = ({
   watch,
   control,
   trigger,
-}: ParticularsFormPageProps) => {
+  setIsRegisterSuccessModalOpen,
+}: ConfirmationFormProps) => {
+  const user = watch();
+  const {
+    selectedTicket: { ticketName, qty, price },
+  } = watch();
+
+  console.log(user);
   return (
     <div>
       <div className="flex w-full flex-col gap-2">
         <Controller
           control={control}
-          name="firstName"
+          name="displayName"
           rules={{
-            required: "First Name is required",
+            required: "Name is required",
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Input
               type="text"
               label="First Name *"
-              value={value}
+              value={value ?? ""}
               onChange={onChange}
               placeholder="First Name"
               size="md"
@@ -45,8 +56,8 @@ const ParitcularsFormPage = ({
             />
           )}
         />
-        <Controller
-          control={control}
+        {/* <Controller
+          control={userControl}
           name="lastName"
           rules={{
             required: "Last Name is required",
@@ -64,7 +75,7 @@ const ParitcularsFormPage = ({
               className="max-w-3xl"
             />
           )}
-        />
+        /> */}
         <Controller
           control={control}
           name="email"
@@ -87,7 +98,7 @@ const ParitcularsFormPage = ({
         />
         <Controller
           control={control}
-          name="mobileNumber"
+          name="phoneNumber"
           rules={{
             required: "Mobile number is required",
           }}
@@ -95,7 +106,7 @@ const ParitcularsFormPage = ({
             <InputGroup
               type="text"
               label="Mobile Number *"
-              value={value}
+              value={value ?? ""}
               onChange={onChange}
               placeholder="Mobile Number"
               size="md"
@@ -114,12 +125,15 @@ const ParitcularsFormPage = ({
         <div className="flex flex-col pb-4 sm:pb-8">
           <h2 className="text-xl font-semibold ">Order Summary</h2>
           <div className="flex flex-row justify-between py-4 sm:py-6">
-            <span className="text-sm font-normal ">1x Ticket</span>
-            <span className="text-sm font-normal ">$10</span>
+            <span className="text-sm font-normal ">
+              {qty}x {ticketName}
+            </span>
+            <span className="text-sm font-normal ">${price}</span>
           </div>
           <div className="flex flex-row justify-between">
+            {/* only one selected ticket hence total price will be that */}
             <span className="text-md font-medium ">Total</span>
-            <span className="text-md font-medium ">$88</span>
+            <span className="text-md font-medium ">${price}</span>
           </div>
         </div>
 
@@ -131,11 +145,14 @@ const ParitcularsFormPage = ({
             onClick={async () => {
               // validation logic
               const isValidated = await trigger([
-                "firstName",
-                "lastName",
+                "displayName",
                 "email",
-                "mobileNumber",
+                "phoneNumber",
               ]); // todo: add mroe validation
+
+              if (isValidated) {
+                setIsRegisterSuccessModalOpen(true);
+              }
             }}
           >
             Register
@@ -146,4 +163,4 @@ const ParitcularsFormPage = ({
   );
 };
 
-export default ParitcularsFormPage;
+export default ConfirmationFormProps;

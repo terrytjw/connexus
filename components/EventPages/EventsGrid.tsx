@@ -20,8 +20,8 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
     <Link href={`/events/${item.eventId}`} className="group text-sm">
       <div className="aspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
         <Image
-          src={item.images[0]}
-          alt={item.imageAlt}
+          src={item.eventPic || "/images/bear.jpg"}
+          alt={item.eventName}
           className="h-full w-full object-cover object-center"
           width={100}
           height={100}
@@ -37,7 +37,7 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           </Button>
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{item.name}</h3>
+      <h3 className="mt-4 font-medium text-gray-900">{item.eventName}</h3>
 
       <span className="flex">
         <FaCalendar />
@@ -45,11 +45,13 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
       </span>
       <span className="flex align-middle">
         <FaMapPin />
-        <p className="ml-2 text-sm text-gray-500">{item.location}</p>
+        <p className="ml-2 text-sm text-gray-500">
+          {item?.address?.locationName}
+        </p>
       </span>
       <span className="flex">
         <FaPersonBooth />
-        <p className="ml-2 text-sm text-gray-500">Attendees long long long</p>
+        <p className="ml-2 text-sm text-gray-500">{item.maxAttendee}</p>
       </span>
     </Link>
   );

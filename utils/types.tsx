@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 export type Community = {
   communityId: number;
   name: string;
@@ -73,3 +75,7 @@ export type Collection = {
     profilePic: string;
   };
 };
+
+export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
+  include: { tickets: true; address: true };
+}>;

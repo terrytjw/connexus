@@ -1,40 +1,46 @@
 import {
   Control,
   useFieldArray,
+  UseFormReset,
   UseFormSetValue,
   UseFormTrigger,
   UseFormWatch,
 } from "react-hook-form";
 import Button from "../../../Button";
-import { Event } from "../../../../pages/events/create";
-import { Attendee } from "../../../../pages/events/register/[id]";
 import TicketCardInput from "../../TicketCardInput";
+import { Ticket } from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
+import {
+  SelectedTicket,
+  UserWithSelectedTicket,
+} from "../../../../pages/events/register/[id]";
+import { useState } from "react";
 
 type TicketSelectionFormPageProps = {
-  event: Event;
-  setValue: UseFormSetValue<Attendee>;
-  watch: UseFormWatch<Attendee>;
-  control: Control<Attendee, any>;
-  trigger: UseFormTrigger<Attendee>;
+  event: EventWithTicketsandAddress;
+  reset: UseFormReset<UserWithSelectedTicket>;
+  setValue: UseFormSetValue<UserWithSelectedTicket>;
+  watch: UseFormWatch<UserWithSelectedTicket>;
+  control: Control<UserWithSelectedTicket, any>;
+  trigger: UseFormTrigger<UserWithSelectedTicket>;
+
   proceedStep: () => void;
 };
 
 const TicketSelectionFormPage = ({
   event,
+  reset,
   setValue,
   watch,
   control,
   trigger,
   proceedStep,
 }: TicketSelectionFormPageProps) => {
+  // event data from db
   const { tickets } = event;
-  console.log(tickets);
-
-  // listen to attendee tickets array
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: "attendeeTickets",
-  });
+  const {
+    selectedTicket: { ticketName, qty },
+  } = watch();
 
   return (
     <div>
@@ -44,21 +50,23 @@ const TicketSelectionFormPage = ({
           <TicketCardInput
             key={ticket.ticketId}
             ticket={ticket}
-            fields={fields}
+            watch={watch}
             setValue={setValue}
-            append={append} // to add tickets to attendee.attendeeTickets array
+            reset={reset}
           />
         ))}
+        {!(ticketName && qty) && (
+          <p className="text-red-400">Please select at least one ticket </p>
+        )}
       </section>
+
       <div className="sticky bottom-0 z-30 flex items-center justify-end gap-6 bg-sky-100 py-2 sm:relative">
         <Button
           variant="solid"
           size="md"
           className="max-w-3xl px-12"
           onClick={async () => {
-            const isValidated = true; // todo: replace validation logic
-
-            if (isValidated) {
+            if (ticketName && qty) {
               proceedStep();
               document
                 .getElementById("scrollable")

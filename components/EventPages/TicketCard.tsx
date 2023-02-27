@@ -9,7 +9,7 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
   return (
     <div>
       <div className="pb-2 sm:pb-4">
-        <div className="center card flex items-center justify-between gap-6 border-2 border-gray-200 bg-white p-6 lg:card-side">
+        <div className="center card flex items-start justify-between gap-6 border-2 border-gray-200 bg-white p-6 lg:card-side">
           <div className="flex flex-col gap-y-4">
             <h1 className="text-xl font-bold text-gray-700">{ticket.name}</h1>
             <span>

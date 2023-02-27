@@ -10,8 +10,9 @@ import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
 import { smartContract } from "../lib/constants";
-import {img} from "../lib/image";
+import { img } from "../lib/image";
 import { swrFetcher } from "../lib/swrFetcher";
+import { EventWithTicketsandAddress } from "../utils/types";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
@@ -31,7 +32,7 @@ var signer = new ethers.Wallet(smartContract.privateKey, provider);
 const EventsPage = (props: any) => {
   async function fetchEvents(url: string) {
     const response = await axios.get(url);
-    const data = response.data as EventWithTickets[];
+    const data = response.data as EventWithTicketsandAddress[];
     return data;
   }
 
@@ -111,15 +112,15 @@ const EventsPage = (props: any) => {
     const event = {
       eventId: 1,
       eventName: "This is a new event",
-      eventPic : eventPic, 
+      eventPic: eventPic,
       bannerPic: bannerPic,
       category: [CategoryType.AUTO_BOAT_AIR],
       address: {
         create: {
           address1: address.address1,
           address2: address.address2,
-          lat : 1.91, 
-          lng : 1.91,
+          lat: 1.91,
+          lng: 1.91,
           locationName: address.locationName,
           postalCode: address.postalCode,
         },
@@ -132,7 +133,7 @@ const EventsPage = (props: any) => {
       privacyType: PrivacyType.PUBLIC,
       publishStartDate: new Date(),
       scAddress: event_contract.address,
-      ticketURIs: [],
+      // ticketURIs: [],
       publishType: "NOW",
       tickets: ticket_categories,
     };
@@ -198,7 +199,7 @@ const EventsPage = (props: any) => {
     */
 
     const userId = 1;
-    const eventId = 2;
+    const eventId = 1;
     const ticket_category = "VIP Pass";
 
     let response = await axios.get(
@@ -257,7 +258,7 @@ const EventsPage = (props: any) => {
           ...userInfo,
           tickets: user_tickets,
         };
-        console.log(updated_user);
+        console.log("updating user to db ->", updated_user);
         let user_update = await axios.post(
           "http://localhost:3000/api/users/" + userId.toString(),
           updated_user
@@ -275,7 +276,7 @@ const EventsPage = (props: any) => {
       category: eventInfo.category,
       startDate: eventInfo.startDate,
       endDate: eventInfo.endDate,
-      eventPic: eventInfo.eventPic, 
+      eventPic: eventInfo.eventPic,
       bannerPic: eventInfo.bannerPic,
       summary: eventInfo.summary,
       description: eventInfo.description,
@@ -458,7 +459,7 @@ const EventsPage = (props: any) => {
       category: [CategoryType.AUTO_BOAT_AIR],
       startDate: new Date(),
       endDate: new Date(),
-      eventPic: img, 
+      eventPic: img,
       bannerPic: img,
       summary: "This is just a summary",
       description: "This is just a description",
@@ -506,7 +507,7 @@ const EventsPage = (props: any) => {
         category: [CategoryType.AUTO_BOAT_AIR],
         startDate: new Date(),
         endDate: new Date(),
-        eventPic: img, 
+        eventPic: img,
         bannerPic: img,
         summary: "This is just a summary",
         description: "This is just a description",
@@ -545,6 +546,15 @@ const EventsPage = (props: any) => {
       <button onClick={createEvent}>Click me to create</button>;
       <br />
       <button onClick={deleteEvent}>Click me to delete</button>;
+      <button
+        onClick={() => {
+          console.log(data);
+          console.log(error);
+        }}
+      >
+        Click me to get data
+      </button>
+      ;
       <br />
       <br />
       <br />

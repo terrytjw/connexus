@@ -17,23 +17,41 @@ import Button from "../../components/Button";
 import Link from "next/link";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
+import axios from "axios";
+import { GetStaticPaths, GetStaticProps } from "next";
+import { isValid, format } from "date-fns";
+import { Ticket } from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../utils/types";
 
-const EventPage = () => {
-  const router = useRouter();
+type EventPageProps = {
+  event: EventWithTicketsandAddress;
+};
 
-  const { id } = router.query;
+const EventPage = ({ event }: EventPageProps) => {
+  const {
+    eventId,
+    eventName,
+    description,
+    bannerPic,
+    eventPic,
+    startDate,
+    endDate,
+    tickets,
+    category,
+  } = event;
 
+  console.log(event);
   return (
     <ProtectedRoute>
       <Layout>
         <main>
           <div className="relative">
-            <Banner coverImageUrl={"/images/bear.jpg"} />
+            <Banner coverImageUrl={bannerPic || "/images/bear.jpg"} />
           </div>
 
           <div className="z-30 mx-auto px-16">
             <div className="relative z-30 -mt-12 sm:-mt-16">
-              <Avatar imageUrl={"/images/bear.jpg"} />
+              <Avatar imageUrl={eventPic || "/images/bear.jpg"} />
             </div>
           </div>
 
@@ -41,14 +59,16 @@ const EventPage = () => {
             <section>
               <div className="mt-4 flex flex-wrap justify-between">
                 <div className="flex flex-col">
-                  <h1 className="text-2xl font-bold sm:text-4xl">Event Name</h1>
-                  <h3 className="mt-4">Description </h3>
+                  <h1 className="text-2xl font-bold sm:text-4xl">
+                    {eventName || "event name"}
+                  </h1>
+                  <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-              <Link href={`/events/register/${id}`}>
+                <Link href={`/events/register/${eventId}`}>
                   <Button variant="solid" size="md" className="max-w-xs">
                     Register for event
                   </Button>
-              </Link>
+                </Link>
               </div>
             </section>
 
@@ -62,8 +82,16 @@ const EventPage = () => {
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Date and Time</p>
                     <p>
-                      Day, DD MM YYYY, 10:00 AM - Day, DD MM YYYY, 6:00 PM
-                      Singapore Standard Time Singapore Time
+                      {`${
+                        isValid(startDate)
+                          ? format(startDate, "PPPPpppp")
+                          : format(new Date(startDate), "PPPPpppp")
+                      } -
+                          ${
+                            isValid(endDate)
+                              ? format(endDate, "PPPPpppp")
+                              : format(new Date(endDate), "PPPPpppp")
+                          }`}
                     </p>
                   </span>
                 </div>
@@ -81,31 +109,34 @@ const EventPage = () => {
               </div>
             </section>
 
-            <section>{/* <TicketCard {} /> */}</section>
+            <section>
+              <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
+                Ticket Options (Types)
+              </h1>
+              <div className="pt-6">
+                {tickets.map((ticket: Ticket) => (
+                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                ))}
+              </div>
+            </section>
 
             <section>
               <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
                 Topics
               </h1>
               <div className="flex flex-wrap gap-6 py-4">
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
+                {category.length === 0 && (
+                  <p className="text-gray-500">No Topics Selected</p>
+                )}
+                {category.map((label, index) => (
+                  <Badge
+                    key={index}
+                    className="text-white"
+                    label={label}
+                    size="lg"
+                    selected={false}
+                  />
+                ))}
               </div>
             </section>
 
@@ -129,3 +160,23 @@ const EventPage = () => {
 };
 
 export default EventPage;
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [{ params: { id: "1" } }, { params: { id: "2" } }],
+    fallback: true, // Set to true if there are more dynamic routes to be added later
+  };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  // use axios GET method to fetch data
+  const { data: event } = await axios.get(
+    `http://localhost:3000/api/events/${params?.id}`
+  );
+
+  return {
+    props: {
+      event,
+    },
+  };
+};

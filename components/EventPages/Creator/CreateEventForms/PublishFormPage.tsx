@@ -1,47 +1,27 @@
 import { useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { FaHeart, FaCalendar, FaMapPin, FaPersonBooth } from "react-icons/fa";
-import { Event } from "../../../../pages/events/create"; // replace with Prisma Type
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
-import { format } from "date-fns";
+import { format, isValid } from "date-fns";
 import { PrivacyType, VisibilityType } from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
 
 type PublishFormPageProps = {
-  privacy: {
-    id: string;
-    name: string;
-    description: string;
-  }[];
-  publish: {
-    id: string;
-    name: string;
-    description: string;
-  }[];
-  watch: UseFormWatch<Event>;
-  setValue: UseFormSetValue<Event>;
+  watch: UseFormWatch<EventWithTicketsandAddress>;
+  setValue: UseFormSetValue<EventWithTicketsandAddress>;
+  setIsCreateSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const PublishFormPage = ({
-  publish,
   watch,
   setValue,
+  setIsCreateSuccessModalOpen,
 }: PublishFormPageProps) => {
   // form values
-  const {
-    name,
-    bannerPic,
-    profilePic,
-    startDateTime,
-    endDateTime,
-    tags,
-    tickets,
-    venue,
-    maxAttendees,
-    privacy,
-    visibility,
-  } = watch();
+  const { eventName, eventPic, startDate, endDate, address, maxAttendee } =
+    watch();
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   return (
@@ -61,8 +41,8 @@ const PublishFormPage = ({
                   >
                     <div className="aspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
                       <Image
-                        src={profilePic ? profilePic : ""}
-                        alt={name}
+                        src={eventPic ? eventPic : ""}
+                        alt={eventName}
                         className="h-full w-full object-cover object-center"
                         width={100}
                         height={100}
@@ -78,31 +58,42 @@ const PublishFormPage = ({
                         </Button>
                       </div>
                     </div>
-                    <h3 className="mt-4 font-medium text-gray-900">{name}</h3>
+                    <h3 className="mt-4 font-medium text-gray-900">
+                      {eventName}
+                    </h3>
 
                     <span className="flex">
                       <FaCalendar />
                       <p className="ml-2 text-gray-500">
-                        {format(new Date(startDateTime), "PPPPpppp")}
+                        {`${
+                          isValid(startDate)
+                            ? format(startDate, "PPPPpppp")
+                            : format(new Date(startDate), "PPPPpppp")
+                        } -
+                          ${
+                            isValid(endDate)
+                              ? format(endDate, "PPPPpppp")
+                              : format(new Date(endDate), "PPPPpppp")
+                          }`}
                       </p>
                     </span>
                     <span className="flex align-middle">
                       <FaMapPin />
                       <p className="ml-2 text-sm text-gray-500">
-                        {venue.venueName}
+                        {address.locationName}
                       </p>
                     </span>
                     <span className="flex">
                       <FaPersonBooth />
                       <p className="ml-2 text-sm text-gray-500">
-                        {maxAttendees}
+                        {maxAttendee}
                       </p>
                     </span>
                   </div>
                 </div>
               </div>
 
-              {/* Dummy component */}
+              {/* Radios */}
               <div className="mt-12">
                 <h2 className="text-xl font-semibold ">
                   Who can see your event?
@@ -124,7 +115,10 @@ const PublishFormPage = ({
                             }
                             className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             onChange={(e) =>
-                              setValue("privacy", e.target.value as PrivacyType)
+                              setValue(
+                                "privacyType",
+                                e.target.value as PrivacyType
+                              )
                             }
                           />
                         </div>
@@ -172,7 +166,7 @@ const PublishFormPage = ({
                             className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
                             onChange={(e) =>
                               setValue(
-                                "visibility",
+                                "visibilityType",
                                 e.target.value as VisibilityType
                               )
                             }
@@ -206,7 +200,8 @@ const PublishFormPage = ({
               size="md"
               className="max-w-3xl"
               onClick={() => {
-                // validation logic
+                // using react hook form onSubmit to submit data
+                setIsCreateSuccessModalOpen(true);
               }}
             >
               Publish

@@ -1,25 +1,29 @@
+import React from "react";
 import {
   Control,
   Controller,
   FieldArrayWithId,
   UseFormTrigger,
+  UseFormWatch,
 } from "react-hook-form";
-import { FaDollarSign, FaTrash } from "react-icons/fa";
 import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
-import { Event } from "../../../../pages/events/create";
+import { FaDollarSign, FaTrash } from "react-icons/fa";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
 
 type TicketFormPageProps = {
-  control: Control<Event, any>;
-  trigger: UseFormTrigger<Event>;
-  fields: FieldArrayWithId<Event, "tickets", "id">[];
+  watch: UseFormWatch<EventWithTicketsandAddress>;
+  control: Control<EventWithTicketsandAddress, any>;
+  trigger: UseFormTrigger<EventWithTicketsandAddress>;
+  fields: FieldArrayWithId<EventWithTicketsandAddress, "tickets", "id">[];
   addNewTicket: () => void;
   removeTicket: (index: number) => void;
   proceedStep: () => void;
 };
 
 const TicketFormPage = ({
+  watch,
   control,
   trigger,
   fields,
@@ -27,6 +31,8 @@ const TicketFormPage = ({
   removeTicket,
   proceedStep,
 }: TicketFormPageProps) => {
+  // form values
+  const { startDate, endDate, tickets } = watch();
   return (
     <div>
       <section>
@@ -159,9 +165,12 @@ const TicketFormPage = ({
                 control={control}
                 name={`tickets.${index}.startDate`}
                 rules={{
-                  required: "Start Date and Time is required", // TODO: [validation] ticket start date cannot be > event start date
-                  // validate: (value) =>
-                  //   (value = "date type" || "Proper date format is required"),
+                  required: "Start Date and Time is required",
+                  validate: {
+                    beforeEventEnd: (value) =>
+                      new Date(value) < new Date(endDate) ||
+                      "Sale Start Date must be before Event End Date ",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -186,8 +195,14 @@ const TicketFormPage = ({
                 name={`tickets.${index}.endDate`}
                 rules={{
                   required: "End Date and Time is required", // TODO: [validation] ticket start date cannot be > event start date
-                  // validate: (value) =>
-                  //   (value = "date type" || "Proper date format is required"),
+                  validate: {
+                    beforeEventEnd: (value) =>
+                      new Date(value) < new Date(endDate) ||
+                      "Sale Start Date must be before Event End Date ",
+                    afterTicketStart: (value) =>
+                      new Date(value) > new Date(tickets[index]?.startDate) ||
+                      "Sale End Date must be after Sale Start Date ",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -208,14 +223,7 @@ const TicketFormPage = ({
               />
 
               <div className="text-green-400">
-                todo: add ticket type to prisma type
-              </div>
-              <div className="text-green-400">
                 todo: add ticket status to prisma type
-              </div>
-              <div className="text-green-400">
-                todo: add promo code to prisma type - is this binded to event or
-                each ticket?
               </div>
             </div>
           </div>
