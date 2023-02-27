@@ -3,7 +3,10 @@ import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
 import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
-import { filterMerchandiseByPriceType } from "../../../server-lib/merch";
+import {
+  filterMerchandiseByPriceType,
+  findAllMerchandise,
+} from "../../../server-lib/merch";
 import prisma from "../../../server-lib/prisma";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
@@ -48,30 +51,31 @@ export default async function handler(
 ) {
   const { method, body, query } = req;
 
-  if (query) {
-    const collectionId = parseInt(query.collectionId as string);
-    const priceType = query.priceType as unknown as MerchandisePriceType;
-    const cursor = parseInt(query.cursor as string);
-    await handleGETWithFilter(cursor, collectionId, priceType);
-  } else {
-    switch (method) {
-      case "GET":
+  const collectionId = parseInt(query.collectionId as string);
+  const priceType = query.priceType as unknown as MerchandisePriceType;
+  const cursor = parseInt(query.cursor as string);
+
+  switch (method) {
+    case "GET":
+      if (query) {
+        await handleGETWithFilter(cursor, collectionId, priceType);
+      } else {
         await handleGET();
-        break;
-      case "POST":
-        const merch = JSON.parse(JSON.stringify(body)) as Merchandise; //@@ Double check
-        await handlePOST(merch);
-        break;
-      default:
-        res.setHeader("Allow", ["GET", "POST"]);
-        res.status(405).end(`Method ${method} Not Allowed`);
-    }
+      }
+      break;
+    case "POST":
+      const merch = JSON.parse(JSON.stringify(body)) as Merchandise; //@@ Double check
+      await handlePOST(merch);
+      break;
+    default:
+      res.setHeader("Allow", ["GET", "POST"]);
+      res.status(405).end(`Method ${method} Not Allowed`);
   }
 
   async function handleGET() {
     try {
-      const merchs = await prisma.merchandise.findMany({});
-      res.status(200).json(merchs);
+      const merchandises = await findAllMerchandise();
+      res.status(200).json(merchandises);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

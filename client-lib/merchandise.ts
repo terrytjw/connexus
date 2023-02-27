@@ -11,7 +11,7 @@ export async function filterMerchandiseByPriceType(
 
   const params = new URLSearchParams(object).toString();
   const url = `${API_URL}/${MERCHANDISE_ENDPOINT}?${params}`;
-  const result = (await axios.get(url)).data;
-  console.log(result);
-  return result;
+  const response = (await axios.get(url)).data;
+  console.log(response);
+  return response;
 }
