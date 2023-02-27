@@ -187,3 +187,27 @@ export async function pauseCollectionMint(collection_id: number) {
 
   console.log("Data uploaded -> ", update_response.data);
 }
+
+export async function startCollectionMint(collection_id: number) {
+  let response_collection = await axios.get(
+    `http://localhost:3000/api/collections/${collection_id}`
+  );
+
+  const { merchandise, ...collectionInfo } =
+    response_collection.data as CollectionwithMerch;
+
+  /** update ur collection in the collectionName and description fields below */
+  const updated_collection: Partial<Collection> = {
+    ...collectionInfo,
+    collectionState: CollectionState.ON_SALE,
+  };
+
+  console.log("updated collection: ", updated_collection);
+
+  let update_response = await axios.post(
+    `http://localhost:3000/api/collections/${collection_id}`,
+    updated_collection
+  );
+
+  console.log("Data uploaded -> ", update_response.data);
+}

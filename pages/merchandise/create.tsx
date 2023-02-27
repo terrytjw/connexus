@@ -1,5 +1,5 @@
 import Head from "next/head";
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { FaChevronLeft } from "react-icons/fa";
 import Layout from "../../components/Layout";
@@ -12,7 +12,8 @@ import TextArea from "../../components/TextArea";
 import { Collectible } from "../../utils/types";
 import { createCollection } from "../../lib/merchandise-helpers";
 import { useSession } from "next-auth/react";
-import Loading from "../../components/Loading";
+import { useRouter } from "next/router";
+import toast, { Toaster } from "react-hot-toast";
 
 export type CreateCollectionForm = {
   collectibles: Collectible[];
@@ -22,8 +23,10 @@ export type CreateCollectionForm = {
 };
 
 const CreateCollectionPage = () => {
+  const router = useRouter();
   const { data: session, status } = useSession();
-  console.log("session -> ", session?.user.userId);
+  const [isLoading, setIsLoading] = useState(false);
+
   const { handleSubmit, setValue, control, watch } =
     useForm<CreateCollectionForm>({
       defaultValues: {
@@ -51,8 +54,9 @@ const CreateCollectionPage = () => {
 
           <form
             className="py-12 px-4 sm:px-12"
-            onSubmit={handleSubmit((val: any) => {
-              console.log("Create merchandise form -> ", val);
+            onSubmit={handleSubmit(async (val: any) => {
+              setIsLoading(true);
+              toast.loading("Creating new merchandise...");
 
               const collectionName = val.collectionName;
               const description = val.collectionDescription;
@@ -60,13 +64,18 @@ const CreateCollectionPage = () => {
               const price = parseInt(val.price);
               const collectibleArray = val.collectibles;
 
-              createCollection(
+              await createCollection(
                 collectionName,
                 description,
                 creator_id,
                 price,
                 collectibleArray
               );
+
+              toast.dismiss();
+              toast.success("Collection successfully created!");
+              setIsLoading(false);
+              router.push("/merchandise");
             })}
           >
             <div className="mb-8 flex items-center gap-4">
@@ -207,12 +216,14 @@ const CreateCollectionPage = () => {
                   variant="solid"
                   size="md"
                   className="lg:w-40"
+                  disabled={isLoading}
                 >
                   Submit
                 </Button>
               </section>
             </div>
           </form>
+          <Toaster />
         </div>
       </Layout>
     </ProtectedRoute>

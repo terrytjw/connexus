@@ -1,7 +1,10 @@
 import { useRouter } from "next/router";
 import React from "react";
-import { FaEdit, FaPauseCircle } from "react-icons/fa";
-import { pauseCollectionMint } from "../../lib/merchandise-helpers";
+import { FaEdit, FaPlayCircle, FaPauseCircle } from "react-icons/fa";
+import {
+  pauseCollectionMint,
+  startCollectionMint,
+} from "../../lib/merchandise-helpers";
 import Badge from "../Badge";
 
 type CollectionTableProps = {
@@ -34,24 +37,24 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
         </thead>
         <tbody>
           {/* <!-- row 1 --> */}
-          {data.map((data, index) => (
+          {data.map((item, index) => (
             <tr
               key={index}
               onClick={() =>
-                onEdit ? router.push(`/merchandise/${data.collectionId}`) : null
+                onEdit ? router.push(`/merchandise/${item.collectionId}`) : null
               }
               className="cursor-pointer"
             >
-              <td className="text-gray-700">{data.collectionId}</td>
-              <td className="text-gray-700">{data.collectionName}</td>
-              <td className="text-gray-700">{data.description}</td>
+              <td className="text-gray-700">{item.collectionId}</td>
+              <td className="text-gray-700">{item.collectionName}</td>
+              <td className="text-gray-700">{item.description}</td>
               <td className="text-gray-700">
-                {data.merchandise[0].totalMerchSupply}
+                {item.merchandise[0].totalMerchSupply}
               </td>
-              <td className="text-gray-700">{data.merchandise[0].price}</td>
+              <td className="text-gray-700">{item.merchandise[0].price}</td>
               <td className="text-gray-700">
-                {data.premiumChannel ? (
-                  <Badge size="sm" label={data.premiumChannel.name} />
+                {item.premiumChannel ? (
+                  <Badge size="sm" label={item.premiumChannel.name} />
                 ) : (
                   <span className="ml-12">-</span>
                 )}
@@ -71,15 +74,29 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                       <FaEdit className="text-lg text-blue-600" />
                     </button>
 
-                    <button
-                      className="btn-ghost btn-xs btn"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        pauseCollectionMint(1); // TO REPLACE WITH DYNAMIC COLLECTION ID
-                      }}
-                    >
-                      <FaPauseCircle className="text-lg text-blue-600" />
-                    </button>
+                    {item.collectionState === "PAUSED" ? (
+                      <button
+                        className="btn-ghost btn-xs btn"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+
+                          await startCollectionMint(item.collectionId);
+                        }}
+                      >
+                        <FaPlayCircle className="text-lg text-blue-600" />
+                      </button>
+                    ) : (
+                      <button
+                        className="btn-ghost btn-xs btn"
+                        onClick={async (e) => {
+                          e.stopPropagation();
+
+                          await pauseCollectionMint(item.collectionId);
+                        }}
+                      >
+                        <FaPauseCircle className="text-lg text-blue-600" />
+                      </button>
+                    )}
                   </div>
                 </th>
               ) : null}

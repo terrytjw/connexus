@@ -19,7 +19,9 @@ const CreatorCollectionsPage = () => {
     data: collectionData,
     error,
     isLoading: isCollectionDataLoading,
+    mutate,
   } = useSWR("http://localhost:3000/api/collections", swrFetcher);
+
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +42,9 @@ const CreatorCollectionsPage = () => {
   ]);
 
   if (isCollectionDataLoading) return <Loading />;
+
   console.log("collection data -> ", collectionData);
+
   return (
     <main className="py-12 px-4 sm:px-12">
       <Modal
@@ -49,10 +53,25 @@ const CreatorCollectionsPage = () => {
         className="overflow-visible"
       >
         <form
-          onSubmit={handleSubmit((val: any) => {
-            console.log("Edit collection: ", val);
+          onSubmit={handleSubmit(async (val: any) => {
+            // to prevent auto form submission upon closing modal
+            if (!isModalOpen) {
+              return;
+            }
 
-            updateCollection(val.name, val.description, 2); // TO REPLACE WITH DYNAMIC COLLECTION ID
+            await updateCollection(val.name, val.description, val.collectionId);
+
+            let updatedCollection = collectionData.find(
+              (collection: any) => collection.collectionId === val.collectionId
+            );
+            updatedCollection = {
+              ...updatedCollection,
+              name: val.name,
+              description: val.description,
+            };
+
+            mutate([...collectionData, updatedCollection]); // TODO: ordering is messed up after update, need to clean up
+            setIsModalOpen(false);
           })}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -202,7 +221,7 @@ const CreatorCollectionsPage = () => {
               setValue("name", collectionData[index].collectionName);
               setValue("description", collectionData[index].description);
               setValue("premiumChannel", collectionData[index].premiumChannel);
-              setValue("collectionId", index + 1); // might want to replace with collection id
+              setValue("collectionId", collectionData[index].collectionId); // might want to replace with collection id
               setIsModalOpen(true);
             }}
           />
