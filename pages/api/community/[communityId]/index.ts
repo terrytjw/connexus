@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community } from "@prisma/client";
 import { COMMUNITY_BUCKET } from "../../../../lib/constant";
-import { isValidHttpUrl, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -135,7 +135,7 @@ export default async function handler(
       let profilePictureUrl = profilePic;
       let bannerPicUrl = bannerPic;
 
-      if (profilePic && ! isValidHttpUrl(profilePic)) {
+      if (profilePic && ! checkIfStringIsBase64(profilePic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           profilePic
@@ -153,7 +153,7 @@ export default async function handler(
           );
       }
 
-      if (bannerPic && ! isValidHttpUrl(bannerPic)) {
+      if (bannerPic && ! checkIfStringIsBase64(bannerPic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           bannerPic
