@@ -1,8 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { PrismaClient, Event, Prisma,CategoryType, Ticket } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -49,11 +52,15 @@ export default async function handler(
   //   res.status(401).json({ error: "401", message: "Unauthorized" });
   // }
 
-  const { method } = req;
+  const { method, query } = req;
+
+  const keyword = query.keyword as string;
+  const cursor = parseInt(query.cursor as string);
+  const filter = query.filter as CategoryType;
 
   switch (req.method) {
     case "GET":
-      await handleGET();
+      await handleGET(cursor, filter);
       break;
     case "POST":
       const event = JSON.parse(JSON.stringify(req.body)) as EventWithTickets;
@@ -64,12 +71,20 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(cursor: number, filter?: CategoryType) {
     try {
       const events = await prisma.event.findMany({
-        include: {
-          tickets: true,
+        take: 10,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { eventId : cursor } : undefined,
+        orderBy: {
+          eventId: 'asc'
         },
+        where: filter ? {
+          category: {
+            has: filter
+          }
+        } : undefined
       });
       res.status(200).json(events);
     } catch (error) {
@@ -78,18 +93,54 @@ export default async function handler(
     }
   }
 
+
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
-      const { tickets, ...eventInfo } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket) => {
+      const { tickets,  eventPic, bannerPic , ...eventInfo } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket : Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
       });
+      let eventImageUrl = ""; 
+      let eventBannerPictureUrl = ""; 
 
+      if(eventPic){
+        const{data, error} = await uploadImage(
+          EVENT_PROFILE_BUCKET, 
+          eventPic
+        );
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+        eventImageUrl = await retrieveImageUrl(
+          EVENT_PROFILE_BUCKET,
+            data.path
+          );
+      }
+
+      if (bannerPic) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
+          bannerPic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+        if (data) eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+      }
+
+      console.log(eventBannerPictureUrl, eventImageUrl);
       const response = await prisma.event.create({
         data: {
           ...eventInfo,
           eventId: undefined,
+          eventPic : eventImageUrl, 
+          bannerPic : eventBannerPictureUrl,
           tickets: { create: updatedTickets },
         },
         include: {

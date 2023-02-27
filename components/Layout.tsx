@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import dynamic from "next/dynamic";
 import Loading from "./Loading";
+import { useSession } from "next-auth/react";
 
 const SocialLoginDynamic = dynamic(
   () => import("../components/scw").then((res) => res.default),
@@ -32,6 +33,7 @@ function classNames(...classes: string[]) {
 
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const checkboxRef = useRef<HTMLInputElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -160,7 +162,7 @@ const MobileNavbar = ({ children }: any) => {
           </li>
           <li className="mb-4">
             <Link
-              href="/user/profile/1"
+              href={`/user/profile/${session?.user?.userId}`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
                 router.pathname === "/user/profile/[id]"
@@ -206,6 +208,7 @@ const MobileNavbar = ({ children }: any) => {
 
 const DesktopSidebar = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   return (
@@ -287,7 +290,7 @@ const DesktopSidebar = () => {
         </li>
         <li className="mb-4">
           <Link
-            href="/user/profile/1"
+            href={`/user/profile/${session?.user?.userId}`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
               router.pathname === "/user/profile/[id]"

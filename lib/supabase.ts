@@ -39,3 +39,7 @@ export const isValidHttpUrl = (url: string): boolean => {
   }
   return check.protocol === 'http:' || check.protocol === 'https:';
 }
+
+export const checkIfStringIsBase64 = (url: string): boolean => {
+  return url.startsWith("data:image/");
+};
