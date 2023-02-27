@@ -133,7 +133,15 @@ export default async function handler(
         media: updatedMedia
       };
       const response = await prisma.post.create({
-        data: { ...updatedPostInfo, postId: undefined }
+        data: { ...updatedPostInfo, postId: undefined },
+        include: {
+          likes: {
+            select: { userId: true }
+          },
+          creator: {
+            select: { userId: true, profilePic: true, username: true }
+          }
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

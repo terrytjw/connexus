@@ -154,6 +154,14 @@ export default async function handler(
           postId: postId
         },
         data: { ...updatedPostInfo },
+        include: {
+          likes: {
+            select: { userId: true }
+          },
+          creator: {
+            select: { userId: true, profilePic: true, username: true }
+          }
+        },
       });
       res.status(200).json(response);
     } catch (error) {
