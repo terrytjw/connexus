@@ -274,9 +274,7 @@ const CreatorEventCreate = () => {
               <Loading className="!h-full" />
             ) : (
               <div className="flex items-center justify-between">
-                <h3 className="ml-2 text-xl font-semibold">
-                  {isLoading ? "Creating Event..." : "Event Created!"}
-                </h3>
+                <h3 className="ml-2 text-xl font-semibold">Event Created!</h3>
 
                 <Link href="/events">
                   <Button

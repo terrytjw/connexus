@@ -26,6 +26,7 @@ import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
 import { GetStaticPaths, GetStaticProps } from "next";
+import { formatDateForInput } from "../../../lib/date-util";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -52,42 +53,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   } = useForm<EventWithTicketsandAddress>({
     defaultValues: {
       ...event,
-      // startDate: new Date(
-      //   format(new Date(event?.startDate), "yyyy-MM-dd'T'HH:mm")
-      // ),
       address: {
         ...address,
       },
     },
   });
 
-  type UnknownArrayOrObject = unknown[] | Record<string, unknown>;
-
-  // https://github.com/react-hook-form/react-hook-form/discussions/1991#discussioncomment-351784
-  const dirtyValues = (
-    dirtyFields: UnknownArrayOrObject | boolean,
-    allValues: UnknownArrayOrObject
-  ): UnknownArrayOrObject => {
-    // NOTE: Recursive function.
-
-    // If *any* item in an array was modified, the entire array must be submitted, because there's no
-    // way to indicate "placeholders" for unchanged elements. `dirtyFields` is `true` for leaves.
-    if (dirtyFields === true || Array.isArray(dirtyFields)) {
-      return allValues;
-    }
-
-    // Here, we have an object.
-    return Object.fromEntries(
-      Object.keys(dirtyFields).map((key) => [
-        key,
-        dirtyValues(dirtyFields[key], allValues[key]),
-      ])
-    );
-  };
-
   const eventFormData = watch();
   console.log("form data", eventFormData);
   console.log("dirty fields -> ", dirtyFields);
+  console.log("date s", formatDateForInput(event.startDate));
   // console.log(
   //   "parsed date string -> ",
   //   format(new Date(event.startDate), "yyyy-MM-dd'T'HH:mm")
@@ -161,7 +136,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   };
 
   async function mintOnChain(
-    eventInfo: Partial<EventWithTickets>,
+    eventInfo: Partial<EventWithTicketsandAddress>,
     ticket_category: string
   ) {
     console.log(ticket_category);
@@ -619,9 +594,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
               <Loading className="!h-full" />
             ) : (
               <div className="flex items-center justify-between">
-                <h3 className="ml-2 text-xl font-semibold">
-                  {isLoading ? "Creating Event..." : "Event Created!"}
-                </h3>
+                <h3 className="ml-2 text-xl font-semibold">Event Updated!</h3>
 
                 <Link href="/events">
                   <Button
@@ -724,13 +697,25 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     `http://localhost:3000/api/events/${params?.id}`
   );
 
+  // parsing to format date for html 'date-time-local' inputs
+  const parsedEvent: Partial<EventWithTicketsandAddress> = {
+    ...event,
+    startDate: formatDateForInput(event.startDate) as unknown as Date, // hack to fit string into Date type -
+    endDate: formatDateForInput(event.endDate) as unknown as Date,
+    tickets: event.tickets.map((ticket: Ticket) => ({
+      ...ticket,
+      startDate: formatDateForInput(event.startDate) as unknown as Date,
+      endDate: formatDateForInput(event.endDate) as unknown as Date,
+    })),
+  };
+
   const { data: address } = await axios.get(
     `http://localhost:3000/api/addresses/${event?.addressId}`
   );
 
   return {
     props: {
-      event,
+      event: parsedEvent,
       address,
     },
   };

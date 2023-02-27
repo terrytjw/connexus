@@ -1,40 +1,22 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import TicketCard from "../../components/EventPages/TicketCard";
 
-import { useSession } from "next-auth/react";
-import useSWR from "swr";
+import { getSession } from "next-auth/react";
 import { Ticket } from "@prisma/client";
-import { swrFetcher } from "../../lib/swrFetcher";
 import { FaChevronLeft } from "react-icons/fa";
-import Loading from "../../components/Loading";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import Link from "next/link";
+import { GetServerSideProps } from "next";
+import axios from "axios";
+import { Event } from "@prisma/client";
 
-const FanTicketsPage = () => {
-  // const [tickets, setTickets] = useState<Ticket[]>([]);
-  const { data: session, status } = useSession();
-  // const userId = session?.user.userId;
-  const userId = 4;
+type TicketsPageProps = {
+  tickets: Ticket[] & Partial<Event>;
+};
 
-  const { data: userData, isLoading } = useSWR(
-    `http://localhost:3000/api/users/${userId}`,
-    swrFetcher
-  );
-
-  if (isLoading) return <Loading />;
-
-  // useEffect(() => {
-  //   // tickets.map(async (ticket: Ticket) => {
-  //   //   const { data: eventData } = useSWR(`/api/events/${ticket.eventId}`);
-  //   //   return { ...ticket, eventName: eventData?.eventName };
-  //   // });
-  //   setTickets(userData?.tickets);
-  // }, [userData]);
-
-  console.log("user data ->", userData?.tickets);
-  const { tickets } = userData;
-
+const TicketsPage = ({ tickets }: TicketsPageProps) => {
+  console.log("tickets ->", tickets);
   return (
     <ProtectedRoute>
       <Layout>
@@ -48,8 +30,13 @@ const FanTicketsPage = () => {
           </nav>
           <section>
             <div className="pt-6">
-              {tickets.map((ticket: Ticket) => (
-                <TicketCard key={ticket.ticketId} ticket={ticket} />
+              {tickets.map((ticket: Ticket & Partial<Event>) => (
+                <div key={ticket.ticketId}>
+                  <h3 className="mb-4 text-xl font-bold text-gray-800">
+                    {ticket.eventName}
+                  </h3>
+                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                </div>
               ))}
             </div>
           </section>
@@ -59,4 +46,36 @@ const FanTicketsPage = () => {
   );
 };
 
-export default FanTicketsPage;
+export default TicketsPage;
+
+// use axios GET method to fetch data
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  const userId = session?.user.userId;
+
+  // use axios GET method to fetch data
+  const { data: userData } = await axios.get(
+    `http://localhost:3000/api/users/${userId}`
+  );
+
+  const getEventFromTicket = async (eventId: string) => {
+    const { data: event } = await axios.get(
+      `http://localhost:3000/api/events/${eventId}`
+    );
+    return event;
+  };
+
+  // build a ticket type with event name in it
+  const parsedTickets = await Promise.all(
+    userData.tickets.map(async (ticket: Ticket) => {
+      const eventData = await getEventFromTicket(ticket.eventId.toString());
+      return { ...ticket, eventName: eventData?.eventName };
+    })
+  );
+
+  return {
+    props: {
+      tickets: parsedTickets,
+    },
+  };
+};

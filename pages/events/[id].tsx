@@ -3,7 +3,6 @@ import React from "react";
 import {
   FaCalendar,
   FaFacebook,
-  FaFacebookMessenger,
   FaInstagram,
   FaMapPin,
   FaTelegram,
@@ -17,19 +16,20 @@ import Link from "next/link";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import axios from "axios";
-import { GetStaticPaths, GetStaticProps } from "next";
-import { Ticket } from "@prisma/client";
+import { GetServerSideProps } from "next";
+import { Ticket, User, Address } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
 import { formatDate } from "../../lib/date-util";
-import useSWR from "swr";
-import Loading from "../../components/Loading";
-import { swrFetcher } from "../../lib/swrFetcher";
+import { getSession } from "next-auth/react";
 
 type EventPageProps = {
   event: EventWithTicketsandAddress;
+  userData: User & { tickets: Ticket[] };
+  address: Address;
 };
 
-const EventPage = ({ event }: EventPageProps) => {
+const EventPage = ({ event, userData, address }: EventPageProps) => {
+  console.log("event ->", event);
   const {
     eventId,
     eventName,
@@ -40,18 +40,41 @@ const EventPage = ({ event }: EventPageProps) => {
     endDate,
     tickets,
     category,
-    addressId,
   } = event;
 
-  const {
-    data: address,
-    error,
-    isLoading,
-  } = useSWR(`http://localhost:3000/api/addresses/${addressId}`, swrFetcher);
-  //   const { tickets } = userData;
+  const isRegistered = (): boolean => {
+    console.log("user tickets ->", userData?.tickets);
+    return !!userData.tickets.find(
+      (ticket: Ticket) => ticket.eventId === event.eventId
+    );
+  };
 
-  if (isLoading) return <Loading />;
-  console.log(event);
+  // will replace urls once its not localhost..
+  function getFacebookShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${eventImageUrl}`;
+    return shareUrl;
+  }
+
+  function getTwitterShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const message = encodeURIComponent("Check out this awesome page!");
+    const shareUrl = `https://twitter.com/intent/tweet?url=${eventImageUrl}&text=${message}`;
+    return shareUrl;
+  }
+
+  function getInstagramShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.instagram.com/share?url=${eventImageUrl}`;
+    return shareUrl;
+  }
+
+  function getTelegramShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://t.me/share/url?url=${eventImageUrl}`;
+    return shareUrl;
+  }
+
   return (
     <ProtectedRoute>
       <Layout>
@@ -75,14 +98,25 @@ const EventPage = ({ event }: EventPageProps) => {
                   </h1>
                   <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-                <Link
-                  href={`/events/register/${eventId}`}
-                  className="mt-8 sm:mt-0"
-                >
-                  <Button variant="solid" size="md" className="max-w-xs">
-                    Register for event
+                {!isRegistered() ? (
+                  <Link
+                    href={`/events/register/${eventId}`}
+                    className="mt-8 sm:mt-0"
+                  >
+                    <Button variant="solid" size="md" className="max-w-xs">
+                      Register for event
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    disabled
+                    variant="solid"
+                    size="md"
+                    className="max-w-xs"
+                  >
+                    Registered
                   </Button>
-                </Link>
+                )}
               </div>
             </section>
 
@@ -106,6 +140,10 @@ const EventPage = ({ event }: EventPageProps) => {
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Location</p>
                     <p>{address?.locationName}</p>
+                    <p>
+                      {address?.address2} {address?.address1}
+                    </p>
+                    <p>{address?.postalCode}</p>
                   </span>
                 </div>
               </div>
@@ -147,11 +185,34 @@ const EventPage = ({ event }: EventPageProps) => {
                 Share through Social Media
               </h1>
               <div className="flex flex-wrap gap-4 py-4">
-                <FaFacebook />
-                <FaTwitter />
-                <FaInstagram />
-                <FaFacebookMessenger />
-                <FaTelegram />
+                <Link
+                  href={getFacebookShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaFacebook />
+                </Link>
+                <Link
+                  href={getTwitterShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaTwitter />
+                </Link>
+                <Link
+                  href={getInstagramShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaInstagram />
+                </Link>
+                <Link
+                  href={getTelegramShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaTelegram />
+                </Link>
               </div>
             </section>
           </div>
@@ -163,22 +224,26 @@ const EventPage = ({ event }: EventPageProps) => {
 
 export default EventPage;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [{ params: { id: "1" } }, { params: { id: "2" } }],
-    fallback: true, // Set to true if there are more dynamic routes to be added later
-  };
-};
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  const userId = session?.user.userId;
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  // use axios GET method to fetch data
   const { data: event } = await axios.get(
-    `http://localhost:3000/api/events/${params?.id}`
+    `http://localhost:3000/api/events/${context.params?.id}`
   );
 
+  const { data: userData } = await axios.get(
+    `http://localhost:3000/api/users/${userId}`
+  );
+
+  const { data: address } = await axios.get(
+    `http://localhost:3000/api/addresses/${event.addressId}`
+  );
   return {
     props: {
       event,
+      userData,
+      address,
     },
   };
 };

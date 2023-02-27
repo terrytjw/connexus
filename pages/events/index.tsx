@@ -65,10 +65,6 @@ export const getServerSideProps: GetServerSideProps = async () => {
       return { ...event, address };
     })
   );
-  // const events = data.map((event) => ({
-  //   ...event,
-  //   // Add any other properties you want to include
-  // }));
 
   return {
     props: {

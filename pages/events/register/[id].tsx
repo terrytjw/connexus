@@ -258,6 +258,9 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         );
         user_tickets.push(tickets[j]);
 
+        // remove extra fields
+        // const { , ...cleansedUser} = userIn
+
         // destructure from user form data
         const { displayName, email, phoneNumber } = userFormData;
 
