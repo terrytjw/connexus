@@ -2,7 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteMerchandise, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import {
+  deleteMerchandise,
+  searchMerchandise,
+  updatedMerchandise,
+} from "../../../lib/merch";
 import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 
 const prisma = new PrismaClient();
@@ -20,7 +24,7 @@ const prisma = new PrismaClient();
  *            schema:
  *              $ref: "#/components/schemas/Merchandise"
  *   post:
- *     description: Create a Merchandise object. 
+ *     description: Create a Merchandise object.
  *     requestBody:
  *       name: Ticket
  *       required: true
@@ -48,7 +52,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const merch = JSON.parse(JSON.stringify(body)) as Merchandise
+      const merch = JSON.parse(JSON.stringify(body)) as Merchandise;
       await handlePOST(merch);
       break;
     default:
@@ -58,8 +62,7 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const merchs = await prisma.merchandise.findMany({
-      });
+      const merchs = await prisma.merchandise.findMany({});
       res.status(200).json(merchs);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -69,30 +72,24 @@ export default async function handler(
 
   async function handlePOST(merch: Merchandise) {
     try {
-      const { media , ...merchInfo } = merch;
-      let mediaUrl = ""; 
+      const { image, ...merchInfo } = merch;
+      let imageUrl = "";
 
-      if(media){
-        const{data, error} = await uploadImage(
-          MERCH_PROFILE_BUCKET, 
-          media
-        );
+      if (image) {
+        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
 
         if (data)
-        mediaUrl = await retrieveImageUrl(
-          MERCH_PROFILE_BUCKET,
-            data.path
-          );
+          imageUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
       }
 
-      console.log(mediaUrl);
+      console.log(imageUrl);
 
       const response = await prisma.merchandise.create({
-        data: { ...merchInfo, media: mediaUrl, merchId:undefined }
+        data: { ...merchInfo, image: imageUrl, merchId: undefined },
       });
       res.status(200).json([response]);
     } catch (error) {

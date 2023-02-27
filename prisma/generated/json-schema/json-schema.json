@@ -637,15 +637,11 @@
         "name": {
           "type": "string"
         },
-        "media": {
+        "image": {
           "type": [
             "string",
             "null"
           ]
-        },
-        "description": {
-          "type": "string",
-          "default": ""
         },
         "price": {
           "type": "number",

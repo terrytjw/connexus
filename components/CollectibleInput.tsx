@@ -64,14 +64,17 @@ const CollectibleInput = ({
               type="button"
               className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
               onClick={() => {
-                if (collectible.quantity && collectible.quantity > 1) {
+                if (
+                  collectible.totalMerchSupply &&
+                  collectible.totalMerchSupply > 1
+                ) {
                   setValue(
-                    `collectibles.${index}.quantity`,
-                    collectible.quantity - 1
+                    `collectibles.${index}.totalMerchSupply`,
+                    collectible.totalMerchSupply - 1
                   );
                   return;
                 }
-                setValue(`collectibles.${index}.quantity`, 1);
+                setValue(`collectibles.${index}.totalMerchSupply`, 1);
               }}
             >
               <span className="m-auto text-2xl">-</span>
@@ -80,7 +83,7 @@ const CollectibleInput = ({
               type="number"
               min={1}
               step={1}
-              value={collectible.quantity}
+              value={collectible.totalMerchSupply}
               onKeyDown={(e) => {
                 // disallow decimal
                 // only allow numbers, backspace, arrow left and right for editing
@@ -96,7 +99,7 @@ const CollectibleInput = ({
               }}
               onChange={(e) => {
                 setValue(
-                  `collectibles.${index}.quantity`,
+                  `collectibles.${index}.totalMerchSupply`,
                   e.target.valueAsNumber
                 );
               }}
@@ -106,14 +109,14 @@ const CollectibleInput = ({
               type="button"
               className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
               onClick={() => {
-                if (collectible.quantity) {
+                if (collectible.totalMerchSupply) {
                   setValue(
-                    `collectibles.${index}.quantity`,
-                    collectible.quantity + 1
+                    `collectibles.${index}.totalMerchSupply`,
+                    collectible.totalMerchSupply + 1
                   );
                   return;
                 }
-                setValue(`collectibles.${index}.quantity`, 1);
+                setValue(`collectibles.${index}.totalMerchSupply`, 1);
               }}
             >
               <span className="m-auto text-2xl font-thin">+</span>

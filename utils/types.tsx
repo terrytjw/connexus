@@ -57,7 +57,7 @@ export type Collectible = {
   collectibleId?: number;
   image: string;
   name: string;
-  quantity: number;
+  totalMerchSupply: number;
   collectionName?: string;
 };
 
