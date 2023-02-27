@@ -1,5 +1,4 @@
 import TicketCard from "../../components/EventPages/TicketCard";
-import { useRouter } from "next/router";
 import React from "react";
 import {
   FaCalendar,
@@ -19,9 +18,12 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import axios from "axios";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { isValid, format } from "date-fns";
 import { Ticket } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
+import { formatDate } from "../../lib/date-util";
+import useSWR from "swr";
+import Loading from "../../components/Loading";
+import { swrFetcher } from "../../lib/swrFetcher";
 
 type EventPageProps = {
   event: EventWithTicketsandAddress;
@@ -38,8 +40,17 @@ const EventPage = ({ event }: EventPageProps) => {
     endDate,
     tickets,
     category,
+    addressId,
   } = event;
 
+  const {
+    data: address,
+    error,
+    isLoading,
+  } = useSWR(`http://localhost:3000/api/addresses/${addressId}`, swrFetcher);
+  //   const { tickets } = userData;
+
+  if (isLoading) return <Loading />;
   console.log(event);
   return (
     <ProtectedRoute>
@@ -64,7 +75,10 @@ const EventPage = ({ event }: EventPageProps) => {
                   </h1>
                   <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-                <Link href={`/events/register/${eventId}`}>
+                <Link
+                  href={`/events/register/${eventId}`}
+                  className="mt-8 sm:mt-0"
+                >
                   <Button variant="solid" size="md" className="max-w-xs">
                     Register for event
                   </Button>
@@ -82,16 +96,7 @@ const EventPage = ({ event }: EventPageProps) => {
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Date and Time</p>
                     <p>
-                      {`${
-                        isValid(startDate)
-                          ? format(startDate, "PPPPpppp")
-                          : format(new Date(startDate), "PPPPpppp")
-                      } -
-                          ${
-                            isValid(endDate)
-                              ? format(endDate, "PPPPpppp")
-                              : format(new Date(endDate), "PPPPpppp")
-                          }`}
+                      {formatDate(startDate)} - {formatDate(endDate)}
                     </p>
                   </span>
                 </div>
@@ -100,10 +105,7 @@ const EventPage = ({ event }: EventPageProps) => {
                   <FaMapPin className="text-md" />
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Location</p>
-                    <p>
-                      Marina Bay Sands 10 Bayfront Avenue Street, Singapore
-                      018956
-                    </p>
+                    <p>{address?.locationName}</p>
                   </span>
                 </div>
               </div>

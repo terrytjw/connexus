@@ -7,10 +7,7 @@ import {
 import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
-import {
-  SelectedTicket,
-  UserWithSelectedTicket,
-} from "../../../../pages/events/register/[id]";
+import { UserWithSelectedTicket } from "../../../../pages/events/register/[id]";
 import { User } from "@prisma/client";
 import Modal from "../../../Modal";
 

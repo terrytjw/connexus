@@ -1,31 +1,22 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { GetServerSideProps, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import Toggle from "../../components/Toggle";
 import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEventsPage";
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 
-import {
-  Event,
-  Ticket,
-  PrivacyType,
-  Promotion,
-  VisibilityType,
-  CategoryType,
-} from "@prisma/client";
+import { Event, PrivacyType, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
 import { events } from "../../utils/dummyData";
 
-const EventsPage = ({ events }) => {
-  const [isCreator, setIsCreator] = useState<boolean>(false);
+type EventsPageProps = {
+  events: EventWithTicketsandAddress[];
+};
 
-  // async function fetchEvents(url: string) {
-  //   const response = await axios.get(url);
-  //   const data = response.data as EventWithTicketsandAddress[];
-  //   return data;
-  // }
+const EventsPage = ({ events }: EventsPageProps) => {
+  const [isCreator, setIsCreator] = useState<boolean>(false);
 
   console.log(events);
 
@@ -35,7 +26,7 @@ const EventsPage = ({ events }) => {
   ): EventWithTicketsandAddress[] => {
     if (!isCreator) {
       // see only public and published events
-      return events.filter(
+      return events?.filter(
         (event) =>
           event?.privacyType === PrivacyType.PUBLIC &&
           event?.visibilityType === VisibilityType.PUBLISHED
@@ -61,9 +52,23 @@ const EventsPage = ({ events }) => {
   );
 };
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async () => {
   // use axios GET method to fetch data
-  const { data: events } = await axios.get("http://localhost:3000/api/events");
+  const { data } = await axios.get("http://localhost:3000/api/events");
+
+  const events = await Promise.all(
+    data.map(async (event: Partial<Event>) => {
+      const { data: address } = await axios.get(
+        `http://localhost:3000/api/addresses/${event?.addressId}`
+      );
+
+      return { ...event, address };
+    })
+  );
+  // const events = data.map((event) => ({
+  //   ...event,
+  //   // Add any other properties you want to include
+  // }));
 
   return {
     props: {

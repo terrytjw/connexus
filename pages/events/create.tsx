@@ -1,12 +1,12 @@
 import React from "react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { StepStatus } from "../../lib/enums";
 import StepsMobile from "../../components/EventPages/StepsMobile";
 import StepsDesktop, { Step } from "../../components/EventPages/StepsDesktop";
-import EventFormPage from "../../components/EventPages/Creator/CreateEventForms/EventFormPage";
-import TicketFormPage from "../../components/EventPages/Creator/CreateEventForms/TicketFormPage";
-import PublishFormPage from "../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
+import EventFormPage from "../../components/EventPages/Creator/EventForms/EventFormPage";
+import TicketFormPage from "../../components/EventPages/Creator/EventForms/TicketFormPage";
+import PublishFormPage from "../../components/EventPages/Creator/EventForms/PublishFormPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
@@ -14,13 +14,10 @@ import Loading from "../../components/Loading";
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithTicketsandAddress } from "../../utils/types";
 import {
-  Prisma,
   PrivacyType,
   PublishType,
   Ticket,
   VisibilityType,
-  Event,
-  Address,
 } from "@prisma/client";
 
 import axios from "axios";

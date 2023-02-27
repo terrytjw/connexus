@@ -70,20 +70,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       },
     });
 
+  // watch user form data
+  const userFormData = watch();
+
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
     useState(false);
-
-  // use form for user data
-  // const {
-  //   handleSubmit: handleUserSubmit,
-  //   setValue: setUserValue,
-  //   reset: userReset,
-  //   control: userControl,
-  //   watch: userWatch,
-  //   trigger: userTrigger,
-  // } = useForm<User>({
-  //   defaultValues: { ...userData },
-  // });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Select Tickets", status: StepStatus.CURRENT },
@@ -201,6 +193,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   };
 
   const mintTicket = async (
+    userFormData: User,
     userId: number,
     eventId: number,
     ticketCategory: string
@@ -211,7 +204,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     2. Ticket category 
     3. User id
     */
-
+    setIsLoading(true);
     let response = await axios.get(
       "http://localhost:3000/api/events/" + eventId.toString()
     );
@@ -264,8 +257,16 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           ticket
         );
         user_tickets.push(tickets[j]);
+
+        // destructure from user form data
+        const { displayName, email, phoneNumber } = userFormData;
+
+        // upsert user with minted tickets and profile info
         const updated_user = {
           ...userInfo,
+          displayName,
+          email,
+          phoneNumber,
           tickets: user_tickets,
         };
         console.log("updating user in prisma", updated_user);
@@ -304,6 +305,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     );
     let updated_data = updated_response.data;
     console.log("Data uploaded for both event + user");
+    setIsLoading(false);
   };
 
   async function getTicket(ipfs_link: string) {
@@ -324,19 +326,25 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           isOpen={isRegisterSuccessModalOpen}
           setIsOpen={setIsRegisterSuccessModalOpen}
         >
-          <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Minting Tickets</h3>
-            <Link href="/events/tickets">
-              <Button
-                variant="outlined"
-                size="sm"
-                className="border-0"
-                onClick={() => setIsRegisterSuccessModalOpen(false)}
-              >
-                View Tickets
-              </Button>
-            </Link>
-          </div>
+          {isLoading ? (
+            <Loading className="!h-full" />
+          ) : (
+            <div className="flex items-center justify-between">
+              <h3 className="ml-2 text-xl font-semibold">
+                Registered and Minted Tickets!
+              </h3>
+              <Link href="/events/tickets">
+                <Button
+                  variant="outlined"
+                  size="sm"
+                  className="border-0"
+                  onClick={() => setIsRegisterSuccessModalOpen(false)}
+                >
+                  View Tickets
+                </Button>
+              </Link>
+            </div>
+          )}
         </Modal>
 
         <main className="py-12 px-4 sm:px-12">
@@ -369,8 +377,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <form
               onSubmit={handleSubmit((data: UserWithSelectedTicket) => {
                 console.log("Submitting Ticket Data to mint", data);
+                // remove selectedTickets field from form data
+                const { selectedTicket, ...userWithNoSelectedTickets } =
+                  userFormData;
                 mintTicket(
-                  data.userId,
+                  userWithNoSelectedTickets,
+                  Number(userId),
                   event.eventId,
                   data.selectedTicket.ticketName
                 );

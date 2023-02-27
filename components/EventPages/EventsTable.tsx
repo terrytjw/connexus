@@ -1,10 +1,10 @@
 import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Badge from "../Badge";
-
-import { isValid, format } from "date-fns";
 import axios from "axios";
 import Link from "next/link";
+import { formatDate } from "../../lib/date-util";
+import { truncateString } from "../../lib/text-truncate";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -16,7 +16,7 @@ type EventsTableProps = {
 
 const EventsTable = ({ data, columns }: EventsTableProps) => {
   return (
-    <div className="w-full overflow-x-auto ">
+    <div className="w-full overflow-x-auto">
       <table className="table w-full ">
         {/* <!-- head --> */}
         <thead>
@@ -33,27 +33,23 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
           {/* <!-- row 1 --> */}
           {data.map((data, index) => (
             <tr key={index}>
-              <td className="text-gray-700">{data?.eventName}</td>
+              <td className="text-gray-700">
+                {truncateString(data?.eventName, 20)}
+              </td>
 
               <td className="text-gray-700">
-                {`${
-                  isValid(data?.startDate)
-                    ? format(data?.startDate, "PPPPpppp")
-                    : format(new Date(data?.startDate), "PPPPpppp")
-                } - ${
-                  isValid(data?.endDate)
-                    ? format(data?.endDate, "PPPPpppp")
-                    : format(new Date(data?.endDate), "PPPPpppp")
-                }`}
+                {`${formatDate(data.startDate)} - ${formatDate(data.endDate)}`}
               </td>
               <td className="text-gray-700">{data?.maxAttendee}</td>
               {/* TODO: replace when schema is updated */}
-              <td className="text-gray-700">{data?.location}</td>
+              <td className="text-gray-700">{data?.address?.locationName}</td>
+
               <td className="text-gray-700">
                 {data?.category.length === 0 && (
                   <p className="text-gray-500">No Topics Selected</p>
                 )}
                 {data?.category.map((label, index) => (
+                  // <div className="tooltip" data-tip={label}>
                   <Badge
                     key={index}
                     className="text-white"
@@ -61,7 +57,9 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                     size="lg"
                     selected={false}
                   />
-                ))}
+                  // </div>
+                ))}{" "}
+                ...
               </td>
               <td className=" text-sm font-bold text-red-400">
                 {data?.visibilityType}

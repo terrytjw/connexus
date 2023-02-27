@@ -1,14 +1,14 @@
 import React from "react";
-import { useContext, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { StepStatus } from "../../../lib/enums";
 import StepsMobile from "../../../components/EventPages/StepsMobile";
 import StepsDesktop, {
   Step,
 } from "../../../components/EventPages/StepsDesktop";
-import EventFormPage from "../../../components/EventPages/Creator/CreateEventForms/EventFormPage";
-import TicketFormPage from "../../../components/EventPages/Creator/CreateEventForms/TicketFormPage";
-import PublishFormPage from "../../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
+import EventFormPage from "../../../components/EventPages/Creator/EventForms/EventFormPage";
+import TicketFormPage from "../../../components/EventPages/Creator/EventForms/TicketFormPage";
+import PublishFormPage from "../../../components/EventPages/Creator/EventForms/PublishFormPage";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import Loading from "../../../components/Loading";
@@ -26,7 +26,6 @@ import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
 import { GetStaticPaths, GetStaticProps } from "next";
-import { format, parseISO } from "date-fns";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -222,7 +221,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     4. Ticket Info
     */
 
-    console.log("newEvent from form -> ", newEvent);
+    console.log("newEvent form data -> ", newEvent);
     setIsLoading(true);
     const event_id = newEvent?.eventId;
     let response_event = await axios.get(
@@ -323,9 +322,19 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           console.log("Not allowed to change");
           // return ""
         } else {
-          await axios.delete(
+          const updated_response = await axios.delete(
             "http://localhost:3000/api/tickets/" +
               tickets[j].ticketId.toString()
+          );
+          const updated_data = updated_response.data;
+
+          console.log(
+            `updating ticket ${tickets[
+              j
+            ].ticketId.toString()} via /tickets/${tickets[
+              j
+            ].ticketId.toString()} ->`,
+            updated_data
           );
         }
       }
@@ -409,13 +418,35 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       );
 
       let updated_data = updated_response.data;
+      console.log(
+        `updating event via /events/${event_id.toString()} ->`,
+        updated_data
+      );
       console.log("Data uploaded");
       setIsLoading(false);
     } else {
       console.log("Nothing to update for tokenURIs in event");
 
-      // try dont update tickets
-      const { address, ...newEventWOTicketsNAddress } = newEvent;
+      // remove untouched data
+      const {
+        address,
+        tickets,
+        // bannerPic,
+        // eventPic,
+        addressId,
+        ...newEventWOTicketsNAddress
+      } = newEvent;
+
+      // change address
+      let update_address_response = await axios.post(
+        "http://localhost:3000/api/addresses/" + addressId.toString(),
+        address
+      );
+      let updated_address_data = update_address_response.data;
+      console.log(
+        `updating address via /addresses/${addressId.toString()} ->`,
+        updated_address_data
+      );
 
       const updated_event: Partial<EventWithTicketsandAddress> = {
         ...newEventWOTicketsNAddress,
@@ -427,6 +458,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         updated_event
       );
       let updated_data = updated_response.data;
+      console.log(
+        `updating event via /events/${event_id.toString()} ->`,
+        updated_data
+      );
       console.log("Data uploaded");
       setIsLoading(false);
     }
@@ -612,10 +647,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
             )}
             <h2 className="text-2xl font-bold sm:text-4xl">
               {currentStep?.id === "Step 1"
-                ? "Create a New Event"
+                ? "Edit Event"
                 : currentStep?.id === "Step 2"
-                ? "Create New Tickets"
-                : "Publish Event"}
+                ? "Edit Tickets"
+                : "Publish Event Changes"}
             </h2>
           </nav>
 

@@ -4,7 +4,8 @@ import Button from "../Button";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaHeart, FaCalendar, FaMapPin, FaPersonBooth } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
+import { formatDate } from "../../lib/date-util";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -18,11 +19,11 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
 
   return (
     <Link href={`/events/${item.eventId}`} className="group text-sm">
-      <div className="aspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+      <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
         <Image
           src={item.eventPic || "/images/bear.jpg"}
           alt={item.eventName}
-          className="h-full w-full object-cover object-center"
+          className="w-full object-cover object-center"
           width={100}
           height={100}
         />
@@ -37,22 +38,18 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           </Button>
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{item.eventName}</h3>
 
-      <span className="flex">
-        <FaCalendar />
-        <p className="ml-2 text-gray-500">{item.startDate}</p>
-      </span>
-      <span className="flex align-middle">
-        <FaMapPin />
-        <p className="ml-2 text-sm text-gray-500">
-          {item?.address?.locationName}
-        </p>
-      </span>
-      <span className="flex">
-        <FaPersonBooth />
-        <p className="ml-2 text-sm text-gray-500">{item.maxAttendee}</p>
-      </span>
+      <h3 className="mt-4 text-xl font-bold text-gray-900">{item.eventName}</h3>
+      <p className="mt-2 text-base font-semibold text-gray-500">
+        {formatDate(item.startDate)} - {formatDate(item.endDate)}
+      </p>
+      <div className="mt-2 text-sm font-normal">
+        <span>{item?.address?.locationName}</span>
+      </div>
+
+      <p className="text-s mt-2 font-semibold text-blue-600">
+        {item.maxAttendee} attendees
+      </p>
     </Link>
   );
 };

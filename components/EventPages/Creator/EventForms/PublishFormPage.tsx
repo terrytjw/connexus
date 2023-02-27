@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { FaHeart, FaCalendar, FaMapPin, FaPersonBooth } from "react-icons/fa";
+import { FaHeart } from "react-icons/fa";
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
-import { format, isValid } from "date-fns";
 import { PrivacyType, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { formatDate } from "../../../../lib/date-util";
 
 type PublishFormPageProps = {
   watch: UseFormWatch<EventWithTicketsandAddress>;
@@ -30,16 +30,17 @@ const PublishFormPage = ({
         <div>
           <section>
             <div>
-              <div className="">
+              {/* TODO: Abstract out to event grid item  */}
+              <div>
                 <h2 className="text-xl font-semibold ">
                   Preview Event Details
                 </h2>
-                <div className="gap-y-15 grid grid-cols-1 gap-x-6 pt-8 sm:grid-cols-4">
+                <div className="gap-y-15 grid grid-cols-1 gap-x-6 pt-8 sm:grid-cols-3">
                   <div
-                    className="group link mb-8 text-sm no-underline hover:cursor-pointer"
+                    className="group link mb-8 rounded-lg p-2 text-sm no-underline hover:cursor-pointer hover:bg-gray-200"
                     onClick={() => setIsPreview((prev) => !prev)}
                   >
-                    <div className="aspect-w-1 aspect-h-1 relative w-full overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+                    <div className="relative aspect-square w-full overflow-hidden rounded-lg group-hover:opacity-75">
                       <Image
                         src={eventPic ? eventPic : ""}
                         alt={eventName}
@@ -58,37 +59,19 @@ const PublishFormPage = ({
                         </Button>
                       </div>
                     </div>
-                    <h3 className="mt-4 font-medium text-gray-900">
+                    <h3 className="mt-4 text-xl font-bold text-gray-900">
                       {eventName}
                     </h3>
+                    <p className="mt-2 text-base font-semibold text-gray-500">
+                      {formatDate(startDate)} - {formatDate(endDate)}
+                    </p>
+                    <div className="mt-2 text-sm font-normal">
+                      <span>{address?.locationName}</span>
+                    </div>
 
-                    <span className="flex">
-                      <FaCalendar />
-                      <p className="ml-2 text-gray-500">
-                        {`${
-                          isValid(startDate)
-                            ? format(startDate, "PPPPpppp")
-                            : format(new Date(startDate), "PPPPpppp")
-                        } -
-                          ${
-                            isValid(endDate)
-                              ? format(endDate, "PPPPpppp")
-                              : format(new Date(endDate), "PPPPpppp")
-                          }`}
-                      </p>
-                    </span>
-                    <span className="flex align-middle">
-                      <FaMapPin />
-                      <p className="ml-2 text-sm text-gray-500">
-                        {address.locationName}
-                      </p>
-                    </span>
-                    <span className="flex">
-                      <FaPersonBooth />
-                      <p className="ml-2 text-sm text-gray-500">
-                        {maxAttendee}
-                      </p>
-                    </span>
+                    <p className="text-s mt-2 font-semibold text-blue-600">
+                      {maxAttendee} attendees
+                    </p>
                   </div>
                 </div>
               </div>
@@ -113,7 +96,7 @@ const PublishFormPage = ({
                             defaultChecked={
                               privacyOption === PrivacyType.PUBLIC
                             }
-                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="radio checked:bg-blue-500"
                             onChange={(e) =>
                               setValue(
                                 "privacyType",
@@ -125,7 +108,7 @@ const PublishFormPage = ({
                         <div className="ml-3 text-sm">
                           <label
                             htmlFor={privacyOption}
-                            className="font-medium text-gray-700"
+                            className="font-medium text-gray-800"
                           >
                             {privacyOption === PrivacyType.PRIVATE
                               ? "Private"
@@ -163,7 +146,7 @@ const PublishFormPage = ({
                             defaultChecked={
                               visibilityOption === VisibilityType.PUBLISHED
                             }
-                            className="h-4 w-4 border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="radio checked:bg-blue-500"
                             onChange={(e) =>
                               setValue(
                                 "visibilityType",
@@ -175,7 +158,7 @@ const PublishFormPage = ({
                         <div className="ml-3 text-sm">
                           <label
                             htmlFor={visibilityOption}
-                            className="font-medium text-gray-700"
+                            className="font-medium text-gray-800"
                           >
                             {visibilityOption === VisibilityType.PUBLISHED
                               ? "Now"
