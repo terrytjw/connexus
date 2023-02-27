@@ -61,6 +61,7 @@
     "theme-change": "^2.3.0",
     "truffle": "^5.7.6",
     "uuid": "^9.0.0",
+    "validator": "^13.9.0",
     "web3": "^1.8.2"
   },
   "devDependencies": {
@@ -70,6 +71,7 @@
     "@types/react-dom": "^18.0.9",
     "@types/swagger-ui-react": "^4.11.0",
     "@types/uuid": "^9.0.0",
+    "@types/validator": "^13.7.12",
     "autoprefixer": "^10.4.13",
     "cpy-cli": "4.2.0",
     "eslint": "^8.30.0",
