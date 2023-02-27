@@ -35,7 +35,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
   });
 
   const [bannerPic, profilePic] = watch(["bannerPic", "profilePic"]);
-  console.log("xxx -> ", userData);
+  console.log("user data!! -> ", userData);
 
   const onSubmit = async (formData: EditProfileForm) => {
     const updatedUserData = {
@@ -43,7 +43,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
       ...formData, // this is the user data fields from the form overwriting the database data
     };
     const res = await axios.post(
-      "http://localhost:3000/api/users/1",
+      `http://localhost:3000/api/users/${userData.userId}`,
       updatedUserData
     );
     const temp = res.data;

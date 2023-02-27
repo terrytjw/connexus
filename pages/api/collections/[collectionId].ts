@@ -105,10 +105,6 @@ export default async function handler(
   async function handlePOST(collectionId: number, collectionwithMerch: Collection) {
     try {
       
-      console.log("collectionUpdate")
-
-      console.log(collectionwithMerch); 
-      console.log(collectionId); 
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,

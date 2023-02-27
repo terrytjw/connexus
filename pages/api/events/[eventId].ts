@@ -4,6 +4,9 @@ import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
+import { uploadImage, retrieveImageUrl } from "../../../lib/supabase";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
@@ -114,17 +117,50 @@ export default async function handler(
 
   async function handlePOST(eventId: number, eventWithTickets: Event) {
     try {
-      const response = await prisma.event.update({
-        where: {
-          eventId: eventId,
-        },
-        data: {
-          ...eventWithTickets,
-          eventId: undefined,
-        },
-      });
+      const { eventPic, bannerPic } = eventWithTickets;
+      let eventImageUrl = ""; 
+      let eventBannerPictureUrl = ""; 
 
+      if(eventPic){
+        const{data, error} = await uploadImage(
+          EVENT_PROFILE_BUCKET, 
+          eventPic
+        );
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
 
+        if (data)
+        eventImageUrl = await retrieveImageUrl(
+          EVENT_PROFILE_BUCKET,
+            data.path
+          );
+      }
+
+      if (bannerPic) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
+          bannerPic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+        if (data)
+        eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+      }
+
+      const updatedEventInfo = {
+        ...eventWithTickets, 
+
+      }
+
+      if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
+      if (eventBannerPictureUrl) updatedEventInfo.bannerPic = eventBannerPictureUrl;
+      const response = await updateEvent(eventId, updatedEventInfo);
+      
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
