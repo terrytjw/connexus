@@ -1,14 +1,27 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection , Prisma, Merchandise, CategoryType} from "@prisma/client";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import {
+  PrismaClient,
+  Collection,
+  Prisma,
+  Merchandise,
+  CategoryType,
+} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteMerchandise, MerchandisePartialType,  searchMerchandise, updatedMerchandise } from "../../../lib/merch";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
+import {
+  deleteMerchandise,
+  MerchandisePartialType,
+  searchMerchandise,
+  updatedMerchandise,
+} from "../../../server-lib/merch";
+import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
 const prisma = new PrismaClient();
 
-type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{
+  include: { merchandise: true };
+}>;
 
 /**
  * @swagger
@@ -60,7 +73,9 @@ export default async function handler(
       await handleGETWithKeyword(keyword, cursor);
       break;
     case "POST":
-      const collection = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
+      const collection = JSON.parse(
+        JSON.stringify(req.body)
+      ) as CollectionwithMerch;
       await handlePOST(collection);
       break;
     default:
@@ -72,17 +87,15 @@ export default async function handler(
     try {
       const collections = await prisma.collection.findMany({
         take: 10,
-        skip:  cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { collectionId : cursor } : undefined,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { collectionId: cursor } : undefined,
         orderBy: {
-          collectionId: 'asc'
+          collectionId: "asc",
         },
         where: {
-          OR: [
-            { collectionName: { contains: keyword } },
-          ]
-      }
-    })
+          OR: [{ collectionName: { contains: keyword } }],
+        },
+      });
       res.status(200).json(collections);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -90,42 +103,40 @@ export default async function handler(
     }
   }
 
-  async function updateMerchMedia(media: string | null, merchInfo : MerchandisePartialType ){
-    let mediaUrl = ""; 
-        if(media){
-          const{data, error} = await uploadImage(
-            MERCH_PROFILE_BUCKET, 
-            media
-          );
-          if (error) {
-            const errorResponse = handleError(error);
-            res.status(400).json(errorResponse);
-          }
-  
-          if (data)
-          mediaUrl = await retrieveImageUrl(
-            MERCH_PROFILE_BUCKET,
-              data.path
-            );
-        }
-  
-        console.log(mediaUrl)
-        if(mediaUrl) merchInfo.media = mediaUrl;
-        return merchInfo
-  };
+  async function updateMerchMedia(
+    media: string | null,
+    merchInfo: MerchandisePartialType
+  ) {
+    let mediaUrl = "";
+    if (media) {
+      const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, media);
+      if (error) {
+        const errorResponse = handleError(error);
+        res.status(400).json(errorResponse);
+      }
+
+      if (data)
+        mediaUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
+    }
+
+    console.log(mediaUrl);
+    if (mediaUrl) merchInfo.media = mediaUrl;
+    return merchInfo;
+  }
 
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
       const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = await Promise.all(merchandise.map(async (merch : Merchandise) => {
-        const { merchId, collectionId, media, ...merchInfo } = merch;
-        let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
-        return updatedMerchInfo;
-      }));
-  
+      const updatedMerchs = await Promise.all(
+        merchandise.map(async (merch: Merchandise) => {
+          const { merchId, collectionId, media, ...merchInfo } = merch;
+          let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
+          return updatedMerchInfo;
+        })
+      );
 
-      console.log(updatedMerchs); 
-      console.log(collectionInfo); 
+      console.log(updatedMerchs);
+      console.log(collectionInfo);
 
       const response = await prisma.collection.create({
         data: {

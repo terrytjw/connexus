@@ -1,15 +1,15 @@
 import { Merchandise, Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, User, Prisma } from "@prisma/client";
-import { deleteUser, searchUser, updateUser } from "../../../lib/user";
-import { USER_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteUser, searchUser, updateUser } from "../../../server-lib/user";
+import { USER_PROFILE_BUCKET } from "../../../server-lib/constant";
 import {
   uploadImage,
   retrieveImageUrl,
   checkIfStringIsBase64,
-} from "../../../lib/supabase";
+} from "../../../server-lib/supabase";
 
 const prisma = new PrismaClient();
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{

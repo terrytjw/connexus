@@ -2,7 +2,7 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { Switch } from "@headlessui/react";
 import { themeChange } from "theme-change";
 import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { ThemeContext } from "../../lib/context";
+import { ThemeContext } from "../../server-lib/context";
 
 const DarkModeToggle = () => {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -13,7 +13,7 @@ const DarkModeToggle = () => {
   }, []);
 
   return (
-    <div className="flex space-x-2 items-center">
+    <div className="flex items-center space-x-2">
       <div>{darkModeEnabled ? <MdDarkMode /> : <MdLightMode />}</div>
       <Switch checked={darkModeEnabled} onChange={toggleTheme} as={Fragment}>
         {({ checked }) => (

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../../server-lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -40,7 +40,7 @@ const prisma = new PrismaClient();
  *       description: Post object to create
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/Post" 
+ *           $ref: "#/components/schemas/Post"
  *     responses:
  *       200:
  *         description: A single Post object
@@ -93,7 +93,7 @@ export default async function handler(
     try {
       const post = await prisma.post.findUnique({
         where: {
-          postId: postId
+          postId: postId,
         },
       });
 
@@ -109,7 +109,7 @@ export default async function handler(
     try {
       const response = await prisma.post.update({
         where: {
-          postId: postId
+          postId: postId,
         },
         data: { ...post },
       });
@@ -124,7 +124,7 @@ export default async function handler(
     try {
       const response = await prisma.post.delete({
         where: {
-          postId: postId
+          postId: postId,
         },
       });
       res.status(200).json(response);

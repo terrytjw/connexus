@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Ticket } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -45,7 +45,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const ticket = JSON.parse(JSON.stringify(body)) as Ticket
+      const ticket = JSON.parse(JSON.stringify(body)) as Ticket;
       await handlePOST(ticket);
       break;
     default:
@@ -55,8 +55,7 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const tickets = await prisma.ticket.findMany({
-      });
+      const tickets = await prisma.ticket.findMany({});
       res.status(200).json(tickets);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -67,7 +66,7 @@ export default async function handler(
   async function handlePOST(ticket: Ticket) {
     try {
       const response = await prisma.ticket.create({
-        data: { ...ticket }
+        data: { ...ticket },
       });
       res.status(200).json([response]);
     } catch (error) {

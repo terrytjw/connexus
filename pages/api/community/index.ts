@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Community, CategoryType } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -82,15 +82,17 @@ export default async function handler(
       const communities = await prisma.community.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId : cursor } : undefined,
+        cursor: cursor ? { communityId: cursor } : undefined,
         orderBy: {
-          communityId: 'asc'
+          communityId: "asc",
         },
-        where: filter ? {
-          tags: {
-            has: filter
-          }
-        } : undefined
+        where: filter
+          ? {
+              tags: {
+                has: filter,
+              },
+            }
+          : undefined,
       });
       res.status(200).json(communities);
     } catch (error) {
@@ -99,22 +101,26 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType) {
+  async function handleGETWithKeyword(
+    keyword: string,
+    cursor: number,
+    filter?: CategoryType
+  ) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
-        skip:  cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId : cursor } : undefined,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { communityId: cursor } : undefined,
         orderBy: {
-          communityId: 'asc'
+          communityId: "asc",
         },
         where: {
           OR: [
             {
               name: {
                 contains: keyword,
-                mode: 'insensitive'
-              }
+                mode: "insensitive",
+              },
             },
             {
               creator: {
@@ -123,25 +129,27 @@ export default async function handler(
                     {
                       displayName: {
                         contains: keyword,
-                        mode: 'insensitive'
-                      }
+                        mode: "insensitive",
+                      },
                     },
                     {
                       username: {
                         contains: keyword,
-                        mode: 'insensitive'
-                      }
-                    }
+                        mode: "insensitive",
+                      },
+                    },
                   ],
-                }
-              }
+                },
+              },
             },
           ],
-          tags: filter ? {
-            has: filter
-          } : undefined
-        }
-      })
+          tags: filter
+            ? {
+                has: filter,
+              }
+            : undefined,
+        },
+      });
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -152,9 +160,9 @@ export default async function handler(
   async function handlePOST(community: Community) {
     try {
       const response = await prisma.community.create({
-        data: { 
-          ...community
-         },
+        data: {
+          ...community,
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

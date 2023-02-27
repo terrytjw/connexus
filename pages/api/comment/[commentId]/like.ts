@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../../server-lib/prisma-util";
 import { PrismaClient, Comment } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -50,19 +50,23 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(commentId: number, comment: Comment, userId: number) {
+  async function handlePOST(
+    commentId: number,
+    comment: Comment,
+    userId: number
+  ) {
     try {
       const response = await prisma.comment.update({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
         data: {
           ...comment,
           likes: {
             connect: {
-              userId: userId
-            }
-          }
+              userId: userId,
+            },
+          },
         },
       });
       res.status(200).json(response);

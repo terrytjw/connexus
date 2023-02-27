@@ -1,13 +1,19 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Merchandise, Prisma } from "@prisma/client";
-import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteMerchandise, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
-import { uploadImage, retrieveImageUrl } from "../../../lib/supabase";
+import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
+import {
+  deleteMerchandise,
+  searchMerchandise,
+  updatedMerchandise,
+} from "../../../server-lib/merch";
+import { uploadImage, retrieveImageUrl } from "../../../server-lib/supabase";
 
 const prisma = new PrismaClient();
-type UserWithTicketsandMerch = Prisma.UserGetPayload<{ include: { tickets: true, merchandise: true } }>;
+type UserWithTicketsandMerch = Prisma.UserGetPayload<{
+  include: { tickets: true; merchandise: true };
+}>;
 
 /**
  * @swagger
@@ -104,36 +110,28 @@ export default async function handler(
 
   async function handlePOST(merchId: number, merch: Merchandise) {
     try {
+      const { media } = merch;
+      let merchUrl = "";
 
-      const {  media } = merch;
-      let merchUrl = ""; 
-
-      if(media){
-        const{data, error} = await uploadImage(
-          MERCH_PROFILE_BUCKET, 
-          media
-        );
+      if (media) {
+        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, media);
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
 
         if (data)
-        merchUrl = await retrieveImageUrl(
-          MERCH_PROFILE_BUCKET,
-            data.path
-          );
+          merchUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
       }
 
       const updatedMerchInfo = {
-        ...merch
-      }
+        ...merch,
+      };
       console.log(merchUrl);
 
       if (merchUrl) updatedMerchInfo.media = merchUrl;
       const response = await updatedMerchandise(merchId, updatedMerchInfo);
       res.status(200).json(response);
-
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

@@ -8,7 +8,7 @@ import ProfileSettings from "../../../components/UserSettingsTabs/Profile";
 import SMSPreferenceSettings from "../../../components/UserSettingsTabs/SMSPreference";
 import useSWR from "swr";
 import Loading from "../../../components/Loading";
-import { swrFetcher } from "../../../lib/swrFetcher";
+import { swrFetcher } from "../../../server-lib/swrFetcher";
 import { useSession } from "next-auth/react";
 
 const UserSettingsPage = () => {

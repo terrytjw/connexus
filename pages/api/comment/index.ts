@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Comment } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -45,7 +45,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const comment = JSON.parse(JSON.stringify(body)) as Comment
+      const comment = JSON.parse(JSON.stringify(body)) as Comment;
       await handlePOST(comment);
       break;
     default:
@@ -55,9 +55,7 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const communities = await prisma.comment.findMany({
-        
-      });
+      const communities = await prisma.comment.findMany({});
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -68,9 +66,9 @@ export default async function handler(
   async function handlePOST(comment: Comment) {
     try {
       const response = await prisma.comment.create({
-        data: { 
+        data: {
           ...comment,
-        }
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

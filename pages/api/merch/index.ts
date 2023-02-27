@@ -1,18 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Merchandise } from "@prisma/client";
-import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
-import axios from "axios";
-// import prisma from "../../../lib/prisma";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { Merchandise } from "@prisma/client";
+import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
+import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
+import { filterMerchandiseByPriceType } from "../../../server-lib/merch";
+import prisma from "../../../server-lib/prisma";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
 export enum MerchandisePriceType {
   FREE,
   PAID,
 }
-
-const prisma = new PrismaClient();
 
 /**
  * @swagger
@@ -46,31 +44,28 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Partial<Merchandise[]> | ErrorResponse>
+  res: NextApiResponse<Merchandise[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
 
-  const collectionId = parseInt(body.collectionId as string);
-
-  const priceType = parseInt(
-    body.priceType as keyof typeof MerchandisePriceType
-  );
-  const cursor = parseInt(body.cursor as string);
-
-  if (collectionId || priceType || cursor)
-    filterMerchandise(cursor, collectionId, priceType);
-
-  switch (method) {
-    case "GET":
-      await handleGET();
-      break;
-    case "POST":
-      const merch = JSON.parse(JSON.stringify(body)) as Merchandise;
-      await handlePOST(merch);
-      break;
-    default:
-      res.setHeader("Allow", ["GET", "POST"]);
-      res.status(405).end(`Method ${method} Not Allowed`);
+  if (query) {
+    const collectionId = parseInt(query.collectionId as string);
+    const priceType = query.priceType as unknown as MerchandisePriceType;
+    const cursor = parseInt(query.cursor as string);
+    await handleGETWithFilter(cursor, collectionId, priceType);
+  } else {
+    switch (method) {
+      case "GET":
+        await handleGET();
+        break;
+      case "POST":
+        const merch = JSON.parse(JSON.stringify(body)) as Merchandise; //@@ Double check
+        await handlePOST(merch);
+        break;
+      default:
+        res.setHeader("Allow", ["GET", "POST"]);
+        res.status(405).end(`Method ${method} Not Allowed`);
+    }
   }
 
   async function handleGET() {
@@ -99,8 +94,6 @@ export default async function handler(
           mediaUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
       }
 
-      console.log(mediaUrl);
-
       const response = await prisma.merchandise.create({
         data: { ...merchInfo, media: mediaUrl, merchId: undefined },
       });
@@ -117,12 +110,12 @@ export default async function handler(
     priceType: MerchandisePriceType
   ) {
     try {
-      const response = (await filterMerchandise(
+      const response = await filterMerchandiseByPriceType(
         cursor,
         collectionId,
         priceType
-      )) as Partial<Merchandise>;
-      res.status(200).json([response]);
+      );
+      res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
@@ -148,19 +141,3 @@ export default async function handler(
 //     // },
 //   });
 // }
-
-export async function filterMerchandise(
-  cursor: number,
-  collectionId: number,
-  priceType: MerchandisePriceType
-) {
-  const filterCondition =
-    priceType === MerchandisePriceType.FREE ? { equals: 0 } : { gt: 0 };
-
-  return prisma.merchandise.findMany({
-    take: 10,
-    skip: cursor ? 1 : undefined, // Skip cursor
-    cursor: cursor ? { merchId: cursor } : undefined,
-    where: { collectionId: collectionId, price: filterCondition },
-  });
-}

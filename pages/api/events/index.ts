@@ -1,11 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma,CategoryType, Ticket } from "@prisma/client";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import {
+  PrismaClient,
+  Event,
+  Prisma,
+  CategoryType,
+  Ticket,
+} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
-import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
-import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
+import {
+  deleteEvent,
+  searchEvent,
+  updateEvent,
+} from "../../../server-lib/event";
+import { EVENT_PROFILE_BUCKET } from "../../../server-lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -76,15 +86,17 @@ export default async function handler(
       const events = await prisma.event.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId : cursor } : undefined,
+        cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
-          eventId: 'asc'
+          eventId: "asc",
         },
-        where: filter ? {
-          category: {
-            has: filter
-          }
-        } : undefined
+        where: filter
+          ? {
+              category: {
+                has: filter,
+              },
+            }
+          : undefined,
       });
       res.status(200).json(events);
     } catch (error) {
@@ -93,20 +105,19 @@ export default async function handler(
     }
   }
 
-
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
-      const { tickets,  eventPic, bannerPic , ...eventInfo } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket : Ticket) => {
+      const { tickets, eventPic, bannerPic, ...eventInfo } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket: Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
       });
-      let eventImageUrl = ""; 
-      let eventBannerPictureUrl = ""; 
+      let eventImageUrl = "";
+      let eventBannerPictureUrl = "";
 
-      if(eventPic){
-        const{data, error} = await uploadImage(
-          EVENT_PROFILE_BUCKET, 
+      if (eventPic) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
           eventPic
         );
         if (error) {
@@ -115,8 +126,8 @@ export default async function handler(
         }
 
         if (data)
-        eventImageUrl = await retrieveImageUrl(
-          EVENT_PROFILE_BUCKET,
+          eventImageUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
             data.path
           );
       }
@@ -131,7 +142,11 @@ export default async function handler(
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
-        if (data) eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+        if (data)
+          eventBannerPictureUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
+            data.path
+          );
       }
 
       console.log(eventBannerPictureUrl, eventImageUrl);
@@ -139,8 +154,8 @@ export default async function handler(
         data: {
           ...eventInfo,
           eventId: undefined,
-          eventPic : eventImageUrl, 
-          bannerPic : eventBannerPictureUrl,
+          eventPic: eventImageUrl,
+          bannerPic: eventBannerPictureUrl,
           tickets: { create: updatedTickets },
         },
         include: {

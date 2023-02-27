@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../../server-lib/prisma-util";
 import { PrismaClient, Comment } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -93,7 +93,7 @@ export default async function handler(
     try {
       const comment = await prisma.comment.findUnique({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
       });
 
@@ -109,7 +109,7 @@ export default async function handler(
     try {
       const response = await prisma.comment.update({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
         data: { ...comment },
       });
@@ -124,7 +124,7 @@ export default async function handler(
     try {
       const response = await prisma.comment.delete({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
       });
       res.status(200).json(response);

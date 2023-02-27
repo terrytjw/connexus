@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Ticket } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -86,7 +86,7 @@ export default async function handler(
     try {
       const ticket = await prisma.ticket.findUnique({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
       });
 
@@ -102,12 +102,11 @@ export default async function handler(
     try {
       const response = await prisma.ticket.update({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
         data: { ...ticket, ticketId: undefined },
       });
       res.status(200).json(response);
-
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
@@ -119,7 +118,7 @@ export default async function handler(
     try {
       const response = await prisma.ticket.delete({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
       });
       res.status(200).json(response);

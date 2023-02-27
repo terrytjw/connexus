@@ -9,7 +9,7 @@ import {
   Currency,
   CollectionState,
 } from "@prisma/client";
-import { saveUser } from "../lib/user";
+import { saveUser } from "../server-lib/user";
 
 const prisma = new PrismaClient();
 
@@ -374,7 +374,7 @@ async function generateEvent() {
           address2: "Singapore",
           locationName: "Expo Hall 1",
           postalCode: "486065",
-          lat : 1.01, 
+          lat: 1.01,
           lng: 1.2,
         },
       },
@@ -432,7 +432,7 @@ async function generateEvent() {
         create: {
           address1: "1 Singapore Expo",
           address2: "Singapore",
-          lat : 1.01, 
+          lat: 1.01,
           lng: 1.2,
           locationName: "Expo Hall 2",
           postalCode: "486065",
@@ -493,7 +493,7 @@ async function generateEvent() {
         create: {
           address1: "1 Singapore Expo",
           address2: "Singapore",
-          lat : 1.01, 
+          lat: 1.01,
           lng: 1.2,
           locationName: "Expo Hall 3",
           postalCode: "486065",

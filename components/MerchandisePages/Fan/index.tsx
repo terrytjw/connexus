@@ -5,10 +5,8 @@ import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
-import {
-  filterByMerchandisePurchaseType,
-  MerchandisePriceType,
-} from "../../../pages/api/merch";
+import { MerchandisePriceType } from "../../../server-lib/merch";
+import { filterMerchandiseByPriceType } from "../../../client-lib/merchandise";
 
 const FanCollectionsPage = () => {
   const [activeTab, setActiveTab] = useState(0);
@@ -41,12 +39,12 @@ const FanCollectionsPage = () => {
 
     if (collectedTabfilterSelected.name.toLowerCase() === "free-of-charge") {
       // call some endpoint
-      filterByMerchandisePurchaseType(1, 1, MerchandisePriceType.FREE);
+      filterMerchandiseByPriceType(1, MerchandisePriceType.FREE);
     }
 
     if (collectedTabfilterSelected.name.toLowerCase() === "purchased") {
       // call some endpoint
-      // filterByMerchandisePurchaseType(1, 1, MerchandisePriceType.PAID);
+      filterMerchandiseByPriceType(0, 1, MerchandisePriceType.PAID);
     }
   }, [collectedTabfilterSelected.name]);
 

@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, Channel } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -40,7 +40,7 @@ const prisma = new PrismaClient();
  *       description: Channel object to create
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/Channel"  
+ *           $ref: "#/components/schemas/Channel"
  *     responses:
  *       200:
  *         description: A single Channel object
@@ -93,7 +93,7 @@ export default async function handler(
     try {
       const channel = await prisma.channel.findUnique({
         where: {
-          channelId: channelId
+          channelId: channelId,
         },
       });
 
@@ -109,7 +109,7 @@ export default async function handler(
     try {
       const response = await prisma.channel.update({
         where: {
-          channelId: channelId
+          channelId: channelId,
         },
         data: { ...channel },
       });
@@ -124,7 +124,7 @@ export default async function handler(
     try {
       const response = await prisma.channel.delete({
         where: {
-          channelId: channelId
+          channelId: channelId,
         },
       });
       res.status(200).json(response);

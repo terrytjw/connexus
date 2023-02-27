@@ -1,9 +1,9 @@
-import { USER_PROFILE_BUCKET } from "./../../../lib/constant";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { USER_PROFILE_BUCKET } from "../../../server-lib/constant";
+import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
 import { PrismaClient, User } from "@prisma/client";
-import { findAllUser, saveUser } from "../../../lib/user";
+import { findAllUser, saveUser } from "../../../server-lib/user";
 
 /**
  * @swagger
@@ -73,7 +73,6 @@ export default async function handler(
       const { profilePic, bannerPic } = user;
       let profilePictureUrl = "";
       let bannerPicUrl = "";
-
 
       if (profilePic) {
         const { data, error } = await uploadImage(

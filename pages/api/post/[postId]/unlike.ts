@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../../server-lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -54,15 +54,15 @@ export default async function handler(
     try {
       const response = await prisma.post.update({
         where: {
-          postId: postId
+          postId: postId,
         },
         data: {
           ...post,
           likes: {
             disconnect: {
-              userId: userId
-            }
-          }
+              userId: userId,
+            },
+          },
         },
       });
       res.status(200).json(response);

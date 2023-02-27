@@ -3,10 +3,9 @@ import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "../lib/constants";
-import {img} from "../lib/image";
-import { swrFetcher } from "../lib/swrFetcher";
-
+import { smartContract } from "../server-lib/constants";
+import { img } from "../server-lib/image";
+import { swrFetcher } from "../server-lib/swrFetcher";
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -328,7 +327,7 @@ const CollectionsPage = (props: any) => {
           name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: 0,
-          media : img, 
+          media: img,
           price: merch_categories[k].price,
           description: merch_categories[k].description,
           collectionId: collection_id,
@@ -346,7 +345,7 @@ const CollectionsPage = (props: any) => {
         //Update existing merch category
         var merch: Partial<Merchandise> = {
           merchId: merchandise[k].merchId,
-          media : merch_categories[k].media,
+          media: merch_categories[k].media,
           name: merch_categories[k].name,
           totalMerchSupply: merch_categories[k].totalMerchSupply,
           currMerchSupply: merchandise[k].currMerchSupply,
