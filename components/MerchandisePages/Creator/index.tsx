@@ -9,8 +9,19 @@ import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collections, channels } from "../../../utils/dummyData";
 import { ChannelType, Collection } from "../../../utils/types";
+import useSWR from "swr";
+import { swrFetcher } from "../../../lib/swrFetcher";
+import Loading from "../../Loading";
+import { updateCollection } from "../../../lib/merchandise-helpers";
 
 const CreatorCollectionsPage = () => {
+  const {
+    data: collectionData,
+    error,
+    isLoading: isCollectionDataLoading,
+    mutate,
+  } = useSWR("http://localhost:3000/api/collections", swrFetcher);
+
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -20,6 +31,7 @@ const CreatorCollectionsPage = () => {
       name: "",
       description: "",
       premiumChannel: null,
+      collectionId: 0,
     },
   });
 
@@ -29,6 +41,10 @@ const CreatorCollectionsPage = () => {
     "premiumChannel",
   ]);
 
+  if (isCollectionDataLoading) return <Loading />;
+
+  console.log("collection data -> ", collectionData);
+
   return (
     <main className="py-12 px-4 sm:px-12">
       <Modal
@@ -37,8 +53,25 @@ const CreatorCollectionsPage = () => {
         className="overflow-visible"
       >
         <form
-          onSubmit={handleSubmit((val: any) => {
-            console.log("Edit collection: ", val);
+          onSubmit={handleSubmit(async (val: any) => {
+            // to prevent auto form submission upon closing modal
+            if (!isModalOpen) {
+              return;
+            }
+
+            await updateCollection(val.name, val.description, val.collectionId);
+
+            let updatedCollection = collectionData.find(
+              (collection: any) => collection.collectionId === val.collectionId
+            );
+            updatedCollection = {
+              ...updatedCollection,
+              name: val.name,
+              description: val.description,
+            };
+
+            mutate([...collectionData, updatedCollection]); // TODO: ordering is messed up after update, need to clean up
+            setIsModalOpen(false);
           })}
         >
           <div className="mb-4 flex items-center justify-between">
@@ -175,7 +208,7 @@ const CreatorCollectionsPage = () => {
       >
         {activeTab == 0 && (
           <CollectionTable
-            data={collections}
+            data={collectionData}
             columns={[
               "Collection No.",
               "Collection Name",
@@ -185,16 +218,17 @@ const CreatorCollectionsPage = () => {
               "Premium Channel",
             ]}
             onEdit={(index: number) => {
-              setValue("name", collections[index].name);
-              setValue("description", collections[index].description);
-              setValue("premiumChannel", collections[index].premiumChannel);
+              setValue("name", collectionData[index].collectionName);
+              setValue("description", collectionData[index].description);
+              setValue("premiumChannel", collectionData[index].premiumChannel);
+              setValue("collectionId", collectionData[index].collectionId); // might want to replace with collection id
               setIsModalOpen(true);
             }}
           />
         )}
         {activeTab == 1 && (
           <CollectionTable
-            data={collections}
+            data={collectionData}
             columns={[
               "Collection No.",
               "Collection Name",
