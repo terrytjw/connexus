@@ -25,7 +25,7 @@ import { smartContract } from "../../../lib/constants";
 import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../lib/date-util";
 
 // smart contract stuff
@@ -684,14 +684,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
 export default CreatorEventEdit;
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [{ params: { id: "1" } }, { params: { id: "2" } }],
-    fallback: true, // Set to true if there are more dynamic routes to be added later
-  };
-};
-
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   // use axios GET method to fetch data
   const { data: event } = await axios.get(
     `http://localhost:3000/api/events/${params?.id}`
