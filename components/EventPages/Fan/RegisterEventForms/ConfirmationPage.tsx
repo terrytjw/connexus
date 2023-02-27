@@ -8,10 +8,10 @@ import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
 import { UserWithSelectedTicket } from "../../../../pages/events/register/[id]";
+// @ts-ignore
 import { isEmail, isMobilePhone } from "validator";
 import useSWR from "swr";
 import { swrFetcher } from "../../../../lib/swrFetcher";
-import { use } from "react";
 
 type ConfirmationFormProps = {
   watch: UseFormWatch<UserWithSelectedTicket>;
@@ -26,7 +26,7 @@ const ConfirmationFormProps = ({
   trigger,
   setIsRegisterSuccessModalOpen,
 }: ConfirmationFormProps) => {
-  const { userId, displayName, email, phoneNumber } = watch();
+  const { userId } = watch();
 
   const {
     selectedTicket: { ticketName, qty, price },
