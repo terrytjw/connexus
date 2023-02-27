@@ -91,6 +91,14 @@ export default async function handler(
       const response = await prisma.comment.create({
         data: { 
           ...comment,
+        },
+        include: {
+          likes: {
+            select: { userId: true }
+          },
+          commenter: {
+            select: { userId: true, username: true, profilePic: true }
+          }
         }
       });
       res.status(200).json([response]);
