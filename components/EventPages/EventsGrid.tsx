@@ -43,8 +43,12 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
       <p className="mt-2 text-base font-semibold text-gray-500">
         {formatDate(item.startDate)} - {formatDate(item.endDate)}
       </p>
-      <div className="mt-2 text-sm font-normal">
+      <div className="mt-2 flex flex-col text-sm font-normal">
         <span>{item?.address?.locationName}</span>
+        <span>
+          {item?.address?.address1} {item?.address?.address2}
+        </span>
+        <span>{item?.address?.postalCode}</span>
       </div>
 
       <p className="text-s mt-2 font-semibold text-blue-600">
@@ -61,7 +65,7 @@ const EventsGrid = ({ data }: EventsGridProps) => {
   return (
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
       {data.map((item) => (
-        <CollectionGridItem key={item.id} item={item} />
+        <CollectionGridItem key={item.eventId} item={item} />
       ))}
     </div>
   );

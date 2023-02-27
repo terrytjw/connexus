@@ -2,68 +2,36 @@ import React, { useState } from "react";
 import Button from "../../Button";
 import EventsTable from "../EventsTable";
 
-// const events = [
-//   {
-//     eventId: 0,
-//     title: "string",
-//     category: "AUTO_BOAT_AIR",
-//     location: "string",
-//     eventDurationType: "SINGLE",
-//     startDate: "string",
-//     endDate: "string",
-//     images: ["/images/bear.jpg"],
-//     summary: "string",
-//     description: "string",
-//     visibilityType: "DRAFT",
-//     privacyType: "PUBLIC",
-//     tickets: [
-//       {
-//         ticketId: 0,
-//         name: "string",
-//         quantity: 0,
-//         price: 0,
-//         startDate: "string",
-//         endDate: "string",
-//         description: "string",
-//         event: "string",
-//         promotion: [
-//           {
-//             promotionId: 0,
-//             name: "string",
-//             promotionType: "LIMITED",
-//             promotionValue: 0,
-//             quantity: 0,
-//             startDate: "string",
-//             endDate: "string",
-//             ticket: "string",
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// ];
-
-import {
-  Event,
-  Ticket,
-  PrivacyType,
-  Promotion,
-  VisibilityType,
-} from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../../utils/types";
+import Modal from "../../Modal";
+import { BiFilter } from "react-icons/bi";
 
 type CreatorEventsPageProps = {
   events: EventWithTicketsandAddress[];
 };
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
-  const [activeTab, setActiveTab] = useState(0);
-
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   console.log(events);
-
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        {/* Fitler modal */}
+        <Modal isOpen={isFilterModalOpen} setIsOpen={setIsFilterModalOpen}>
+          <div className="flex items-center justify-between">
+            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
+            <Button
+              variant="outlined"
+              size="sm"
+              className="border-0"
+              onClick={() => setIsFilterModalOpen(false)}
+            >
+              Done
+            </Button>
+          </div>
+        </Modal>
+
+        {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
         <h3 className="text-md mt-4 sm:text-lg">Set up a new event </h3>
 
@@ -71,17 +39,15 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           <h2 className="text-md mt-2 font-bold sm:text-xl">Created Events</h2>
         </div>
         <div className="mt-6 flex flex-wrap justify-between">
-          <select
-            className="max-w-x select right-8 top-0 bg-white"
-            value={activeTab}
-            onChange={(e) => {
-              setActiveTab(Number(e.target.value));
-            }}
+          <Button
+            variant="solid"
+            size="md"
+            className="max-w-sm !bg-white !text-gray-700"
+            onClick={() => setIsFilterModalOpen(true)}
           >
-            <option disabled selected value={0}>
-              Filters
-            </option>
-          </select>
+            Filter by Category
+            <BiFilter className="h-8 w-8" />
+          </Button>
           <Button
             href="/events/create"
             variant="solid"

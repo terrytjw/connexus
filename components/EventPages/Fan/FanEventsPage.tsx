@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
-import FanTicketsPage from "./FanTicketsPage";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import Badge from "../../Badge";
@@ -9,50 +8,125 @@ import Modal from "../../Modal";
 import EventsGrid from "../EventsGrid";
 import { EventWithTicketsandAddress } from "../../../utils/types";
 import Link from "next/link";
+import { CategoryType, Event } from "@prisma/client";
+import axios from "axios";
+
+const DELAY_TIME = 500;
 
 type FanEventsPageProps = {
   events: EventWithTicketsandAddress[];
 };
 
 const FanEventsPage = ({ events }: FanEventsPageProps) => {
-  const labels = [
-    "NFT",
-    "Lifestyle",
-    "Fitness",
-    "Entertainment",
-    "Fashion",
-    "Animals",
-    "Travel",
-    "Education",
-    "Health",
-    "Food",
-    "Photography",
-  ];
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [filteredEvents, setFilteredEvents] = useState<
+    EventWithTicketsandAddress[]
+  >([]);
+  const [searchResults, setSearchResults] = useState<
+    EventWithTicketsandAddress[]
+  >([]);
+  // Initialize a variable to hold the timeout ID
+  let timeoutId: ReturnType<typeof setTimeout>;
+
+  function debounceSearchApiCall(searchTerm: string) {
+    // Clear any existing timeout
+    clearTimeout(timeoutId);
+
+    // Set a new timeout to execute the search API call after the delay time has elapsed
+    timeoutId = setTimeout(() => {
+      // Make the search API call with the given search term
+      searchEvents(searchTerm);
+    }, DELAY_TIME);
+  }
+  async function searchEvents(searchTerm: string) {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/events?keyword=${searchTerm}`
+      );
+
+      // fetch addresses using address ID
+      const eventsWithAddresses: EventWithTicketsandAddress[] =
+        await Promise.all(
+          data.map(async (event: Partial<Event>) => {
+            const { data: address } = await axios.get(
+              `http://localhost:3000/api/addresses/${event?.addressId}`
+            );
+
+            return { ...event, address };
+          })
+        );
+      setSearchResults(eventsWithAddresses);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function filterEvents(filterTerm: string) {
+    try {
+      const { data } = await axios.get(
+        `http://localhost:3000/api/events?filter=${filterTerm}`
+      );
+      setFilteredEvents(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    debounceSearchApiCall(searchString);
+
+    // Filter
+    if (selectedTopics.length !== 0) {
+      filterEvents(selectedTopics[0]);
+    } else {
+      setFilteredEvents([]);
+    }
+    return () => {
+      clearTimeout(timeoutId);
+    };
+  }, [searchString, selectedTopics]);
+
+  console.log("search results events", searchResults);
+  console.log("filter events", filteredEvents);
+
+  // if (isLoading) return <Loading />;
 
   const ListedTabContent = () => {
-    return (
-      <div>
-        <EventsGrid data={events} />
-      </div>
-    );
-  };
+    const filterEvents = () => {
+      if (searchString || selectedTopics.length !== 0) {
+        const upcomingAndOngoingEvents = searchResults.filter(
+          (event: EventWithTicketsandAddress) =>
+            new Date(event.endDate) >= new Date()
+        );
+        return upcomingAndOngoingEvents;
+      } else {
+        const upcomingAndOngoingEvents = events.filter(
+          (event: EventWithTicketsandAddress) =>
+            new Date(event.endDate) >= new Date()
+        );
+        return upcomingAndOngoingEvents;
+      }
+    };
 
-  const VisitedTabContent = () => {
+    console.log("upcoming -> ", filterEvents());
     return (
       <div>
-        <EventsGrid data={events} />
+        <EventsGrid data={filterEvents()} />
       </div>
     );
   };
 
   const ExpiredTabContent = () => {
+    const expiredEvents = events.filter(
+      (event: EventWithTicketsandAddress) =>
+        new Date(event.endDate) < new Date()
+    );
     return (
       <div>
-        <EventsGrid data={events} />
+        <EventsGrid data={expiredEvents} />
       </div>
     );
   };
@@ -62,7 +136,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       <main className="py-12 px-4 sm:px-12">
         <Modal isOpen={isFilterModalOpen} setIsOpen={setIsFilterModalOpen}>
           <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Add Topics</h3>
+            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
             <Button
               variant="outlined"
               size="sm"
@@ -74,7 +148,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           </div>
 
           <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2">
-            {labels.map((label, index) => {
+            {Object.values(CategoryType).map((label, index) => {
               return (
                 <Badge
                   key={index}
@@ -137,15 +211,15 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
         <div className="relative">
           <TabGroupBordered
-            tabs={["Listed", "Visited", "Expired"]}
+            tabs={["Listed", "Expired"]}
             activeTab={activeTab}
             setActiveTab={(index: number) => {
               setActiveTab(index);
             }}
           >
             {activeTab == 0 && <ListedTabContent />}
-            {activeTab == 1 && <VisitedTabContent />}
-            {activeTab == 2 && <ExpiredTabContent />}
+            {/* {activeTab == 1 && <VisitedTabContent />} */}
+            {activeTab == 1 && <ExpiredTabContent />}
           </TabGroupBordered>
 
           {/* desktop */}
@@ -170,7 +244,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               className="max-w-sm !bg-white !text-gray-700"
               onClick={() => setIsFilterModalOpen(true)}
             >
-              Filter by Topic
+              Filter by Category
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>

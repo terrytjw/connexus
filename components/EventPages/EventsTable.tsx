@@ -5,6 +5,7 @@ import axios from "axios";
 import Link from "next/link";
 import { formatDate } from "../../lib/date-util";
 import { truncateString } from "../../lib/text-truncate";
+import router from "next/router";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -32,7 +33,11 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
         <tbody>
           {/* <!-- row 1 --> */}
           {data.map((data, index) => (
-            <tr key={index}>
+            <tr
+              key={index}
+              className="hover: cursor-pointer"
+              onClick={() => router.push(`/events/${data.eventId}`)}
+            >
               <td className="text-gray-700">
                 {truncateString(data?.eventName, 20)}
               </td>
@@ -76,12 +81,12 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                   <button
                     className="btn-ghost btn-xs btn"
                     onClick={async () => {
-                      let response = await axios.delete(
+                      const response = await axios.delete(
                         `http://localhost:3000/api/events/${data.eventId}`
                       );
-                      let responseData = response.data;
                       console.log("Event Deleted");
                       // TODO add ux feedback
+                      router.reload();
                     }}
                   >
                     <FaTrashAlt className="text-lg text-red-400" />

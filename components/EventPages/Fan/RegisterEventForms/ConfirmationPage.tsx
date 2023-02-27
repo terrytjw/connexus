@@ -8,8 +8,10 @@ import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
 import { UserWithSelectedTicket } from "../../../../pages/events/register/[id]";
-import { User } from "@prisma/client";
-import Modal from "../../../Modal";
+import { isEmail, isMobilePhone } from "validator";
+import useSWR from "swr";
+import { swrFetcher } from "../../../../lib/swrFetcher";
+import { use } from "react";
 
 type ConfirmationFormProps = {
   watch: UseFormWatch<UserWithSelectedTicket>;
@@ -24,12 +26,17 @@ const ConfirmationFormProps = ({
   trigger,
   setIsRegisterSuccessModalOpen,
 }: ConfirmationFormProps) => {
-  const user = watch();
+  const { userId, displayName, email, phoneNumber } = watch();
+
   const {
     selectedTicket: { ticketName, qty, price },
   } = watch();
 
-  console.log(user);
+  const { data: userData } = useSWR(
+    `http://localhost:3000/api/users/${userId}`,
+    swrFetcher
+  );
+
   return (
     <div>
       <div className="flex w-full flex-col gap-2">
@@ -50,34 +57,19 @@ const ConfirmationFormProps = ({
               variant="bordered"
               errorMessage={error?.message}
               className="max-w-3xl"
+              disabled={!!userData?.displayName}
             />
           )}
         />
-        {/* <Controller
-          control={userControl}
-          name="lastName"
-          rules={{
-            required: "Last Name is required",
-          }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Input
-              type="text"
-              label="Last Name *"
-              value={value}
-              onChange={onChange}
-              placeholder="Last Name"
-              size="md"
-              variant="bordered"
-              errorMessage={error?.message}
-              className="max-w-3xl"
-            />
-          )}
-        /> */}
         <Controller
           control={control}
           name="email"
           rules={{
             required: "Email is required",
+            validate: {
+              validEmail: (value) =>
+                isEmail(value) || "Please enter a valid Email",
+            },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Input
@@ -90,6 +82,7 @@ const ConfirmationFormProps = ({
               variant="bordered"
               errorMessage={error?.message}
               className="max-w-3xl"
+              disabled={!!userData?.email}
             />
           )}
         />
@@ -98,6 +91,11 @@ const ConfirmationFormProps = ({
           name="phoneNumber"
           rules={{
             required: "Mobile number is required",
+            validate: {
+              validMobile: (value) =>
+                isMobilePhone(value, "en-SG") ||
+                "Please enter a valid SG mobile number",
+            },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <InputGroup
@@ -110,6 +108,7 @@ const ConfirmationFormProps = ({
               variant="bordered"
               errorMessage={error?.message}
               className="max-w-3xl"
+              disabled={!!userData?.phoneNumber}
             >
               <span className="text-xs text-gray-400">+65</span>
             </InputGroup>
