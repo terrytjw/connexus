@@ -19,7 +19,19 @@ export async function searchUser(searchType: UserPartialType) {
     where: {
       ...searchType,
     },
-    include: { tickets: true, merchandise: true },
+    include: {
+      createdCommunities: true,
+      joinedCommunities: {
+        include: {
+          _count: {
+            select: { members: true }
+          }
+        }
+      },
+      joinedChannels: true,
+      tickets: true,
+      merchandise: true
+    }
   });
 }
 
