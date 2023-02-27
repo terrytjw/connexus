@@ -202,6 +202,7 @@ const CreatorCollectionsPage = () => {
               setValue("name", collectionData[index].collectionName);
               setValue("description", collectionData[index].description);
               setValue("premiumChannel", collectionData[index].premiumChannel);
+              setValue("collectionId", index + 1); // might want to replace with collection id
               setIsModalOpen(true);
             }}
           />
@@ -221,7 +222,6 @@ const CreatorCollectionsPage = () => {
               setValue("name", collections[index].name);
               setValue("description", collections[index].description);
               setValue("premiumChannel", collections[index].premiumChannel);
-              setValue("collectionId", index);
               setIsModalOpen(true);
             }}
           />
