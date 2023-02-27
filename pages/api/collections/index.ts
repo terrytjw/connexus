@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection , Prisma} from "@prisma/client";
+import { PrismaClient, Collection , Prisma, Merchandise, CategoryType} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-
+import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteMerchandise, MerchandisePartialType,  searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
@@ -49,11 +51,13 @@ export default async function handler(
   //   res.status(401).json({ error: "401", message: "Unauthorized" });
   // }
 
-  const { method } = req;
+  const { method, body, query } = req;
+  const keyword = query.keyword as string;
+  const cursor = parseInt(query.cursor as string);
 
   switch (req.method) {
     case "GET":
-      await handleGET();
+      await handleGETWithKeyword(keyword, cursor);
       break;
     case "POST":
       const collection = JSON.parse(JSON.stringify(req.body)) as CollectionwithMerch;
@@ -64,13 +68,21 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGETWithKeyword(keyword: string, cursor: number) {
     try {
       const collections = await prisma.collection.findMany({
-        include: {
-          merchandise: true,
+        take: 10,
+        skip:  cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { collectionId : cursor } : undefined,
+        orderBy: {
+          collectionId: 'asc'
         },
-      });
+        where: {
+          OR: [
+            { collectionName: { contains: keyword } },
+          ]
+      }
+    })
       res.status(200).json(collections);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -78,13 +90,39 @@ export default async function handler(
     }
   }
 
+  async function updateMerchMedia(media: string | null, merchInfo : MerchandisePartialType ){
+    let mediaUrl = ""; 
+        if(media){
+          const{data, error} = await uploadImage(
+            MERCH_PROFILE_BUCKET, 
+            media
+          );
+          if (error) {
+            const errorResponse = handleError(error);
+            res.status(400).json(errorResponse);
+          }
+  
+          if (data)
+          mediaUrl = await retrieveImageUrl(
+            MERCH_PROFILE_BUCKET,
+              data.path
+            );
+        }
+  
+        console.log(mediaUrl)
+        if(mediaUrl) merchInfo.media = mediaUrl;
+        return merchInfo
+  };
+
   async function handlePOST(collectionwithMerch: CollectionwithMerch) {
     try {
       const { merchandise, ...collectionInfo } = collectionwithMerch;
-      const updatedMerchs = merchandise.map((merch) => {
-        const { merchId, collectionId, ...merchInfo } = merch;
-        return merchInfo;
-      });
+      const updatedMerchs = await Promise.all(merchandise.map(async (merch : Merchandise) => {
+        const { merchId, collectionId, media, ...merchInfo } = merch;
+        let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
+        return updatedMerchInfo;
+      }));
+  
 
       console.log(updatedMerchs); 
       console.log(collectionInfo); 
@@ -93,7 +131,7 @@ export default async function handler(
         data: {
           ...collectionInfo,
           collectionId: undefined,
-          merchandise: { create: updatedMerchs },
+          merchandise: { create: updatedMerchs as Merchandise[] },
         },
         include: {
           merchandise: true,

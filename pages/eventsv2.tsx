@@ -10,6 +10,8 @@ import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
 import { smartContract } from "../lib/constants";
+import {img} from "../lib/image";
+import { swrFetcher } from "../lib/swrFetcher";
 
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
@@ -48,6 +50,9 @@ const EventsPage = (props: any) => {
       locationName: "Tenderloin",
       postalCode: "31231",
     };
+
+    const eventPic = img;
+    const bannerPic = img;
     const eventName = "Connexus";
     const date = new Date();
     const ticket_categories = [
@@ -106,18 +111,21 @@ const EventsPage = (props: any) => {
     const event = {
       eventId: 1,
       eventName: "This is a new event",
+      eventPic : eventPic, 
+      bannerPic: bannerPic,
       category: [CategoryType.AUTO_BOAT_AIR],
       address: {
         create: {
           address1: address.address1,
           address2: address.address2,
+          lat : 1.91, 
+          lng : 1.91,
           locationName: address.locationName,
           postalCode: address.postalCode,
         },
       },
       startDate: new Date(),
       endDate: new Date(),
-      images: [],
       summary: "This is just a summary",
       description: "This is just a description",
       visibilityType: VisibilityType.DRAFT,
@@ -267,7 +275,8 @@ const EventsPage = (props: any) => {
       category: eventInfo.category,
       startDate: eventInfo.startDate,
       endDate: eventInfo.endDate,
-      images: eventInfo.images,
+      eventPic: eventInfo.eventPic, 
+      bannerPic: eventInfo.bannerPic,
       summary: eventInfo.summary,
       description: eventInfo.description,
       visibilityType: eventInfo.visibilityType,
@@ -449,7 +458,8 @@ const EventsPage = (props: any) => {
       category: [CategoryType.AUTO_BOAT_AIR],
       startDate: new Date(),
       endDate: new Date(),
-      images: [],
+      eventPic: img, 
+      bannerPic: img,
       summary: "This is just a summary",
       description: "This is just a description",
       visibilityType: VisibilityType.DRAFT,
@@ -496,7 +506,8 @@ const EventsPage = (props: any) => {
         category: [CategoryType.AUTO_BOAT_AIR],
         startDate: new Date(),
         endDate: new Date(),
-        images: [],
+        eventPic: img, 
+        bannerPic: img,
         summary: "This is just a summary",
         description: "This is just a description",
         visibilityType: VisibilityType.DRAFT,
@@ -520,7 +531,7 @@ const EventsPage = (props: any) => {
 
   const { data, error, isLoading } = useSWR(
     "http://localhost:3000/api/events",
-    fetchEvents
+    swrFetcher
   );
 
   console.log(data);

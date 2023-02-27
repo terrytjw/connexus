@@ -1,6 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Merchandise } from "@prisma/client";
+import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteMerchandise, searchMerchandise, updatedMerchandise } from "../../../lib/merch";
+import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -66,12 +69,30 @@ export default async function handler(
 
   async function handlePOST(merch: Merchandise) {
     try {
+      const { media , ...merchInfo } = merch;
+      let mediaUrl = ""; 
 
-      console.log("test")
-      console.log(merch)
+      if(media){
+        const{data, error} = await uploadImage(
+          MERCH_PROFILE_BUCKET, 
+          media
+        );
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+        mediaUrl = await retrieveImageUrl(
+          MERCH_PROFILE_BUCKET,
+            data.path
+          );
+      }
+
+      console.log(mediaUrl);
 
       const response = await prisma.merchandise.create({
-        data: { ...merch, merchId:undefined }
+        data: { ...merchInfo, media: mediaUrl, merchId:undefined }
       });
       res.status(200).json([response]);
     } catch (error) {

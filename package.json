@@ -28,10 +28,10 @@
     "@openzeppelin/contracts": "^4.8.1",
     "@pinata/sdk": "^2.1.0",
     "@prisma/client": "^4.9.0",
-    "alchemy-sdk": "^2.4.3",
     "@react-google-maps/api": "^2.18.1",
     "@supabase/supabase-js": "^2.8.0",
     "@types/google-map-react": "^2.1.7",
+    "alchemy-sdk": "^2.4.3",
     "axios": "^1.2.1",
     "bignumber.js": "^9.1.1",
     "daisyui": "^2.46.1",
@@ -59,8 +59,8 @@
     "swiper": "^9.0.4",
     "swr": "^2.0.0",
     "theme-change": "^2.3.0",
-    "uuid": "^9.0.0",
     "truffle": "^5.7.6",
+    "uuid": "^9.0.0",
     "web3": "^1.8.2"
   },
   "devDependencies": {
