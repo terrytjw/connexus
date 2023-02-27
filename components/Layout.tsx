@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import dynamic from "next/dynamic";
 import Loading from "./Loading";
+import { useSession } from "next-auth/react";
 
 const SocialLoginDynamic = dynamic(
   () => import("../components/scw").then((res) => res.default),
@@ -26,8 +27,13 @@ const SocialLoginDynamic = dynamic(
   }
 );
 
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
 const MobileNavbar = ({ children }: any) => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const checkboxRef = useRef<HTMLInputElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
@@ -62,7 +68,7 @@ const MobileNavbar = ({ children }: any) => {
             className="absolute top-4 left-[50%] -translate-x-[50%] transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
           >
             <Image
-              src="/images/logo-icon.png"
+              src="/svgs/mobile-connexus-logo.svg"
               alt="Connexus logo"
               width={35}
               height={35}
@@ -82,7 +88,7 @@ const MobileNavbar = ({ children }: any) => {
             className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
           >
             <Image
-              src="/images/logo.png"
+              src="/svgs/desktop-connexus-logo.svg"
               alt="Connexus logo"
               width={160}
               height={50}
@@ -90,17 +96,27 @@ const MobileNavbar = ({ children }: any) => {
           </Link>
           <li className="mt-10 mb-4">
             <Link
-              href="/"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              href="/communities"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/communities"
+                  ? "bg-blue-600 text-white"
+                  : ""
+              )}
             >
               <FaHome className="ml-2" />
-              Home
+              Communities
             </Link>
           </li>
           <li className="mb-4">
             <Link
               href="/merchandise"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/merchandise"
+                  ? "bg-blue-600 text-white"
+                  : ""
+              )}
             >
               <FaPhotoVideo className="ml-2" />
               Merchandise
@@ -109,7 +125,10 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/events"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+              )}
             >
               <FaCalendarAlt className="ml-2" />
               Events
@@ -118,7 +137,10 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/chats"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/chats" ? "bg-blue-600 text-white" : ""
+              )}
             >
               <FaComment className="ml-2" />
               Chats
@@ -127,7 +149,12 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/notifications"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/notifications"
+                  ? "bg-blue-600 text-white"
+                  : ""
+              )}
             >
               <FaBell className="ml-2" />
               Notifications
@@ -135,8 +162,13 @@ const MobileNavbar = ({ children }: any) => {
           </li>
           <li className="mb-4">
             <Link
-              href="/user/profile/1"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+              href={`/user/profile/${session?.user?.userId}`}
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/user/profile/[id]"
+                  ? "bg-blue-600 text-white"
+                  : ""
+              )}
             >
               <FaUser className="ml-2" />
               Profile
@@ -145,7 +177,12 @@ const MobileNavbar = ({ children }: any) => {
           <li className="mb-4">
             <Link
               href="/playground"
-              className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white",
+                router.pathname === "/playground"
+                  ? "bg-green-600 text-white"
+                  : ""
+              )}
             >
               <FaGripVertical className="ml-2" />
               Playground
@@ -171,6 +208,7 @@ const MobileNavbar = ({ children }: any) => {
 
 const DesktopSidebar = () => {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
 
   return (
@@ -180,7 +218,7 @@ const DesktopSidebar = () => {
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
       >
         <Image
-          src="/images/logo.png"
+          src="/svgs/desktop-connexus-logo.svg"
           alt="Connexus logo"
           width={160}
           height={50}
@@ -190,17 +228,23 @@ const DesktopSidebar = () => {
       <ul className="mt-28 pl-2 pr-8 text-gray-700">
         <li className="mb-4">
           <Link
-            href="/"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            href="/communities"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/communities" ? "bg-blue-600 text-white" : ""
+            )}
           >
             <FaHome className="ml-2" />
-            Home
+            Communities
           </Link>
         </li>
         <li className="mb-4">
           <Link
             href="/merchandise"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/merchandise" ? "bg-blue-600 text-white" : ""
+            )}
           >
             <FaPhotoVideo className="ml-2" />
             Merchandise
@@ -209,7 +253,10 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/events"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+            )}
           >
             <FaCalendarAlt className="ml-2" />
             Events
@@ -218,7 +265,10 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/chats"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/chats" ? "bg-blue-600 text-white" : ""
+            )}
           >
             <FaComment className="ml-2" />
             Chats
@@ -227,7 +277,12 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/notifications"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/notifications"
+                ? "bg-blue-600 text-white"
+                : ""
+            )}
           >
             <FaBell className="ml-2" />
             Notifications
@@ -235,8 +290,13 @@ const DesktopSidebar = () => {
         </li>
         <li className="mb-4">
           <Link
-            href="/user/profile/1"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white"
+            href={`/user/profile/${session?.user?.userId}`}
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+              router.pathname === "/user/profile/[id]"
+                ? "bg-blue-600 text-white"
+                : ""
+            )}
           >
             <FaUser className="ml-2" />
             Profile
@@ -245,7 +305,10 @@ const DesktopSidebar = () => {
         <li className="mb-4">
           <Link
             href="/playground"
-            className="flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white"
+            className={classNames(
+              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white",
+              router.pathname === "/playground" ? "bg-green-600 text-white" : ""
+            )}
           >
             <FaGripVertical className="ml-2" />
             Playground

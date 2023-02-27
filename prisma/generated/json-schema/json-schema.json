@@ -11,31 +11,40 @@
           "type": "string"
         },
         "phoneNumber": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "bannerPic": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "displayName": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "username": {
-          "type": "string",
-          "default": ""
-        },
-        "bio": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "email": {
           "type": "string"
+        },
+        "bio": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "notificationBySMS": {
           "type": "boolean",
@@ -66,7 +75,7 @@
         "joinedChannels": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/Channel"
           }
         },
         "posts": {
@@ -97,6 +106,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Ticket"
+          }
+        },
+        "merchandise": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Merchandise"
           }
         }
       }
@@ -157,28 +172,61 @@
           "type": "string"
         },
         "description": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "profilePic": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "bannerPic": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "tags": {
           "type": "array",
-          "items": {
-            "type": "string"
-          }
+          "enum": [
+            "AUTO_BOAT_AIR",
+            "BUSINESS_PROFESSIONAL",
+            "CHARITY_CAUSES",
+            "COMMUNITY_CULTURE",
+            "FAMILY_EDUCATION",
+            "FASHION_BEAUTY",
+            "FILM_MEDIA_ENTERTAINMENT",
+            "FOOD_DRINK",
+            "GOVERNMENT_POLITICS",
+            "HEALTH_WELLNESS",
+            "HOBBIES_SPECIAL_INTEREST",
+            "HOME_LIFESTYLE",
+            "PERFORMING_VISUAL_ARTS",
+            "RELIGION_SPIRITUALITY",
+            "SCHOOL_ACTIVITIES",
+            "SCIENCE_TECHNOLOGY",
+            "SEASONAL_HOLIDAY",
+            "SPORTS_FITNESS",
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
+          ]
         },
         "maxMembers": {
           "type": "integer",
           "default": 100
-        },
-        "communityType": {
-          "type": "string",
-          "default": "NFT",
-          "enum": [
-            "NFT",
-            "CRYPTO"
-          ]
         },
         "creator": {
           "$ref": "#/definitions/User"
@@ -206,12 +254,9 @@
         "name": {
           "type": "string"
         },
-        "description": {
-          "type": "string"
-        },
         "channelType": {
           "type": "string",
-          "default": "REGULAR",
+          "default": "PREMIUM",
           "enum": [
             "REGULAR",
             "PREMIUM",
@@ -221,7 +266,7 @@
         "members": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/UsersOnChannels"
+            "$ref": "#/definitions/User"
           }
         },
         "community": {
@@ -232,17 +277,6 @@
           "items": {
             "$ref": "#/definitions/Post"
           }
-        }
-      }
-    },
-    "UsersOnChannels": {
-      "type": "object",
-      "properties": {
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "channel": {
-          "$ref": "#/definitions/Channel"
         }
       }
     },
@@ -293,8 +327,7 @@
           "type": "integer"
         },
         "eventName": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "category": {
           "type": "array",
@@ -317,7 +350,18 @@
             "SCIENCE_TECHNOLOGY",
             "SEASONAL_HOLIDAY",
             "SPORTS_FITNESS",
-            "TRAVEL_OUTDOOR"
+            "TRAVEL_OUTDOOR",
+            "NFT",
+            "FITNESS",
+            "FASHION",
+            "TRAVEL",
+            "HEALTH",
+            "PHOTOGRAPHY",
+            "LIFESTYLE",
+            "ENTERTAINMENT",
+            "ANIMALS",
+            "EDUCATION",
+            "FOOD"
           ]
         },
         "address": {
@@ -331,19 +375,17 @@
           "type": "string",
           "format": "date-time"
         },
-        "images": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        },
         "summary": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "visibilityType": {
           "type": "string",
@@ -359,13 +401,17 @@
             "PRIVATE"
           ]
         },
-        "eventBannerPicture": {
-          "type": "string",
-          "default": ""
+        "eventPic": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
-        "eventImage": {
-          "type": "string",
-          "default": ""
+        "bannerPic": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "maxAttendee": {
           "type": "integer",
@@ -395,10 +441,7 @@
           }
         },
         "scAddress": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         }
       }
     },
@@ -415,7 +458,10 @@
           "type": "string"
         },
         "address2": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "postalCode": {
           "type": "string"
@@ -425,6 +471,12 @@
           "items": {
             "$ref": "#/definitions/Event"
           }
+        },
+        "lat": {
+          "type": "number"
+        },
+        "lng": {
+          "type": "number"
         }
       }
     },
@@ -435,8 +487,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "totalTicketSupply": {
           "type": "integer",
@@ -467,8 +518,10 @@
           "format": "date-time"
         },
         "description": {
-          "type": "string",
-          "default": ""
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "event": {
           "$ref": "#/definitions/Event"
@@ -494,8 +547,7 @@
           "type": "integer"
         },
         "name": {
-          "type": "string",
-          "default": ""
+          "type": "string"
         },
         "promotionType": {
           "type": "string",
@@ -531,11 +583,14 @@
         "collectionId": {
           "type": "integer"
         },
-        "description": {
+        "collectionName": {
           "type": "string"
         },
-        "fixedPrice": {
-          "type": "number"
+        "description": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "currency": {
           "type": "string",
@@ -553,13 +608,27 @@
           "enum": [
             "CREATED",
             "ON_SALE",
-            "SOLD"
+            "SOLD",
+            "PAUSED"
           ]
         },
-        "collections": {
+        "merchandise": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/CollectionMedia"
+            "$ref": "#/definitions/Merchandise"
+          }
+        },
+        "fixedPrice": {
+          "type": "number",
+          "default": 0
+        },
+        "scAddress": {
+          "type": "string"
+        },
+        "merchURIs": {
+          "type": "array",
+          "items": {
+            "type": "string"
           }
         },
         "creator": {
@@ -567,23 +636,45 @@
         }
       }
     },
-    "CollectionMedia": {
+    "Merchandise": {
       "type": "object",
       "properties": {
-        "collectionMediaId": {
+        "merchId": {
           "type": "integer"
+        },
+        "name": {
+          "type": "string"
         },
         "media": {
-          "type": "string"
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "description": {
-          "type": "string"
+          "type": "string",
+          "default": ""
         },
-        "numOfMerch": {
-          "type": "integer"
+        "price": {
+          "type": "number",
+          "default": 0
+        },
+        "totalMerchSupply": {
+          "type": "integer",
+          "default": 0
+        },
+        "currMerchSupply": {
+          "type": "integer",
+          "default": 0
         },
         "collection": {
           "$ref": "#/definitions/Collection"
+        },
+        "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     }
@@ -601,9 +692,6 @@
     },
     "channel": {
       "$ref": "#/definitions/Channel"
-    },
-    "usersOnChannels": {
-      "$ref": "#/definitions/UsersOnChannels"
     },
     "comment": {
       "$ref": "#/definitions/Comment"
@@ -623,8 +711,8 @@
     "collection": {
       "$ref": "#/definitions/Collection"
     },
-    "collectionMedia": {
-      "$ref": "#/definitions/CollectionMedia"
+    "merchandise": {
+      "$ref": "#/definitions/Merchandise"
     }
   }
 }

@@ -45,7 +45,7 @@ const InputGroup = ({
       <label className="label">
         <span className="label-text">{label}</span>
       </label>
-      <div className="relative mt-1 rounded-md shadow-sm">
+      <div className="relative mt-1 max-w-3xl rounded-md shadow-sm">
         <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
           {children}
         </div>
