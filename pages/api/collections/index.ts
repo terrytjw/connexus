@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection, Prisma, Merchandise } from "@prisma/client";
+import {
+  PrismaClient,
+  Collection,
+  Prisma,
+  Merchandise,
+  CategoryType,
+} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
@@ -58,11 +64,13 @@ export default async function handler(
   //   res.status(401).json({ error: "401", message: "Unauthorized" });
   // }
 
-  const { method } = req;
+  const { method, body, query } = req;
+  const keyword = query.keyword as string;
+  const cursor = parseInt(query.cursor as string);
 
   switch (req.method) {
     case "GET":
-      await handleGET();
+      await handleGETWithKeyword(keyword, cursor);
       break;
     case "POST":
       const collection = JSON.parse(
@@ -75,11 +83,17 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGETWithKeyword(keyword: string, cursor: number) {
     try {
       const collections = await prisma.collection.findMany({
-        include: {
-          merchandise: true,
+        take: 10,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { collectionId: cursor } : undefined,
+        orderBy: {
+          collectionId: "asc",
+        },
+        where: {
+          OR: [{ collectionName: { contains: keyword } }],
         },
       });
       res.status(200).json(collections);

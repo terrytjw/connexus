@@ -14,8 +14,6 @@ export async function searchEvent(searchType: EventPartialType) {
   });
 }
 
-
-
 export async function deleteEvent(eventId: number) {
   return prisma.event.delete({
     where: {
