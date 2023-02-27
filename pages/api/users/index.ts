@@ -39,11 +39,15 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User[] | ErrorResponse>
 ) {
-  const { method } = req;
+  const { method, query } = req;
+
+  const keyword = query.keyword as string;
+  const filter = query.filter as string;
+  const cursor = parseInt(query.cursor as string);
 
   switch (req.method) {
     case "GET":
-      await handleGET();
+      await handleGET(keyword, cursor);
       break;
     case "POST":
       const user = JSON.parse(JSON.stringify(req.body)) as User;
@@ -54,9 +58,9 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(keyword: string, cursor: number) {
     try {
-      const users = await findAllUser();
+      const users = await findAllUser(cursor, keyword);
       res.status(200).json(users);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -69,6 +73,7 @@ export default async function handler(
       const { profilePic, bannerPic } = user;
       let profilePictureUrl = "";
       let bannerPicUrl = "";
+
 
       if (profilePic) {
         const { data, error } = await uploadImage(
