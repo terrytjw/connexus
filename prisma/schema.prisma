@@ -144,6 +144,7 @@ model Ticket {
   totalTicketSupply   Int         @default(0)
   currentTicketSupply Int         @default(0)
   price               Float       @default(0)
+  ticketType          TicketType  @default(ON_SALE)
   startDate           DateTime    @default(now())
   endDate             DateTime    @default(now())
   description         String      @default("")
@@ -151,6 +152,11 @@ model Ticket {
   eventId             Int
   promotion           Promotion[]
   users               User[]
+}
+
+enum TicketType{
+  PAUSED
+  ON_SALE
 }
 
 model Promotion {

@@ -5,6 +5,10 @@ import {
   PromotionType,
   VisibilityType,
   PublishType,
+  ChannelType,
+  Currency,
+  CollectionState,
+  TicketType
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -222,29 +226,12 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 100,
             price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            startDate: new Date("2023-02-22"),
+            endDate: new Date("2023-02-25"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: { userId: 1 } },
+            currentTicketSupply: 1,
+            ticketType: TicketType.ON_SALE
           },
           {
             name: "VIP Pass",
@@ -253,26 +240,20 @@ async function generateEvent() {
             startDate: new Date(),
             endDate: new Date(),
             description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            ticketType: TicketType.ON_SALE
+
+
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 10,
+            startDate: new Date("2023-02-22"),
+            endDate: new Date("2023-02-25"),
+            description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -307,29 +288,13 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 100,
             price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            startDate: new Date("2023-01-23"),
+            endDate: new Date("2023-02-26"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+
           },
           {
             name: "VIP Pass",
@@ -338,26 +303,20 @@ async function generateEvent() {
             startDate: new Date(),
             endDate: new Date(),
             description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            ticketType: TicketType.ON_SALE
+
+
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 1000,
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -392,29 +351,14 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 100,
             price: 10,
-            startDate: new Date(),
-            endDate: new Date(),
-            description: "General Admission",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            startDate: new Date("2023-01-24"),
+            endDate: new Date("2023-02-26"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+            
+
           },
           {
             name: "VIP Pass",
@@ -423,26 +367,19 @@ async function generateEvent() {
             startDate: new Date(),
             endDate: new Date(),
             description: "This is a VIP Pass",
-            promotion: {
-              create: [
-                {
-                  name: "Early Bird",
-                  promotionType: PromotionType.UNLIMITED,
-                  promotionValue: 10,
-                  quantity: 0,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-                {
-                  name: "Comedy Club",
-                  promotionType: PromotionType.LIMITED,
-                  promotionValue: 20,
-                  quantity: 50,
-                  startDate: new Date(),
-                  endDate: new Date(),
-                },
-              ],
-            },
+            ticketType: TicketType.ON_SALE
+
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 1000,
+            startDate: new Date("2023-01-24"),
+            endDate: new Date("2023-02-26"),
+            description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
