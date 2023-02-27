@@ -6,6 +6,7 @@ import Link from "next/link";
 import { formatDate } from "../../lib/date-util";
 import { truncateString } from "../../lib/text-truncate";
 import router from "next/router";
+import { CategoryType } from "@prisma/client";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
@@ -53,7 +54,7 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                 {data?.category.length === 0 && (
                   <p className="text-gray-500">No Topics Selected</p>
                 )}
-                {data?.category.map((label, index) => (
+                {data?.category.map((label: CategoryType, index: number) => (
                   // <div className="tooltip" data-tip={label}>
                   <Badge
                     key={index}
