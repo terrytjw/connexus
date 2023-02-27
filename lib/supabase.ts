@@ -30,12 +30,6 @@ export const extractFileExtension = (dataUrl: string): string => {
   return dataUrl.substring("data:image/".length, dataUrl.indexOf(";base64"));
 };
 
-export const isValidHttpUrl = (url: string): boolean => {
-  let check;
-  try {
-    check = new URL(url);
-  } catch (error) {
-    return false;
-  }
-  return check.protocol === 'http:' || check.protocol === 'https:';
-}
+export const checkIfStringIsBase64 = (url: string): boolean => {
+  return url.startsWith("data:image/");
+};

@@ -13,7 +13,8 @@ import { useSession } from "next-auth/react";
 
 const UserSettingsPage = () => {
   const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  // const userId = session?.user.userId;
+  const userId = 4;
 
   const {
     data: userData,

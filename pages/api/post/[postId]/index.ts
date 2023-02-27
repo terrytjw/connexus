@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
-import { isValidHttpUrl, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
 import { POST_BUCKET } from "../../../../lib/constant";
 
 const prisma = new PrismaClient();
@@ -121,7 +121,7 @@ export default async function handler(
       let updatedMedia = [];
 
       for (let pic of media) {
-        if (isValidHttpUrl(pic)) {
+        if (! checkIfStringIsBase64(pic)) {
           updatedMedia.push(pic);
           continue;
         }
