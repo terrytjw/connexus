@@ -192,7 +192,6 @@ const PublishFormPage = ({
           </div>
         </div>
       ) : (
-        // show preview page, passing props bc passing 'watch' doesn't seem to work
         <EventPreviewPage watch={watch} setIsPreview={setIsPreview} />
       )}
     </div>

@@ -507,7 +507,12 @@ const EventFormPage = ({
                 "startDate",
                 "endDate",
                 "maxAttendee",
-              ]); // todo: add mroe validation
+                "address.address1",
+                "address.lat",
+                "address.lng",
+                "address.postalCode",
+              ]);
+
               if (isValidated) {
                 proceedStep();
                 // scroll to top of div container

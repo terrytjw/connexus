@@ -32,7 +32,7 @@ const TicketFormPage = ({
   proceedStep,
 }: TicketFormPageProps) => {
   // form values
-  const { startDate, endDate, tickets } = watch();
+  const { endDate, tickets } = watch();
   return (
     <div>
       <section>
