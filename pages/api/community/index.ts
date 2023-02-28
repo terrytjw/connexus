@@ -1,6 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Community, CategoryType } from "@prisma/client";
+import { PrismaClient, Community, CategoryType, ChannelType } from "@prisma/client";
+import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
+import { COMMUNITY_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -51,13 +53,21 @@ const prisma = new PrismaClient();
  *               $ref: "#/components/schemas/Community"
  */
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb'
+    }
+  }
+}
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Community[] | ErrorResponse>
 ) {
   const { method, body, query } = req;
   const keyword = query.keyword as string;
-  const filter = query.filter as CategoryType;
+  const filter = query.filter as CategoryType[];
   const cursor = parseInt(query.cursor as string);
 
   switch (method) {
@@ -77,7 +87,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter?: CategoryType) {
+  async function handleGET(cursor: number, filter?: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -86,11 +96,16 @@ export default async function handler(
         orderBy: {
           communityId: 'asc'
         },
-        where: filter ? {
-          tags: {
-            has: filter
+        where: {
+          tags: filter ? {
+            hasEvery: filter
+          } : undefined,
+        },
+        include: {
+          members: {
+            select: { userId: true }
           }
-        } : undefined
+        }
       });
       res.status(200).json(communities);
     } catch (error) {
@@ -99,7 +114,7 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType) {
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -109,37 +124,18 @@ export default async function handler(
           communityId: 'asc'
         },
         where: {
-          OR: [
-            {
-              name: {
-                contains: keyword,
-                mode: 'insensitive'
-              }
-            },
-            {
-              creator: {
-                is: {
-                  OR: [
-                    {
-                      displayName: {
-                        contains: keyword,
-                        mode: 'insensitive'
-                      }
-                    },
-                    {
-                      username: {
-                        contains: keyword,
-                        mode: 'insensitive'
-                      }
-                    }
-                  ],
-                }
-              }
-            },
-          ],
+          name: {
+            contains: keyword,
+            mode: 'insensitive'
+          },
           tags: filter ? {
-            has: filter
-          } : undefined
+            hasEvery: filter
+          } : undefined,
+        },
+        include: {
+          members: {
+            select: { userId: true }
+          }
         }
       })
       res.status(200).json(communities);
@@ -151,10 +147,60 @@ export default async function handler(
 
   async function handlePOST(community: Community) {
     try {
+      const { profilePic, bannerPic } = community;
+      let profilePictureUrl = "";
+      let bannerPicUrl = "";
+
+      if (profilePic) {
+        const { data, error } = await uploadImage(
+          COMMUNITY_BUCKET,
+          profilePic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+          profilePictureUrl = await retrieveImageUrl(
+            COMMUNITY_BUCKET,
+            data.path
+          );
+      }
+
+      if (bannerPic) {
+        const { data, error } = await uploadImage(
+          COMMUNITY_BUCKET,
+          bannerPic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+        if (data)
+          bannerPicUrl = await retrieveImageUrl(COMMUNITY_BUCKET, data.path);
+      }
+
+      const updatedCommunityInfo = {
+        ...community,
+        profilePic: profilePictureUrl,
+        bannerPic: bannerPicUrl,
+      };
+      
       const response = await prisma.community.create({
         data: { 
-          ...community
-         },
+          ...updatedCommunityInfo,
+          channels: {
+            create: [
+              {
+                name: "Home Channel",
+                channelType: ChannelType.REGULAR
+              }
+            ]
+          }
+        }
       });
       res.status(200).json([response]);
     } catch (error) {
