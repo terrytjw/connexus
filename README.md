@@ -8,7 +8,7 @@ _Empowering creators to develop authentic relationships with their fans._
 2. Ensure that Docker is running
 3. Run `yarn` to download dependencies
 4. Run `docker compose up`
-5. Initialize/Reset the database by running `yarn db:init`. Note: Whenver you are doing this, you will need to set the `POSTGRES_HOSTNAME=localhost` inside `.env`. Remember to change back to `POSTGRES_HOSTNAME=db` when you are done.
+5. Open a separate terminal and type `docker compose exec app sh`. Type `yarn db:init` within the same terminal. 
 
 Frontend is deployed at `http://localhost:3000`
 Backend is deployed at `http://localhost:3000/api`
