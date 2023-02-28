@@ -1,18 +1,23 @@
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaUserFriends } from "react-icons/fa";
 import Button from "../Button";
-import { Community } from "../../utils/types";
+import { CommunityWithMemberIds } from "../../utils/types";
 
 type CommunityGridProps = {
-  communities: Community[];
+  communities: CommunityWithMemberIds[];
+  joinedTab?: boolean;
 };
 
-const CommunityGrid = ({ communities }: CommunityGridProps) => {
+const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
-      {communities.map((community) => (
+      {communities?.map((community) => (
         <Link
           key={community.communityId}
           href={`/communities/${community.communityId}`}
@@ -23,7 +28,7 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
               fill
               sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
               className="object-cover object-center"
-              src={community.bannerPic}
+              src={community.bannerPic ?? ""}
               alt="Community Banner"
             />
             <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
@@ -33,22 +38,34 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
               />
               <div className="relative flex items-center gap-2 text-lg font-semibold text-white">
                 <FaUserFriends />
-                {community.numMembers}
+                {community.members
+                  ? community.members.length
+                  : community._count.members}
               </div>
-              {/* <Button
-                  variant="outlined"
-                  size="sm"
-                  className="relative rounded-full text-lg font-semibold text-white"
-                >
-                  Join
-                </Button> */}
-              <Button
-                variant="solid"
-                size="sm"
-                className="relative rounded-full text-lg font-semibold text-white"
-              >
-                Joined
-              </Button>
+
+              {community.userId !== userId ? (
+                <>
+                  {community.members?.find(
+                    (member: { userId: number }) => member.userId == userId
+                  ) || joinedTab ? (
+                    <Button
+                      variant="solid"
+                      size="sm"
+                      className="relative rounded-full text-lg font-semibold text-white"
+                    >
+                      Joined
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      size="sm"
+                      className="relative rounded-full bg-white text-lg font-semibold"
+                    >
+                      Join
+                    </Button>
+                  )}
+                </>
+              ) : null}
             </div>
           </div>
           <div className="mt-2 flex items-center gap-4">
@@ -56,7 +73,7 @@ const CommunityGrid = ({ communities }: CommunityGridProps) => {
               height={64}
               width={64}
               className="aspect-square rounded-full object-cover object-center"
-              src={community.profilePic}
+              src={community.profilePic ?? ""}
               alt="Community Profile"
             />
             <h3 className="font-medium text-gray-900">{community.name}</h3>
