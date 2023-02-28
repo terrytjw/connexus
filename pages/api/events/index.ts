@@ -3,7 +3,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event, Prisma, Ticket, CategoryType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
@@ -135,9 +135,9 @@ export default async function handler(
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
-      if (eventPic) {
-        const { data, error } = await uploadImage(
-          EVENT_PROFILE_BUCKET,
+      if(eventPic && checkIfStringIsBase64(eventPic)){
+        const{data, error} = await uploadImage(
+          EVENT_PROFILE_BUCKET, 
           eventPic
         );
         if (error) {
@@ -152,7 +152,7 @@ export default async function handler(
           );
       }
 
-      if (bannerPic) {
+      if (bannerPic && checkIfStringIsBase64(bannerPic)) {
         const { data, error } = await uploadImage(
           EVENT_PROFILE_BUCKET,
           bannerPic
