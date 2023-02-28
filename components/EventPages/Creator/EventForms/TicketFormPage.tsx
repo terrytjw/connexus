@@ -50,7 +50,7 @@ const TicketFormPage = ({
         {fields.map((ticket, index) => (
           <div
             id={`ticket-${index + 1}`}
-            key={index} // use id if the ticket id is unique
+            key={ticket.id} // use id if the ticket id is unique
             className=""
           >
             {index > 0 && <div className="divider" />}
@@ -61,7 +61,7 @@ const TicketFormPage = ({
               </h2>
               {index > 0 && (
                 <FaTrash
-                  onClick={() => removeTicket(index)}
+                  onClick={() => removeTicket(Number(ticket.id))}
                   className="text-lg text-red-400 hover:cursor-pointer"
                 />
               )}

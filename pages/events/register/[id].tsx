@@ -16,22 +16,16 @@ import { User } from "@prisma/client";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
-import { EventWithTicketsandAddress } from "../../../utils/types";
+import {
+  EventWithTicketsandAddress,
+  UserWithTickets,
+} from "../../../utils/types";
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
 import { smartContract } from "../../../lib/constants";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Link from "next/link";
-
-export type Venue = {
-  lat: number | undefined;
-  lng: number | undefined;
-  venueName: string;
-  address1: string;
-  address2: string;
-  postalCode: number;
-};
 
 export type SelectedTicket = {
   ticketName: string;
@@ -210,7 +204,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     let user_response = await axios.get(
       "http://localhost:3000/api/users/" + userId.toString()
     );
-    const userInfo = user_response.data as EventWithTicketsandAddress;
+    const userInfo = user_response.data as UserWithTickets;
     var user_tickets = userInfo.tickets;
 
     //Mint + IPFS

@@ -1,21 +1,15 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
-import { UseFormReset, UseFormSetValue, UseFormWatch } from "react-hook-form";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import { UserWithSelectedTicket } from "../../pages/events/register/[id]";
 
 type TicketCardInputProps = {
   ticket: Ticket;
   watch: UseFormWatch<UserWithSelectedTicket>;
   setValue: UseFormSetValue<UserWithSelectedTicket>;
-  reset: UseFormReset<UserWithSelectedTicket>;
 };
 
-const TicketCardInput = ({
-  ticket,
-  watch,
-  setValue,
-  reset,
-}: TicketCardInputProps) => {
+const TicketCardInput = ({ ticket, watch, setValue }: TicketCardInputProps) => {
   // form data from parent component
   const {
     selectedTicket: { ticketName, qty },
@@ -84,19 +78,6 @@ const TicketCardInput = ({
                   min={1}
                   step={1}
                   value={ticket.name === ticketName ? 1 : 0}
-                  onKeyDown={(e) => {
-                    // disallow decimal
-                    // only allow numbers, backspace, arrow left and right for editing
-                    if (
-                      e.code == "Backspace" ||
-                      e.code == "ArrowLeft" ||
-                      e.code == "ArrowRight" ||
-                      (e.key >= "0" && e.key <= "9")
-                    ) {
-                      return;
-                    }
-                    e.preventDefault();
-                  }}
                   className="w-full appearance-none bg-gray-200 text-center outline-none"
                 ></input>
                 {/* increase button */}

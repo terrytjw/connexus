@@ -38,13 +38,8 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
               key={index}
               className="hover: cursor-pointer"
               onClick={(e) => {
-                // prevent on click conflict between button and row
-                const clickedElement = e.target as Element;
-                if (clickedElement.tagName !== "BUTTON") {
-                  // Handle row click event
-                  // console.log("Row clicked");
-                  router.push(`/events/${data.eventId}`);
-                }
+                // console.log("Row clicked");
+                router.push(`/events/${data.eventId}`);
               }}
             >
               <td className="text-gray-700">
@@ -55,7 +50,6 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                 {`${formatDate(data.startDate)} - ${formatDate(data.endDate)}`}
               </td>
               <td className="text-gray-700">{data?.maxAttendee}</td>
-              {/* TODO: replace when schema is updated */}
               <td className="text-gray-700">{data?.address?.locationName}</td>
 
               <td className="text-gray-700">
@@ -63,7 +57,6 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                   <p className="text-gray-500">No Topics Selected</p>
                 )}
                 {data?.category.map((label: CategoryType, index: number) => (
-                  // <div className="tooltip" data-tip={label}>
                   <Badge
                     key={index}
                     className="text-white"
@@ -71,7 +64,6 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                     size="lg"
                     selected={false}
                   />
-                  // </div>
                 ))}{" "}
                 ...
               </td>

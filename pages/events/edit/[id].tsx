@@ -312,12 +312,8 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       console.log("Nothing to update for tokenURIs in event");
 
       // remove untouched events data
-      const {
-        address,
-        tickets,
-        addressId,
-        ...newEventWOTicketsNAddress
-      } = newEvent;
+      const { address, tickets, addressId, ...newEventWOTicketsNAddress } =
+        newEvent;
 
       // update address separately from events
       let update_address_response = await axios.post(
@@ -576,6 +572,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     watch={watch}
                     setValue={setValue}
                     setIsCreateSuccessModalOpen={setIsCreateSuccessModalOpen}
+                    isLoading={isLoading}
                   />
                 )}
             </form>
@@ -601,8 +598,8 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     endDate: formatDateForInput(event.endDate) as unknown as Date,
     tickets: event.tickets.map((ticket: Ticket) => ({
       ...ticket,
-      startDate: formatDateForInput(event.startDate) as unknown as Date,
-      endDate: formatDateForInput(event.endDate) as unknown as Date,
+      startDate: formatDateForInput(ticket.startDate) as unknown as Date,
+      endDate: formatDateForInput(ticket.endDate) as unknown as Date,
     })),
   };
 

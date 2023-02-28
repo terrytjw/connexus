@@ -357,6 +357,7 @@ const CreatorEventCreate = () => {
                     watch={watch}
                     setValue={setValue}
                     setIsCreateSuccessModalOpen={setIsCreateSuccessModalOpen}
+                    isLoading={isLoading}
                   />
                 )}
             </form>

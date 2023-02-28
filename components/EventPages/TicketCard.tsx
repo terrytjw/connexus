@@ -1,5 +1,6 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
+import { formatDate } from "../../lib/date-util";
 
 type TicketCardProps = {
   ticket: Ticket;
@@ -34,6 +35,14 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
             <span>
               <p className="text-md font-semibold text-blue-600">Price</p>
               <p className="text-sn text-gray-700">${ticket.price}</p>
+            </span>
+            <span>
+              <p className="text-md font-semibold text-blue-500">
+                Sale Duration
+              </p>
+              <p className="text-sn text-gray-700">
+                {formatDate(ticket.startDate)} - {formatDate(ticket.endDate)}
+              </p>
             </span>
             <span className=" flex flex-col gap-4">
               <p className="text-md text-blue-600">

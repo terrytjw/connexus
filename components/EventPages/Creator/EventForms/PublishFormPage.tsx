@@ -12,12 +12,14 @@ type PublishFormPageProps = {
   watch: UseFormWatch<EventWithTicketsandAddress>;
   setValue: UseFormSetValue<EventWithTicketsandAddress>;
   setIsCreateSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isLoading: boolean | undefined;
 };
 
 const PublishFormPage = ({
   watch,
   setValue,
   setIsCreateSuccessModalOpen,
+  isLoading,
 }: PublishFormPageProps) => {
   // form values
   const {
@@ -190,6 +192,7 @@ const PublishFormPage = ({
                 // using react hook form onSubmit to submit data
                 setIsCreateSuccessModalOpen(true);
               }}
+              disabled={isLoading}
             >
               Publish
             </Button>
