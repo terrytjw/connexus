@@ -1,7 +1,8 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
-import { PrismaClient, Community } from "@prisma/client";
+import { PrismaClient, Community, ChannelType } from "@prisma/client";
+import { leaveChannel } from "../../../../lib/channel";
 
 const prisma = new PrismaClient();
 
@@ -51,7 +52,7 @@ export default async function handler(
 
   async function handlePOST(communityId: number, userId: number) {
     try {
-      const response = await prisma.community.update({
+      const communityToLeave = await prisma.community.update({
         where: {
           communityId: communityId,
         },
@@ -60,13 +61,35 @@ export default async function handler(
             disconnect: {
               userId: userId
             }
-          }
+          },
         },
         include: {
-          members: true
+          channels: {
+            orderBy: {
+              channelId: 'asc'
+            }
+          }
         }
       });
-      res.status(200).json(response);
+      await leaveChannel(communityToLeave.channels[0].channelId, userId);
+      const response = await prisma.community.findFirst({
+        where: {
+          communityId: communityId
+        },
+        include: {
+          members: {
+            select: { userId: true }
+          },
+          channels: {
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
+            }
+          }
+        }
+      })
+      res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

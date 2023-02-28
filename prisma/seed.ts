@@ -88,7 +88,9 @@ async function generateChannel() {
         },
       },
       members: {
-        connect: { userId: 1 },
+        connect: {
+          userId: 2,
+        },
       },
       channelType: ChannelType.REGULAR,
     },
@@ -109,6 +111,9 @@ async function generateChannel() {
         },
       },
       channelType: ChannelType.REGULAR,
+      members: {
+        connect: [{ userId: 1 }, { userId: 2 }],
+      },
     },
   ];
 
