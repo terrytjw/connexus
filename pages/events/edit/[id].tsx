@@ -68,58 +68,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   const [isCreateSuccessModalOpen, setIsCreateSuccessModalOpen] =
     useState(false);
 
-  // create contract and db entry
-  const createEvent = async (event: any) => {
-    /*
-    Inputs: 
-    1. Event Info
-    2. Ticket Info
-    */
-
-    // create smart contract
-    const Event_contract = new ethers.ContractFactory(abi, bytecode, signer);
-
-    let categories = [];
-    let category_quantity = [];
-    let category_price = [];
-
-    for (let i = 0; i < tickets.length; i++) {
-      let cat = tickets[i];
-      categories.push(cat.name);
-      category_quantity.push(cat.totalTicketSupply);
-      let input = cat.price;
-      category_price.push(input);
-    }
-    console.log(category_price);
-
-    setIsLoading(true);
-    const event_contract = await Event_contract.deploy(
-      categories,
-      category_price,
-      category_quantity,
-      event.eventName,
-      new Date(event.startDate), // what is this?
-      event.address.create.locationName,
-      1,
-      100,
-      event.eventName
-    ); //1 ticket max per person
-
-    console.log("Contract successfully deployed => ", event_contract.address);
-
-    // call post api
-    let { data: response } = await axios.post(
-      "http://localhost:3000/api/events",
-      {
-        ...event,
-        scAddress: event_contract.address,
-      }
-    );
-    let data = response.data;
-    console.log("Event Created");
-    setIsLoading(false);
-  };
-
   async function mintOnChain(
     eventInfo: Partial<EventWithTicketsandAddress>,
     ticket_category: string
@@ -211,6 +159,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           endDate: ticket_categories[k].endDate,
           description: ticket_categories[k].description,
           eventId: event_id,
+          ticketType: ticket_categories[k].ticketType,
         };
         updatedTickets.push(new_ticket);
         await axios.post("http://localhost:3000/api/tickets", new_ticket);
@@ -232,6 +181,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           startDate: ticket_categories[k].startDate,
           endDate: ticket_categories[k].endDate,
           description: ticket_categories[k].description,
+          ticketType: ticket_categories[k].ticketType,
         };
         await axios.post(
           "http://localhost:3000/api/tickets/" + tickets[k].ticketId.toString(),
@@ -358,19 +308,18 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       console.log("Data uploaded");
       setIsLoading(false);
     } else {
+      // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
 
-      // remove untouched data
+      // remove untouched events data
       const {
         address,
         tickets,
-        // bannerPic,
-        // eventPic,
         addressId,
         ...newEventWOTicketsNAddress
       } = newEvent;
 
-      // change address
+      // update address separately from events
       let update_address_response = await axios.post(
         "http://localhost:3000/api/addresses/" + addressId.toString(),
         address
@@ -385,6 +334,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         ...newEventWOTicketsNAddress,
       };
 
+      // update events
       console.log("updated event: -", updated_event);
       let updated_response = await axios.post(
         "http://localhost:3000/api/events/" + event_id.toString(),
@@ -408,9 +358,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     // parse to prisma type
     const prismaEvent = {
       ...event,
-      // address: {
-      //   create: { ...address },
-      // },
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       maxAttendee: Number(maxAttendee),
