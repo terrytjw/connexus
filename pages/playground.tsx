@@ -24,9 +24,6 @@ import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
 import BannerInput from "../components/BannerInput";
 import Carousel from "../components/Carousel";
-import Post from "../components/CommunityPages/Post";
-import PostInput from "../components/CommunityPages/PostInput";
-import CommunityGrid from "../components/CommunityPages/CommunityGrid";
 import EventsGrid from "../components/EventPages/EventsGrid";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Layout from "../components/Layout";
@@ -382,42 +379,6 @@ const PlaygroundPage = () => {
             </div>
             <div className="p-8">
               <Carousel images={communities[0].channels[0].posts[0].media} />
-            </div>
-          </section>
-
-          <div className="divider" />
-          <section className="p-8">
-            <div className="flex justify-center">
-              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
-                Post + Comment
-              </h1>
-            </div>
-            <div className="p-8">
-              <Post post={communities[0].channels[0].posts[0]} />
-            </div>
-          </section>
-
-          <div className="divider" />
-          <section className="p-8">
-            <div className="flex justify-center">
-              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
-                Create Post
-              </h1>
-            </div>
-            <div className="p-8">
-              <PostInput onSubmit={() => {}} />
-            </div>
-          </section>
-
-          <div className="divider" />
-          <section className="p-8">
-            <div className="flex justify-center">
-              <h1 className="inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
-                Community Grid
-              </h1>
-            </div>
-            <div className="p-8">
-              <CommunityGrid communities={communities} />
             </div>
           </section>
         </main>
