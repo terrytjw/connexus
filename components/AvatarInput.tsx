@@ -24,7 +24,12 @@ const AvatarInput = ({ profilePic, onChange }: AvatarInputProps) => {
 
       <div className="absolute top-0 flex h-24 w-24 items-center justify-center rounded-full ring-4 ring-white sm:h-32 sm:w-32">
         <label className="relative">
-          <Button variant="solid" size="md" className="!rounded-full">
+          <Button
+            variant="solid"
+            size="md"
+            type="button"
+            className="!rounded-full"
+          >
             <FaCamera />
           </Button>
           <input

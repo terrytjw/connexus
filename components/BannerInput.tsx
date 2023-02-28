@@ -25,7 +25,12 @@ const BannerInput = ({ bannerPic, onChange, onClick }: BannerInputProps) => {
 
       <div className="absolute top-0 flex h-32 w-full items-end justify-end gap-4 p-4 lg:h-48">
         <label className="relative">
-          <Button variant="solid" size="md" className="!btn-circle">
+          <Button
+            variant="solid"
+            size="md"
+            type="button"
+            className="!btn-circle"
+          >
             <FaCamera />
           </Button>
           <input
@@ -40,6 +45,7 @@ const BannerInput = ({ bannerPic, onChange, onClick }: BannerInputProps) => {
           <Button
             variant="solid"
             size="md"
+            type="button"
             className="z-10 !rounded-full"
             onClick={onClick}
           >
