@@ -166,9 +166,10 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
               {activeTab == 0 && (
                 <>
                   <div className="mb-4 flex flex-wrap gap-2">
-                    {selectedTopics.map((label) => {
+                    {selectedTopics.map((label, index) => {
                       return (
                         <Button
+                          key={index}
                           size="sm"
                           variant="outlined"
                           onClick={(e) => e.preventDefault()}
