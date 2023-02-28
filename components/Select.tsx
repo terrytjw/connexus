@@ -37,9 +37,9 @@ const Select = ({ data, selected, setSelected, className }: SelectProps) => {
             leaveTo="opacity-0"
           >
             <Listbox.Options className="absolute z-10 mt-1 max-h-80 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {data.map((item: { id: number; name: string }) => (
+              {data.map((item: { id: number; name: string }, index: number) => (
                 <Listbox.Option
-                  key={item.id}
+                  key={index}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 pl-10 pr-4 ${
                       active ? "bg-amber-100 text-amber-900" : "text-gray-900"

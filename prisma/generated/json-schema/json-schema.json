@@ -501,6 +501,14 @@
           "type": "number",
           "default": 0
         },
+        "ticketType": {
+          "type": "string",
+          "default": "ON_SALE",
+          "enum": [
+            "PAUSED",
+            "ON_SALE"
+          ]
+        },
         "startDate": {
           "type": "string",
           "format": "date-time"
@@ -637,15 +645,11 @@
         "name": {
           "type": "string"
         },
-        "media": {
+        "image": {
           "type": [
             "string",
             "null"
           ]
-        },
-        "description": {
-          "type": "string",
-          "default": ""
         },
         "price": {
           "type": "number",

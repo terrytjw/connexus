@@ -67,9 +67,14 @@ export default async function handler(
           },
         },
         include: {
+          members: {
+            select: { userId: true }
+          },
           channels: {
-            orderBy: {
-              channelId: 'asc'
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
             }
           }
         }
