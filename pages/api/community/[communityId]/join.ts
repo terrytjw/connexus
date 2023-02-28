@@ -2,6 +2,10 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Community } from "@prisma/client";
+import channelHandler from "../../channel/[channelId]/join";
+import axios from "axios";
+import { url } from "inspector";
+import { joinChannel } from "../../../../lib/channel";
 
 const prisma = new PrismaClient();
 
@@ -51,7 +55,7 @@ export default async function handler(
 
   async function handlePOST(communityId: number, userId: number) {
     try {
-      const response = await prisma.community.update({
+      const communityToJoin = await prisma.community.update({
         where: {
           communityId: communityId,
         },
@@ -60,13 +64,40 @@ export default async function handler(
             connect: {
               userId: userId
             }
-          }
+          },
         },
         include: {
-          members: true
+          members: {
+            select: { userId: true }
+          },
+          channels: {
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
+            }
+          }
         }
       });
-      res.status(200).json(response);
+      await joinChannel(communityToJoin.channels[0].channelId, userId);
+      const response = await prisma.community.findFirst({
+        where: {
+          communityId: communityId
+        },
+        include: {
+          members: {
+            select: { userId: true }
+          },
+          channels: {
+            include: {
+              members: {
+                select: { userId: true, username: true, profilePic: true }
+              }
+            }
+          }
+        }
+      })
+      res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

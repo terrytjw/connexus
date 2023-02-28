@@ -20,9 +20,9 @@ async function generateCommunity() {
       name: "Valorant",
       description: "Hi there!  Welcome to the Valo Community!",
       profilePic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profilePic.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/valorant-profilePic.jpg",
       bannerPic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-bannerPic.png",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/valorant-bannerPic.png",
       maxMembers: 67,
       tags: [CategoryType.ENTERTAINMENT],
       creator: {
@@ -40,9 +40,9 @@ async function generateCommunity() {
       name: "Cosplay Kawaii",
       description: "Hi there!  Welcome to the Cosplay Community!",
       profilePic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profilePic.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/cosplay-profilePic.jpg",
       bannerPic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-bannerPic.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/cosplay-bannerPic.jpg",
       maxMembers: 51,
       tags: [CategoryType.ENTERTAINMENT],
       creator: {
@@ -55,9 +55,9 @@ async function generateCommunity() {
       name: "Travley",
       description: "Hi there!  Welcome to the Travley Community!",
       profilePic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travley-profilePic.png",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/travley-profilePic.png",
       bannerPic:
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travley-bannerPic.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/community/travley-bannerPic.jpg",
       maxMembers: 74,
       tags: [CategoryType.TRAVEL],
       creator: {
@@ -88,7 +88,9 @@ async function generateChannel() {
         },
       },
       members: {
-        connect: { userId: 1 },
+        connect: {
+          userId: 2,
+        },
       },
       channelType: ChannelType.REGULAR,
     },
@@ -109,6 +111,9 @@ async function generateChannel() {
         },
       },
       channelType: ChannelType.REGULAR,
+      members: {
+        connect: [{ userId: 1 }, { userId: 2 }],
+      },
     },
   ];
 
@@ -125,7 +130,7 @@ async function generatePost() {
       title: "New valorant map",
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorantnewmap-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/valorantnewmap-media.jpg",
       ],
       isPinned: false,
       creator: {
@@ -144,7 +149,7 @@ async function generatePost() {
       title: "Anime Fanart",
       content: "I just drew this, what do yall think?",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
@@ -163,7 +168,7 @@ async function generatePost() {
       title: "Travelling",
       content: "Would love to experience living in a cabin during winter!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
