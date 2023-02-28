@@ -136,7 +136,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
             <div className="mt-8 flex w-full gap-2 lg:hidden">
               <div className="relative w-full items-center justify-center rounded-md shadow-sm">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <FaSearch />
+                  <FaSearch className="text-gray-500" />
                 </div>
                 <input
                   className="input-outlined input input-md block w-full rounded-md pl-10"
@@ -204,7 +204,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
               <div className="absolute right-0 top-8 hidden items-center gap-x-4 lg:flex">
                 <div className="relative w-full items-center justify-center rounded-md shadow-sm">
                   <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <FaSearch />
+                    <FaSearch className="text-gray-500" />
                   </div>
                   <input
                     className="input-outlined input input-md block w-full rounded-md pl-10"
