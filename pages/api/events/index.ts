@@ -57,7 +57,7 @@ export default async function handler(
 
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
-  const filter = query.filter as CategoryType;
+  const filter = query.filter as CategoryType[];
 
   switch (req.method) {
     case "GET":
@@ -75,7 +75,29 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType) {
+  async function handleGET(cursor: number, filter?: CategoryType[]) {
+    try {
+      const events = await prisma.event.findMany({
+        take: 10,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { eventId : cursor } : undefined,
+        orderBy: {
+          eventId: 'asc'
+        },
+        where: {
+          category: filter ? {
+            hasEvery: filter
+          } : undefined,
+        },
+      });
+      res.status(200).json(events);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
+
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
     try {
       const events = await prisma.event.findMany({
         take: 10,
@@ -85,15 +107,14 @@ export default async function handler(
           eventId: 'asc'
         },
         where: {
-          OR: [
-            {
-              eventName: {
-                contains: keyword,
-                mode: 'insensitive'
-              }
-            },
-          ],
-        }
+          eventName: {
+            contains: keyword,
+            mode: 'insensitive'
+          },
+          category: filter ? {
+            hasEvery: filter
+          } : undefined,
+        },
       })
       res.status(200).json(events);
     } catch (error) {
@@ -102,19 +123,7 @@ export default async function handler(
     }
   }
 
-  async function handleGET(cursor: number, filter?: CategoryType) {
-    try {
-      const events = await prisma.event.findMany({
-        include: {
-          tickets: true,
-        },
-      });
-      res.status(200).json(events);
-    } catch (error) {
-      const errorResponse = handleError(error);
-      res.status(400).json(errorResponse);
-    }
-  }
+
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
