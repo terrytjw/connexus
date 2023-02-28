@@ -20,8 +20,16 @@ const PublishFormPage = ({
   setIsCreateSuccessModalOpen,
 }: PublishFormPageProps) => {
   // form values
-  const { eventName, eventPic, startDate, endDate, address, maxAttendee } =
-    watch();
+  const {
+    eventName,
+    eventPic,
+    startDate,
+    endDate,
+    address,
+    maxAttendee,
+    visibilityType,
+    privacyType,
+  } = watch();
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   return (
@@ -93,9 +101,7 @@ const PublishFormPage = ({
                             name="privacyType"
                             type="radio"
                             value={privacyOption}
-                            defaultChecked={
-                              privacyOption === PrivacyType.PUBLIC
-                            }
+                            checked={privacyOption === privacyType}
                             className="radio checked:bg-blue-500"
                             onChange={(e) =>
                               setValue(
@@ -143,9 +149,7 @@ const PublishFormPage = ({
                             name="visibilityType"
                             type="radio"
                             value={visibilityOption}
-                            defaultChecked={
-                              visibilityOption === VisibilityType.PUBLISHED
-                            }
+                            checked={visibilityOption === visibilityType}
                             className="radio checked:bg-blue-500"
                             onChange={(e) =>
                               setValue(

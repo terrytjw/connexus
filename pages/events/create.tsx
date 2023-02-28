@@ -17,6 +17,7 @@ import {
   PrivacyType,
   PublishType,
   Ticket,
+  TicketType,
   VisibilityType,
 } from "@prisma/client";
 
@@ -60,7 +61,7 @@ const CreatorEventCreate = () => {
       },
     });
   // listen to tickets array
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
   });
@@ -168,13 +169,13 @@ const CreatorEventCreate = () => {
       ticketId: 1,
       name: "",
       description: "",
-      price: null as unknown as number,
+      price: undefined as unknown as number,
       totalTicketSupply: undefined as unknown as number,
       currentTicketSupply: undefined as unknown as number,
-      startDate: null as unknown as Date,
-      endDate: null as unknown as Date,
+      startDate: undefined as unknown as Date,
+      endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
-      ticketType: TicketType.ON_SALE
+      ticketType: TicketType.ON_SALE,
     });
   };
 
@@ -326,6 +327,7 @@ const CreatorEventCreate = () => {
               {currentStep?.id === "Step 1" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <EventFormPage
+                    isEdit={false} // tells the form page that user is not editing
                     watch={watch}
                     setValue={setValue}
                     control={control}
@@ -337,10 +339,12 @@ const CreatorEventCreate = () => {
               {currentStep?.id === "Step 2" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketFormPage
+                    isEdit={false} // tells the form page that user is not editing
                     watch={watch}
                     control={control}
                     trigger={trigger}
                     fields={fields}
+                    update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
                     proceedStep={proceedStep}

@@ -44,7 +44,7 @@ const EventPage = ({ event, userData, address }: EventPageProps) => {
 
   const isRegistered = (): boolean => {
     console.log("user tickets ->", userData?.tickets);
-    return !!userData.tickets.find(
+    return !!userData.tickets?.find(
       (ticket: Ticket) => ticket.eventId === event.eventId
     );
   };

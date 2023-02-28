@@ -1,4 +1,3 @@
-import { format, isValid } from "date-fns";
 import React, { Dispatch, SetStateAction, useEffect } from "react";
 import {
   FaCalendar,
@@ -17,6 +16,7 @@ import Button from "../../../Button";
 import TicketCard from "../../TicketCard";
 import { UseFormWatch } from "react-hook-form";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { formatDate } from "../../../../lib/date-util";
 
 type EventPreviewPageProps = {
   watch: UseFormWatch<EventWithTicketsandAddress>;
@@ -104,15 +104,7 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
                 <span className="sm:text-md ml-2 flex-col text-sm">
                   <p className="font-bold">Date and Time</p>
                   <p>
-                    {`${
-                      isValid(startDate)
-                        ? format(startDate, "PPPPpppp")
-                        : format(new Date(startDate), "PPPPpppp")
-                    } - ${
-                      isValid(endDate)
-                        ? format(endDate, "PPPPpppp")
-                        : format(new Date(endDate), "PPPPpppp")
-                    }`}
+                    {formatDate(startDate)} - {formatDate(endDate)}
                   </p>
                 </span>
               </div>
@@ -121,8 +113,11 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
                 <FaMapPin className="text-md" />
                 <span className="sm:text-md ml-2 flex-col text-sm">
                   <p className="font-bold">Location</p>
-                  {/* TODO: format address from address components */}
-                  <p>{address.locationName}</p>
+                  <p>{address?.locationName}</p>
+                  <p>
+                    {address?.address2} {address?.address1}
+                  </p>
+                  <p>{address?.postalCode}</p>
                 </span>
               </div>
             </div>

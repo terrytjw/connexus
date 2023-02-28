@@ -15,7 +15,7 @@ import Loading from "../../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithTicketsandAddress } from "../../../utils/types";
-import { Ticket, Address } from "@prisma/client";
+import { Ticket, Address, TicketType } from "@prisma/client";
 
 import axios from "axios";
 
@@ -43,33 +43,18 @@ type CreatorEventPageProps = {
 };
 
 const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
-  const {
-    handleSubmit,
-    setValue,
-    control,
-    watch,
-    trigger,
-    formState: { dirtyFields },
-  } = useForm<EventWithTicketsandAddress>({
-    defaultValues: {
-      ...event,
-      address: {
-        ...address,
+  const { handleSubmit, setValue, control, watch, trigger } =
+    useForm<EventWithTicketsandAddress>({
+      defaultValues: {
+        ...event,
+        address: {
+          ...address,
+        },
       },
-    },
-  });
-
-  const eventFormData = watch();
-  console.log("form data", eventFormData);
-  console.log("dirty fields -> ", dirtyFields);
-  console.log("date s", formatDateForInput(event.startDate));
-  // console.log(
-  //   "parsed date string -> ",
-  //   format(new Date(event.startDate), "yyyy-MM-dd'T'HH:mm")
-  // );
+    });
 
   // listen to tickets array
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
   });
@@ -208,33 +193,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
     //updating ticket categories
     const ticket_categories = newEvent.tickets;
-    //updating ticket categories
-    // const ticket_categories = [
-    //   {
-    //     name: "Genera",
-    //     totalTicketSupply: 100,
-    //     price: 1,
-    //     startDate: new Date(),
-    //     endDate: new Date(),
-    //     description: "General Admission",
-    //   },
-    //   {
-    //     name: "VI",
-    //     totalTicketSupply: 1,
-    //     price: 1,
-    //     startDate: new Date(),
-    //     endDate: new Date(),
-    //     description: "This is a VIP Pass",
-    //   },
-    //   {
-    //     name: "Club Pengu",
-    //     totalTicketSupply: 0,
-    //     price: 1,
-    //     startDate: new Date(),
-    //     endDate: new Date(),
-    //     description: "",
-    //   },
-    // ];
 
     let map = {} as any;
 
@@ -445,12 +403,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   const parseAndUpdate = (event: EventWithTicketsandAddress): void => {
     console.log("Submitting Form Data", event);
 
-    const { address, eventId, tickets, startDate, endDate, maxAttendee } =
-      event;
-
-    console.log(tickets.map((ticket) => ({ ...ticket })));
-
-    // JSON.stringify(dirtyValues(dirtyFields, event))
+    const { tickets, startDate, endDate, maxAttendee } = event;
 
     // parse to prisma type
     const prismaEvent = {
@@ -489,6 +442,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       name: "",
       description: "",
       price: null as unknown as number,
+      ticketType: TicketType.ON_SALE,
       totalTicketSupply: undefined as unknown as number,
       currentTicketSupply: undefined as unknown as number,
       startDate: null as unknown as Date,
@@ -645,6 +599,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
               {currentStep?.id === "Step 1" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <EventFormPage
+                    isEdit={true} // tells the form page that user is not editing
                     watch={watch}
                     setValue={setValue}
                     control={control}
@@ -656,10 +611,12 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
               {currentStep?.id === "Step 2" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketFormPage
+                    isEdit={true}
                     watch={watch}
                     control={control}
                     trigger={trigger}
                     fields={fields}
+                    update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
                     proceedStep={proceedStep}

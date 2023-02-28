@@ -26,6 +26,7 @@ import { CategoryType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
 
 type EventFormPageProps = {
+  isEdit: boolean;
   watch: UseFormWatch<EventWithTicketsandAddress>;
   setValue: UseFormSetValue<EventWithTicketsandAddress>;
   control: Control<EventWithTicketsandAddress, any>;
@@ -39,6 +40,7 @@ type AutocompleteType = google.maps.places.Autocomplete;
 type GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
 
 const EventFormPage = ({
+  isEdit,
   watch,
   setValue,
   control,
@@ -127,6 +129,10 @@ const EventFormPage = ({
         postalCode: getAddressComponent("postal_code") ?? "",
       });
     }
+  };
+
+  const checkIsEditAndDatePassed = (value: string | Date): boolean => {
+    return isEdit && !!(new Date(value) < new Date());
   };
 
   if (!isLoaded) {
@@ -223,8 +229,10 @@ const EventFormPage = ({
             required: "Start Date and Time is required",
             validate: {
               afterNow: (value) =>
-                new Date(value) > new Date() ||
-                "Start Date must be later than now",
+                checkIsEditAndDatePassed(value)
+                  ? true // skip validation if is edit and date > now()
+                  : new Date(value) > new Date() ||
+                    "Start Date must be later than now",
             },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
@@ -237,7 +245,8 @@ const EventFormPage = ({
               size="md"
               variant="bordered"
               errorMessage={error?.message}
-              className="max-w-3xl align-middle text-gray-400"
+              className="max-w-3xl align-middle text-gray-500"
+              disabled={checkIsEditAndDatePassed(value)} // cannot edit if event has already started
             />
           )}
         />
@@ -263,7 +272,7 @@ const EventFormPage = ({
               size="md"
               variant="bordered"
               errorMessage={error?.message}
-              className="max-w-3xl align-middle text-gray-400"
+              className="max-w-3xl align-middle text-gray-500"
             />
           )}
         />

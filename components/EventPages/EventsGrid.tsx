@@ -45,10 +45,9 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
       </p>
       <div className="mt-2 flex flex-col text-sm font-normal">
         <span>{item?.address?.locationName}</span>
-        <span>
-          {item?.address?.address1} {item?.address?.address2}
-        </span>
-        <span>{item?.address?.postalCode}</span>
+        <span>{item?.address?.address1}</span>
+        {/* {item?.address?.address1} */}
+        {/* <span>{item?.address?.postalCode}</span> */}
       </div>
 
       <p className="text-s mt-2 font-semibold text-blue-600">

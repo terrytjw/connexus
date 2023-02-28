@@ -9,7 +9,6 @@ import Layout from "../../components/Layout";
 
 import { Event, PrivacyType, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
-import { events } from "../../utils/dummyData";
 
 type EventsPageProps = {
   events: EventWithTicketsandAddress[];
@@ -20,7 +19,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
 
   console.log(events);
 
-  // temporary filter
+  // temporary filter to see only public events TODO: filter on server side or make it into an api call
   const filterEvents = (
     events: EventWithTicketsandAddress[]
   ): EventWithTicketsandAddress[] => {

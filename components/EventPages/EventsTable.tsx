@@ -37,7 +37,15 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
             <tr
               key={index}
               className="hover: cursor-pointer"
-              onClick={() => router.push(`/events/${data.eventId}`)}
+              onClick={(e) => {
+                // prevent on click conflict between button and row
+                const clickedElement = e.target as Element;
+                if (clickedElement.tagName !== "BUTTON") {
+                  // Handle row click event
+                  console.log("Row clicked");
+                  router.push(`/events/${data.eventId}`);
+                }
+              }}
             >
               <td className="text-gray-700">
                 {truncateString(data?.eventName, 20)}
@@ -73,7 +81,13 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
               <th className=" text-gray-700">
                 {/* note: these buttons display depending on tab a user is on */}
                 <div className="flex flex-row">
-                  <Link href={`/events/edit/${data.eventId}`}>
+                  <Link
+                    href={`/events/edit/${data.eventId}`}
+                    onClick={async (e) => {
+                      // prevent row on click
+                      e.stopPropagation();
+                    }}
+                  >
                     <button className="btn-ghost btn-xs btn">
                       <FaEdit className="text-lg text-blue-600" />
                     </button>
@@ -81,12 +95,13 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
 
                   <button
                     className="btn-ghost btn-xs btn"
-                    onClick={async () => {
-                      const response = await axios.delete(
+                    onClick={async (e) => {
+                      // prevent row on click
+                      e.stopPropagation();
+                      await axios.delete(
                         `http://localhost:3000/api/events/${data.eventId}`
                       );
                       console.log("Event Deleted");
-                      // TODO add ux feedback
                       router.reload();
                     }}
                   >
