@@ -112,6 +112,14 @@ export default async function handler(
           commentId: commentId,
         },
         data: { ...comment },
+        include: {
+          likes: {
+            select: { userId: true }
+          },
+          commenter: {
+            select: { userId: true, username: true, profilePic: true }
+          }
+        }
       });
       res.status(200).json(response);
     } catch (error) {

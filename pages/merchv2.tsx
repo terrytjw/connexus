@@ -3,9 +3,9 @@ import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "../server-lib/constants";
-import { img } from "../server-lib/image";
-import { swrFetcher } from "../server-lib/swrFetcher";
+import { smartContract } from "../lib/constants";
+import { img } from "../lib/image";
+import { swrFetcher } from "../lib/swrFetcher";
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -55,8 +55,7 @@ const CollectionsPage = (props: any) => {
     const merchandise_categories = [
       {
         name: "Merch1",
-        media: img,
-        description: "cool items",
+        image: "....com",
         totalMerchSupply: 200,
         price: 10,
       },
@@ -121,16 +120,18 @@ const CollectionsPage = (props: any) => {
       new_collection
     );
     let data = response.data;
+    console.log("==================================");
     console.log("Collection Created");
+    console.log("==================================");
   }
 
-  async function deleteCollection() {
-    let response = await axios.delete(
-      "http://localhost:3000/api/collections/2"
-    );
-    let data = response.data;
-    console.log("Collection Deleted");
-  }
+  // async function deleteCollection() {
+  //   let response = await axios.delete(
+  //     "http://localhost:3000/api/collections/4"
+  //   );
+  //   let data = response.data;
+  //   console.log("Collection Deleted");
+  // }
 
   async function mintOnChain(
     collectioInfo: Partial<CollectionwithMerch>,
@@ -176,7 +177,7 @@ const CollectionsPage = (props: any) => {
     3. User id
     */
 
-    const userId = 1;
+    const userId = 4;
     const collectionId = 4;
     const merch_category = "Merch2";
 
@@ -225,8 +226,7 @@ const CollectionsPage = (props: any) => {
           totalMerchSupply: merchandise[j].totalMerchSupply,
           currMerchSupply: merchandise[j].currMerchSupply + 1,
           price: merchandise[j].price,
-          media: merchandise[j].media,
-          description: merchandise[j].description,
+          image: merchandise[j].image,
         };
         console.log(new_merch);
         let response_merch = await axios.post(
@@ -294,190 +294,209 @@ const CollectionsPage = (props: any) => {
     let response_collection = await axios.get(
       "http://localhost:3000/api/collections/" + collection_id.toString()
     );
+
     const collectionInfo = response_collection.data as CollectionwithMerch;
-    const { scAddress, merchURIs, merchandise } = collectionInfo;
+
+    // use this to update collection info later
+    const { collectionName, description, merchURIs } = collectionInfo;
     console.log(collectionInfo);
 
     //updating merch categories -> new merch
-    const merch_categories = [
-      {
-        name: "jacketsssss",
-        media: img,
-        description: "cool items",
-        totalMerchSupply: 200,
-        price: 10,
-      },
-      {
-        name: "lightstics",
-        media: img,
-        description: "cool items 2",
-        totalMerchSupply: 10,
-        price: 50,
-      },
-    ];
-    let map = {} as any;
+    // const merch_categories = [
+    //   {
+    //     name: "jacketsssss",
+    //     media: "....com",
+    //     description: "cool items",
+    //     totalMerchSupply: 200,
+    //     price: 10,
+    //   },
+    //   {
+    //     name: "lightstics",
+    //     media: "....com",
+    //     description: "cool items 2",
+    //     totalMerchSupply: 10,
+    //     price: 50,
+    //   },
+    // ];
+    // let map = {} as any;
 
-    const updatedMerchandise: Partial<Merchandise>[] = merchandise;
+    // const updatedMerchandise: Partial<Merchandise>[] = [...merchandise];
 
-    for (let k = 0; k < merch_categories.length; k++) {
-      if (k > merchandise.length - 1) {
-        //create new merch category
-        console.log(merchandise);
-        var new_merch: Partial<Merchandise> = {
-          name: merch_categories[k].name,
-          totalMerchSupply: merch_categories[k].totalMerchSupply,
-          currMerchSupply: 0,
-          media: img,
-          price: merch_categories[k].price,
-          description: merch_categories[k].description,
-          collectionId: collection_id,
-        };
-        updatedMerchandise.push(new_merch);
-        await axios.post("http://localhost:3000/api/merch", new_merch);
-      } else {
-        if (
-          merchandise[k].currMerchSupply >= merch_categories[k].totalMerchSupply
-        ) {
-          console.log("Not allowed to change");
-          //return ""
-        }
+    // for (let k = 0; k < merch_categories.length; k++) {
+    //   if (k > merchandise.length - 1) {
+    //     //create new merch category
+    //     console.log(merchandise);
+    //     var new_merch: Partial<Merchandise> = {
+    //       name: merch_categories[k].name,
+    //       totalMerchSupply: merch_categories[k].totalMerchSupply,
+    //       currMerchSupply: 0,
+    //       price: merch_categories[k].price,
+    //       description: merch_categories[k].description,
+    //       collectionId: collection_id,
+    //     };
+    //     updatedMerchandise.push(new_merch);
+    //     await axios.post("http://localhost:3000/api/merch", new_merch);
+    //   } else {
+    //     if (
+    //       merchandise[k].currMerchSupply >= merch_categories[k].totalMerchSupply
+    //     ) {
+    //       console.log("Not allowed to change");
+    //       //return ""
+    //     }
 
-        //Update existing merch category
-        var merch: Partial<Merchandise> = {
-          merchId: merchandise[k].merchId,
-          media: merch_categories[k].media,
-          name: merch_categories[k].name,
-          totalMerchSupply: merch_categories[k].totalMerchSupply,
-          currMerchSupply: merchandise[k].currMerchSupply,
-          price: merch_categories[k].price,
-          description: merch_categories[k].description,
-        };
-        await axios.post(
-          "http://localhost:3000/api/merch/" +
-            merchandise[k].merchId.toString(),
-          merch
-        );
-        console.log(merch);
-        console.log("Updated existing");
+    //     //Update existing merch category
+    //     var merch: Partial<Merchandise> = {
+    //       merchId: merchandise[k].merchId,
+    //       name: merch_categories[k].name,
+    //       totalMerchSupply: merch_categories[k].totalMerchSupply,
+    //       currMerchSupply: merchandise[k].currMerchSupply,
+    //       price: merch_categories[k].price,
+    //       description: merch_categories[k].description,
+    //     };
+    //     await axios.post(
+    //       "http://localhost:3000/api/merch/" +
+    //         merchandise[k].merchId.toString(),
+    //       merch
+    //     );
+    //     console.log(merch);
+    //     console.log("Updated existing");
 
-        if (updatedMerchandise[k].name !== undefined) {
-          const updatedMerchandiseName = updatedMerchandise[k].name as string;
-          map[updatedMerchandiseName] = merch_categories[k].name;
-        }
-      }
-    }
+    //     if (updatedMerchandise[k].name !== undefined) {
+    //       const updatedMerchandiseName = updatedMerchandise[k].name as string;
+    //       map[updatedMerchandiseName] = merch_categories[k].name;
+    //     }
+    //   }
+    // }
 
-    if (merch_categories.length < merchandise.length) {
-      //new set of categories is less the original set -> time to go through the remaining and delete acordingly
-      for (let j = merch_categories.length - 1; j < merchandise.length; j++) {
-        if (merchandise[j].currMerchSupply > 0) {
-          console.log("Not allowed to change");
-          // return ""
-        } else {
-          await axios.delete(
-            "http://localhost:3000/api/merch/" +
-              merchandise[j].merchId.toString()
-          );
-        }
-      }
-    }
+    // if (merch_categories.length < merchandise.length) {
+    //   //new set of categories is less the original set -> time to go through the remaining and delete acordingly
+    //   for (let j = merch_categories.length - 1; j < merchandise.length; j++) {
+    //     if (merchandise[j].currMerchSupply > 0) {
+    //       console.log("Not allowed to change");
+    //       // return ""
+    //     } else {
+    //       await axios.delete(
+    //         "http://localhost:3000/api/merch/" +
+    //           merchandise[j].merchId.toString()
+    //       );
+    //     }
+    //   }
+    // }
 
-    let categories = [];
-    let category_quantity = [];
-    let category_price = [];
+    // let categories = [];
+    // let category_quantity = [];
+    // let category_price = [];
 
-    for (let i = 0; i < merch_categories.length; i++) {
-      var cat = merch_categories[i];
-      categories.push(cat.name);
-      category_quantity.push(cat.totalMerchSupply);
-      var input = cat.price;
-      category_price.push(input);
-      /*
-      issues with big number
-      if (input < 0.1){
-        category_price.push(input * 10**(18));
-      } else{
-        category_price.push(ethers.BigNumber.from(input).mul(BigNumber.from(10).pow(18)));
-      } 
-      //rounds off to 1 matic bcos bigint > float*/
-    }
+    // for (let i = 0; i < merch_categories.length; i++) {
+    //   var cat = merch_categories[i];
+    //   categories.push(cat.name);
+    //   category_quantity.push(cat.totalMerchSupply);
+    //   var input = cat.price;
+    //   category_price.push(input);
+    //   /*
+    //   issues with big number
+    //   if (input < 0.1){
+    //     category_price.push(input * 10**(18));
+    //   } else{
+    //     category_price.push(ethers.BigNumber.from(input).mul(BigNumber.from(10).pow(18)));
+    //   }
+    //   //rounds off to 1 matic bcos bigint > float*/
+    // }
 
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
-    const category_info = await event_contract.changeCategories(
-      categories,
-      category_price,
-      category_quantity,
-      {
-        gasLimit: 2100000,
-      }
-    );
-    console.log("Contract for merch categories updated");
+    // const event_contract = new ethers.Contract(scAddress, abi, signer);
+    // const category_info = await event_contract.changeCategories(
+    //   categories,
+    //   category_price,
+    //   category_quantity,
+    //   {
+    //     gasLimit: 2100000,
+    //   }
+    // );
+    // console.log("Contract for merch categories updated");
 
-    //Updating Collection Information + repin all ipfs links again -> new collection info
-    console.log("Collection Info");
+    // //Updating Collection Information + repin all ipfs links again -> new collection info
+    // console.log("Collection Info");
 
-    let newMerchURI = [];
-    const updated_collection: Partial<CollectionwithMerch> = {
-      collectionName: "This is a new collection",
-      description: "This is just a description",
-      currency: Currency.USD,
+    // let newMerchURI = [];
+
+    // //Update existing merch category
+    // var merch: Partial<Merchandise> = {
+    //   merchId: merchandise[k].merchId,
+    //   media : merch_categories[k].media,
+    //   name: merch_categories[k].name,
+    //   totalMerchSupply: merch_categories[k].totalMerchSupply,
+    //   currMerchSupply: merchandise[k].currMerchSupply,
+    //   price: merch_categories[k].price,
+    //   description: merch_categories[k].description,
+    // };
+    // await axios.post(
+    //   "http://localhost:3000/api/merch/" +
+    //     merchandise[k].merchId.toString(),
+    //   merch
+    // );
+    // console.log(merch);
+    // console.log("Updated existing");
+
+    // console.log("Map");
+    // console.log(map);
+    // if (merchURIs.length > 0) {
+    //   for (let i = 0; i < merchURIs.length; i++) {
+    //     var merchURI = merchURIs[i];
+    //     console.log(merchURI);
+    //     let response_metadata = await getMerch(merchURI);
+    //     console.log(response_metadata.data);
+    //     let existing_user_merch_category = response_metadata.data.category;
+    //     console.log("Existing merch");
+    //     console.log(existing_user_merch_category);
+
+    //     var new_user_merch_category = map[existing_user_merch_category];
+
+    //     let category_chosen = new_user_merch_category;
+    //     console.log("Updated Category => ", category_chosen);
+    //     const event_contract = new ethers.Contract(scAddress, abi, signer);
+    //     let response_pinning = await mintOnChain(
+    //       updated_collection,
+    //       category_chosen
+    //     );
+    //     let ipfsHash = response_pinning.data.IpfsHash;
+    //     console.log(ipfsHash);
+
+    //     if (ipfsHash == "") return;
+
+    //     const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
+    //     console.log("IPFS Hash Link  : ", link);
+    //     var changeTokenURI = await event_contract.setNewTokenURI(i, link, {
+    //       gasLimit: 2100000,
+    //     });
+    //     console.log("Changed for Token ", i);
+    //     newMerchURI.push(link);
+    //   }
+
+    //   console.log("Updated Merch => ", merchandise);
+
+    /** update ur collection in the collectionName and description fields below */
+    const updated_collection_withuri: Partial<CollectionwithMerch> = {
+      collectionName: "updated collection name!!!!",
+      description: "updated collection description.",
+      currency: "USD",
       collectionState: CollectionState.CREATED,
+      merchURIs,
     };
 
-    console.log("Map");
-    console.log(map);
-    if (merchURIs.length > 0) {
-      for (let i = 0; i < merchURIs.length; i++) {
-        var merchURI = merchURIs[i];
-        console.log(merchURI);
-        let response_metadata = await getMerch(merchURI);
-        console.log(response_metadata.data);
-        let existing_user_merch_category = response_metadata.data.category;
-        console.log("Existing merch");
-        console.log(existing_user_merch_category);
+    console.log("updated collection:");
+    console.log(updated_collection_withuri);
+    let update_response = await axios.post(
+      "http://localhost:3000/api/collections/" + collection_id.toString(),
+      updated_collection_withuri
+    );
+    // let updated_data = updated_response.data;
+    console.log("Data uploaded -> ", update_response.data);
 
-        var new_user_merch_category = map[existing_user_merch_category];
+    // }
 
-        let category_chosen = new_user_merch_category;
-        console.log("Updated Category => ", category_chosen);
-        const event_contract = new ethers.Contract(scAddress, abi, signer);
-        let response_pinning = await mintOnChain(
-          updated_collection,
-          category_chosen
-        );
-        let ipfsHash = response_pinning.data.IpfsHash;
-        console.log(ipfsHash);
-
-        if (ipfsHash == "") return;
-
-        const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
-        console.log("IPFS Hash Link  : ", link);
-        var changeTokenURI = await event_contract.setNewTokenURI(i, link, {
-          gasLimit: 2100000,
-        });
-        console.log("Changed for Token ", i);
-        newMerchURI.push(link);
-      }
-
-      console.log("Updated Merch => ", merchandise);
-      const updated_collection_withuri: Partial<CollectionwithMerch> = {
-        collectionName: "This is a new collection",
-        description: "This is just a description",
-        currency: "USD",
-        collectionState: CollectionState.CREATED,
-        merchURIs: newMerchURI,
-      };
-      console.log("updated collection:");
-      console.log(updated_collection_withuri);
-      let updated_response = await axios.post(
-        "http://localhost:3000/api/collections/" + collection_id.toString(),
-        updated_collection_withuri
-      );
-      let updated_data = updated_response.data;
-      console.log("Data uploaded");
-    } else {
-      console.log("Nothing to update for tokenURIs in event");
-    }
+    // else {
+    //   console.log("Nothing to update for tokenURIs in event");
+    // }
   }
 
   const { data, error, isLoading } = useSWR(
@@ -495,7 +514,7 @@ const CollectionsPage = (props: any) => {
       <br />
       <button onClick={createCollection}>Click me to create</button>;
       <br />
-      <button onClick={deleteCollection}>Click me to delete</button>;
+      {/* <button onClick={deleteCollection}>Click me to delete</button>; */}
       <br />
       <br />
       <br />

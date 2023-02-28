@@ -7,7 +7,7 @@ import TicketFormPage from "../../components/EventPages/Creator/CreateEventForms
 import PublishFormPage from "../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { Ticket, PrivacyType, Promotion } from "@prisma/client";
+import { Ticket, PrivacyType, Promotion, TicketType } from "@prisma/client";
 import { StepStatus } from "../../utils/enums";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
@@ -124,6 +124,7 @@ const CreatorEventCreate = () => {
       startDate: null as unknown as Date,
       endDate: null as unknown as Date,
       eventId: Number.MIN_VALUE,
+      ticketType: TicketType.ON_SALE
     });
   };
 

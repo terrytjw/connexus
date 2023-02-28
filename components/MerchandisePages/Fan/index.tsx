@@ -8,9 +8,11 @@ import { collectibles, collections } from "../../../utils/dummyData";
 import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
 import { MerchandisePriceType } from "../../../pages/api/merch";
 
-const FanCollectionsPage = () => {
+const FanCollectionsPage = ({ merchandise }: any) => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
+
+  console.log("merchandise [FAN COLLECTIONS PAGE] -> ", merchandise);
 
   const collectedTabfilters = [
     { id: 1, name: "Filter By" },

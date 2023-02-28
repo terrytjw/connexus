@@ -2,6 +2,8 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import { POST_BUCKET } from "../../../../lib/constant";
 
 const prisma = new PrismaClient();
 
@@ -37,7 +39,7 @@ const prisma = new PrismaClient();
  *     requestBody:
  *       name: Post
  *       required: true
- *       description: Post object to create
+ *       description: Post object to update
  *       application/json:
  *         schema:
  *           $ref: "#/components/schemas/Post"
@@ -65,6 +67,14 @@ const prisma = new PrismaClient();
  *             schema:
  *               $ref: "#/components/schemas/Post"
  */
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '20mb'
+    }
+  }
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -107,11 +117,51 @@ export default async function handler(
 
   async function handlePOST(postId: number, post: Post) {
     try {
+      const { media } = post;
+      let updatedMedia = [];
+
+      for (let pic of media) {
+        if (! checkIfStringIsBase64(pic)) {
+          updatedMedia.push(pic);
+          continue;
+        }
+        let picPath = "";
+        const { data, error } = await uploadImage(
+          POST_BUCKET,
+          pic
+        );
+
+        if (error) {
+          const errorResponse = handleError(error);
+          res.status(400).json(errorResponse);
+        }
+
+        if (data)
+          picPath = await retrieveImageUrl(
+            POST_BUCKET,
+            data.path
+          );
+        
+        updatedMedia.push(picPath);
+      }
+
+      const updatedPostInfo = {
+        ...post,
+        media: updatedMedia
+      };
       const response = await prisma.post.update({
         where: {
           postId: postId,
         },
-        data: { ...post },
+        data: { ...updatedPostInfo },
+        include: {
+          likes: {
+            select: { userId: true }
+          },
+          creator: {
+            select: { userId: true, profilePic: true, username: true }
+          }
+        },
       });
       res.status(200).json(response);
     } catch (error) {

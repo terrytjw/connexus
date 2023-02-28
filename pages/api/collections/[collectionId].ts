@@ -76,7 +76,9 @@ export default async function handler(
       await handleGET(collectionId);
       break;
     case "POST":
-      const collection = JSON.parse(JSON.stringify(req.body)) as Collection;
+      const collection = JSON.parse(
+        JSON.stringify(req.body)
+      ) as CollectionwithMerch;
       await handlePOST(collectionId, collection);
       break;
     case "DELETE":
@@ -109,6 +111,8 @@ export default async function handler(
     collectionwithMerch: Collection
   ) {
     try {
+      console.log(collectionwithMerch);
+
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,

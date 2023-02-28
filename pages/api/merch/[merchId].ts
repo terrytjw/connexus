@@ -110,11 +110,11 @@ export default async function handler(
 
   async function handlePOST(merchId: number, merch: Merchandise) {
     try {
-      const { media } = merch;
+      const { image } = merch;
       let merchUrl = "";
 
-      if (media) {
-        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, media);
+      if (image) {
+        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
@@ -129,7 +129,7 @@ export default async function handler(
       };
       console.log(merchUrl);
 
-      if (merchUrl) updatedMerchInfo.media = merchUrl;
+      if (merchUrl) updatedMerchInfo.image = merchUrl;
       const response = await updatedMerchandise(merchId, updatedMerchInfo);
       res.status(200).json(response);
     } catch (error) {

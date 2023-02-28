@@ -47,7 +47,7 @@ model Post {
   isPinned  Boolean   @default(false)
   creator   User      @relation(name: "creator", fields: [creatorId], references: [userId])
   creatorId Int
-  channel   Channel   @relation(fields: [channelId], references: [channelId])
+  channel   Channel   @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
   channelId Int
   likes     User[]    @relation(name: "likedPosts")
   comments  Comment[]
@@ -72,7 +72,7 @@ model Channel {
   name        String
   channelType ChannelType @default(PREMIUM)
   members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId])
+  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
   communityId Int
   posts       Post[]
 
@@ -83,7 +83,7 @@ model Comment {
   commentId       Int       @id @default(autoincrement())
   content         String
   date            DateTime  @default(now())
-  post            Post      @relation(fields: [postId], references: [postId])
+  post            Post      @relation(fields: [postId], references: [postId], onDelete: Cascade)
   postId          Int
   commenter       User      @relation(name: "commenter", fields: [userId], references: [userId])
   userId          Int
@@ -136,6 +136,7 @@ model Ticket {
   totalTicketSupply   Int         @default(0)
   currentTicketSupply Int         @default(0)
   price               Float       @default(0)
+  ticketType          TicketType  @default(ON_SALE)
   startDate           DateTime    @default(now())
   endDate             DateTime    @default(now())
   description         String?
@@ -143,6 +144,11 @@ model Ticket {
   eventId             Int
   promotion           Promotion[]
   users               User[]
+}
+
+enum TicketType{
+  PAUSED
+  ON_SALE
 }
 
 model Promotion {
@@ -243,8 +249,7 @@ enum Currency {
 model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
-  media            String?
-  description      String     @default("")
+  image            String?
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
   currMerchSupply  Int        @default(0)

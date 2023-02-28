@@ -113,23 +113,23 @@ export default async function handler(
   }
 
   async function updateMerchMedia(
-    media: string | null,
+    image: string | null,
     merchInfo: MerchandisePartialType
   ) {
-    let mediaUrl = "";
-    if (media) {
-      const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, media);
+    let imageUrl = "";
+    if (image) {
+      const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
       if (error) {
         const errorResponse = handleError(error);
         res.status(400).json(errorResponse);
       }
 
       if (data)
-        mediaUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
+        imageUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
     }
 
-    console.log(mediaUrl);
-    if (mediaUrl) merchInfo.media = mediaUrl;
+    console.log(imageUrl);
+    if (imageUrl) merchInfo.image = imageUrl;
     return merchInfo;
   }
 
@@ -138,8 +138,8 @@ export default async function handler(
       const { merchandise, ...collectionInfo } = collectionwithMerch;
       const updatedMerchs = await Promise.all(
         merchandise.map(async (merch: Merchandise) => {
-          const { merchId, collectionId, media, ...merchInfo } = merch;
-          let updatedMerchInfo = await updateMerchMedia(media, merchInfo);
+          const { merchId, collectionId, image, ...merchInfo } = merch;
+          let updatedMerchInfo = await updateMerchMedia(image, merchInfo);
           return updatedMerchInfo;
         })
       );

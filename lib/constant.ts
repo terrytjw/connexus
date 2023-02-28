@@ -15,3 +15,5 @@ export const smartContract = {
   privateKey:
     "3340e2f92064b7494823da63fcaa1dd1515e87e72aaa2d18e461238ce4133cf9",
 } as const;
+export const COMMUNITY_BUCKET = "community"
+export const POST_BUCKET = "post";

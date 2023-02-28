@@ -84,22 +84,24 @@ export default async function handler(
 
   async function handlePOST(merch: Merchandise) {
     try {
-      const { media, ...merchInfo } = merch;
-      let mediaUrl = "";
+      const { image, ...merchInfo } = merch;
+      let imageUrl = "";
 
-      if (media) {
-        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, media);
+      if (image) {
+        const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
 
         if (data)
-          mediaUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
+          imageUrl = await retrieveImageUrl(MERCH_PROFILE_BUCKET, data.path);
       }
 
+      console.log(imageUrl);
+
       const response = await prisma.merchandise.create({
-        data: { ...merchInfo, media: mediaUrl, merchId: undefined },
+        data: { ...merchInfo, image: imageUrl, merchId: undefined },
       });
       res.status(200).json([response]);
     } catch (error) {
