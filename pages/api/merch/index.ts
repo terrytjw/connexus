@@ -7,7 +7,7 @@ import {
   searchMerchandise,
   updatedMerchandise,
 } from "../../../lib/merch";
-import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -75,7 +75,7 @@ export default async function handler(
       const { image, ...merchInfo } = merch;
       let imageUrl = "";
 
-      if (image) {
+      if (image && checkIfStringIsBase64(image)) {
         const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
         if (error) {
           const errorResponse = handleError(error);
