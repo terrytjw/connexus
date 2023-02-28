@@ -8,6 +8,7 @@ import {
   ChannelType,
   Currency,
   CollectionState,
+  TicketType
 } from "@prisma/client";
 import { saveUser } from "../lib/user";
 
@@ -394,6 +395,7 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: { userId: 1 } },
             currentTicketSupply: 1,
+            ticketType: TicketType.ON_SALE
           },
           {
             name: "VIP Pass",
@@ -402,6 +404,9 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
           {
             name: "VVIP Pass",
@@ -410,6 +415,9 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -454,6 +462,8 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+
           },
           {
             name: "VIP Pass",
@@ -462,6 +472,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-22"),
             endDate: new Date("2023-02-26"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
           {
             name: "VVIP Pass",
@@ -470,6 +483,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-22"),
             endDate: new Date("2023-02-26"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -515,6 +531,9 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+            
+
           },
           {
             name: "VIP Pass",
@@ -523,6 +542,8 @@ async function generateEvent() {
             startDate: new Date("2023-01-24"),
             endDate: new Date("2023-02-26"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
           },
           {
             name: "VVIP Pass",
@@ -531,6 +552,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-24"),
             endDate: new Date("2023-02-26"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },

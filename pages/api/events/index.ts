@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma,CategoryType, Ticket } from "@prisma/client";
+import { PrismaClient, Event, Prisma, Ticket, CategoryType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
@@ -52,16 +52,20 @@ export default async function handler(
   //   res.status(401).json({ error: "401", message: "Unauthorized" });
   // }
 
-  const { method, query } = req;
+  const { method, body, query } = req;
+  
 
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
-  const filter = query.filter as CategoryType;
+  const filter = query.filter as CategoryType[];
 
   switch (req.method) {
     case "GET":
-      await handleGET(cursor, filter);
-      break;
+      if (keyword) {
+        await handleGETWithKeyword(keyword, cursor, filter);
+      } else {
+        await handleGET(cursor, filter);
+      }
     case "POST":
       const event = JSON.parse(JSON.stringify(req.body)) as EventWithTickets;
       await handlePOST(event);
@@ -71,7 +75,7 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter?: CategoryType) {
+  async function handleGET(cursor: number, filter?: CategoryType[]) {
     try {
       const events = await prisma.event.findMany({
         take: 10,
@@ -80,11 +84,11 @@ export default async function handler(
         orderBy: {
           eventId: 'asc'
         },
-        where: filter ? {
-          category: {
-            has: filter
-          }
-        } : undefined
+        where: {
+          category: filter ? {
+            hasEvery: filter
+          } : undefined,
+        },
       });
       res.status(200).json(events);
     } catch (error) {
@@ -92,6 +96,33 @@ export default async function handler(
       res.status(400).json(errorResponse);
     }
   }
+
+  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
+    try {
+      const events = await prisma.event.findMany({
+        take: 10,
+        skip:  cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { eventId : cursor } : undefined,
+        orderBy: {
+          eventId: 'asc'
+        },
+        where: {
+          eventName: {
+            contains: keyword,
+            mode: 'insensitive'
+          },
+          category: filter ? {
+            hasEvery: filter
+          } : undefined,
+        },
+      })
+      res.status(200).json(events);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
+
 
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
@@ -156,3 +187,4 @@ export default async function handler(
     }
   }
 }
+
