@@ -39,7 +39,7 @@ const TicketFormPage = ({
 }: TicketFormPageProps) => {
   // form values
   const { endDate, tickets } = watch();
-  console.log("form tickets -> ", tickets);
+  // console.log("form tickets -> ", tickets);
 
   const checkIsEditAndDatePassed = (value: string | Date): boolean => {
     return isEdit && !!(new Date(value) < new Date());
@@ -252,20 +252,16 @@ const TicketFormPage = ({
                           }
                           className="radio checked:bg-blue-500"
                           onChange={() => {
-                            console.log("new Ticket ->", {
-                              ...tickets[index],
-                              ticketType: ticketTypeOption,
-                            });
+                            // console.log("new Ticket ->", {
+                            //   ...tickets[index],
+                            //   ticketType: ticketTypeOption,
+                            // });
                             update(index, {
                               ...tickets[index],
                               ticketType: ticketTypeOption,
                             });
                           }}
                         />
-                        {console.log(
-                          `checked logic for ${index} ${ticketTypeOption}->`,
-                          ticketTypeOption === tickets[index].ticketType
-                        )}
                       </div>
                       <div className="ml-3 text-sm">
                         <label

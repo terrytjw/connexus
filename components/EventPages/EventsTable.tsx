@@ -42,7 +42,7 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                 const clickedElement = e.target as Element;
                 if (clickedElement.tagName !== "BUTTON") {
                   // Handle row click event
-                  console.log("Row clicked");
+                  // console.log("Row clicked");
                   router.push(`/events/${data.eventId}`);
                 }
               }}
@@ -101,7 +101,7 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                       await axios.delete(
                         `http://localhost:3000/api/events/${data.eventId}`
                       );
-                      console.log("Event Deleted");
+                      // console.log("Event Deleted");
                       router.reload();
                     }}
                   >

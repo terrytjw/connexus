@@ -9,6 +9,7 @@ import { CategoryType } from "@prisma/client";
 import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import { Event } from "@prisma/client";
 
 const DELAY_TIME = 400;
 
@@ -238,6 +239,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             {selectedTopics.map((label) => {
               return (
                 <Button
+                  key={label}
                   size="sm"
                   variant="outlined"
                   onClick={(e) => e.preventDefault()}

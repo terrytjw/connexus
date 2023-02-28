@@ -49,10 +49,6 @@ type FanEventReigsterProps = {
 const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
-
-  console.log("user data ->", userData);
-  console.log("event data ->", event);
-
   const provider = new ethers.providers.JsonRpcProvider(
     "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
   );

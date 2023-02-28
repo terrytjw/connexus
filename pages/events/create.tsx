@@ -37,7 +37,7 @@ const provider = new ethers.providers.JsonRpcProvider(
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 var signer = new ethers.Wallet(smartContract.privateKey, provider);
-console.log(signer);
+// console.log(signer);
 
 const CreatorEventCreate = () => {
   const { handleSubmit, setValue, control, watch, trigger } =
@@ -98,7 +98,7 @@ const CreatorEventCreate = () => {
       let input = cat.price;
       category_price.push(input);
     }
-    console.log(category_price);
+    // console.log(category_price);
 
     const event_contract = await Event_contract.deploy(
       categories,

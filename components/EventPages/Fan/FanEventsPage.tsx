@@ -113,6 +113,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           {selectedTopics.map((label) => {
             return (
               <Button
+                key={label}
                 size="sm"
                 variant="outlined"
                 onClick={(e) => e.preventDefault()}
