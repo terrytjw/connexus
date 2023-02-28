@@ -174,6 +174,7 @@ const CreatorEventCreate = () => {
       startDate: null as unknown as Date,
       endDate: null as unknown as Date,
       eventId: Number.MIN_VALUE,
+      ticketType: TicketType.ON_SALE
     });
   };
 

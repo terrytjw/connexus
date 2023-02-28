@@ -4,6 +4,7 @@ import {
   Prisma,
   CategoryType,
   Ticket,
+  TicketType
 } from "@prisma/client";
 import useSWR from "swr";
 import axios from "axios";
@@ -17,7 +18,7 @@ import { EventWithTicketsandAddress } from "../utils/types";
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
   include: { tickets: true };
-}>;
+}>;``
 
 const BigNumber = require("bignumber.js");
 //Smart Contract Stuff:
@@ -64,6 +65,8 @@ const EventsPage = (props: any) => {
         startDate: new Date(),
         endDate: new Date(),
         description: "General Admission",
+        ticketType: TicketType.ON_SALE
+
       },
       {
         name: "VIP Pass",
@@ -72,6 +75,8 @@ const EventsPage = (props: any) => {
         startDate: new Date(),
         endDate: new Date(),
         description: "This is a VIP Pass",
+        ticketType: TicketType.ON_SALE
+
       },
     ];
     //till here ^^event and ticket input
@@ -199,14 +204,28 @@ const EventsPage = (props: any) => {
     */
 
     const userId = 1;
-    const eventId = 1;
-    const ticket_category = "VIP Pass";
+    const eventId = 2;
+    const ticket_category = "Genera";
 
     let response = await axios.get(
       "http://localhost:3000/api/events/" + eventId.toString()
     );
     const eventInfo = response.data as EventWithTickets;
     const { scAddress, ticketURIs, tickets } = eventInfo;
+
+    //stop minting if paused 
+    for (let j = 0; j < tickets.length; j++) {
+      if (tickets[j].name == ticket_category) {
+        let ticket_type = tickets[j].ticketType;
+        if (ticket_type == TicketType.PAUSED){
+          console.log("paused");
+          return ""
+        }
+        else{
+          break
+        }
+      }
+    }
 
     let user_response = await axios.get(
       "http://localhost:3000/api/users/" + userId.toString()
@@ -248,6 +267,8 @@ const EventsPage = (props: any) => {
           startDate: tickets[j].startDate,
           endDate: tickets[j].endDate,
           description: tickets[j].description,
+          ticketType: tickets[j].ticketType
+
         };
         let response_tickets = await axios.post(
           "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
@@ -332,6 +353,8 @@ const EventsPage = (props: any) => {
         startDate: new Date(),
         endDate: new Date(),
         description: "General Admission",
+        ticketType: TicketType.PAUSED
+
       },
       {
         name: "VI",
@@ -340,6 +363,8 @@ const EventsPage = (props: any) => {
         startDate: new Date(),
         endDate: new Date(),
         description: "This is a VIP Pass",
+        ticketType: TicketType.ON_SALE
+
       },
       {
         name: "Club Pengu",
@@ -348,6 +373,8 @@ const EventsPage = (props: any) => {
         startDate: new Date(),
         endDate: new Date(),
         description: "",
+        ticketType: TicketType.ON_SALE
+
       },
     ];
     let map = {} as any;
@@ -367,6 +394,8 @@ const EventsPage = (props: any) => {
           endDate: ticket_categories[k].endDate,
           description: ticket_categories[k].description,
           eventId: event_id,
+          ticketType: TicketType.ON_SALE
+
         };
         updatedTickets.push(new_ticket);
         await axios.post("http://localhost:3000/api/tickets", new_ticket);
@@ -388,6 +417,8 @@ const EventsPage = (props: any) => {
           startDate: ticket_categories[k].startDate,
           endDate: ticket_categories[k].endDate,
           description: ticket_categories[k].description,
+          ticketType: ticket_categories[k].ticketType
+
         };
         await axios.post(
           "http://localhost:3000/api/tickets/" + tickets[k].ticketId.toString(),
