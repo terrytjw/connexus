@@ -52,7 +52,6 @@ const TicketSelectionFormPage = ({
             ticket={ticket}
             watch={watch}
             setValue={setValue}
-            reset={reset}
           />
         ))}
         {!(ticketName && qty) && (
