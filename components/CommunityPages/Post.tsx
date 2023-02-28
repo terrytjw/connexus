@@ -1,6 +1,14 @@
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
-import { FaEllipsisH, FaRegComment, FaRegHeart, FaTimes } from "react-icons/fa";
+import {
+  FaEllipsisH,
+  FaHeart,
+  FaRegComment,
+  FaRegHeart,
+  FaTimes,
+} from "react-icons/fa";
 import Button from "../Button";
 import Carousel from "../Carousel";
 import Comment from "./Comment";
@@ -8,16 +16,95 @@ import CommentInput from "./CommentInput";
 import CustomLink from "../CustomLink";
 import Modal from "../Modal";
 import PostInput from "./PostInput";
-import { Post, Comment as CommentType } from "../../utils/types";
+import useSWR from "swr";
+import { swrFetcher } from "../../lib/swrFetcher";
+import {
+  CommentWithCommenterAndLikes,
+  PostWithCreatorAndLikes,
+} from "../../utils/types";
 
 type PostProps = {
-  post: Post;
+  post: PostWithCreatorAndLikes;
+  mutatePosts: any;
 };
 
-const Post = ({ post }: PostProps) => {
+const Post = ({ post, mutatePosts }: PostProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newComment, setNewComment] = useState("");
-  const [activeComment, setActiveComment] = useState<CommentType>();
+  const [activeComment, setActiveComment] =
+    useState<CommentWithCommenterAndLikes>(
+      null as unknown as CommentWithCommenterAndLikes
+    );
+
+  const {
+    data: comments,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(
+    `http://localhost:3000/api/comment?postId=${post.postId}`,
+    swrFetcher
+  );
+
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
+  const likePost = async () => {
+    const res = await axios.post(
+      `http://localhost:3000/api/post/${post.postId}/like?userId=${userId}`
+    );
+
+    const temp = res.data;
+    mutatePosts((data: PostWithCreatorAndLikes[]) => {
+      data
+        .find((post) => post.postId == temp.postId)
+        ?.likes.push({ userId: Number(userId) });
+
+      return data;
+    });
+  };
+
+  const unlikePost = async () => {
+    const res = await axios.post(
+      `http://localhost:3000/api/post/${post.postId}/unlike?userId=${userId}`
+    );
+
+    const temp = res.data;
+    mutatePosts((data: PostWithCreatorAndLikes[]) => {
+      data
+        .find((post) => post.postId == temp.postId)
+        ?.likes.filter((like) => like.userId != userId);
+
+      return data;
+    });
+  };
+
+  const deletePost = async () => {
+    const res = await axios.delete(
+      `http://localhost:3000/api/post/${post.postId}`
+    );
+
+    const temp = res.data;
+    mutatePosts((data: PostWithCreatorAndLikes[]) => {
+      return data.filter((post) => post.postId != temp.postId);
+    });
+  };
+
+  const createComment = async () => {
+    const res = await axios.post("http://localhost:3000/api/comment", {
+      content: newComment,
+      postId: post.postId,
+      userId: userId,
+    });
+
+    const temp = res.data[0];
+    mutate((data: CommentWithCommenterAndLikes[]) => {
+      data.unshift(temp);
+      return data;
+    });
+
+    setNewComment("");
+  };
 
   return (
     <div className="card border-2 border-gray-200 bg-white">
@@ -38,11 +125,11 @@ const Post = ({ post }: PostProps) => {
           </Button>
         </div>
         <PostInput
-          onSubmit={(data: any) => {
-            console.log("Editing post", data);
+          mutatePosts={mutatePosts}
+          post={post}
+          afterEdit={() => {
             setIsModalOpen(false);
           }}
-          post={post}
         />
       </Modal>
 
@@ -53,57 +140,60 @@ const Post = ({ post }: PostProps) => {
               height={48}
               width={48}
               className="aspect-square rounded-full object-cover object-center"
-              src={post.creator.profilePic}
+              src={post.creator.profilePic ?? ""}
               alt="Creator profile pic"
             />
             <CustomLink
               href={`/user/profile/${post.creator.userId}`}
               className="text-gray-700"
             >
-              {post.creator.displayName}
+              {post.creator.username}
             </CustomLink>{" "}
           </div>
 
-          <div className="dropdown-btm dropdown-end dropdown">
-            <label tabIndex={0}>
-              <Button variant="outlined" size="sm" className="border-0">
-                <FaEllipsisH />
-              </Button>
-            </label>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
-            >
-              <li>
-                <Button
-                  size="md"
-                  variant="solid"
-                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                >
-                  Pin Post
+          {post.creator.userId == userId ? (
+            <div className="dropdown-btm dropdown-end dropdown">
+              <label tabIndex={0}>
+                <Button variant="outlined" size="sm" className="border-0">
+                  <FaEllipsisH />
                 </Button>
-              </li>
-              <li>
-                <Button
-                  size="md"
-                  variant="solid"
-                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                  onClick={() => setIsModalOpen(true)}
-                >
-                  Edit Post
-                </Button>
-              </li>
-              <li>
-                <Button
-                  size="md"
-                  variant="solid"
-                  className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                >
-                  Delete Post
-                </Button>
-              </li>
-            </ul>
-          </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+              >
+                {/* <li>
+                  <Button
+                    size="md"
+                    variant="solid"
+                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                  >
+                    Pin Post
+                  </Button>
+                </li> */}
+                <li>
+                  <Button
+                    size="md"
+                    variant="solid"
+                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    Edit Post
+                  </Button>
+                </li>
+                <li>
+                  <Button
+                    size="md"
+                    variant="solid"
+                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                    onClick={() => deletePost()}
+                  >
+                    Delete Post
+                  </Button>
+                </li>
+              </ul>
+            </div>
+          ) : null}
         </div>
 
         <Carousel images={post.media} />
@@ -112,7 +202,7 @@ const Post = ({ post }: PostProps) => {
 
         <div className="flex w-full flex-row-reverse flex-wrap items-center justify-between gap-4">
           <span>
-            {post.date.toLocaleString("en-gb", {
+            {new Date(post.date).toLocaleString("en-gb", {
               day: "numeric",
               month: "long",
               year: "numeric",
@@ -120,14 +210,28 @@ const Post = ({ post }: PostProps) => {
           </span>
           <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
             <div className="flex items-center gap-x-2">
-              <Button
-                size="md"
-                variant="outlined"
-                className="!btn-circle border-0"
-              >
-                <FaRegHeart size={24} />
-              </Button>
-              {post.likes}
+              {post.likes.find(
+                (like: { userId: number }) => like.userId == userId
+              ) ? (
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  className="!btn-circle self-center border-0"
+                  onClick={() => unlikePost()}
+                >
+                  <FaHeart size={24} />
+                </Button>
+              ) : (
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  className="!btn-circle self-center border-0"
+                  onClick={() => likePost()}
+                >
+                  <FaRegHeart size={24} />
+                </Button>
+              )}
+              {post.likes.length}
             </div>
 
             <div className="flex items-center gap-x-2">
@@ -143,7 +247,7 @@ const Post = ({ post }: PostProps) => {
               >
                 <FaRegComment size={24} />
               </Button>
-              {post.comments?.length}
+              {comments?.length}
             </div>
           </div>
         </div>
@@ -153,7 +257,7 @@ const Post = ({ post }: PostProps) => {
             height={48}
             width={48}
             className="aspect-square rounded-full object-cover object-center"
-            src={post.creator.profilePic}
+            src={post.creator.profilePic ?? ""}
             alt="Creator profile pic"
           />
           <CommentInput
@@ -165,21 +269,23 @@ const Post = ({ post }: PostProps) => {
             onKeyDown={(e) => {
               if (e.code == "Backspace") {
                 if (newComment == "") {
-                  setActiveComment(null as unknown as CommentType);
+                  setActiveComment(
+                    null as unknown as CommentWithCommenterAndLikes
+                  );
                 }
               }
 
-              if (e.code === "Enter") {
-                console.log(newComment);
+              if (e.code === "Enter" && newComment != "") {
+                createComment();
               }
             }}
           >
-            {activeComment ? "@" + activeComment?.commentor.displayName : null}
+            {activeComment ? "@" + activeComment?.commenter.username : null}
           </CommentInput>
         </div>
 
         <div id={`${post.postId}-comments`} className="hidden">
-          {post.comments?.map((comment) => {
+          {comments?.map((comment: CommentWithCommenterAndLikes) => {
             return (
               <div key={comment.commentId} className="-mx-8 hover:bg-gray-100">
                 <Comment
@@ -187,20 +293,23 @@ const Post = ({ post }: PostProps) => {
                   replyTo={() => {
                     setActiveComment(comment);
                   }}
+                  mutateComments={mutate}
                 />
-                <div className="pl-16">
-                  {comment.replies.map((reply: CommentType) => {
-                    return (
-                      <Comment
-                        key={reply.commentId}
-                        comment={reply}
-                        replyTo={() => {
-                          setActiveComment(reply);
-                        }}
-                      />
-                    );
-                  })}
-                </div>
+                {/* <div className="pl-16">
+                  {comment.replies?.map(
+                    (reply: CommentWithCommenterAndLikes) => {
+                      return (
+                        <Comment
+                          key={reply.commentId}
+                          comment={reply}
+                          replyTo={() => {
+                            setActiveComment(reply);
+                          }}
+                        />
+                      );
+                    }
+                  )}
+                </div> */}
               </div>
             );
           })}

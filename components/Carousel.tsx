@@ -25,7 +25,7 @@ const Carousel = ({ images, removeImage }: CarouselProps) => {
     >
       {images.map((image, index) => {
         return (
-          <SwiperSlide key={index} className="relative">
+          <SwiperSlide key={index} className="relative !w-full">
             <div className="relative h-60 w-full overflow-hidden rounded-lg md:h-96">
               <Image
                 fill

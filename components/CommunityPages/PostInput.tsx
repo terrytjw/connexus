@@ -1,27 +1,51 @@
-import { FaImages } from "react-icons/fa";
+import { Post } from "@prisma/client";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
 import { toast, Toaster } from "react-hot-toast";
+import { FaImages } from "react-icons/fa";
 import Button from "../Button";
 import Carousel from "../Carousel";
 import TextArea from "../TextArea";
-import { Post } from "../../utils/types";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 type PostInputProps = {
-  onSubmit: Function;
+  mutatePosts: any;
   post?: Post;
+  afterEdit?: () => void;
+  channelId?: number;
 };
 
-const PostInput = ({ onSubmit, post }: PostInputProps) => {
-  const { handleSubmit, setValue, control, watch } = useForm({
-    defaultValues: {
-      content: post ? post.content : "",
-      media: post ? post.media : ([] as string[]),
-    },
-  });
+const PostInput = ({
+  mutatePosts,
+  post,
+  afterEdit,
+  channelId,
+}: PostInputProps) => {
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
+  type CreatePostForm = {
+    title: string; // to be removed
+    content: string;
+    media: string[];
+    creatorId: number;
+    channelId: number;
+  };
+
+  const { handleSubmit, setValue, control, watch, reset } =
+    useForm<CreatePostForm>({
+      defaultValues: {
+        title: "", // to be removed
+        content: post ? post.content : "",
+        media: post ? post.media : ([] as string[]),
+        creatorId: Number(userId),
+        channelId: post ? post.channelId : channelId,
+      },
+    });
 
   const [content, media] = watch(["content", "media"]);
 
@@ -61,13 +85,50 @@ const PostInput = ({ onSubmit, post }: PostInputProps) => {
     e.target.value = ""; // reset value of input
   };
 
+  const onCreate = async (formData: CreatePostForm) => {
+    const res = await axios.post("http://localhost:3000/api/post", formData);
+    const temp = res.data[0];
+    mutatePosts((data: Post[]) => {
+      data.unshift(temp);
+      return data;
+    });
+
+    reset(); // reset form values
+  };
+
+  const onEdit = async (formData: CreatePostForm) => {
+    const res = await axios.post(
+      `http://localhost:3000/api/post/${post?.postId}`,
+      formData
+    );
+
+    const temp = res.data;
+    mutatePosts((data: Post[]) => {
+      const updatedItems = data.map((item) => {
+        if (item.postId === temp.postId) {
+          return { ...item, ...temp };
+        }
+        return item;
+      });
+      return updatedItems;
+    });
+
+    afterEdit ? afterEdit() : null;
+  };
+
   return (
     <form
       className={classNames(
         "card items-center justify-center gap-4 bg-white",
         post ? "" : "border-2 border-gray-200 p-4 sm:p-8"
       )}
-      onSubmit={handleSubmit((data) => onSubmit(data))}
+      onSubmit={handleSubmit((data) => {
+        if (post) {
+          onEdit(data);
+          return;
+        }
+        onCreate(data);
+      })}
     >
       <Toaster
         position="bottom-center"

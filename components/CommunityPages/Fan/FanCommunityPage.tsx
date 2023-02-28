@@ -1,27 +1,56 @@
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { FaShareSquare } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { FaLock, FaShareSquare, FaUserFriends } from "react-icons/fa";
 import copy from "copy-to-clipboard";
 import ChannelTab from "../CommunityTabs/Channel";
+import UnlockPremiumChannelTab from "../CommunityTabs/UnlockPremiumChannel";
 import Avatar from "../../Avatar";
 import Badge from "../../Badge";
 import Banner from "../../Banner";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
-import { communities, products } from "../../../utils/dummyData";
-import UnlockPremiumChannelTab from "../CommunityTabs/UnlockPremiumChannel";
+import { collections } from "../../../utils/dummyData";
+import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
 
-const FanCommunityPage = () => {
-  const [community, setCommunity] = useState(communities[0]);
+type CommunityPagePageProps = {
+  community: CommunityWithCreatorAndChannelsAndMembers;
+  setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
+};
+
+const FanCommunityPage = ({
+  community,
+  setCommunity,
+}: CommunityPagePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
+
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
+  const joinCommunity = async () => {
+    const res = await axios.post(
+      `http://localhost:3000/api/community/${community.communityId}/join?userId=${userId}`
+    );
+    const temp = res.data;
+    setCommunity(temp);
+  };
+
+  const leaveCommunity = async () => {
+    const res = await axios.post(
+      `http://localhost:3000/api/community/${community.communityId}/leave?userId=${userId}`
+    );
+    const temp = res.data;
+    setCommunity(temp);
+  };
 
   return (
     <main>
       <div className="relative">
-        <Banner coverImageUrl={community?.bannerPic || ""} />
-        <div className="absolute top-0 right-0 flex gap-2 p-4">
+        <Banner coverImageUrl={community.bannerPic ?? ""} />
+        <div className="absolute top-0 right-0 flex flex-wrap gap-2 p-4">
           {community?.tags.map((label, index) => {
             return <Badge key={index} size="lg" label={label} />;
           })}
@@ -30,22 +59,40 @@ const FanCommunityPage = () => {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-12 sm:-mt-16">
-          <Avatar imageUrl={community?.profilePic || ""} />
+          <Avatar imageUrl={community.profilePic ?? ""} />
         </div>
       </div>
 
       <div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
           <div>
-            <h1 className="truncate text-4xl font-bold text-gray-900">
-              {community?.name}
-            </h1>
+            <div className="flex items-center gap-2 text-lg text-gray-900">
+              <h1 className="mr-2 truncate text-4xl font-bold text-gray-900">
+                {community.name}
+              </h1>
+              <FaUserFriends />
+              {community.members.length}
+            </div>
             <p className="mt-1 text-gray-500">{community?.description}</p>
 
             <div className="mt-6 flex gap-2">
-              <Button variant="solid" size="sm">
-                Leave
-              </Button>
+              {community.members.find((member) => member.userId == userId) ? (
+                <Button
+                  variant="solid"
+                  size="sm"
+                  onClick={() => leaveCommunity()}
+                >
+                  Leave
+                </Button>
+              ) : (
+                <Button
+                  variant="solid"
+                  size="sm"
+                  onClick={() => joinCommunity()}
+                >
+                  Join
+                </Button>
+              )}
 
               <Button
                 variant="solid"
@@ -77,7 +124,7 @@ const FanCommunityPage = () => {
               </Button>
             </div>
           </div>
-          <Link
+          {/* <Link
             href="/merchandise"
             className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
           >
@@ -96,30 +143,44 @@ const FanCommunityPage = () => {
               <span className="self-end">x100</span>
               Collection #1
             </div>
-          </Link>
+          </Link> */}
         </div>
 
-        <TabGroupBordered
-          tabs={community.channels
-            .map((channel) => {
-              return channel.name;
-            })
-            .concat(["+ Unlock Premium Channels"])}
-          activeTab={activeTab}
-          setActiveTab={(index: number) => {
-            setActiveTab(index);
-          }}
-        >
-          {activeTab != community.channels.length && (
-            <ChannelTab
-              channel={community.channels[activeTab]}
-              isCreator={false}
-            />
-          )}
-          {activeTab == community.channels.length && (
-            <UnlockPremiumChannelTab products={products} />
-          )}
-        </TabGroupBordered>
+        {community.members.find((member) => member.userId == userId) ? (
+          <TabGroupBordered
+            tabs={
+              community.channels
+                .filter(
+                  (channel) =>
+                    channel.members.findIndex(
+                      (member) => member.userId == userId
+                    ) != -1
+                )
+                .map((channel) => channel.name)
+              // .concat(["+ Unlock Premium Channels"])
+            }
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab != community.channels.length && (
+              <ChannelTab
+                key={community.channels[activeTab].channelId}
+                channel={community.channels[activeTab]}
+                isCreator={false}
+              />
+            )}
+            {/* {activeTab == community.channels.length && (
+              <UnlockPremiumChannelTab products={collections} />
+            )} */}
+          </TabGroupBordered>
+        ) : (
+          <div className="mt-8 flex items-center justify-center gap-2 text-xl">
+            <FaLock />
+            Join to get full access to this community
+          </div>
+        )}
       </div>
     </main>
   );
