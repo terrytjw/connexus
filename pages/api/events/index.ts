@@ -7,15 +7,10 @@ import {
   CategoryType,
   Ticket,
 } from "@prisma/client";
-import { PrismaClient, Event, Prisma, Ticket, CategoryType } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
-import {
-  deleteEvent,
-  searchEvent,
-  updateEvent,
-} from "../../../lib/event";
+import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
@@ -64,7 +59,6 @@ export default async function handler(
   // }
 
   const { method, body, query } = req;
-  
 
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
@@ -91,14 +85,16 @@ export default async function handler(
       const events = await prisma.event.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId : cursor } : undefined,
+        cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
-          eventId: 'asc'
+          eventId: "asc",
         },
         where: {
-          category: filter ? {
-            hasEvery: filter
-          } : undefined,
+          category: filter
+            ? {
+                hasEvery: filter,
+              }
+            : undefined,
         },
       });
       res.status(200).json(events);
@@ -108,33 +104,37 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
+  async function handleGETWithKeyword(
+    keyword: string,
+    cursor: number,
+    filter?: CategoryType[]
+  ) {
     try {
       const events = await prisma.event.findMany({
         take: 10,
-        skip:  cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId : cursor } : undefined,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
-          eventId: 'asc'
+          eventId: "asc",
         },
         where: {
           eventName: {
             contains: keyword,
-            mode: 'insensitive'
+            mode: "insensitive",
           },
-          category: filter ? {
-            hasEvery: filter
-          } : undefined,
+          category: filter
+            ? {
+                hasEvery: filter,
+              }
+            : undefined,
         },
-      })
+      });
       res.status(200).json(events);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
-
-
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
@@ -202,4 +202,3 @@ export default async function handler(
     }
   }
 }
-

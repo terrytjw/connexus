@@ -3,9 +3,9 @@ import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "../lib/constants";
 import { img } from "../lib/image";
 import { swrFetcher } from "../lib/swrFetcher";
+import { smartContract } from "../lib/constant";
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
