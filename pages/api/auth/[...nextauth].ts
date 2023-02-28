@@ -1,8 +1,8 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaClient } from "@prisma/client";
-import { saveUser, searchUser } from "../../../server-lib/user";
-import { capitaliseFirstLetter } from "../../../server-lib/prisma-util";
+import { saveUser, searchUser } from "../../../lib/user";
+import { capitaliseFirstLetter } from "../../../lib/prisma-util";
 const prisma = new PrismaClient();
 
 export const authOptions: NextAuthOptions = {

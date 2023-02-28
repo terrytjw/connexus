@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Post } from "@prisma/client";
 
 const prisma = new PrismaClient();

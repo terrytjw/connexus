@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { Merchandise } from "@prisma/client";
-import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
-import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
+import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
+import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 import {
   filterMerchandiseByPriceType,
   findAllMerchandise,
-} from "../../../server-lib/merch";
-import prisma from "../../../server-lib/prisma";
+} from "../../../lib/merch";
+import prisma from "../../../lib/prisma";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
 export enum MerchandisePriceType {

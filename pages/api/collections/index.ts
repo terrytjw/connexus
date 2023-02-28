@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import {
   PrismaClient,
   Collection,
@@ -9,14 +9,14 @@ import {
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { MERCH_PROFILE_BUCKET } from "../../../server-lib/constant";
+import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
 import {
   deleteMerchandise,
   MerchandisePartialType,
   searchMerchandise,
   updatedMerchandise,
-} from "../../../server-lib/merch";
-import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
+} from "../../../lib/merch";
+import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{

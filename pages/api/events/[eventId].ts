@@ -1,16 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { uploadImage, retrieveImageUrl } from "../../../server-lib/supabase";
-import { EVENT_PROFILE_BUCKET } from "../../../server-lib/constant";
+import { uploadImage, retrieveImageUrl } from "../../../lib/supabase";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 import {
   deleteEvent,
   searchEvent,
   updateEvent,
-} from "../../../server-lib/event";
+} from "../../../lib/event";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;

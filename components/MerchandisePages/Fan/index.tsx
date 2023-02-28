@@ -5,8 +5,8 @@ import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
-import { MerchandisePriceType } from "../../../server-lib/merch";
-import { filterMerchandiseByPriceType } from "../../../client-lib/merchandise";
+import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
+import { MerchandisePriceType } from "../../../pages/api/merch";
 
 const FanCollectionsPage = () => {
   const [activeTab, setActiveTab] = useState(0);

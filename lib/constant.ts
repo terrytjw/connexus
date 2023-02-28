@@ -1,3 +1,11 @@
+export const API_URL = "http://localhost:3000/api";
+export const MERCHANDISE_ENDPOINT = "merch";
+export const COLLECTION_ENDPOINT = "collections";
+
+export const USER_PROFILE_BUCKET = "user-profile";
+export const EVENT_PROFILE_BUCKET = "event-profile";
+export const MERCH_PROFILE_BUCKET = "merch-profile";
+
 export const smartContract = {
   pinataApiKey: "be74f69d81d8435228e2",
   pinataSecretApiKey:

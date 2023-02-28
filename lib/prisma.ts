@@ -1,11 +1,8 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-
+import { PrismaClient } from "@prisma/client";
 declare global {
-  namespace NodeJS {
-    interface Global {
-      prisma: PrismaClient;
-    }
-  }
+  // allow global `var` declarations
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined;
 }
 
 let prisma: PrismaClient;
@@ -21,5 +18,5 @@ if (typeof window === "undefined") {
     prisma = global.prisma;
   }
 }
-
+//@ts-ignore
 export default prisma;

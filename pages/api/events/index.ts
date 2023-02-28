@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../server-lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import {
   PrismaClient,
   Event,
@@ -9,13 +9,13 @@ import {
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { retrieveImageUrl, uploadImage } from "../../../server-lib/supabase";
+import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 import {
   deleteEvent,
   searchEvent,
   updateEvent,
-} from "../../../server-lib/event";
-import { EVENT_PROFILE_BUCKET } from "../../../server-lib/constant";
+} from "../../../lib/event";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
 

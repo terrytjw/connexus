@@ -1,6 +1,6 @@
+import { MerchandisePriceType } from "../pages/api/merch";
 import { API_URL, MERCHANDISE_ENDPOINT } from "./constant";
 import axios from "axios";
-import { MerchandisePriceType } from "../server-lib/merch";
 
 export async function filterMerchandiseByPriceType(
   cursor?: number,
