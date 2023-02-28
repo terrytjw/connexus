@@ -296,9 +296,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Sovereign Knife Skin",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
-          description: "Sovereign Knife Skin",
           totalMerchSupply: 100,
           price: 10,
         },
@@ -319,9 +318,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Hotel Transylvania Cosplay",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.png",
-          description: "Hotel Transylvania Cosplay",
           totalMerchSupply: 100,
           price: 10,
         },
@@ -342,9 +340,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Exploring Monument Valley",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.png",
-          description: "cool items",
           totalMerchSupply: 100,
           price: 10,
         },

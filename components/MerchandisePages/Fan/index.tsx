@@ -6,9 +6,11 @@ import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
 
-const FanCollectionsPage = () => {
+const FanCollectionsPage = ({ merchandise }: any) => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
+
+  console.log("merchandise [FAN COLLECTIONS PAGE] -> ", merchandise);
 
   const collectedTabfilters = [
     { id: 1, name: "Filter By" },
