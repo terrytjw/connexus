@@ -1,12 +1,14 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Collection , Prisma} from "@prisma/client";
+import { PrismaClient, Collection, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 
 const prisma = new PrismaClient();
-type CollectionwithMerch = Prisma.CollectionGetPayload<{ include: { merchandise: true } }>;
+type CollectionwithMerch = Prisma.CollectionGetPayload<{
+  include: { merchandise: true };
+}>;
 
 /**
  * @swagger
@@ -74,7 +76,9 @@ export default async function handler(
       await handleGET(collectionId);
       break;
     case "POST":
-      const collection = JSON.parse(JSON.stringify(req.body)) as Collection;
+      const collection = JSON.parse(
+        JSON.stringify(req.body)
+      ) as CollectionwithMerch;
       await handlePOST(collectionId, collection);
       break;
     case "DELETE":
@@ -102,9 +106,13 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(collectionId: number, collectionwithMerch: Collection) {
+  async function handlePOST(
+    collectionId: number,
+    collectionwithMerch: Collection
+  ) {
     try {
-      
+      console.log(collectionwithMerch);
+
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,

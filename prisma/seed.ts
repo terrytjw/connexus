@@ -8,6 +8,7 @@ import {
   ChannelType,
   Currency,
   CollectionState,
+  TicketType
 } from "@prisma/client";
 import { saveUser } from "../lib/user";
 
@@ -124,7 +125,7 @@ async function generatePost() {
       title: "New valorant map",
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorantnewmap-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/valorantnewmap-media.jpg",
       ],
       isPinned: false,
       creator: {
@@ -143,7 +144,7 @@ async function generatePost() {
       title: "Anime Fanart",
       content: "I just drew this, what do yall think?",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
@@ -162,7 +163,7 @@ async function generatePost() {
       title: "Travelling",
       content: "Would love to experience living in a cabin during winter!",
       media: [
-        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/anime-media.jpg",
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
       ],
       isPinned: false,
       channel: {
@@ -295,9 +296,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Sovereign Knife Skin",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
-          description: "Sovereign Knife Skin",
           totalMerchSupply: 100,
           price: 10,
         },
@@ -318,9 +318,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Hotel Transylvania Cosplay",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.png",
-          description: "Hotel Transylvania Cosplay",
           totalMerchSupply: 100,
           price: 10,
         },
@@ -341,9 +340,8 @@ async function generateCollection() {
       merchandise: {
         create: {
           name: "Exploring Monument Valley",
-          media:
+          image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.png",
-          description: "cool items",
           totalMerchSupply: 100,
           price: 10,
         },
@@ -397,6 +395,7 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: { userId: 1 } },
             currentTicketSupply: 1,
+            ticketType: TicketType.ON_SALE
           },
           {
             name: "VIP Pass",
@@ -405,6 +404,9 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
           {
             name: "VVIP Pass",
@@ -413,6 +415,9 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -457,6 +462,8 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+
           },
           {
             name: "VIP Pass",
@@ -465,6 +472,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-22"),
             endDate: new Date("2023-02-26"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
           {
             name: "VVIP Pass",
@@ -473,6 +483,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-22"),
             endDate: new Date("2023-02-26"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
@@ -518,6 +531,9 @@ async function generateEvent() {
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE
+            
+
           },
           {
             name: "VIP Pass",
@@ -526,6 +542,8 @@ async function generateEvent() {
             startDate: new Date("2023-01-24"),
             endDate: new Date("2023-02-26"),
             description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE
+
           },
           {
             name: "VVIP Pass",
@@ -534,6 +552,9 @@ async function generateEvent() {
             startDate: new Date("2023-01-24"),
             endDate: new Date("2023-02-26"),
             description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE
+
+
           },
         ],
       },
