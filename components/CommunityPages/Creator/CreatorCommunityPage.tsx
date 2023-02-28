@@ -22,7 +22,7 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
     <main>
       <div className="relative">
         <Banner coverImageUrl={community.bannerPic ?? ""} />
-        <div className="absolute top-0 right-0 flex gap-2 p-4">
+        <div className="absolute top-0 right-0 flex flex-wrap gap-2 p-4">
           {community.tags.map((label, index) => {
             return <Badge key={index} size="lg" label={label} />;
           })}
