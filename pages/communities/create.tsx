@@ -1,7 +1,12 @@
+import { CategoryType, Community } from "@prisma/client";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { toast, Toaster } from "react-hot-toast";
 import { FaChevronLeft } from "react-icons/fa";
+import { useSWRConfig } from "swr";
 import AvatarInput from "../../components/AvatarInput";
 import Badge from "../../components/Badge";
 import BannerInput from "../../components/BannerInput";
@@ -11,7 +16,6 @@ import Layout from "../../components/Layout";
 import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TextArea from "../../components/TextArea";
-import { Community } from "../../utils/types";
 
 type CreateCommunityPageProps = {
   community: Community;
@@ -19,43 +23,120 @@ type CreateCommunityPageProps = {
 
 const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
   const router = useRouter();
-  const labels = [
-    "NFT",
-    "Lifestyle",
-    "Fitness",
-    "Entertainment",
-    "Fashion",
-    "Animals",
-    "Travel",
-    "Education",
-    "Health",
-  ];
+  const { mutate } = useSWRConfig();
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { handleSubmit, setValue, control, watch } = useForm({
-    defaultValues: {
-      name: community ? community.name : "",
-      description: community ? community.description : "",
-      bannerPic: "",
-      profilePic: "",
-      maxMembers: community ? community.maxMembers : ("" as unknown as number),
-      tags: community ? community.tags : ([] as string[]),
-    },
-  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  type CreateCommunityForm = {
+    name: string;
+    description: string;
+    bannerPic: string;
+    profilePic: string;
+    maxMembers: number;
+    tags: string[];
+    userId: number;
+  };
+
+  const { handleSubmit, setValue, control, watch } =
+    useForm<CreateCommunityForm>({
+      defaultValues: {
+        name: community ? community.name : "",
+        description: community ? (community.description as string) : "",
+        bannerPic: community ? (community.bannerPic as string) : "",
+        profilePic: community ? (community.profilePic as string) : "",
+        maxMembers: community
+          ? community.maxMembers
+          : ("" as unknown as number),
+        tags: community ? community.tags : ([] as string[]),
+        userId: community ? community.userId : userId,
+      },
+    });
+
   const [bannerPic, profilePic, tags] = watch([
     "bannerPic",
     "profilePic",
     "tags",
   ]);
 
+  const onCreate = async (formData: CreateCommunityForm) => {
+    toast.loading("Creating new community...");
+    setIsLoading(true);
+
+    const userId = Number(session?.user.userId);
+    const communityData = {
+      ...formData,
+      maxMembers: Number(formData.maxMembers),
+      userId: userId,
+    };
+
+    console.log(communityData);
+    const res = await axios.post(
+      "http://localhost:3000/api/community",
+      communityData
+    );
+
+    toast.dismiss();
+    toast.success("Community successfully created!");
+    setIsLoading(false);
+
+    const temp = res.data[0];
+    if (res.status === 200) {
+      router.push(`/communities/${temp.communityId}`);
+    }
+  };
+
+  const onEdit = async (formData: CreateCommunityForm) => {
+    toast.loading("Updating community...");
+    setIsLoading(true);
+
+    const communityData = {
+      ...formData,
+      maxMembers: Number(formData.maxMembers),
+    };
+    const res = await axios.post(
+      `http://localhost:3000/api/community/${community.communityId}`,
+      communityData
+    );
+
+    toast.dismiss();
+    toast.success("Community successfully updated!");
+    setIsLoading(false);
+
+    const temp = res.data;
+
+    mutate(`http://localhost:3000/api/community/${temp.communityId}`);
+
+    if (res.status === 200) {
+      router.push(`/communities/${temp.communityId}`);
+    }
+  };
+
+  const onDelete = async () => {
+    toast.loading("Deleting community...");
+    setIsLoading(true);
+
+    const res = await axios.delete(
+      `http://localhost:3000/api/community/${community.communityId}`
+    );
+
+    toast.dismiss();
+    toast.success("Community successfully deleted!");
+    setIsLoading(false);
+
+    if (res.status === 200) {
+      router.push(`/communities/create`);
+    }
+  };
+
   return (
     <ProtectedRoute>
       <Layout>
-        <form
-          onSubmit={handleSubmit((data) => {
-            console.log(data);
-            router.push("/communities/1");
-          })}
-        >
+        <form onSubmit={handleSubmit(!community ? onCreate : onEdit)}>
+          <Toaster />
+
           <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
             <div className="flex flex-col gap-6">
               <h3 className="text-xl font-semibold">Delete Community</h3>
@@ -69,7 +150,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                   className="flex-grow"
                   variant="solid"
                   size="md"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => onDelete()}
                 >
                   Confirm
                 </Button>
@@ -87,14 +168,17 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
 
           <main className="py-12 px-4 sm:px-12">
             <div className="mb-8 flex items-center gap-4">
-              <Button
-                className="border-0"
-                variant="outlined"
-                size="md"
-                onClick={() => history.back()}
-              >
-                <FaChevronLeft />
-              </Button>
+              {community ? (
+                <Button
+                  className="border-0"
+                  variant="outlined"
+                  size="md"
+                  onClick={() => history.back()}
+                >
+                  <FaChevronLeft />
+                </Button>
+              ) : null}
+
               <div>
                 <h2 className="text-4xl font-bold">
                   {community ? "Edit " : ""}Community
@@ -195,8 +279,8 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                         </span>
                       </label>
 
-                      <div className="input-bordered input flex h-fit flex-wrap gap-4 p-4">
-                        {labels.map((label, index) => {
+                      <div className="input-bordered input flex h-fit flex-wrap gap-4 bg-white p-4">
+                        {Object.values(CategoryType).map((label, index) => {
                           return (
                             <Badge
                               key={index}
@@ -209,7 +293,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                               }
                               onClick={() => {
                                 if (!tags) {
-                                  setValue("tags", [label]);
+                                  setValue("tags", [tags]);
                                   return;
                                 }
 
@@ -271,6 +355,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                         className="w-full sm:w-fit"
                         variant="solid"
                         size="md"
+                        disabled={isLoading}
                       >
                         Save Changes
                       </Button>
@@ -280,6 +365,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                         size="md"
                         type="button"
                         onClick={() => setIsModalOpen(true)}
+                        disabled={isLoading}
                       >
                         Delete Community
                       </Button>
@@ -289,6 +375,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                       className="w-full sm:w-fit"
                       variant="solid"
                       size="md"
+                      disabled={isLoading}
                     >
                       Submit
                     </Button>

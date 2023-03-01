@@ -1,34 +1,36 @@
+import React, { useEffect, useState } from "react";
 import {
   UseFormSetValue,
   Control,
   UseFormTrigger,
   Controller,
   UseFormWatch,
-  useWatch,
 } from "react-hook-form";
 import Badge from "../../../Badge";
 import BannerInput from "../../../BannerInput";
 import Button from "../../../Button";
 import Input from "../../../Input";
-import { Event } from "../../../../pages/events/create"; // replace with Prisma Type
+import InputGroup from "../../../InputGroup";
 import AvatarInput from "../../../AvatarInput";
+import Loading from "../../../Loading";
+import { FaSearch } from "react-icons/fa";
+
 import {
   GoogleMap,
   Autocomplete,
   useJsApiLoader,
   Marker,
 } from "@react-google-maps/api";
-import { useEffect, useMemo, useState } from "react";
-import Loading from "../../../Loading";
-import { FaSearch } from "react-icons/fa";
-import InputGroup from "../../../InputGroup";
+
+import { CategoryType } from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
 
 type EventFormPageProps = {
-  watch: UseFormWatch<Event>;
-  labels: string[];
-  setValue: UseFormSetValue<Event>;
-  control: Control<Event, any>;
-  trigger: UseFormTrigger<Event>;
+  isEdit: boolean;
+  watch: UseFormWatch<EventWithTicketsandAddress>;
+  setValue: UseFormSetValue<EventWithTicketsandAddress>;
+  control: Control<EventWithTicketsandAddress, any>;
+  trigger: UseFormTrigger<EventWithTicketsandAddress>;
   proceedStep: () => void;
 };
 
@@ -38,8 +40,8 @@ type AutocompleteType = google.maps.places.Autocomplete;
 type GeocoderAddressComponent = google.maps.GeocoderAddressComponent;
 
 const EventFormPage = ({
+  isEdit,
   watch,
-  labels,
   setValue,
   control,
   trigger,
@@ -69,22 +71,17 @@ const EventFormPage = ({
     lng: 0,
   });
   // watch form values
-  const [bannerPic, profilePic, tags, venue] = watch([
-    "bannerPic",
-    "profilePic",
-    "tags",
-    "venue",
-  ]);
+  const { bannerPic, eventPic, startDate, category, address } = watch();
   const venueExists = (): boolean => {
-    return !!(venue.lat || venue?.lng);
+    return !!(address?.lat || address?.lng);
   };
 
   // repopulate map coordinates when user navigates back
   useEffect(() => {
-    if (venue.lat && venue?.lng) {
-      setCenter({ lat: venue?.lat, lng: venue?.lng });
+    if (address.lat && address?.lng) {
+      setCenter({ lat: address?.lat, lng: address?.lng });
     }
-  }, [venue?.lat, venue?.lng]);
+  }, [address?.lat, address?.lng]);
 
   // scroll to center of venue inputs when location search is valid
   useEffect(() => {
@@ -116,23 +113,26 @@ const EventFormPage = ({
     setIsSearchValid(validateSearch());
     const lat = searchResult?.getPlace().geometry?.location?.lat() ?? 0;
     const lng = searchResult?.getPlace().geometry?.location?.lng() ?? 0;
-
     // only populate venue address fields if a valid place is returned
     if (validateSearch()) {
       setCenter({ lat, lng });
-      setValue("venue", {
-        ...venue,
+      setValue("address", {
+        ...address,
         lat,
         lng,
-        venueName: searchResult?.getPlace().name || "",
+        locationName: searchResult?.getPlace().name || "",
         address1:
           getAddressComponent("street_number") +
           " " +
           getAddressComponent("route"),
         address2: getAddressComponent("subpremise") ?? "",
-        postalCode: Number(getAddressComponent("postal_code")),
+        postalCode: getAddressComponent("postal_code") ?? "",
       });
     }
+  };
+
+  const checkIsEditAndDatePassed = (value: string | Date): boolean => {
+    return isEdit && !!(new Date(value) < new Date());
   };
 
   if (!isLoaded) {
@@ -160,12 +160,12 @@ const EventFormPage = ({
       <div className="z-10 mx-auto h-24 px-4 sm:h-32 sm:px-6 lg:px-8">
         <div className="relative -mt-12 h-24 sm:-mt-16 sm:h-32">
           <AvatarInput
-            profilePic={profilePic}
+            profilePic={eventPic}
             onChange={(e) => {
               if (e.target.files && e.target.files.length > 0) {
                 const reader = new FileReader();
                 reader.addEventListener("load", () => {
-                  setValue("profilePic", reader.result as string);
+                  setValue("eventPic", reader.result as string);
                 });
                 reader.readAsDataURL(e.target.files[0]);
               }
@@ -177,7 +177,7 @@ const EventFormPage = ({
       <div className="mt-8 flex w-full flex-col gap-2">
         <Controller
           control={control}
-          name="name"
+          name="eventName"
           rules={{
             required: "Event Name is required",
           }}
@@ -210,7 +210,7 @@ const EventFormPage = ({
               <textarea
                 className="input-group textarea-bordered textarea w-full max-w-3xl bg-white"
                 placeholder="Tell us what your event is about"
-                value={value}
+                value={value ?? ""}
                 onChange={onChange}
               />
               <label className="label">
@@ -224,44 +224,55 @@ const EventFormPage = ({
 
         <Controller
           control={control}
-          name="startDateTime"
+          name="startDate"
           rules={{
-            required: "Start Date and Time is required", // validate: (value) =>
-            //   (value = "date type" || "Proper date format is required"),
+            required: "Start Date and Time is required",
+            validate: {
+              afterNow: (value) =>
+                checkIsEditAndDatePassed(value)
+                  ? true // skip validation if is edit and date > now()
+                  : new Date(value) > new Date() ||
+                    "Start Date must be later than now",
+            },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Input
               type="datetime-local"
               label="Start Date and Time *"
-              value={value}
+              value={value?.toString()}
               onChange={onChange}
               placeholder="Start Date and Time"
               size="md"
               variant="bordered"
               errorMessage={error?.message}
-              className="max-w-3xl align-middle text-gray-400"
+              className="max-w-3xl align-middle text-gray-500"
+              disabled={checkIsEditAndDatePassed(value)} // cannot edit if event has already started
             />
           )}
         />
 
         <Controller
           control={control}
-          name="endDateTime"
+          name="endDate"
           rules={{
-            required: "End Date and Time is required *", // validate: (value) =>
-            //   (value = "date type" || "Proper date format is required"),
+            required: "End Date and Time is required *",
+            validate: {
+              afterStart: (value) =>
+                new Date(value) > new Date(startDate) ||
+                "End Date must be after Start Date ",
+            },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
             <Input
               type="datetime-local"
               label="End Date and Time *"
-              value={value}
+              value={value?.toString()}
               onChange={onChange}
               placeholder="End Date and Time"
               size="md"
               variant="bordered"
               errorMessage={error?.message}
-              className="max-w-3xl align-middle text-gray-400"
+              className="max-w-3xl align-middle text-gray-500"
             />
           )}
         />
@@ -272,30 +283,32 @@ const EventFormPage = ({
           </label>
 
           <div className="input-bordered input flex h-fit flex-wrap gap-4 bg-white p-4">
-            {labels.map((label, index) => {
+            {Object.values(CategoryType).map((label, index) => {
               return (
                 <Badge
                   key={index}
                   size="lg"
                   label={label}
                   selected={
-                    tags && tags.length > 0 && tags.indexOf(label) != -1
+                    category &&
+                    category.length > 0 &&
+                    category.indexOf(label) != -1
                   }
                   onClick={() => {
-                    if (!tags) {
-                      setValue("tags", [label]);
+                    if (!category) {
+                      setValue("category", [category]);
                       return;
                     }
 
-                    if (tags && tags.indexOf(label) == -1) {
-                      setValue("tags", [...tags, label]);
+                    if (category && category.indexOf(label) == -1) {
+                      setValue("category", [...category, label]);
                       return;
                     }
 
                     setValue(
-                      "tags",
-                      tags?.filter((tag) => {
-                        return tag != label;
+                      "category",
+                      category?.filter((cat) => {
+                        return cat != label;
                       })
                     );
                   }}
@@ -378,9 +391,9 @@ const EventFormPage = ({
           <div id="venue-inputs">
             <Controller
               control={control}
-              name="venue.venueName"
+              name="address.locationName"
               rules={{
-                required: "Venue Name is required",
+                required: "Location Name is required",
               }}
               render={({
                 field: { onChange, value },
@@ -388,10 +401,10 @@ const EventFormPage = ({
               }) => (
                 <Input
                   type="text"
-                  label="Venue Name *"
+                  label="Location Name *"
                   value={value}
                   onChange={onChange}
-                  placeholder="Venue Name"
+                  placeholder="Location Name"
                   size="md"
                   variant="bordered"
                   errorMessage={error?.message}
@@ -401,7 +414,7 @@ const EventFormPage = ({
             />
             <Controller
               control={control}
-              name="venue.address1"
+              name="address.address1"
               rules={{
                 required: "Address 1 is required",
               }}
@@ -424,7 +437,7 @@ const EventFormPage = ({
             />
             <Controller
               control={control}
-              name="venue.address2"
+              name="address.address2"
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -432,7 +445,7 @@ const EventFormPage = ({
                 <Input
                   type="text"
                   label="Address 2"
-                  value={value}
+                  value={value ?? ""}
                   onChange={onChange}
                   placeholder="Address 2"
                   size="md"
@@ -445,7 +458,7 @@ const EventFormPage = ({
 
             <Controller
               control={control}
-              name="venue.postalCode"
+              name="address.postalCode"
               rules={{
                 required: "Postal Code is required",
               }}
@@ -471,7 +484,7 @@ const EventFormPage = ({
 
         <Controller
           control={control}
-          name="maxAttendees"
+          name="maxAttendee"
           rules={{
             required: "Maximum Number of Attendees is required",
             validate: (value) =>
@@ -498,12 +511,17 @@ const EventFormPage = ({
             className="w-full max-w-3xl"
             onClick={async () => {
               const isValidated = await trigger([
-                "name",
+                "eventName",
                 "description",
-                "startDateTime",
-                "endDateTime",
-                "maxAttendees",
-              ]); // todo: add mroe validation
+                "startDate",
+                "endDate",
+                "maxAttendee",
+                "address.address1",
+                "address.lat",
+                "address.lng",
+                "address.postalCode",
+              ]);
+
               if (isValidated) {
                 proceedStep();
                 // scroll to top of div container

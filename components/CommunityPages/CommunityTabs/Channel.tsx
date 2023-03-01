@@ -1,26 +1,54 @@
+import axios from "axios";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { FaSearch, FaTimes, FaUserFriends } from "react-icons/fa";
-import { Channel } from "../../../utils/types";
 import Button from "../../Button";
-import CustomLink from "../../CustomLink";
 import InputGroup from "../../InputGroup";
+import Loading from "../../Loading";
 import Modal from "../../Modal";
 import Post from "../Post";
 import PostInput from "../PostInput";
+import useSWR from "swr";
+import { swrFetcher } from "../../../lib/swrFetcher";
+import {
+  ChannelWithMembers,
+  PostWithCreatorAndLikes,
+} from "../../../utils/types";
 
 type ChannelTabProps = {
-  channel: Channel;
+  channel: ChannelWithMembers;
   isCreator: boolean;
 };
 
 const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchString, setSearchString] = useState("");
+  const [members, setMembers] = useState(channel.members ?? []);
 
-  const createPost = (data: any) => {
-    console.log("Creating post", data);
+  const {
+    data: posts,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(
+    `http://localhost:3000/api/post?channelId=${channel.channelId}`,
+    swrFetcher
+  );
+
+  const searchMembers = async () => {
+    const res = await axios.get(
+      `http://localhost:3000/api/channel/${channel.channelId}/users?keyword=${searchString}`
+    );
+    const temp = res.data;
+    setMembers(temp);
   };
+
+  useEffect(() => {
+    searchMembers();
+  }, [searchString]);
+
+  if (isLoading) return <Loading />;
 
   return (
     <div>
@@ -47,32 +75,46 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
           variant="bordered"
           className="max-w-none"
         >
-          <FaSearch />
+          <FaSearch className="text-gray-500" />
         </InputGroup>
 
-        <div className="mt-2 flex flex-col items-center gap-2">
-          <Image
-            height={80}
-            width={80}
-            className="aspect-square rounded-lg object-cover object-center"
-            src="/images/bear.jpg"
-            alt="No member found image"
-          />
-          <p className="text-sm text-gray-500">No member found!</p>
-        </div>
-
-        <div className="flex w-full gap-4 rounded-lg p-2 hover:bg-gray-200">
-          <Image
-            height={48}
-            width={48}
-            className="aspect-square rounded-full object-cover object-center"
-            src="/images/bear.jpg"
-            alt="Member profile pic"
-          />
-          <CustomLink href={`/user/profile/1`} className="text-gray-700">
-            Member name
-          </CustomLink>
-        </div>
+        {members.length > 0 ? (
+          members.map(
+            (member: {
+              userId: number;
+              username: string;
+              profilePic: string | null;
+            }) => {
+              return (
+                <Link
+                  key={member.userId}
+                  href={`/user/profile/${member.userId}`}
+                  className="flex w-full items-center gap-4 rounded-lg p-2 hover:bg-gray-200"
+                >
+                  <Image
+                    height={48}
+                    width={48}
+                    className="aspect-square rounded-full object-cover object-center"
+                    src={member.profilePic ?? ""}
+                    alt="Member profile pic"
+                  />
+                  <p className="text-gray-700">{member.username}</p>
+                </Link>
+              );
+            }
+          )
+        ) : (
+          <div className="mt-2 flex flex-col items-center gap-2">
+            <Image
+              height={80}
+              width={80}
+              className="aspect-square rounded-lg object-cover object-center"
+              src="/images/bear.jpg"
+              alt="No member found image"
+            />
+            <p className="text-sm text-gray-500">No members found!</p>
+          </div>
+        )}
       </Modal>
       <div className="mb-4 flex w-full justify-end gap-4">
         {/* <Button
@@ -92,10 +134,12 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
       </div>
 
       <div id="feed" className="flex flex-col gap-4">
-        {isCreator ? <PostInput onSubmit={createPost} /> : null}
+        {isCreator ? (
+          <PostInput mutatePosts={mutate} channelId={channel.channelId} />
+        ) : null}
 
-        {channel.posts.map((post) => {
-          return <Post key={post.postId} post={post} />;
+        {posts.map((post: PostWithCreatorAndLikes) => {
+          return <Post key={post.postId} post={post} mutatePosts={mutate} />;
         })}
       </div>
     </div>

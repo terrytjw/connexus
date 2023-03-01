@@ -43,7 +43,7 @@ const Home = ({ isAuthModalOpen }: any) => {
         },
       });
       setSocialLoginSDK(sdk);
-      sdk.showWallet();
+      // sdk.showWallet();
     }
 
     if (socialLoginSDK?.provider) {
@@ -80,12 +80,10 @@ const Home = ({ isAuthModalOpen }: any) => {
     if (socialLoginSDK) {
       socialLoginSDK.showWallet();
       setConnectWeb3Loading(false);
-      return socialLoginSDK;
     }
 
     setConnectWeb3Loading(false);
 
-    return socialLoginSDK;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socialLoginSDK]);
 
@@ -102,7 +100,7 @@ const Home = ({ isAuthModalOpen }: any) => {
     // return () => {
     //   socialLoginSDK?.hideWallet();
     // };
-  }, []);
+  }, [connectWeb3]);
 
   // if wallet already connected close widget
   useEffect(() => {

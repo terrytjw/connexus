@@ -76,7 +76,7 @@ export default async function handler(
           }
         },
         orderBy: {
-          date: 'asc'
+          date: 'desc'
         }
       });
       res.status(200).json(communities);

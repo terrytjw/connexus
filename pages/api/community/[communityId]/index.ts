@@ -135,7 +135,7 @@ export default async function handler(
       let profilePictureUrl = profilePic;
       let bannerPicUrl = bannerPic;
 
-      if (profilePic && ! checkIfStringIsBase64(profilePic)) {
+      if (profilePic && checkIfStringIsBase64(profilePic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           profilePic
@@ -153,7 +153,7 @@ export default async function handler(
           );
       }
 
-      if (bannerPic && ! checkIfStringIsBase64(bannerPic)) {
+      if (bannerPic && checkIfStringIsBase64(bannerPic)) {
         const { data, error } = await uploadImage(
           COMMUNITY_BUCKET,
           bannerPic

@@ -1,5 +1,5 @@
-import { USER_PROFILE_BUCKET } from "../../../lib/constant";
-import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
+import { USER_PROFILE_BUCKET } from "./../../../lib/constant";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { PrismaClient, User } from "@prisma/client";
@@ -74,7 +74,8 @@ export default async function handler(
       let profilePictureUrl = "";
       let bannerPicUrl = "";
 
-      if (profilePic) {
+
+      if (profilePic && checkIfStringIsBase64(profilePic)) {
         const { data, error } = await uploadImage(
           USER_PROFILE_BUCKET,
           profilePic
@@ -92,7 +93,7 @@ export default async function handler(
           );
       }
 
-      if (bannerPic) {
+      if (bannerPic && checkIfStringIsBase64(bannerPic)) {
         const { data, error } = await uploadImage(
           USER_PROFILE_BUCKET,
           bannerPic

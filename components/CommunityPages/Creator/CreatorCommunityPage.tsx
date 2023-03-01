@@ -1,9 +1,6 @@
-import Image from "next/image";
-import Link from "next/link";
-import { useRouter } from "next/router";
 import { useState } from "react";
-import { FaShareSquare } from "react-icons/fa";
 import { toast, Toaster } from "react-hot-toast";
+import { FaShareSquare, FaUserFriends } from "react-icons/fa";
 import copy from "copy-to-clipboard";
 import ChannelTab from "../CommunityTabs/Channel";
 import Avatar from "../../Avatar";
@@ -11,19 +8,21 @@ import Badge from "../../Badge";
 import Banner from "../../Banner";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
-import { communities } from "../../../utils/dummyData";
+import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
 
-const CreatorCommunityPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
-  const [community, setCommunity] = useState(communities[0]);
+type CommunityPagePageProps = {
+  community: CommunityWithCreatorAndChannelsAndMembers;
+  setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
+};
+
+const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
     <main>
       <div className="relative">
-        <Banner coverImageUrl={community.bannerPic || ""} />
-        <div className="absolute top-0 right-0 flex gap-2 p-4">
+        <Banner coverImageUrl={community.bannerPic ?? ""} />
+        <div className="absolute top-0 right-0 flex flex-wrap gap-2 p-4">
           {community.tags.map((label, index) => {
             return <Badge key={index} size="lg" label={label} />;
           })}
@@ -32,23 +31,28 @@ const CreatorCommunityPage = () => {
 
       <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="relative -mt-12 sm:-mt-16">
-          <Avatar imageUrl={community.profilePic || ""} />
+          <Avatar imageUrl={community.profilePic ?? ""} />
         </div>
       </div>
 
       <div className="mx-auto mt-6 max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="flex w-full flex-col justify-between gap-4 sm:flex-row">
           <div>
-            <h1 className="truncate text-4xl font-bold text-gray-900">
-              {community.name}
-            </h1>
+            <div className="flex items-center gap-2 text-lg text-gray-900">
+              <h1 className="mr-2 truncate text-4xl font-bold text-gray-900">
+                {community.name}
+              </h1>
+              <FaUserFriends />
+              {community.members.length}
+            </div>
+
             <p className="mt-1 text-gray-500">{community.description}</p>
 
             <div className="mt-6 flex gap-2">
               <Button
                 variant="solid"
                 size="sm"
-                href={`/communities/edit/${id}`}
+                href={`/communities/edit/${community.communityId}`}
               >
                 Edit <span className="hidden sm:contents">Community</span>
               </Button>
@@ -85,7 +89,7 @@ const CreatorCommunityPage = () => {
               </Button>
             </div>
           </div>
-          <Link
+          {/* <Link
             href="/merchandise"
             className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
           >
@@ -104,7 +108,7 @@ const CreatorCommunityPage = () => {
               <span className="self-end">x100</span>
               Collection #1
             </div>
-          </Link>
+          </Link> */}
         </div>
 
         <TabGroupBordered
@@ -118,6 +122,7 @@ const CreatorCommunityPage = () => {
         >
           {activeTab != community.channels.length && (
             <ChannelTab
+              key={community.channels[activeTab].channelId}
               channel={community.channels[activeTab]}
               isCreator={true}
             />

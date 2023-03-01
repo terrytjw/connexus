@@ -1,116 +1,167 @@
-import { useContext, useEffect, useMemo, useState } from "react";
+import React from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
+import { StepStatus } from "../../lib/enums";
 import StepsMobile from "../../components/EventPages/StepsMobile";
 import StepsDesktop, { Step } from "../../components/EventPages/StepsDesktop";
-import EventFormPage from "../../components/EventPages/Creator/CreateEventForms/EventFormPage";
-import TicketFormPage from "../../components/EventPages/Creator/CreateEventForms/TicketFormPage";
-import PublishFormPage from "../../components/EventPages/Creator/CreateEventForms/PublishFormPage";
-
-import { FaChevronLeft } from "react-icons/fa";
-import { Ticket, PrivacyType, Promotion, TicketType } from "@prisma/client";
-import { StepStatus } from "../../utils/enums";
+import EventFormPage from "../../components/EventPages/Creator/EventForms/EventFormPage";
+import TicketFormPage from "../../components/EventPages/Creator/EventForms/TicketFormPage";
+import PublishFormPage from "../../components/EventPages/Creator/EventForms/PublishFormPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 
-// hard coded tag type, will be replaced with prisma type
-export type Venue = {
-  lat: number | undefined;
-  lng: number | undefined;
-  venueName: string;
-  address1: string;
-  address2: string;
-  postalCode: number;
-};
+import { FaChevronLeft } from "react-icons/fa";
+import { EventWithTicketsandAddress } from "../../utils/types";
+import {
+  PrivacyType,
+  PublishType,
+  Ticket,
+  TicketType,
+  VisibilityType,
+} from "@prisma/client";
 
-export type Event = {
-  name: string;
-  description: string;
-  bannerPic: string | null;
-  profilePic: string | null;
-  startDateTime: string;
-  endDateTime: string;
-  venue: Venue;
-  maxAttendees: number;
-  tags: string[];
-  tickets: Ticket[];
-  privacy: PrivacyType;
-  promo?: Promotion;
-};
+import axios from "axios";
 
-// hard coded tag types, will be replaced
-const labels = [
-  "NFT",
-  "Lifestyle",
-  "Fitness",
-  "Entertainment",
-  "Fashion",
-  "Animals",
-  "Travel",
-  "Education",
-  "Health",
-];
+import { ethers } from "ethers";
+import contract from "../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
+import { smartContract } from "../../lib/constants";
+import Modal from "../../components/Modal";
+import Link from "next/link";
+import Button from "../../components/Button";
 
-// hard coded data
-const privacy = [
-  {
-    id: "public",
-    name: "Public",
-    description: "description..",
-  },
-  {
-    id: "private",
-    name: "Private",
-    description: "description..",
-  },
-];
-
-const publish = [
-  {
-    id: "now",
-    name: "Publish now",
-    description: "description..",
-  },
-  {
-    id: "later",
-    name: "Schedule for later",
-    description: "description..",
-  },
-];
+// smart contract stuff
+const provider = new ethers.providers.JsonRpcProvider(
+  "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
+);
+const abi = contract.abi;
+const bytecode = contract.bytecode;
+var signer = new ethers.Wallet(smartContract.privateKey, provider);
+// console.log(signer);
 
 const CreatorEventCreate = () => {
-  // hard coded default event, will be replaced to match prisma type
-  const { handleSubmit, setValue, control, watch, trigger } = useForm<Event>({
-    defaultValues: {
-      name: "",
-      description: "",
-      startDateTime: "",
-      endDateTime: "",
-      tags: [""],
-      venue: {
-        lat: undefined,
-        lng: undefined,
-        venueName: "",
-        address1: "",
-        address2: "",
-        postalCode: 0 as unknown as number,
+  const { handleSubmit, setValue, control, watch, trigger } =
+    useForm<EventWithTicketsandAddress>({
+      defaultValues: {
+        eventName: "",
+        description: "",
+        eventPic: "",
+        bannerPic: "",
+        category: [],
+        tickets: [],
+        visibilityType: VisibilityType.PUBLISHED,
+        privacyType: PrivacyType.PUBLIC,
+        publishType: PublishType.NOW,
+        address: {
+          address1: "",
+          address2: "",
+          locationName: "",
+          postalCode: "",
+        },
       },
-      tickets: [],
-    },
-  });
-
+    });
   // listen to tickets array
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
   });
-
   const [tickets] = watch(["tickets"]);
-
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Event Details", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Ticket Details", status: StepStatus.UPCOMING },
     { id: "Step 3", name: "Publish Details", status: StepStatus.UPCOMING },
   ]);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const [isCreateSuccessModalOpen, setIsCreateSuccessModalOpen] =
+    useState(false);
+
+  // create contract and db entry
+  const createEvent = async (event: any) => {
+    /*
+    Inputs: 
+    1. Event Info
+    2. Ticket Info
+    */
+    //  render spinner
+    setIsLoading(true);
+    // create smart contract
+    const Event_contract = new ethers.ContractFactory(abi, bytecode, signer);
+
+    let categories = [];
+    let category_quantity = [];
+    let category_price = [];
+
+    for (let i = 0; i < tickets.length; i++) {
+      let cat = tickets[i];
+      categories.push(cat.name);
+      category_quantity.push(cat.totalTicketSupply);
+      let input = cat.price;
+      category_price.push(input);
+    }
+    // console.log(category_price);
+
+    const event_contract = await Event_contract.deploy(
+      categories,
+      category_price,
+      category_quantity,
+      event.eventName,
+      new Date(event.startDate), // what is this?
+      event.address.create.locationName,
+      1,
+      100,
+      event.eventName
+    ); //1 ticket max per person
+
+    console.log("Contract successfully deployed => ", event_contract.address);
+
+    // call post api
+    let { data: response } = await axios.post(
+      "http://localhost:3000/api/events",
+      {
+        ...event,
+        scAddress: event_contract.address,
+      }
+    );
+    let data = response.data;
+    console.log("Event Created");
+    setIsLoading(false);
+  };
+
+  const parseAndCreate = (event: EventWithTicketsandAddress): void => {
+    console.log("Submitting Form Data", event);
+
+    const { address, tickets, startDate, endDate, maxAttendee } = event;
+
+    console.log(tickets.map((ticket) => ({ ...ticket })));
+    // parse to prisma type
+    const prismaEvent = {
+      ...event,
+      address: {
+        create: { ...address },
+      },
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+      maxAttendee: Number(maxAttendee),
+      tickets: tickets.map(
+        ({
+          price,
+          currentTicketSupply,
+          totalTicketSupply,
+          startDate,
+          endDate,
+          ...ticketInfo
+        }: Ticket) => ({
+          ...ticketInfo,
+          price: Number(price),
+          currentTicketSupply: Number(totalTicketSupply), // set current supply to total supply number
+          totalTicketSupply: Number(totalTicketSupply),
+          startDate: new Date(startDate),
+          endDate: new Date(endDate),
+        })
+      ),
+    };
+    createEvent(prismaEvent);
+  };
 
   // a null/ undefined state is needed for form validation
   const addNewTicket = (): void => {
@@ -118,19 +169,19 @@ const CreatorEventCreate = () => {
       ticketId: 1,
       name: "",
       description: "",
-      price: null as unknown as number,
-      totalTicketSupply: null as unknown as number,
-      currentTicketSupply: null as unknown as number,
-      startDate: null as unknown as Date,
-      endDate: null as unknown as Date,
+      price: undefined as unknown as number,
+      totalTicketSupply: undefined as unknown as number,
+      currentTicketSupply: undefined as unknown as number,
+      startDate: undefined as unknown as Date,
+      endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
-      ticketType: TicketType.ON_SALE
+      ticketType: TicketType.ON_SALE,
     });
   };
 
   useEffect(() => {
     // scroll to ticket
-    document.getElementById(`ticket-${tickets.length}`)?.scrollIntoView({
+    document.getElementById(`ticket-${tickets?.length}`)?.scrollIntoView({
       behavior: "smooth",
       block: "center",
       inline: "nearest",
@@ -216,6 +267,31 @@ const CreatorEventCreate = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          {/* Register success modal */}
+          <Modal
+            isOpen={isCreateSuccessModalOpen}
+            setIsOpen={setIsCreateSuccessModalOpen}
+          >
+            {isLoading ? (
+              <Loading className="!h-full" />
+            ) : (
+              <div className="flex items-center justify-between">
+                <h3 className="ml-2 text-xl font-semibold">Event Created!</h3>
+
+                <Link href="/events">
+                  <Button
+                    variant="solid"
+                    size="md"
+                    className="border-0"
+                    onClick={() => setIsCreateSuccessModalOpen(false)}
+                  >
+                    View Event
+                  </Button>
+                </Link>
+              </div>
+            )}
+          </Modal>
+
           {/* Header */}
           <nav className="flex items-center gap-6">
             {currentStep?.id !== "Step 1" && (
@@ -243,16 +319,16 @@ const CreatorEventCreate = () => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((data: Event) =>
-                console.log("Submitting Form Data", data)
+              onSubmit={handleSubmit((event: EventWithTicketsandAddress) =>
+                parseAndCreate(event)
               )}
             >
               {/* Step 1 */}
               {currentStep?.id === "Step 1" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <EventFormPage
+                    isEdit={false} // tells the form page that user is not editing
                     watch={watch}
-                    labels={labels}
                     setValue={setValue}
                     control={control}
                     trigger={trigger}
@@ -263,9 +339,12 @@ const CreatorEventCreate = () => {
               {currentStep?.id === "Step 2" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketFormPage
+                    isEdit={false} // tells the form page that user is not editing
+                    watch={watch}
                     control={control}
                     trigger={trigger}
                     fields={fields}
+                    update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
                     proceedStep={proceedStep}
@@ -276,8 +355,9 @@ const CreatorEventCreate = () => {
                 currentStep?.status === StepStatus.CURRENT && (
                   <PublishFormPage
                     watch={watch}
-                    privacy={privacy}
-                    publish={publish}
+                    setValue={setValue}
+                    setIsCreateSuccessModalOpen={setIsCreateSuccessModalOpen}
+                    isLoading={isLoading}
                   />
                 )}
             </form>

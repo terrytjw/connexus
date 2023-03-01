@@ -2,12 +2,11 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
 import { Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 import {
   filterMerchandiseByPriceType,
   findAllMerchandise,
 } from "../../../lib/merch";
-import prisma from "../../../lib/prisma";
+import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
 export enum MerchandisePriceType {
@@ -87,7 +86,7 @@ export default async function handler(
       const { image, ...merchInfo } = merch;
       let imageUrl = "";
 
-      if (image) {
+      if (image && checkIfStringIsBase64(image)) {
         const { data, error } = await uploadImage(MERCH_PROFILE_BUCKET, image);
         if (error) {
           const errorResponse = handleError(error);

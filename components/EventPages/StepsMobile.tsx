@@ -1,5 +1,5 @@
 import React from "react";
-import { StepStatus } from "../../utils/enums";
+import { StepStatus } from "../../lib/enums";
 
 export type Step = {
   id: string;

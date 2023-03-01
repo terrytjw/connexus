@@ -11,7 +11,6 @@ import {
   checkIfStringIsBase64,
 } from "../../../lib/supabase";
 
-const prisma = new PrismaClient();
 type UserWithAllInfo = Prisma.UserGetPayload<{
   include: {
     tickets: true;
@@ -82,6 +81,13 @@ type UserWithAllInfo = Prisma.UserGetPayload<{
  *               $ref: "#/components/schemas/User"
  */
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<UserWithAllInfo | ErrorResponse | {}>
@@ -159,9 +165,9 @@ export default async function handler(
       const {
         tickets,
         merchandise,
-        joinedChannels,
-        joinedCommunities,
         createdCommunities,
+        joinedCommunities,
+        joinedChannels,
         ...userInfo
       } = userWithAllInfo;
 
@@ -181,6 +187,18 @@ export default async function handler(
 
       const updatedUserInfo = {
         ...userInfo,
+
+        createdCommunities: {
+          connect: [...createdCommunities],
+        },
+
+        joinedCommunities: {
+          connect: [...joinedCommunities],
+        },
+
+        joinedChannels: {
+          connect: [...joinedChannels],
+        },
 
         tickets: {
           connect: [...ticketIdArray],

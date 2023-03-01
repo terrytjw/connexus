@@ -1,10 +1,8 @@
 import TicketCard from "../../components/EventPages/TicketCard";
-import { useRouter } from "next/router";
 import React from "react";
 import {
   FaCalendar,
   FaFacebook,
-  FaFacebookMessenger,
   FaInstagram,
   FaMapPin,
   FaTelegram,
@@ -14,24 +12,80 @@ import Avatar from "../../components/Avatar";
 import Badge from "../../components/Badge";
 import Banner from "../../components/Banner";
 import Button from "../../components/Button";
+import Link from "next/link";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
+import axios from "axios";
+import { GetServerSideProps } from "next";
+import { Ticket, User, Address } from "@prisma/client";
+import { EventWithTicketsandAddress } from "../../utils/types";
+import { formatDate } from "../../lib/date-util";
+import { getSession } from "next-auth/react";
 
-const EventPage = () => {
-  const router = useRouter();
-  const { eid } = router.query;
+type EventPageProps = {
+  event: EventWithTicketsandAddress;
+  userData: User & { tickets: Ticket[] };
+  address: Address;
+};
+
+const EventPage = ({ event, userData, address }: EventPageProps) => {
+  console.log("event ->", event);
+  const {
+    eventId,
+    eventName,
+    description,
+    bannerPic,
+    eventPic,
+    startDate,
+    endDate,
+    tickets,
+    category,
+  } = event;
+
+  const isRegistered = (): boolean => {
+    console.log("user tickets ->", userData?.tickets);
+    return !!userData.tickets?.find(
+      (ticket: Ticket) => ticket.eventId === event.eventId
+    );
+  };
+
+  // will replace urls once its not localhost..
+  function getFacebookShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${eventImageUrl}`;
+    return shareUrl;
+  }
+
+  function getTwitterShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const message = encodeURIComponent("Check out this awesome page!");
+    const shareUrl = `https://twitter.com/intent/tweet?url=${eventImageUrl}&text=${message}`;
+    return shareUrl;
+  }
+
+  function getInstagramShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.instagram.com/share?url=${eventImageUrl}`;
+    return shareUrl;
+  }
+
+  function getTelegramShareLink(eventImageUrl: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://t.me/share/url?url=${eventImageUrl}`;
+    return shareUrl;
+  }
 
   return (
     <ProtectedRoute>
       <Layout>
         <main>
           <div className="relative">
-            <Banner coverImageUrl={"/images/bear.jpg"} />
+            <Banner coverImageUrl={bannerPic || "/images/bear.jpg"} />
           </div>
 
           <div className="z-30 mx-auto px-16">
             <div className="relative z-30 -mt-12 sm:-mt-16">
-              <Avatar imageUrl={"/images/bear.jpg"} />
+              <Avatar imageUrl={eventPic || "/images/bear.jpg"} />
             </div>
           </div>
 
@@ -39,12 +93,30 @@ const EventPage = () => {
             <section>
               <div className="mt-4 flex flex-wrap justify-between">
                 <div className="flex flex-col">
-                  <h1 className="text-2xl font-bold sm:text-4xl">Event Name</h1>
-                  <h3 className="mt-4">Description </h3>
+                  <h1 className="text-2xl font-bold sm:text-4xl">
+                    {eventName || "event name"}
+                  </h1>
+                  <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-                <Button variant="solid" size="md" className="max-w-xs">
-                  Register for event
-                </Button>
+                {!isRegistered() ? (
+                  <Link
+                    href={`/events/register/${eventId}`}
+                    className="mt-8 sm:mt-0"
+                  >
+                    <Button variant="solid" size="md" className="max-w-xs">
+                      Register for event
+                    </Button>
+                  </Link>
+                ) : (
+                  <Button
+                    disabled
+                    variant="solid"
+                    size="md"
+                    className="max-w-xs"
+                  >
+                    Registered
+                  </Button>
+                )}
               </div>
             </section>
 
@@ -58,8 +130,7 @@ const EventPage = () => {
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Date and Time</p>
                     <p>
-                      Day, DD MM YYYY, 10:00 AM - Day, DD MM YYYY, 6:00 PM
-                      Singapore Standard Time Singapore Time
+                      {formatDate(startDate)} - {formatDate(endDate)}
                     </p>
                   </span>
                 </div>
@@ -68,40 +139,44 @@ const EventPage = () => {
                   <FaMapPin className="text-md" />
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Location</p>
+                    <p>{address?.locationName}</p>
                     <p>
-                      Marina Bay Sands 10 Bayfront Avenue Street, Singapore
-                      018956
+                      {address?.address2} {address?.address1}
                     </p>
+                    <p>{address?.postalCode}</p>
                   </span>
                 </div>
               </div>
             </section>
 
-            <section>{/* <TicketCard {} /> */}</section>
+            <section>
+              <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
+                Ticket Options (Types)
+              </h1>
+              <div className="pt-6">
+                {tickets.map((ticket: Ticket) => (
+                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                ))}
+              </div>
+            </section>
 
             <section>
               <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
                 Topics
               </h1>
               <div className="flex flex-wrap gap-6 py-4">
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
-                <Badge
-                  className="text-white"
-                  label="NFT"
-                  size="lg"
-                  selected={false}
-                />
+                {category.length === 0 && (
+                  <p className="text-gray-500">No Topics Selected</p>
+                )}
+                {category.map((label, index) => (
+                  <Badge
+                    key={index}
+                    className="text-white"
+                    label={label}
+                    size="lg"
+                    selected={false}
+                  />
+                ))}
               </div>
             </section>
 
@@ -110,11 +185,34 @@ const EventPage = () => {
                 Share through Social Media
               </h1>
               <div className="flex flex-wrap gap-4 py-4">
-                <FaFacebook />
-                <FaTwitter />
-                <FaInstagram />
-                <FaFacebookMessenger />
-                <FaTelegram />
+                <Link
+                  href={getFacebookShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaFacebook />
+                </Link>
+                <Link
+                  href={getTwitterShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaTwitter />
+                </Link>
+                <Link
+                  href={getInstagramShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaInstagram />
+                </Link>
+                <Link
+                  href={getTelegramShareLink(event.eventPic)}
+                  target="_blank"
+                  className="hover:text-blue-500"
+                >
+                  <FaTelegram />
+                </Link>
               </div>
             </section>
           </div>
@@ -125,3 +223,27 @@ const EventPage = () => {
 };
 
 export default EventPage;
+
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  const userId = session?.user.userId;
+
+  const { data: event } = await axios.get(
+    `http://localhost:3000/api/events/${context.params?.id}`
+  );
+
+  const { data: userData } = await axios.get(
+    `http://localhost:3000/api/users/${userId}`
+  );
+
+  const { data: address } = await axios.get(
+    `http://localhost:3000/api/addresses/${event.addressId}`
+  );
+  return {
+    props: {
+      event,
+      userData,
+      address,
+    },
+  };
+};
