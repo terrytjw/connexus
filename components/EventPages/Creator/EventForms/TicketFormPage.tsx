@@ -1,50 +1,67 @@
+import React from "react";
 import {
   Control,
   Controller,
   FieldArrayWithId,
+  UseFieldArrayUpdate,
   UseFormTrigger,
+  UseFormWatch,
 } from "react-hook-form";
-import { FaDollarSign, FaTrash } from "react-icons/fa";
 import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
-import { Event } from "../../../../pages/events/create";
+import { FaDollarSign, FaTrash } from "react-icons/fa";
+import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { TicketType } from "@prisma/client";
 
 type TicketFormPageProps = {
-  control: Control<Event, any>;
-  trigger: UseFormTrigger<Event>;
-  fields: FieldArrayWithId<Event, "tickets", "id">[];
+  isEdit: boolean;
+  watch: UseFormWatch<EventWithTicketsandAddress>;
+  control: Control<EventWithTicketsandAddress, any>;
+  trigger: UseFormTrigger<EventWithTicketsandAddress>;
+  fields: FieldArrayWithId<EventWithTicketsandAddress, "tickets", "id">[];
+  update: UseFieldArrayUpdate<EventWithTicketsandAddress, "tickets">;
   addNewTicket: () => void;
   removeTicket: (index: number) => void;
   proceedStep: () => void;
 };
 
 const TicketFormPage = ({
+  isEdit,
+  watch,
   control,
   trigger,
   fields,
+  update,
   addNewTicket,
   removeTicket,
   proceedStep,
 }: TicketFormPageProps) => {
+  // form values
+  const { endDate, tickets } = watch();
+  // console.log("form tickets -> ", tickets);
+
+  const checkIsEditAndDatePassed = (value: string | Date): boolean => {
+    return isEdit && !!(new Date(value) < new Date());
+  };
   return (
     <div>
       <section>
-        {fields.map((field, index) => (
+        {fields.map((ticket, index) => (
           <div
             id={`ticket-${index + 1}`}
-            key={index} // use id if the field id is unique
+            key={ticket.id} // use id if the ticket id is unique
             className=""
           >
             {index > 0 && <div className="divider" />}
             <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
               <h2 className="text-md font-semibold">
-                {`Ticket # ${index + 1}: ${field.name}` ||
+                {`Ticket # ${index + 1}: ${ticket.name}` ||
                   `Add Ticket #${index + 1}`}
               </h2>
               {index > 0 && (
                 <FaTrash
-                  onClick={() => removeTicket(index)}
+                  onClick={() => removeTicket(Number(ticket.id))}
                   className="text-lg text-red-400 hover:cursor-pointer"
                 />
               )}
@@ -159,9 +176,12 @@ const TicketFormPage = ({
                 control={control}
                 name={`tickets.${index}.startDate`}
                 rules={{
-                  required: "Start Date and Time is required", // TODO: [validation] ticket start date cannot be > event start date
-                  // validate: (value) =>
-                  //   (value = "date type" || "Proper date format is required"),
+                  required: "Start Date and Time is required",
+                  validate: {
+                    beforeEventEnd: (value) =>
+                      new Date(value) < new Date(endDate) ||
+                      "Sale Start Date must be before Event End Date ",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -177,6 +197,7 @@ const TicketFormPage = ({
                     variant="bordered"
                     errorMessage={error?.message}
                     className="max-w-3xl align-middle text-gray-400"
+                    disabled={checkIsEditAndDatePassed(value)} // cannot edit if event has already started
                   />
                 )}
               />
@@ -186,8 +207,14 @@ const TicketFormPage = ({
                 name={`tickets.${index}.endDate`}
                 rules={{
                   required: "End Date and Time is required", // TODO: [validation] ticket start date cannot be > event start date
-                  // validate: (value) =>
-                  //   (value = "date type" || "Proper date format is required"),
+                  validate: {
+                    beforeEventEnd: (value) =>
+                      new Date(value) < new Date(endDate) ||
+                      "Sale End Date must be before Event End Date ",
+                    afterTicketStart: (value) =>
+                      new Date(value) > new Date(tickets[index]?.startDate) ||
+                      "Sale End Date must be after Sale Start Date ",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -207,16 +234,54 @@ const TicketFormPage = ({
                 )}
               />
 
-              <div className="text-green-400">
-                todo: add ticket type to prisma type
-              </div>
-              <div className="text-green-400">
-                todo: add ticket status to prisma type
-              </div>
-              <div className="text-green-400">
-                todo: add promo code to prisma type - is this binded to event or
-                each ticket?
-              </div>
+              <fieldset className="mt-4" key={index}>
+                <h2 className="mb-4 text-sm font-normal">Ticket Status</h2>
+                <div className="space-y-5">
+                  {Object.values(TicketType).map((ticketTypeOption) => (
+                    <div
+                      key={ticketTypeOption}
+                      className="relative flex items-start"
+                    >
+                      <div className="flex h-5 items-center">
+                        <input
+                          name={`ticketType${index}`}
+                          type="radio"
+                          value={ticketTypeOption}
+                          checked={
+                            ticketTypeOption === tickets[index].ticketType
+                          }
+                          className="radio checked:bg-blue-500"
+                          onChange={() => {
+                            // console.log("new Ticket ->", {
+                            //   ...tickets[index],
+                            //   ticketType: ticketTypeOption,
+                            // });
+                            update(index, {
+                              ...tickets[index],
+                              ticketType: ticketTypeOption,
+                            });
+                          }}
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label
+                          htmlFor={ticketTypeOption}
+                          className="font-medium text-gray-800"
+                        >
+                          {ticketTypeOption === TicketType.ON_SALE
+                            ? "On Sale"
+                            : "Pause"}
+                        </label>
+                        <p className="text-gray-500">
+                          {ticketTypeOption === TicketType.ON_SALE
+                            ? "Keep selling ticket"
+                            : "Pause this ticket sale"}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
             </div>
           </div>
         ))}

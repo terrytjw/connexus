@@ -53,7 +53,7 @@ export default async function handler(
   // }
 
   const { method, body, query } = req;
-  
+
 
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
@@ -80,13 +80,13 @@ export default async function handler(
       const events = await prisma.event.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId : cursor } : undefined,
+        cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
           eventId: 'asc'
         },
         where: {
           category: filter ? {
-            hasEvery: filter
+            hasSome: filter
           } : undefined,
         },
       });
@@ -101,8 +101,8 @@ export default async function handler(
     try {
       const events = await prisma.event.findMany({
         take: 10,
-        skip:  cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId : cursor } : undefined,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
           eventId: 'asc'
         },
@@ -112,7 +112,7 @@ export default async function handler(
             mode: 'insensitive'
           },
           category: filter ? {
-            hasEvery: filter
+            hasSome: filter
           } : undefined,
         },
       })
@@ -127,13 +127,13 @@ export default async function handler(
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
-      const { tickets,  eventPic, bannerPic , ...eventInfo } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket : Ticket) => {
+      const { tickets, eventPic, bannerPic, ...eventInfo } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket: Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
       });
-      let eventImageUrl = ""; 
-      let eventBannerPictureUrl = ""; 
+      let eventImageUrl = "";
+      let eventBannerPictureUrl = "";
 
       if(eventPic && checkIfStringIsBase64(eventPic)){
         const{data, error} = await uploadImage(
@@ -146,8 +146,8 @@ export default async function handler(
         }
 
         if (data)
-        eventImageUrl = await retrieveImageUrl(
-          EVENT_PROFILE_BUCKET,
+          eventImageUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
             data.path
           );
       }
@@ -170,8 +170,8 @@ export default async function handler(
         data: {
           ...eventInfo,
           eventId: undefined,
-          eventPic : eventImageUrl, 
-          bannerPic : eventBannerPictureUrl,
+          eventPic: eventImageUrl,
+          bannerPic: eventBannerPictureUrl,
           tickets: { create: updatedTickets },
         },
         include: {
