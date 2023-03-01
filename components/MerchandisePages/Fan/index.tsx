@@ -5,8 +5,8 @@ import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
-import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
 import { MerchandisePriceType } from "../../../pages/api/merch";
+import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
 
 const FanCollectionsPage = ({ merchandise }: any) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -41,7 +41,7 @@ const FanCollectionsPage = ({ merchandise }: any) => {
 
     if (collectedTabfilterSelected.name.toLowerCase() === "free-of-charge") {
       // call some endpoint
-      filterMerchandiseByPriceType(1, MerchandisePriceType.FREE);
+      filterMerchandiseByPriceType(0,1, MerchandisePriceType.FREE);
     }
 
     if (collectedTabfilterSelected.name.toLowerCase() === "purchased") {

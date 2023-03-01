@@ -72,9 +72,7 @@ export default async function handler(
 
   switch (req.method) {
     case "GET":
-      if (query) {
-        await handleGETWithKeyword(userId, keyword, cursor);
-      }
+      await handleGETWithKeyword(userId, keyword, cursor);
       break;
     case "POST":
       const collection = JSON.parse(
@@ -101,9 +99,10 @@ export default async function handler(
           collectionId: "asc",
         },
         where: {
-          creatorId: userId,
+          creatorId: userId ? userId : undefined,
           collectionName: { contains: keyword, mode: "insensitive" },
         },
+        include : {merchandise : true}
       });
       res.status(200).json(collections);
     } catch (error) {
