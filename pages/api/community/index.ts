@@ -98,7 +98,7 @@ export default async function handler(
         },
         where: {
           tags: filter ? {
-            hasEvery: filter
+            hasSome: filter
           } : undefined,
         },
         include: {
@@ -129,7 +129,7 @@ export default async function handler(
             mode: 'insensitive'
           },
           tags: filter ? {
-            hasEvery: filter
+            hasSome: filter
           } : undefined,
         },
         include: {

@@ -398,8 +398,6 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: { userId: 1 } },
-            currentTicketSupply: 1,
             ticketType: TicketType.ON_SALE
           },
           {
@@ -433,7 +431,7 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
-      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
+      scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
     },
     {
       eventName: "Malanie Cosplaying with You",
@@ -465,8 +463,6 @@ async function generateEvent() {
             startDate: new Date("2023-01-23"),
             endDate: new Date("2023-02-26"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: [{ userId: 1 }, { userId: 2 }] },
-            currentTicketSupply: 2,
             ticketType: TicketType.ON_SALE
 
           },
@@ -495,13 +491,13 @@ async function generateEvent() {
         ],
       },
       publishType: PublishType.NOW,
-      maxAttendee: 50,
+      maxAttendee: 145,
       publishStartDate: new Date("2023-01-22"),
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
-      scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
+      scAddress: "0xA4c5d3D268b749f0417f0767b4903545F02194b0",
     },
     {
       eventName:
@@ -534,8 +530,6 @@ async function generateEvent() {
             startDate: new Date("2023-01-24"),
             endDate: new Date("2023-02-26"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: [{ userId: 1 }, { userId: 2 }] },
-            currentTicketSupply: 2,
             ticketType: TicketType.ON_SALE
             
 
@@ -564,13 +558,13 @@ async function generateEvent() {
         ],
       },
       publishType: PublishType.NOW,
-      maxAttendee: 50,
+      maxAttendee: 145,
       publishStartDate: new Date("2023-02-22"),
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
-      scAddress: "0xax",
+      scAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
     },
   ];
 

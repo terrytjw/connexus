@@ -192,7 +192,7 @@ const PublishFormPage = ({
                 // using react hook form onSubmit to submit data
                 setIsCreateSuccessModalOpen(true);
               }}
-              disabled={isLoading}
+              // disabled={isLoading}
             >
               Publish
             </Button>
