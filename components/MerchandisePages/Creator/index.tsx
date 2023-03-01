@@ -44,7 +44,7 @@ const CreatorCollectionsPage = () => {
   const filteredData =
     query === ''
       ? collectionData
-      : collectionData.filter((item) =>
+      : collectionData.filter((item : any) =>
           item.collectionName
             .toLowerCase()
             .replace(/\s+/g, '')
