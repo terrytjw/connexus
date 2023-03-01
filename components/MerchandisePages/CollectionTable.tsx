@@ -37,7 +37,7 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
         </thead>
         <tbody>
           {/* <!-- row 1 --> */}
-          {data.map((item, index) => (
+          {data?.map((item, index) => (
             <tr
               key={index}
               onClick={() =>

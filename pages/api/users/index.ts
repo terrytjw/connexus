@@ -35,6 +35,14 @@ import { findAllUser, saveUser } from "../../../lib/user";
  *             schema:
  *               $ref: "#/components/schemas/User"
  */
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<User[] | ErrorResponse>

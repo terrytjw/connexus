@@ -1,15 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Merchandise } from "@prisma/client";
+import { Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
 import {
-  deleteMerchandise,
-  searchMerchandise,
-  updatedMerchandise,
+  filterMerchandiseByPriceType,
+  findAllMerchandise,
 } from "../../../lib/merch";
 import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
 
-const prisma = new PrismaClient();
+export interface MerchandisePartialType extends Partial<Merchandise> {}
+export enum MerchandisePriceType {
+  FREE,
+  PAID,
+}
+
+import prisma from "../../../lib/prisma";
 
 /**
  * @swagger
@@ -45,14 +50,22 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Merchandise[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
+
+  const collectionId = parseInt(query.collectionId as string);
+  const priceType = query.priceType as unknown as MerchandisePriceType;
+  const cursor = parseInt(query.cursor as string);
 
   switch (method) {
     case "GET":
-      await handleGET();
+      if (query) {
+        await handleGETWithFilter(cursor, collectionId, priceType);
+      } else {
+        await handleGET();
+      }
       break;
     case "POST":
-      const merch = JSON.parse(JSON.stringify(body)) as Merchandise;
+      const merch = JSON.parse(JSON.stringify(body)) as Merchandise; //@@ Double check
       await handlePOST(merch);
       break;
     default:
@@ -62,8 +75,8 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const merchs = await prisma.merchandise.findMany({});
-      res.status(200).json(merchs);
+      const merchandises = await findAllMerchandise();
+      res.status(200).json(merchandises);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
@@ -97,4 +110,41 @@ export default async function handler(
       res.status(400).json(errorResponse);
     }
   }
+
+  async function handleGETWithFilter(
+    cursor: number,
+    collectionId: number,
+    priceType: MerchandisePriceType
+  ) {
+    try {
+      const response = await filterMerchandiseByPriceType(
+        cursor,
+        collectionId,
+        priceType
+      );
+      res.status(200).json(response);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
 }
+
+// xxx.com/api/merch?cursor=1&collectionId=1&priceType=0
+// export async function filterByMerchandisePurchaseType(
+//   cursor: number = 1,
+//   collectionId: number,
+//   priceType: MerchandisePriceType
+// ) {
+//   const filterCondition =
+//     priceType === MerchandisePriceType.FREE ? { equals: 0 } : { gt: 0 };
+
+//   return prisma.merchandise.findMany({
+//     take: 10,
+//     skip: cursor ? 1 : undefined, // Skip cursor
+//     cursor: cursor ? { merchId: cursor } : undefined,
+//     // where: {
+//     //   price: filterCondition,
+//     // },
+//   });
+// }

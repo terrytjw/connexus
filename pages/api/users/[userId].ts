@@ -11,14 +11,13 @@ import {
   checkIfStringIsBase64,
 } from "../../../lib/supabase";
 
-const prisma = new PrismaClient();
-type UserAllInfo = Prisma.UserGetPayload<{
+type UserWithAllInfo = Prisma.UserGetPayload<{
   include: {
     tickets: true;
     merchandise: true;
-    createdCommunities: true;
-    joinedCommunities: true;
     joinedChannels: true;
+    joinedCommunities: true;
+    createdCommunities: true;
   };
 }>;
 
@@ -91,7 +90,7 @@ export const config = {
 };
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<User | ErrorResponse | {}>
+  res: NextApiResponse<UserWithAllInfo | ErrorResponse | {}>
 ) {
   const { query, method } = req;
 
@@ -102,7 +101,7 @@ export default async function handler(
       await handleGET(userId);
       break;
     case "POST":
-      const user = JSON.parse(JSON.stringify(req.body)) as UserAllInfo;
+      const user = JSON.parse(JSON.stringify(req.body)) as UserWithAllInfo;
       await handlePOST(userId, user);
       break;
     case "DELETE":
@@ -124,12 +123,9 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(
-    userId: number,
-    userWithTicketsandMerch: UserAllInfo
-  ) {
+  async function handlePOST(userId: number, userWithAllInfo: UserWithAllInfo) {
     try {
-      const { profilePic, bannerPic } = userWithTicketsandMerch;
+      const { profilePic, bannerPic } = userWithAllInfo;
       let profilePictureUrl = "";
       let bannerPicUrl = "";
 
@@ -173,7 +169,7 @@ export default async function handler(
         joinedCommunities,
         joinedChannels,
         ...userInfo
-      } = userWithTicketsandMerch;
+      } = userWithAllInfo;
 
       const ticketIdArray = tickets.map((ticket: Ticket) => {
         const { ticketId } = ticket;
@@ -190,7 +186,7 @@ export default async function handler(
       });
 
       const updatedUserInfo = {
-        ...userWithTicketsandMerch,
+        ...userInfo,
 
         createdCommunities: {
           connect: [...createdCommunities],

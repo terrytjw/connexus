@@ -59,6 +59,14 @@ const prisma = new PrismaClient();
  *               $ref: "#/components/schemas/Ticket"
  */
 
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Ticket | ErrorResponse | {}>
@@ -86,7 +94,7 @@ export default async function handler(
     try {
       const ticket = await prisma.ticket.findUnique({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
       });
 
@@ -102,12 +110,11 @@ export default async function handler(
     try {
       const response = await prisma.ticket.update({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
         data: { ...ticket, ticketId: undefined },
       });
       res.status(200).json(response);
-
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
@@ -119,7 +126,7 @@ export default async function handler(
     try {
       const response = await prisma.ticket.delete({
         where: {
-            ticketId: ticketId,
+          ticketId: ticketId,
         },
       });
       res.status(200).json(response);

@@ -57,11 +57,19 @@ type CollectionwithMerch = Prisma.CollectionGetPayload<{
  *             schema:
  *               $ref: "#/components/schemas/Collection"
  */
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Collection[] | ErrorResponse>
 ) {
-  const session = await getServerSession(req, res, authOptions);
+  // const session = await getServerSession(req, res, authOptions);
   // console.log(session);
 
   // if (!session) {
@@ -69,12 +77,14 @@ export default async function handler(
   // }
 
   const { method, body, query } = req;
+
+  const userId = parseInt(query.userId as string);
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
 
   switch (req.method) {
     case "GET":
-      await handleGETWithKeyword(keyword, cursor);
+      await handleGETWithKeyword(userId, keyword, cursor);
       break;
     case "POST":
       const collection = JSON.parse(
@@ -87,7 +97,11 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number) {
+  async function handleGETWithKeyword(
+    userId: number,
+    keyword: string,
+    cursor: number
+  ) {
     try {
       const collections = await prisma.collection.findMany({
         take: 10,
@@ -97,8 +111,10 @@ export default async function handler(
           collectionId: "asc",
         },
         where: {
-          OR: [{ collectionName: { contains: keyword } }],
+          creatorId: userId ? userId : undefined,
+          collectionName: { contains: keyword, mode: "insensitive" },
         },
+        include : {merchandise : true}
       });
       res.status(200).json(collections);
     } catch (error) {

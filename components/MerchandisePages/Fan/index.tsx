@@ -5,10 +5,15 @@ import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collectibles, collections } from "../../../utils/dummyData";
+import { MerchandisePriceType } from "../../../pages/api/merch";
+import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
+import { filterCollectionByName } from "../../../lib/collection";
 
 const FanCollectionsPage = ({ merchandise }: any) => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
+
+  const [filteredMerchandise, setFilteredMerchandise] = useState(merchandise);
 
   console.log("merchandise [FAN COLLECTIONS PAGE] -> ", merchandise);
 
@@ -30,6 +35,25 @@ const FanCollectionsPage = ({ merchandise }: any) => {
     useState(
       activeTab === 0 ? collectedTabfilters[0] : marketplaceTabfilters[0]
     );
+
+  useEffect(() => {
+    console.log(
+      "collectedTabfilterSelected -> ",
+      collectedTabfilterSelected.name.toLowerCase()
+    );
+
+    if (collectedTabfilterSelected.name.toLowerCase() === "free-of-charge") {
+      // call some endpoint
+      // filterMerchandiseByPriceType(0,merchandise[0].collectionId, MerchandisePriceType.FREE);
+      setFilteredMerchandise(filterMerchandiseByPriceType(merchandise, MerchandisePriceType.FREE))
+    }
+
+    if (collectedTabfilterSelected.name.toLowerCase() === "purchased") {
+      // call some endpoint
+      // filterMerchandiseByPriceType(0, 1, MerchandisePriceType.PAID);
+      setFilteredMerchandise(filterMerchandiseByPriceType(merchandise, MerchandisePriceType.PAID))
+    }
+  }, [collectedTabfilterSelected.name]);
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -83,7 +107,7 @@ const FanCollectionsPage = ({ merchandise }: any) => {
             setActiveTab(index);
           }}
         >
-          {activeTab == 0 && <CollectedTab products={collectibles} />}
+          {activeTab == 0 && <CollectedTab products={filteredMerchandise} />}
           {activeTab == 1 && <MarketplaceTab products={collections} />}
         </TabGroupBordered>
 
@@ -98,8 +122,13 @@ const FanCollectionsPage = ({ merchandise }: any) => {
               type="text"
               value={searchString}
               placeholder="Search Collection"
-              onChange={(e) => {
+              onChange={async (e) => {
                 setSearchString(e.target.value);
+                // call some endpoint
+                // console.log("val -> ", e.target.value);
+                // filterByMerchandisePurchaseType(e.target.value)
+                // setFilteredMerchandise(await filterCollectionByName(0,1,e.target.value))
+                setFilteredMerchandise(filterCollectionByName(merchandise,e.target.value))
               }}
             />
           </div>

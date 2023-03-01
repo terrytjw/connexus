@@ -50,19 +50,23 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(commentId: number, comment: Comment, userId: number) {
+  async function handlePOST(
+    commentId: number,
+    comment: Comment,
+    userId: number
+  ) {
     try {
       const response = await prisma.comment.update({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
         data: {
           ...comment,
           likes: {
             connect: {
-              userId: userId
-            }
-          }
+              userId: userId,
+            },
+          },
         },
       });
       res.status(200).json(response);

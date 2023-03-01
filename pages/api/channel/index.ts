@@ -45,7 +45,7 @@ export default async function handler(
       await handleGET();
       break;
     case "POST":
-      const channel = JSON.parse(JSON.stringify(body)) as Channel
+      const channel = JSON.parse(JSON.stringify(body)) as Channel;
       await handlePOST(channel);
       break;
     default:
@@ -66,9 +66,9 @@ export default async function handler(
   async function handlePOST(channel: Channel) {
     try {
       const response = await prisma.channel.create({
-        data: { 
-          ...channel
-        }
+        data: {
+          ...channel,
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

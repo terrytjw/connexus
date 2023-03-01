@@ -92,7 +92,7 @@ export default async function handler(
       const communities = await prisma.community.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId : cursor } : undefined,
+        cursor: cursor ? { communityId: cursor } : undefined,
         orderBy: {
           communityId: 'asc'
         },
@@ -118,10 +118,10 @@ export default async function handler(
     try {
       const communities = await prisma.community.findMany({
         take: 10,
-        skip:  cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId : cursor } : undefined,
+        skip: cursor ? 1 : undefined, // Skip cursor
+        cursor: cursor ? { communityId: cursor } : undefined,
         orderBy: {
-          communityId: 'asc'
+          communityId: "asc",
         },
         where: {
           name: {

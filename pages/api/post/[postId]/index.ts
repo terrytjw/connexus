@@ -42,7 +42,7 @@ const prisma = new PrismaClient();
  *       description: Post object to update
  *       application/json:
  *         schema:
- *           $ref: "#/components/schemas/Post" 
+ *           $ref: "#/components/schemas/Post"
  *     responses:
  *       200:
  *         description: A single Post object
@@ -103,7 +103,7 @@ export default async function handler(
     try {
       const post = await prisma.post.findUnique({
         where: {
-          postId: postId
+          postId: postId,
         },
       });
 
@@ -151,7 +151,7 @@ export default async function handler(
       };
       const response = await prisma.post.update({
         where: {
-          postId: postId
+          postId: postId,
         },
         data: { ...updatedPostInfo },
         include: {
@@ -174,7 +174,7 @@ export default async function handler(
     try {
       const response = await prisma.post.delete({
         where: {
-          postId: postId
+          postId: postId,
         },
       });
       res.status(200).json(response);

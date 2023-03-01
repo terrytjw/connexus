@@ -54,15 +54,15 @@ export default async function handler(
     try {
       const response = await prisma.post.update({
         where: {
-          postId: postId
+          postId: postId,
         },
         data: {
           ...post,
           likes: {
             disconnect: {
-              userId: userId
-            }
-          }
+              userId: userId,
+            },
+          },
         },
       });
       res.status(200).json(response);

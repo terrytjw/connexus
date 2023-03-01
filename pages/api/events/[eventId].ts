@@ -6,7 +6,11 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
 import { uploadImage, retrieveImageUrl, checkIfStringIsBase64 } from "../../../lib/supabase";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
+import {
+  deleteEvent,
+  searchEvent,
+  updateEvent,
+} from "../../../lib/event";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
@@ -69,7 +73,6 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Event | ErrorResponse | {}>
 ) {
-
   /*
   const session = await getServerSession(req, res, authOptions);
   console.log(session);
@@ -118,8 +121,8 @@ export default async function handler(
   async function handlePOST(eventId: number, eventWithTickets: Event) {
     try {
       const { eventPic, bannerPic } = eventWithTickets;
-      let eventImageUrl = ""; 
-      let eventBannerPictureUrl = ""; 
+      let eventImageUrl = "";
+      let eventBannerPictureUrl = "";
 
       if(eventPic && checkIfStringIsBase64(eventPic)){
         const{data, error} = await uploadImage(
@@ -132,8 +135,8 @@ export default async function handler(
         }
 
         if (data)
-        eventImageUrl = await retrieveImageUrl(
-          EVENT_PROFILE_BUCKET,
+          eventImageUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
             data.path
           );
       }
@@ -149,18 +152,21 @@ export default async function handler(
           res.status(400).json(errorResponse);
         }
         if (data)
-        eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+          eventBannerPictureUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
+            data.path
+          );
       }
 
       const updatedEventInfo = {
-        ...eventWithTickets, 
-
-      }
+        ...eventWithTickets,
+      };
 
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
-      if (eventBannerPictureUrl) updatedEventInfo.bannerPic = eventBannerPictureUrl;
+      if (eventBannerPictureUrl)
+        updatedEventInfo.bannerPic = eventBannerPictureUrl;
       const response = await updateEvent(eventId, updatedEventInfo);
-      
+
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

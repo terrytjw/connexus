@@ -13,7 +13,7 @@ const DarkModeToggle = () => {
   }, []);
 
   return (
-    <div className="flex space-x-2 items-center">
+    <div className="flex items-center space-x-2">
       <div>{darkModeEnabled ? <MdDarkMode /> : <MdLightMode />}</div>
       <Switch checked={darkModeEnabled} onChange={toggleTheme} as={Fragment}>
         {({ checked }) => (

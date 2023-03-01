@@ -93,7 +93,7 @@ export default async function handler(
     try {
       const comment = await prisma.comment.findUnique({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
       });
 
@@ -109,7 +109,7 @@ export default async function handler(
     try {
       const response = await prisma.comment.update({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
         data: { ...comment },
         include: {
@@ -132,7 +132,7 @@ export default async function handler(
     try {
       const response = await prisma.comment.delete({
         where: {
-          commentId: commentId
+          commentId: commentId,
         },
       });
       res.status(200).json(response);

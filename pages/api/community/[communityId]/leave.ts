@@ -59,36 +59,36 @@ export default async function handler(
         data: {
           members: {
             disconnect: {
-              userId: userId
-            }
+              userId: userId,
+            },
           },
         },
         include: {
           channels: {
             orderBy: {
-              channelId: 'asc'
-            }
-          }
-        }
+              channelId: "asc",
+            },
+          },
+        },
       });
       await leaveChannel(communityToLeave.channels[0].channelId, userId);
       const response = await prisma.community.findFirst({
         where: {
-          communityId: communityId
+          communityId: communityId,
         },
         include: {
           members: {
-            select: { userId: true }
+            select: { userId: true },
           },
           channels: {
             include: {
               members: {
-                select: { userId: true, username: true, profilePic: true }
-              }
-            }
-          }
-        }
-      })
+                select: { userId: true, username: true, profilePic: true },
+              },
+            },
+          },
+        },
+      });
       res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);

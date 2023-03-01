@@ -8,7 +8,7 @@ import {
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "./constants";
+import { smartContract } from "./constant";
 
 //Smart Contract Stuff:
 const contract = require("../artifacts/contracts/Collection.sol/Collection.json");

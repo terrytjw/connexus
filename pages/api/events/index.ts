@@ -1,6 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Event, Prisma, Ticket, CategoryType } from "@prisma/client";
+import {
+  PrismaClient,
+  Event,
+  Prisma,
+  CategoryType,
+  Ticket,
+} from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
@@ -82,7 +88,7 @@ export default async function handler(
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
-          eventId: 'asc'
+          eventId: "asc",
         },
         where: {
           category: filter ? {
@@ -97,33 +103,35 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
+  async function handleGETWithKeyword(
+    keyword: string,
+    cursor: number,
+    filter?: CategoryType[]
+  ) {
     try {
       const events = await prisma.event.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
-          eventId: 'asc'
+          eventId: "asc",
         },
         where: {
           eventName: {
             contains: keyword,
-            mode: 'insensitive'
+            mode: "insensitive",
           },
           category: filter ? {
             hasSome: filter
           } : undefined,
         },
-      })
+      });
       res.status(200).json(events);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
-
-
 
   async function handlePOST(eventWithTickets: EventWithTickets) {
     try {
@@ -162,7 +170,11 @@ export default async function handler(
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
-        if (data) eventBannerPictureUrl = await retrieveImageUrl(EVENT_PROFILE_BUCKET, data.path);
+        if (data)
+          eventBannerPictureUrl = await retrieveImageUrl(
+            EVENT_PROFILE_BUCKET,
+            data.path
+          );
       }
 
       console.log(eventBannerPictureUrl, eventImageUrl);
@@ -187,4 +199,3 @@ export default async function handler(
     }
   }
 }
-

@@ -63,7 +63,7 @@ export default async function handler(
       await handleGET(channelId);
       break;
     case "POST":
-      const post = JSON.parse(JSON.stringify(body)) as Post
+      const post = JSON.parse(JSON.stringify(body)) as Post;
       await handlePOST(post);
       break;
     default:

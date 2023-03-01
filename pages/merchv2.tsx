@@ -3,9 +3,9 @@ import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "../lib/constants";
 import { img } from "../lib/image";
 import { swrFetcher } from "../lib/swrFetcher";
+import { smartContract } from "../lib/constant";
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -419,12 +419,23 @@ const CollectionsPage = (props: any) => {
 
     // let newMerchURI = [];
 
-    // const updated_collection: Partial<CollectionwithMerch> = {
-    //   collectionName: "This is a new collection",
-    //   description: "This is just a description",
-    //   currency: Currency.USD,
-    //   collectionState: CollectionState.CREATED,
+    // //Update existing merch category
+    // var merch: Partial<Merchandise> = {
+    //   merchId: merchandise[k].merchId,
+    //   media : merch_categories[k].media,
+    //   name: merch_categories[k].name,
+    //   totalMerchSupply: merch_categories[k].totalMerchSupply,
+    //   currMerchSupply: merchandise[k].currMerchSupply,
+    //   price: merch_categories[k].price,
+    //   description: merch_categories[k].description,
     // };
+    // await axios.post(
+    //   "http://localhost:3000/api/merch/" +
+    //     merchandise[k].merchId.toString(),
+    //   merch
+    // );
+    // console.log(merch);
+    // console.log("Updated existing");
 
     // console.log("Map");
     // console.log(map);
