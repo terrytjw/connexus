@@ -8,14 +8,15 @@ import FanCollectionsPage from "../../components/MerchandisePages/Fan";
 import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import axios from "axios";
+import { Merchandise } from "@prisma/client";
 
 type CollectionsPageProps = {
   userData: any;
+  updatedMerchandise: any;
 };
-const CollectionsPage = ({ userData }: CollectionsPageProps) => {
+const CollectionsPage = ({ userData, updatedMerchandise }: CollectionsPageProps) => {
   const [isCreator, setIsCreator] = useState(false);
 
-  const { merchandise } = userData;
 
   return (
     <ProtectedRoute>
@@ -35,7 +36,7 @@ const CollectionsPage = ({ userData }: CollectionsPageProps) => {
           {isCreator ? (
             <CreatorCollectionsPage />
           ) : (
-            <FanCollectionsPage merchandise={merchandise} />
+            <FanCollectionsPage merchandise={updatedMerchandise} />
           )}
         </div>
       </Layout>
@@ -43,7 +44,6 @@ const CollectionsPage = ({ userData }: CollectionsPageProps) => {
   );
 };
 
-export default CollectionsPage;
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
@@ -54,9 +54,22 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     `http://localhost:3000/api/users/${userId}`
   );
 
+
+  const { merchandise } = userData;
+
+  const userMerchandise = merchandise as Merchandise[]
+  const updatedMerchandise = await Promise.all(userMerchandise.map(async (item: Merchandise) => {
+    const {collectionName } = (await axios.get(`http://localhost:3000/api/collections/${item.collectionId}`)).data
+    return { ...item, collectionName: collectionName }
+  }))
+
   return {
     props: {
       userData,
+      updatedMerchandise
     },
   };
 };
+
+export default CollectionsPage;
+

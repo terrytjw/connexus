@@ -283,6 +283,18 @@ async function generateUser() {
       phoneNumber: "+6589212984",
       bio: "I flim videos for 2 to 3 hours a day when the weather is good!",
     },
+    {
+      email: "connexaofficial@gmail.com",
+      username: "connexa crypto#322",
+      walletAddress: "0xD35F4E9063fC00fa45aB5596966cCaC504AaC368",
+      displayName: "Connexa Crypto",
+      profilePic:
+        "https://lh3.googleusercontent.com/a/AGNmyxY7B4XC3FpA8d_swUELfrEvBg11sVLz6iUNIa86=s96-c",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
+      phoneNumber: "+6586582648",
+      bio: "I film tiktok for a day and I also schedule livestreams to create a stronger connection with my audience.",
+    },
   ];
 
   for (const user of users) {
@@ -305,6 +317,9 @@ async function generateCollection() {
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
           totalMerchSupply: 100,
           price: 10,
+          users : {
+            connect: { userId: 4}
+          }
         },
       },
       creator: {
@@ -324,9 +339,12 @@ async function generateCollection() {
         create: {
           name: "Hotel Transylvania Cosplay",
           image:
-            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.png",
+            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.jpg",
           totalMerchSupply: 100,
           price: 10,
+          users : {
+            connect: { userId: 4}
+          }
         },
       },
       creator: {
@@ -346,9 +364,12 @@ async function generateCollection() {
         create: {
           name: "Exploring Monument Valley",
           image:
-            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.png",
+            "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.jpg",
           totalMerchSupply: 100,
           price: 10,
+          users : {
+            connect: { userId: 4}
+          }
         },
       },
       creator: {
