@@ -34,6 +34,13 @@ const prisma = new PrismaClient();
  *               $ref: "#/components/schemas/Ticket"
  */
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Ticket[] | ErrorResponse>

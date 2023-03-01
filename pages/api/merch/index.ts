@@ -14,6 +14,8 @@ export enum MerchandisePriceType {
   PAID,
 }
 
+import prisma from "../../../lib/prisma";
+
 /**
  * @swagger
  * /api/merch:

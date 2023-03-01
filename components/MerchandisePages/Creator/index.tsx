@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import CollectionTable from "../CollectionTable";
@@ -26,6 +26,9 @@ const CreatorCollectionsPage = () => {
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // const [query, setFilteredCollection] = useState<Collection[]>(collectionData);
+  const [query, setQuery] = useState("");
+
   const { handleSubmit, setValue, watch } = useForm<Collection>({
     defaultValues: {
       name: "",
@@ -35,15 +38,32 @@ const CreatorCollectionsPage = () => {
     },
   });
 
+  // useEffect(() => {
+  //     setFilteredCollection(collectionData)
+  // }, [collectionData])
+  const filteredData =
+    query === ''
+      ? collectionData
+      : collectionData.filter((item) =>
+          item.collectionName
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(query.toLowerCase().replace(/\s+/g, ''))
+        )
+
   const [name, description, premiumChannel] = watch([
     "name",
     "description",
     "premiumChannel",
   ]);
 
-  if (isCollectionDataLoading) return <Loading />;
+  // function filterCollection(collectionData : any[]){
+  //   return collectionData.filter((collection: any) => {
+  //     return collection.collectionName.toLowerCase().includes(searchString.toLowerCase());
+  //   })
+  // }
 
-  console.log("collection data -> ", collectionData);
+  if (isCollectionDataLoading) return <Loading />;
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -155,6 +175,8 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
+                // console.log(e.target.value)
+                // setFilteredCollection(filterCollection(collectionData)) // to be removed in future
               }}
             />
           </div>
@@ -193,6 +215,10 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
+                setQuery(e.target.value)
+                console.log(e.target.value)
+                // setFilteredCollection(filterCollection(collectionData)) // to be removed in future
+                console.log(filteredData)
               }}
             />
           </div>
@@ -208,7 +234,7 @@ const CreatorCollectionsPage = () => {
       >
         {activeTab == 0 && (
           <CollectionTable
-            data={collectionData}
+            data={filteredData}
             columns={[
               "Collection No.",
               "Collection Name",

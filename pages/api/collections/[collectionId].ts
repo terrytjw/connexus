@@ -64,6 +64,13 @@ type CollectionwithMerch = Prisma.CollectionGetPayload<{
  *               $ref: "#/components/schemas/Collection"
  */
 
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "4mb", // Set desired value here
+    },
+  },
+};
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Collection | ErrorResponse | {}>
