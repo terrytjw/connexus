@@ -43,7 +43,7 @@ type CreatorEventPageProps = {
 };
 
 const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
-  const { handleSubmit, setValue, control, watch, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
         ...event,
@@ -73,6 +73,8 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     ticket_category: string
   ) {
     console.log(ticket_category);
+
+    // event from db
     const { eventName, addressId, startDate, endDate } = eventInfo;
     let response_location = await axios.get(
       "http://localhost:3000/api/addresses/" + addressId
@@ -121,35 +123,32 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
   // edit contracts and db entry
   async function updateEvent(newEvent: any) {
-    /*
-    Inputs: 
-    1. Event Id
-    2. Ticket Id
-    3. Event Info
-    4. Ticket Info
-    */
-
     console.log("newEvent form data -> ", newEvent);
     setIsLoading(true);
+
+    // fetch db event
     const event_id = newEvent?.eventId;
     let response_event = await axios.get(
       "http://localhost:3000/api/events/" + event_id.toString()
     );
     const eventInfo = response_event.data as EventWithTicketsandAddress;
     const { scAddress, ticketURIs, tickets } = eventInfo;
-    console.log(eventInfo);
+    console.log("eventInfo -> ", eventInfo);
 
-    //updating ticket categories
+    //assign new tickets into ticket categories
     const ticket_categories = newEvent.tickets;
 
     let map = {} as any;
 
+    // variable to hold updated tickets, initial value is from db
     const updatedTickets: Partial<Ticket>[] = [...tickets];
 
+    // loop new tickets array length
     for (let k = 0; k < ticket_categories.length; k++) {
+      // case ADDED tickets
       if (k > tickets.length - 1) {
         //create new ticket category
-        console.log(tickets);
+        console.log("tickets -> ", tickets);
         var new_ticket = {
           name: ticket_categories[k].name,
           totalTicketSupply: ticket_categories[k].totalTicketSupply,
@@ -161,15 +160,19 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           eventId: event_id,
           ticketType: ticket_categories[k].ticketType,
         };
+        // append new ticket to updated tickets array
         updatedTickets.push(new_ticket);
+        // api cal for additional tickets
         await axios.post("http://localhost:3000/api/tickets", new_ticket);
       } else {
+        // case NO ADDED or REMOVED tickets, don't let creator set total supply < existing ticket supply
         if (
           tickets[k].currentTicketSupply >=
           ticket_categories[k].totalTicketSupply
         ) {
           console.log("Not allowed to change");
           //return ""
+          
         }
         //time to update
         var ticket = {
@@ -190,6 +193,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         console.log(ticket);
         console.log("Updated existing");
 
+        // store a mapping of { db ticket name : new ticket name }
         if (updatedTickets[k].name !== undefined) {
           const updatedTicketName = updatedTickets[k].name as string;
           map[updatedTicketName] = ticket_categories[k].name;
@@ -198,13 +202,21 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     }
 
     console.log("updating tickets");
+    // case REMOVE tickets
     if (ticket_categories.length < tickets.length) {
       //new set of categories is less the original set -> time to go through the remaining and delete acordingly
-      for (let j = ticket_categories.length - 1; j <= tickets.length; j++) {
+      for (let j = ticket_categories.length - 1; j < tickets.length; j++) {
+        console.log("new ticket array -> ", ticket_categories);
+        console.log("db ticket array -> ", tickets);
+
+        // case at least one ticket has been minted
         if (tickets[j].currentTicketSupply > 0) {
-          console.log("Not allowed to change");
+          console.log(
+            "Not allowed to change, at least ticket one ticket minted"
+          );
           // return ""
         } else {
+          // delete tickets from db
           const updated_response = await axios.delete(
             "http://localhost:3000/api/tickets/" +
               tickets[j].ticketId.toString()
@@ -222,6 +234,8 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         }
       }
     }
+
+    // smart contract updates
     let categories = [];
     let category_quantity = [];
     let category_price = [];
@@ -232,13 +246,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       category_quantity.push(cat.totalTicketSupply);
       var input = cat.price;
       category_price.push(input);
-      /* issues with big number
-      if (input < 0.1){
-        category_price.push(input * 10**(18));
-      } else{
-        category_price.push(ethers.BigNumber.from(input).mul(BigNumber.from(10).pow(18)));
-      } */
-      //rounds off to 1 matic bcos bigint > float
     }
 
     const event_contract = new ethers.Contract(scAddress, abi, signer);
@@ -258,6 +265,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     let newticketURIs = [];
     const updated_event: Partial<EventWithTicketsandAddress> = { ...newEvent };
 
+    // case if db event has tickets
     if (ticketURIs.length > 0) {
       for (let i = 0; i < ticketURIs.length; i++) {
         var ticketURI = ticketURIs[i];
@@ -270,6 +278,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         let category_chosen = new_user_ticket_category;
         console.log(category_chosen);
         const event_contract = new ethers.Contract(scAddress, abi, signer);
+
         let response_pinning = await mintOnChain(
           updated_event,
           category_chosen
@@ -289,8 +298,24 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       }
 
       console.log("Updated Tickets => ", tickets);
+
+      // remove tickets since its updated separately before
+      const {
+        address,
+        tickets: { tempTickets },
+        ...newEventWOTicketsNAddress
+      } = newEvent;
+
+      // update address separately
+      const addressRes = await axios.post(
+        "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
+        address
+      );
+
+      console.log("updated address ->", addressRes.data);
+
       const updated_event_withuri: Partial<EventWithTicketsandAddress> = {
-        ...newEvent,
+        ...newEventWOTicketsNAddress,
         ticketURIs: newticketURIs,
       }; //redo again to add the new URI arr
 
@@ -310,38 +335,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     } else {
       // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
-
-      // remove untouched events data
-      const { address, tickets, addressId, ...newEventWOTicketsNAddress } =
-        newEvent;
-
-      // update address separately from events
-      let update_address_response = await axios.post(
-        "http://localhost:3000/api/addresses/" + addressId.toString(),
-        address
-      );
-      let updated_address_data = update_address_response.data;
-      console.log(
-        `updating address via /addresses/${addressId.toString()} ->`,
-        updated_address_data
-      );
-
-      const updated_event: Partial<EventWithTicketsandAddress> = {
-        ...newEventWOTicketsNAddress,
-      };
-
-      // update events
-      console.log("updated event: -", updated_event);
-      let updated_response = await axios.post(
-        "http://localhost:3000/api/events/" + event_id.toString(),
-        updated_event
-      );
-      let updated_data = updated_response.data;
-      console.log(
-        `updating event via /events/${event_id.toString()} ->`,
-        updated_data
-      );
-      console.log("Data uploaded");
       setIsLoading(false);
     }
   }
@@ -360,7 +353,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       tickets: tickets.map(
         ({
           price,
-          currentTicketSupply,
           totalTicketSupply,
           startDate,
           endDate,
@@ -368,7 +360,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         }: Ticket) => ({
           ...ticketInfo,
           price: Number(price),
-          currentTicketSupply: Number(totalTicketSupply), // set current supply to total supply number
           totalTicketSupply: Number(totalTicketSupply),
           startDate: new Date(startDate),
           endDate: new Date(endDate),
@@ -388,8 +379,8 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       ticketType: TicketType.ON_SALE,
       totalTicketSupply: undefined as unknown as number,
       currentTicketSupply: undefined as unknown as number,
-      startDate: null as unknown as Date,
-      endDate: null as unknown as Date,
+      startDate: undefined as unknown as Date,
+      endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
     });
   };
@@ -555,6 +546,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketFormPage
                     isEdit={true}
+                    getFieldState={getFieldState}
                     watch={watch}
                     control={control}
                     trigger={trigger}
