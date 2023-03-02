@@ -2,7 +2,6 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { FaShareSquare, FaPen } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
@@ -17,12 +16,13 @@ import UserProfileCreations from "../../../components/UserProfileTabs/Creations"
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { User } from "@prisma/client";
 import { profile, collections } from "../../../utils/dummyData";
+import copy from "copy-to-clipboard";
+import { toast, Toaster } from "react-hot-toast";
 
 type UserProfilePageProps = {
   userData: User;
 };
 const UserProfilePage = ({ userData }: UserProfilePageProps) => {
-  console.log("userData -> ", userData);
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -75,7 +75,14 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 <FaPen aria-hidden="true" />
                 <span className="hidden sm:inline-block">Edit Profile</span>
               </Button>
-              <Button variant="solid" size="md">
+              <Button
+                variant="solid"
+                size="md"
+                onClick={() => {
+                  copy(location.href);
+                  toast("Community link copied successfully!");
+                }}
+              >
                 <FaShareSquare aria-hidden="true" />
                 <span className="hidden sm:inline-block">Share</span>
               </Button>
@@ -110,6 +117,16 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
               {activeTab == 4 && <h1>Coming soon...</h1>}
             </TabGroupBordered>
           </div>
+          <Toaster
+            position="bottom-center"
+            toastOptions={{
+              style: {
+                background: "#1A7DFF",
+                color: "#fff",
+                textAlign: "center",
+              },
+            }}
+          />
         </main>
       </Layout>
     </ProtectedRoute>
