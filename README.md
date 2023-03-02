@@ -1,6 +1,8 @@
-# Connexus
+# <img src="https://imgur.com/jQF5hm5.png" alt="Get Out of My Land Logo" draggable="false" width="50%">
 
-_Empowering creators to develop authentic relationships with their fans._
+_Empowering creators to develop authentic relationships with their fans._ <br><br>
+Developed by Team TH01 for NUS IS4103: Information System Capstone Project. Developed with React, Next.js, Prisma and MySQL.
+
 
 ## Quick Start
 
@@ -9,6 +11,7 @@ _Empowering creators to develop authentic relationships with their fans._
 3. Run `yarn` to download dependencies
 4. Run `docker compose up`
 5. Open a separate terminal and type `docker compose exec app sh`. Type `yarn db:init` within the same terminal. 
+6. Run `yarn dev` to run the local server for development
 
 Frontend is deployed at `http://localhost:3000`
 Backend is deployed at `http://localhost:3000/api`
@@ -21,6 +24,7 @@ Database GUI, it will be deployed at `http://localhost:5555`
     ├── lib                    # Contains global functions that we will be using
     ├── pages                  # Contains app's pages and the backend endpoints inside /api
     ├── prisma                 # Contains codes related to prisma (ORM)
+    ├── prisma/seed.ts         # Contains seed file (test data)
     ├── public                 # Contains our assets
     ├── styles                 # Global styles
     ├── .dockerignore          # Code to ignore while deploying to docker
