@@ -15,8 +15,6 @@ const FanCollectionsPage = ({ merchandise }: any) => {
 
   const [filteredMerchandise, setFilteredMerchandise] = useState(merchandise);
 
-  console.log("merchandise [FAN COLLECTIONS PAGE] -> ", merchandise);
-
   const collectedTabfilters = [
     { id: 1, name: "Filter By" },
     { id: 2, name: "Free-of-Charge" },
@@ -37,21 +35,16 @@ const FanCollectionsPage = ({ merchandise }: any) => {
     );
 
   useEffect(() => {
-    console.log(
-      "collectedTabfilterSelected -> ",
-      collectedTabfilterSelected.name.toLowerCase()
-    );
-
     if (collectedTabfilterSelected.name.toLowerCase() === "free-of-charge") {
-      // call some endpoint
-      // filterMerchandiseByPriceType(0,merchandise[0].collectionId, MerchandisePriceType.FREE);
-      setFilteredMerchandise(filterMerchandiseByPriceType(merchandise, MerchandisePriceType.FREE))
+      setFilteredMerchandise(
+        filterMerchandiseByPriceType(merchandise, MerchandisePriceType.FREE)
+      );
     }
 
     if (collectedTabfilterSelected.name.toLowerCase() === "purchased") {
-      // call some endpoint
-      // filterMerchandiseByPriceType(0, 1, MerchandisePriceType.PAID);
-      setFilteredMerchandise(filterMerchandiseByPriceType(merchandise, MerchandisePriceType.PAID))
+      setFilteredMerchandise(
+        filterMerchandiseByPriceType(merchandise, MerchandisePriceType.PAID)
+      );
     }
   }, [collectedTabfilterSelected.name]);
 
@@ -124,11 +117,9 @@ const FanCollectionsPage = ({ merchandise }: any) => {
               placeholder="Search Collection"
               onChange={async (e) => {
                 setSearchString(e.target.value);
-                // call some endpoint
-                // console.log("val -> ", e.target.value);
-                // filterByMerchandisePurchaseType(e.target.value)
-                // setFilteredMerchandise(await filterCollectionByName(0,1,e.target.value))
-                setFilteredMerchandise(filterCollectionByName(merchandise,e.target.value))
+                setFilteredMerchandise(
+                  filterCollectionByName(merchandise, e.target.value)
+                );
               }}
             />
           </div>
