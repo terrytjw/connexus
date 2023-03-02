@@ -249,7 +249,7 @@ async function generateUser() {
   const users = [
     {
       email: "jcarrott0@gmail.com",
-      username: "jcarrott0#123",
+      username: "jcarrott0",
       walletAddress: "0x50fa33ac31a6cb71c3ff6da8d38bd0a1a489e933",
       displayName: "Josh Carrott",
       profilePic:
@@ -261,7 +261,7 @@ async function generateUser() {
     },
     {
       email: "mmaru1@gmail.com",
-      username: "mmaru1#321",
+      username: "mmaru1",
       walletAddress: "0xdc52e59d80b3bb31e071cb6564a2812d672f7c9e",
       displayName: "Malanie Maru",
       profilePic:
@@ -273,7 +273,7 @@ async function generateUser() {
     },
     {
       email: "asauvan2@gmail.com",
-      username: "asauvan2#322",
+      username: "asauvan2",
       walletAddress: "0xc45166980e7bf4921668777ca27ea15aef859001",
       displayName: "Alene Sauvan",
       profilePic:
@@ -285,7 +285,7 @@ async function generateUser() {
     },
     {
       email: "connexaofficial@gmail.com",
-      username: "connexa crypto#322",
+      username: "connexa crypto",
       walletAddress: "0xD35F4E9063fC00fa45aB5596966cCaC504AaC368",
       displayName: "Connexa Crypto",
       profilePic:
