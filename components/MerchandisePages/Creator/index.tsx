@@ -13,14 +13,20 @@ import useSWR from "swr";
 import { swrFetcher } from "../../../lib/swrFetcher";
 import Loading from "../../Loading";
 import { updateCollection } from "../../../lib/merchandise-helpers";
+import { useSession } from "next-auth/react";
 
 const CreatorCollectionsPage = () => {
+
+
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
+  
   const {
     data: collectionData,
     error,
     isLoading: isCollectionDataLoading,
     mutate,
-  } = useSWR("http://localhost:3000/api/collections", swrFetcher);
+  } = useSWR(`http://localhost:3000/api/collections?userId=${userId}`, swrFetcher);
 
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");

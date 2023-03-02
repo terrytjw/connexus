@@ -324,7 +324,7 @@ async function generateCollection() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
@@ -349,7 +349,7 @@ async function generateCollection() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
@@ -374,7 +374,7 @@ async function generateCollection() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
