@@ -117,7 +117,7 @@ const EventsPage = (props: any) => {
       eventName: "This is a new event",
       eventPic: eventPic,
       bannerPic: bannerPic,
-      category: [CategoryType.AUTO_BOAT_AIR],
+      category: [CategoryType.ARTS],
       address: {
         create: {
           address1: address.address1,
@@ -478,7 +478,7 @@ const EventsPage = (props: any) => {
       //whatever the updated ticket details are
       eventName: "This is a new event",
       addressId: eventInfo.addressId,
-      category: [CategoryType.AUTO_BOAT_AIR],
+      category: [CategoryType.ARTS],
       startDate: new Date(),
       endDate: new Date(),
       eventPic: img,
@@ -526,7 +526,7 @@ const EventsPage = (props: any) => {
       const updated_event_withuri: Partial<EventWithTickets> = {
         eventName: "This is a new event",
         addressId: eventInfo.addressId,
-        category: [CategoryType.AUTO_BOAT_AIR],
+        category: [CategoryType.ARTS],
         startDate: new Date(),
         endDate: new Date(),
         eventPic: img,
