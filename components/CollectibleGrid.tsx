@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -20,7 +21,7 @@ const CollectibleGridItem = ({
   if (!item) return <Skeleton height={350} />;
 
   return (
-    <div className="group text-sm">
+    <Link href={`/merchandise/${item.collectionId}`} className="group text-sm">
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all">
         <Image
           fill
@@ -57,7 +58,7 @@ const CollectibleGridItem = ({
       {collectedTab ? (
         <p className="mt-2 text-sm text-gray-500">From {item.collectionName}</p>
       ) : null}
-    </div>
+    </Link>
   );
 };
 
