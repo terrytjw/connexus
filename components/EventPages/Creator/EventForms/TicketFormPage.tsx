@@ -19,7 +19,7 @@ import { isValid } from "date-fns";
 type TicketFormPageProps = {
   isEdit: boolean;
   watch: UseFormWatch<EventWithTicketsandAddress>;
-  getFieldState?: UseFormGetFieldState<EventWithTicketsandAddress>;
+  getFieldState: UseFormGetFieldState<EventWithTicketsandAddress>;
   control: Control<EventWithTicketsandAddress, any>;
   trigger: UseFormTrigger<EventWithTicketsandAddress>;
   fields: FieldArrayWithId<EventWithTicketsandAddress, "tickets", "id">[];

@@ -40,7 +40,7 @@ var signer = new ethers.Wallet(smartContract.privateKey, provider);
 // console.log(signer);
 
 const CreatorEventCreate = () => {
-  const { handleSubmit, setValue, control, watch, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
         eventName: "",
@@ -341,6 +341,7 @@ const CreatorEventCreate = () => {
                   <TicketFormPage
                     isEdit={false} // tells the form page that user is not editing
                     watch={watch}
+                    getFieldState={getFieldState}
                     control={control}
                     trigger={trigger}
                     fields={fields}
