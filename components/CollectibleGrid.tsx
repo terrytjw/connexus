@@ -21,7 +21,24 @@ const CollectibleGridItem = ({
   if (!item) return <Skeleton height={350} />;
 
   return (
-    <Link href={`/merchandise/${item.collectionId}`} className="group text-sm">
+    <Link
+      href={`/merchandise/${item.collectionId}`}
+      className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+    >
+      {!collectedTab ? (
+        <div className="mb-2 flex w-full gap-3 text-gray-900">
+          <progress
+            className="progress h-4"
+            value={item.totalMerchSupply - item.currMerchSupply}
+            max={item.totalMerchSupply}
+          />
+          <span className="min-w-fit">
+            {item.totalMerchSupply - item.currMerchSupply}/
+            {item.totalMerchSupply} pieces left
+          </span>
+        </div>
+      ) : null}
+
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all">
         <Image
           fill
@@ -30,13 +47,6 @@ const CollectibleGridItem = ({
           src={item.image}
           alt="Collectible image"
         />
-
-        {!collectedTab ? (
-          <div className="absolute flex w-full gap-3 p-3 text-gray-900">
-            <progress className="progress h-4" value="80" max="100" />
-            <span className="min-w-fit">80/100 pieces left</span>
-          </div>
-        ) : null}
 
         <div className="absolute inset-x-0 top-0 flex h-full items-end justify-end overflow-hidden rounded-lg p-4">
           <div

@@ -13,10 +13,14 @@ import { Merchandise } from "@prisma/client";
 type CollectionsPageProps = {
   userData: any;
   updatedMerchandise: any;
+  collectionsData: any;
 };
-const CollectionsPage = ({ userData, updatedMerchandise }: CollectionsPageProps) => {
+const CollectionsPage = ({
+  userData,
+  updatedMerchandise,
+  collectionsData,
+}: CollectionsPageProps) => {
   const [isCreator, setIsCreator] = useState(false);
-
 
   return (
     <ProtectedRoute>
@@ -36,14 +40,16 @@ const CollectionsPage = ({ userData, updatedMerchandise }: CollectionsPageProps)
           {isCreator ? (
             <CreatorCollectionsPage />
           ) : (
-            <FanCollectionsPage merchandise={updatedMerchandise} />
+            <FanCollectionsPage
+              merchandise={updatedMerchandise}
+              collections={collectionsData}
+            />
           )}
         </div>
       </Layout>
     </ProtectedRoute>
   );
 };
-
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
@@ -54,22 +60,31 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     `http://localhost:3000/api/users/${userId}`
   );
 
+  const { data: collectionsData } = await axios.get(
+    `http://localhost:3000/api/collections`
+  );
 
   const { merchandise } = userData;
 
-  const userMerchandise = merchandise as Merchandise[]
-  const updatedMerchandise = await Promise.all(userMerchandise.map(async (item: Merchandise) => {
-    const {collectionName } = (await axios.get(`http://localhost:3000/api/collections/${item.collectionId}`)).data
-    return { ...item, collectionName: collectionName }
-  }))
+  const userMerchandise = merchandise as Merchandise[];
+  const updatedMerchandise = await Promise.all(
+    userMerchandise.map(async (item: Merchandise) => {
+      const { collectionName } = (
+        await axios.get(
+          `http://localhost:3000/api/collections/${item.collectionId}`
+        )
+      ).data;
+      return { ...item, collectionName: collectionName };
+    })
+  );
 
   return {
     props: {
       userData,
-      updatedMerchandise
+      updatedMerchandise,
+      collectionsData,
     },
   };
 };
 
 export default CollectionsPage;
-

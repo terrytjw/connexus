@@ -25,3 +25,9 @@ export function filterMerchandiseByPriceType(
     if (priceType === MerchandisePriceType.PAID) return item.price > 0;
   });
 }
+
+export function filterMerchandiseByName(merchandise: any[], keyword: string) {
+  return merchandise.filter((item: any) => {
+    return item.name.toLowerCase().includes(keyword.toLowerCase());
+  });
+}
