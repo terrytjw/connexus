@@ -17,18 +17,23 @@ components:
         walletAddress:
           type: string
         phoneNumber:
+          nullable: true
           type: string
         profilePic:
+          nullable: true
           type: string
         bannerPic:
+          nullable: true
           type: string
         displayName:
+          nullable: true
           type: string
         username:
           type: string
-        bio:
-          type: string
         email:
+          type: string
+        bio:
+          nullable: true
           type: string
         notificationBySMS:
           default: 'true'
@@ -50,7 +55,7 @@ components:
           type: array
         joinedChannels:
           items:
-            $ref: '#/components/schemas/UsersOnChannels'
+            $ref: '#/components/schemas/Channel'
           type: array
         posts:
           items:
@@ -113,22 +118,46 @@ components:
         name:
           type: string
         description:
+          nullable: true
           type: string
         profilePic:
+          nullable: true
+          type: string
+        bannerPic:
+          nullable: true
           type: string
         tags:
-          items:
-            type: string
+          items: {}
+          enum:
+            - AUTOCAR
+            - BOAT
+            - AIR
+            - PROFESSIONAL
+            - CULTURE
+            - FASHION
+            - BEAUTY
+            - POLITICS
+            - HOBBIES
+            - ARTS
+            - RELIGION
+            - SCHOOL
+            - SCIENCE
+            - TECHNOLOGY
+            - HOLIDAY
+            - FITNESS
+            - NFT
+            - TRAVEL
+            - HEALTH
+            - PHOTOGRAPHY
+            - LIFESTYLE
+            - ENTERTAINMENT
+            - ANIMALS
+            - EDUCATION
+            - FOOD
           type: array
         maxMembers:
           default: '100'
           type: integer
-        communityType:
-          enum:
-            - NFT
-            - CRYPTO
-          default: NFT
-          type: string
         creator:
           $ref: '#/components/schemas/User'
         members:
@@ -146,18 +175,16 @@ components:
           type: integer
         name:
           type: string
-        description:
-          type: string
         channelType:
           enum:
             - REGULAR
             - PREMIUM
             - PRIVATE
-          default: REGULAR
+          default: PREMIUM
           type: string
         members:
           items:
-            $ref: '#/components/schemas/UsersOnChannels'
+            $ref: '#/components/schemas/User'
           type: array
         community:
           $ref: '#/components/schemas/Community'
@@ -165,13 +192,6 @@ components:
           items:
             $ref: '#/components/schemas/Post'
           type: array
-      type: object
-    UsersOnChannels:
-      properties:
-        user:
-          $ref: '#/components/schemas/User'
-        channel:
-          $ref: '#/components/schemas/Channel'
       type: object
     Comment:
       properties:
@@ -205,25 +225,31 @@ components:
         category:
           items: {}
           enum:
-            - AUTO_BOAT_AIR
-            - BUSINESS_PROFESSIONAL
-            - CHARITY_CAUSES
-            - COMMUNITY_CULTURE
-            - FAMILY_EDUCATION
-            - FASHION_BEAUTY
-            - FILM_MEDIA_ENTERTAINMENT
-            - FOOD_DRINK
-            - GOVERNMENT_POLITICS
-            - HEALTH_WELLNESS
-            - HOBBIES_SPECIAL_INTEREST
-            - HOME_LIFESTYLE
-            - PERFORMING_VISUAL_ARTS
-            - RELIGION_SPIRITUALITY
-            - SCHOOL_ACTIVITIES
-            - SCIENCE_TECHNOLOGY
-            - SEASONAL_HOLIDAY
-            - SPORTS_FITNESS
-            - TRAVEL_OUTDOOR
+            - AUTOCAR
+            - BOAT
+            - AIR
+            - PROFESSIONAL
+            - CULTURE
+            - FASHION
+            - BEAUTY
+            - POLITICS
+            - HOBBIES
+            - ARTS
+            - RELIGION
+            - SCHOOL
+            - SCIENCE
+            - TECHNOLOGY
+            - HOLIDAY
+            - FITNESS
+            - NFT
+            - TRAVEL
+            - HEALTH
+            - PHOTOGRAPHY
+            - LIFESTYLE
+            - ENTERTAINMENT
+            - ANIMALS
+            - EDUCATION
+            - FOOD
           type: array
         address:
           $ref: '#/components/schemas/Address'
@@ -231,13 +257,11 @@ components:
           type: string
         endDate:
           type: string
-        images:
-          items:
-            type: string
-          type: array
         summary:
+          nullable: true
           type: string
         description:
+          nullable: true
           type: string
         visibilityType:
           enum:
@@ -249,9 +273,11 @@ components:
             - PUBLIC
             - PRIVATE
           type: string
-        eventBannerPicture:
+        eventPic:
+          nullable: true
           type: string
-        eventImage:
+        bannerPic:
+          nullable: true
           type: string
         maxAttendee:
           type: integer
@@ -282,6 +308,7 @@ components:
         address1:
           type: string
         address2:
+          nullable: true
           type: string
         postalCode:
           type: string
@@ -289,6 +316,10 @@ components:
           items:
             $ref: '#/components/schemas/Event'
           type: array
+        lat:
+          type: number
+        lng:
+          type: number
       type: object
     Ticket:
       properties:
@@ -302,11 +333,18 @@ components:
           type: integer
         price:
           type: number
+        ticketType:
+          enum:
+            - PAUSED
+            - ON_SALE
+          default: ON_SALE
+          type: string
         startDate:
           type: string
         endDate:
           type: string
         description:
+          nullable: true
           type: string
         event:
           $ref: '#/components/schemas/Event'
@@ -348,6 +386,7 @@ components:
         collectionName:
           type: string
         description:
+          nullable: true
           type: string
         currency:
           enum:
@@ -362,6 +401,7 @@ components:
             - CREATED
             - ON_SALE
             - SOLD
+            - PAUSED
           default: CREATED
           type: string
         merchandise:
@@ -385,9 +425,8 @@ components:
           type: integer
         name:
           type: string
-        media:
-          type: string
-        description:
+        image:
+          nullable: true
           type: string
         price:
           type: number
