@@ -17,16 +17,21 @@ Frontend is deployed at `http://localhost:3000`
 Backend is deployed at `http://localhost:3000/api`
 Database GUI, it will be deployed at `http://localhost:5555`
 
-### Directory layout
+### Directory layout (Include some of the more important folders with their explanation)
 
     .
+    ├── artifacts              # Contains our smart contract's ABI
     ├── components             # Contains your reusable components
+    ├── contracts              # Contains our smart contract's actual code
     ├── lib                    # Contains global functions that we will be using
     ├── pages                  # Contains app's pages and the backend endpoints inside /api
     ├── prisma                 # Contains codes related to prisma (ORM)
     ├── prisma/seed.ts         # Contains seed file (test data)
     ├── public                 # Contains our assets
+    ├── scripts                # Contain our smart contract's deployment script
     ├── styles                 # Global styles
+    ├── types                  # Contain typings
+    ├── utils                  # Utility functions
     ├── .dockerignore          # Code to ignore while deploying to docker
     ├── .env                   # Environment variables
     ├── .eslintrc.json         # Linting settings
