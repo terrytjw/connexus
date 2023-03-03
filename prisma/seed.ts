@@ -316,10 +316,10 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
           totalMerchSupply: 100,
-          price: 10,
-          users : {
-            connect: { userId: 4}
-          }
+          price: 20.0,
+          users: {
+            connect: { userId: 4 },
+          },
         },
       },
       creator: {
@@ -341,10 +341,10 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.jpg",
           totalMerchSupply: 100,
-          price: 10,
-          users : {
-            connect: { userId: 4}
-          }
+          price: 20.0,
+          users: {
+            connect: { userId: 4 },
+          },
         },
       },
       creator: {
@@ -366,10 +366,10 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.jpg",
           totalMerchSupply: 100,
-          price: 10,
-          users : {
-            connect: { userId: 4}
-          }
+          price: 20.0,
+          users: {
+            connect: { userId: 4 },
+          },
         },
       },
       creator: {
