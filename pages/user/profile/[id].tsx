@@ -15,7 +15,7 @@ import UserProfileCollections from "../../../components/UserProfileTabs/Collecti
 import UserProfileCreations from "../../../components/UserProfileTabs/Creations";
 import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { User } from "@prisma/client";
-import { profile, collections } from "../../../utils/dummyData";
+import { profile, collections, collectibles } from "../../../utils/dummyData";
 import copy from "copy-to-clipboard";
 import { toast, Toaster } from "react-hot-toast";
 
@@ -48,8 +48,10 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                     {userData.displayName} - mobile
                   </h1>
                   <p className="mt-1 text-gray-500 sm:hidden">
-                    I'm fly, drippin' with dem peaches high ·{" "}
-                    <span className="italic">Joined 2 Sep 1969</span>
+                    {/* I'm fly, drippin' with dem peaches high ·{" "} */}
+                    {userData.bio ? userData.bio : "No bio"}
+                    <br />
+                    {/* <span className="italic">Joined 2 Sep 1969</span> */}
                   </p>
                 </div>
               </div>
@@ -60,8 +62,10 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 {userData.displayName} - desktop
               </h1>
               <p className="mt-1 text-gray-500">
-                I'm fly, drippin' with dem peaches high ·{" "}
-                <span className="italic underline">Joined 2 Sep 1969</span>
+                {/* I'm fly, drippin' with dem peaches high ·{" "} */}
+                {userData.bio ? userData.bio : "No bio"}
+                <br />
+                {/* <span className="italic underline">Joined 2 Sep 1969</span> */}
               </p>
             </div>
 
@@ -108,7 +112,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 setActiveTab(index);
               }}
             >
-              {activeTab == 0 && <UserProfileFeatured products={collections} />}
+              {activeTab == 0 && <UserProfileFeatured products={userData.merchandise} />}
               {activeTab == 1 && <UserProfileCreations />}
               {activeTab == 2 && (
                 <UserProfileCollections products={collections} />

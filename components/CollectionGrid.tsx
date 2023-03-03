@@ -15,6 +15,7 @@ type CollectionGridItemProps = {
 const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
   if (!item) return <Skeleton height={350} />;
 
+  const image = item.merchandise ? item.merchandise[0].image : item.image; // To be removed
   return (
     <Link
       href={`/merchandise/${item.collectionId}`}
@@ -25,7 +26,8 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           fill
           sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
           className="object-cover object-center"
-          src={item.merchandise[0].image}
+          // src={item.merchandise[0].image}
+          src={image}
           alt="Collection image"
         />
         <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
