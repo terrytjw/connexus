@@ -40,7 +40,7 @@ var signer = new ethers.Wallet(smartContract.privateKey, provider);
 // console.log(signer);
 
 const CreatorEventCreate = () => {
-  const { handleSubmit, setValue, control, watch, trigger } =
+  const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
         eventName: "",
@@ -60,6 +60,7 @@ const CreatorEventCreate = () => {
         },
       },
     });
+
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
     control,
@@ -74,7 +75,6 @@ const CreatorEventCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>();
   const [isCreateSuccessModalOpen, setIsCreateSuccessModalOpen] =
     useState(false);
-
   // create contract and db entry
   const createEvent = async (event: any) => {
     /*
@@ -153,7 +153,7 @@ const CreatorEventCreate = () => {
         }: Ticket) => ({
           ...ticketInfo,
           price: Number(price),
-          currentTicketSupply: Number(totalTicketSupply), // set current supply to total supply number
+          // currentTicketSupply: 0, don't pass in current supply
           totalTicketSupply: Number(totalTicketSupply),
           startDate: new Date(startDate),
           endDate: new Date(endDate),
@@ -341,6 +341,7 @@ const CreatorEventCreate = () => {
                   <TicketFormPage
                     isEdit={false} // tells the form page that user is not editing
                     watch={watch}
+                    getFieldState={getFieldState}
                     control={control}
                     trigger={trigger}
                     fields={fields}

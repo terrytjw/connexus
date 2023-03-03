@@ -4,6 +4,7 @@ import {
   Controller,
   FieldArrayWithId,
   UseFieldArrayUpdate,
+  UseFormGetFieldState,
   UseFormTrigger,
   UseFormWatch,
 } from "react-hook-form";
@@ -13,10 +14,12 @@ import InputGroup from "../../../InputGroup";
 import { FaDollarSign, FaTrash } from "react-icons/fa";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
 import { TicketType } from "@prisma/client";
+import { isValid } from "date-fns";
 
 type TicketFormPageProps = {
   isEdit: boolean;
   watch: UseFormWatch<EventWithTicketsandAddress>;
+  getFieldState: UseFormGetFieldState<EventWithTicketsandAddress>;
   control: Control<EventWithTicketsandAddress, any>;
   trigger: UseFormTrigger<EventWithTicketsandAddress>;
   fields: FieldArrayWithId<EventWithTicketsandAddress, "tickets", "id">[];
@@ -29,6 +32,7 @@ type TicketFormPageProps = {
 const TicketFormPage = ({
   isEdit,
   watch,
+  getFieldState,
   control,
   trigger,
   fields,
@@ -42,15 +46,24 @@ const TicketFormPage = ({
   // console.log("form tickets -> ", tickets);
 
   const checkIsEditAndDatePassed = (value: string | Date): boolean => {
-    return isEdit && !!(new Date(value) < new Date());
+    /**
+     * Disable when
+     * 1. is in edit page,
+     * 2. is not a valid date
+     * 3. date has passed
+     * */
+    return (
+      isEdit && isValid(new Date(value)) && !!(new Date(value) < new Date())
+    );
   };
+
   return (
     <div>
       <section>
         {fields.map((ticket, index) => (
           <div
             id={`ticket-${index + 1}`}
-            key={ticket.id} // use id if the ticket id is unique
+            key={ticket.id} // unique
             className=""
           >
             {index > 0 && <div className="divider" />}
@@ -61,7 +74,7 @@ const TicketFormPage = ({
               </h2>
               {index > 0 && (
                 <FaTrash
-                  onClick={() => removeTicket(Number(ticket.id))}
+                  onClick={() => removeTicket(index)}
                   className="text-lg text-red-400 hover:cursor-pointer"
                 />
               )}
@@ -124,7 +137,15 @@ const TicketFormPage = ({
                 name={`tickets.${index}.totalTicketSupply`}
                 rules={{
                   required: "Available quantity is required",
-                  validate: (value) => value > 0 || "Minimum quantity is 1",
+                  validate: {
+                    moreThanOne: (value) =>
+                      value > 0 || "Minimum quantity is 1",
+                    // lessThanCurrentSupply: (value) =>
+                    //   isEdit
+                    //     ? value >= tickets[index].currentTicketSupply ??
+                    //       (0 || "Available Qty cannot be less than Issued Qty")
+                    //     : true,
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -181,6 +202,12 @@ const TicketFormPage = ({
                     beforeEventEnd: (value) =>
                       new Date(value) < new Date(endDate) ||
                       "Sale Start Date must be before Event End Date ",
+                    afterNow: (value) =>
+                      !getFieldState(`tickets.${index}.startDate`).isDirty && // field not modified
+                      checkIsEditAndDatePassed(value) // edit mode and date has passed
+                        ? true
+                        : new Date(value) > new Date() ||
+                          "Start Date must be later than now",
                   },
                 }}
                 render={({
@@ -190,14 +217,17 @@ const TicketFormPage = ({
                   <Input
                     type="datetime-local"
                     label="Start Date and Time"
-                    value={value?.toString()} // NOTE: native input cannot accept dates need to see how to pass to be
+                    value={value?.toString()}
                     onChange={onChange}
                     placeholder="Start Date and Time"
                     size="md"
                     variant="bordered"
                     errorMessage={error?.message}
                     className="max-w-3xl align-middle text-gray-400"
-                    disabled={checkIsEditAndDatePassed(value)} // cannot edit if event has already started
+                    disabled={
+                      !getFieldState(`tickets.${index}.startDate`).isDirty && // field not modified
+                      checkIsEditAndDatePassed(value) // date passed
+                    }
                   />
                 )}
               />
