@@ -115,6 +115,7 @@ export async function createCollection(
     scAddress: collection_contract.address,
     merchURIs: [],
     merchandise: collectibles,
+    fixedPrice: price,
     creatorId: creator_id,
   };
   console.log(new_collection);
