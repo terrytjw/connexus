@@ -133,7 +133,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     );
     const eventInfo = response_event.data as EventWithTicketsandAddress;
     const { scAddress, ticketURIs, tickets } = eventInfo;
-    console.log("eventInfo -> ", eventInfo);
+    console.log("db eventInfo -> ", eventInfo);
 
     //assign new tickets into ticket categories
     const ticket_categories = newEvent.tickets;
@@ -172,7 +172,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         ) {
           console.log("Not allowed to change");
           //return ""
-          
         }
         //time to update
         var ticket = {
@@ -335,6 +334,37 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     } else {
       // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
+      // remove tickets since its updated separately before
+      const {
+        address,
+        tickets: { tempTickets },
+        ...newEventWOTicketsNAddress
+      } = newEvent;
+
+      // update address separately
+      const addressRes = await axios.post(
+        "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
+        address
+      );
+
+      console.log("updated address ->", addressRes.data);
+
+      const updated_event_WITHOUT_uri: Partial<EventWithTicketsandAddress> = {
+        ...newEventWOTicketsNAddress,
+      }; //redo again to add the new URI arr
+
+      console.log("updated event WITHOUT uri: -", updated_event_WITHOUT_uri);
+      let updated_response = await axios.post(
+        "http://localhost:3000/api/events/" + event_id.toString(),
+        updated_event_WITHOUT_uri
+      );
+
+      let updated_data = updated_response.data;
+      console.log(
+        `updating event via /events/${event_id.toString()} ->`,
+        updated_data
+      );
+      console.log("Data uploaded");
       setIsLoading(false);
     }
   }
