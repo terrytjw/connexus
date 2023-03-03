@@ -402,8 +402,8 @@ async function generateEvent() {
           lng: 1.2,
         },
       },
-      startDate: new Date("2023-03-22"),
-      endDate: new Date("2023-03-25"),
+      startDate: new Date("2023-01-22"),
+      endDate: new Date("2023-01-25"),
       summary:
         "This is a live valorant seesion with Josh. He will be playing with his fans and answering questions.",
       description:
