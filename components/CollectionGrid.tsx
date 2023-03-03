@@ -36,15 +36,16 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
             className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50"
           />
           <p className="relative text-lg font-semibold text-white">
-            {item.price}
+            {item.price ? `$${item.price}` : ""}
+            {/* // ${item.price} */}
           </p>
-          <Button
+          {/* <Button
             variant="solid"
             size="sm"
             className="relative rounded-full text-lg font-semibold text-white"
           >
             Buy
-          </Button>
+          </Button> */}
         </div>
       </div>
       <h3 className="mt-4 font-medium text-gray-900">{item.collectionName}</h3>
