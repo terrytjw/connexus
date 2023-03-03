@@ -54,7 +54,7 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                   0
                 )}
               </td>
-              <td className="text-gray-700">{item.merchandise[0].price}</td>
+              <td className="text-gray-700">{item.fixedPrice}</td>
               <td className="text-gray-700">
                 {item.premiumChannel ? (
                   <Badge size="sm" label={item.premiumChannel.name} />
