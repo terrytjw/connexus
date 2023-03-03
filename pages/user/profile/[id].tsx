@@ -18,9 +18,10 @@ import { User } from "@prisma/client";
 import { profile, collections, collectibles } from "../../../utils/dummyData";
 import copy from "copy-to-clipboard";
 import { toast, Toaster } from "react-hot-toast";
+import { UserWithAllInfo } from "../../api/users/[userId]";
 
 type UserProfilePageProps = {
-  userData: User;
+  userData: UserWithAllInfo;
 };
 const UserProfilePage = ({ userData }: UserProfilePageProps) => {
   const [activeTab, setActiveTab] = useState(0);

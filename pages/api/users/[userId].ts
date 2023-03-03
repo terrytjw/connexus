@@ -11,7 +11,7 @@ import {
   checkIfStringIsBase64,
 } from "../../../lib/supabase";
 
-type UserWithAllInfo = Prisma.UserGetPayload<{
+export type UserWithAllInfo = Prisma.UserGetPayload<{
   include: {
     tickets: true;
     merchandise: true;
