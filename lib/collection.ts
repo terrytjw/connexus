@@ -17,14 +17,14 @@ import axios from "axios";
 //   response.map((item: Collection) => {
 //     return {
 //       collectionName : item.collectionName
-      
+
 //     }
 //   })
 //   return response;
 // }
 
-export function filterCollectionByName(merchandises :any[],keyword: string){
-  return merchandises.filter((item: any) => {
-    return item.collectionName.toLowerCase().includes(keyword.toLowerCase())
-  })
+export function filterCollectionByName(collections: any[], keyword: string) {
+  return collections.filter((item: any) => {
+    return item.collectionName.toLowerCase().includes(keyword.toLowerCase());
+  });
 }

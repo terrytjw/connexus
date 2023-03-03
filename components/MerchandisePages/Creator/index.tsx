@@ -16,17 +16,18 @@ import { updateCollection } from "../../../lib/merchandise-helpers";
 import { useSession } from "next-auth/react";
 
 const CreatorCollectionsPage = () => {
-
-
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
-  
+
   const {
     data: collectionData,
     error,
     isLoading: isCollectionDataLoading,
     mutate,
-  } = useSWR(`http://localhost:3000/api/collections?userId=${userId}`, swrFetcher);
+  } = useSWR(
+    `http://localhost:3000/api/collections?userId=${userId}`,
+    swrFetcher
+  );
 
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
@@ -39,7 +40,7 @@ const CreatorCollectionsPage = () => {
     defaultValues: {
       name: "",
       description: "",
-      premiumChannel: null,
+      // premiumChannel: null,
       collectionId: 0,
     },
   });
@@ -48,14 +49,14 @@ const CreatorCollectionsPage = () => {
   //     setFilteredCollection(collectionData)
   // }, [collectionData])
   const filteredData =
-    query === ''
+    query === ""
       ? collectionData
-      : collectionData.filter((item : any) =>
+      : collectionData.filter((item: any) =>
           item.collectionName
             .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, ''))
-        )
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, ""))
+        );
 
   const [name, description, premiumChannel] = watch([
     "name",
@@ -130,7 +131,7 @@ const CreatorCollectionsPage = () => {
             variant="bordered"
           />
 
-          <div className="form-control mb-4 w-full">
+          {/* <div className="form-control mb-4 w-full">
             <label className="label">
               <span className="label-text">Link to Premium Channel</span>
             </label>
@@ -153,7 +154,7 @@ const CreatorCollectionsPage = () => {
             <label className="label">
               <span className="label-text-alt text-red-500"></span>
             </label>
-          </div>
+          </div> */}
 
           <Button variant="solid" size="md">
             Save Changes
@@ -221,10 +222,10 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
-                setQuery(e.target.value)
-                console.log(e.target.value)
+                setQuery(e.target.value);
+                console.log(e.target.value);
                 // setFilteredCollection(filterCollection(collectionData)) // to be removed in future
-                console.log(filteredData)
+                console.log(filteredData);
               }}
             />
           </div>
@@ -232,7 +233,9 @@ const CreatorCollectionsPage = () => {
       </div>
 
       <TabGroupBordered
-        tabs={["Featured", "On Sale", "Sold"]}
+        // hiding for 1sr
+        // tabs={["Featured", "On Sale", "Sold"]}
+        tabs={["Created"]}
         activeTab={activeTab}
         setActiveTab={(index: number) => {
           setActiveTab(index);
@@ -258,9 +261,9 @@ const CreatorCollectionsPage = () => {
             }}
           />
         )}
-        {activeTab == 1 && (
+        {/* {activeTab == 1 && (
           <CollectionTable
-            data={collectionData}
+            data={filteredData}
             columns={[
               "Collection No.",
               "Collection Name",
@@ -276,8 +279,8 @@ const CreatorCollectionsPage = () => {
               setIsModalOpen(true);
             }}
           />
-        )}
-        {activeTab == 2 && (
+        )} */}
+        {/* {activeTab == 2 && (
           <CollectionTable
             data={collections}
             columns={[
@@ -289,7 +292,7 @@ const CreatorCollectionsPage = () => {
               "Premium Channel",
             ]}
           />
-        )}
+        )} */}
       </TabGroupBordered>
     </main>
   );

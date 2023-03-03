@@ -15,14 +15,19 @@ type CollectionGridItemProps = {
 const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
   if (!item) return <Skeleton height={350} />;
 
+  const image = item.merchandise ? item.merchandise[0].image : item.image; // To be removed
   return (
-    <Link href={`/merchandise/${item.collectionId}`} className="group text-sm">
+    <Link
+      href={`/merchandise/${item.collectionId}`}
+      className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+    >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all group-hover:opacity-75">
         <Image
           fill
           sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
           className="object-cover object-center"
-          src={item.collectibles[0].image}
+          // src={item.merchandise[0].image}
+          src={image}
           alt="Collection image"
         />
         <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
@@ -42,7 +47,7 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           </Button>
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{item.name}</h3>
+      <h3 className="mt-4 font-medium text-gray-900">{item.collectionName}</h3>
       <p className="mt-2 text-sm text-gray-500">{item.description}</p>
       {item.premiumChannel ? (
         <div className="mt-2 text-sm font-semibold text-blue-600">

@@ -49,7 +49,10 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
               <td className="text-gray-700">{item.collectionName}</td>
               <td className="text-gray-700">{item.description}</td>
               <td className="text-gray-700">
-                {item.merchandise[0].totalMerchSupply}
+                {item.merchandise.reduce(
+                  (total: number, m: any) => total + m.totalMerchSupply,
+                  0
+                )}
               </td>
               <td className="text-gray-700">{item.merchandise[0].price}</td>
               <td className="text-gray-700">

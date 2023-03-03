@@ -4,16 +4,19 @@ import CollectedTab from "./CollectedTab";
 import MarketplaceTab from "./MarketplaceTab";
 import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
-import { collectibles, collections } from "../../../utils/dummyData";
 import { MerchandisePriceType } from "../../../pages/api/merch";
-import { filterMerchandiseByPriceType } from "../../../lib/merchandise";
+import {
+  filterMerchandiseByName,
+  filterMerchandiseByPriceType,
+} from "../../../lib/merchandise";
 import { filterCollectionByName } from "../../../lib/collection";
 
-const FanCollectionsPage = ({ merchandise }: any) => {
+const FanCollectionsPage = ({ merchandise, collections }: any) => {
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
 
   const [filteredMerchandise, setFilteredMerchandise] = useState(merchandise);
+  const [filteredCollections, setFilteredCollections] = useState(collections);
 
   const collectedTabfilters = [
     { id: 1, name: "Filter By" },
@@ -74,6 +77,15 @@ const FanCollectionsPage = ({ merchandise }: any) => {
             placeholder="Search Collection"
             onChange={(e) => {
               setSearchString(e.target.value);
+              if (activeTab === 0) {
+                setFilteredMerchandise(
+                  filterMerchandiseByName(merchandise, e.target.value)
+                );
+              } else {
+                setFilteredCollections(
+                  filterCollectionByName(collections, e.target.value)
+                );
+              }
             }}
           />
         </div>
@@ -101,7 +113,7 @@ const FanCollectionsPage = ({ merchandise }: any) => {
           }}
         >
           {activeTab == 0 && <CollectedTab products={filteredMerchandise} />}
-          {activeTab == 1 && <MarketplaceTab products={collections} />}
+          {activeTab == 1 && <MarketplaceTab products={filteredCollections} />}
         </TabGroupBordered>
 
         {/* desktop */}
@@ -117,9 +129,15 @@ const FanCollectionsPage = ({ merchandise }: any) => {
               placeholder="Search Collection"
               onChange={async (e) => {
                 setSearchString(e.target.value);
-                setFilteredMerchandise(
-                  filterCollectionByName(merchandise, e.target.value)
-                );
+                if (activeTab === 0) {
+                  setFilteredMerchandise(
+                    filterMerchandiseByName(merchandise, e.target.value)
+                  );
+                } else {
+                  setFilteredCollections(
+                    filterCollectionByName(collections, e.target.value)
+                  );
+                }
               }}
             />
           </div>

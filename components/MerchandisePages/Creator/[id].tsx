@@ -10,14 +10,14 @@ import Select from "../../Select";
 import { channels, collections } from "../../../utils/dummyData";
 import { ChannelType, Collection } from "../../../utils/types";
 
-const CreatorCollectionPage = () => {
+const CreatorCollectionPage = ({ collection }: any) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { handleSubmit, setValue, watch } = useForm<Collection>({
     defaultValues: {
-      name: collections[0].name,
-      description: collections[0].description,
-      premiumChannel: collections[0].premiumChannel,
+      name: collection.collectionName,
+      description: collection.description,
+      premiumChannel: collection.premiumChannel,
     },
   });
 
@@ -69,7 +69,7 @@ const CreatorCollectionPage = () => {
             variant="bordered"
           />
 
-          <div className="form-control mb-4 w-full">
+          {/* <div className="form-control mb-4 w-full">
             <label className="label">
               <span className="label-text">Link to Premium Channel</span>
             </label>
@@ -92,7 +92,7 @@ const CreatorCollectionPage = () => {
             <label className="label">
               <span className="label-text-alt text-red-500"></span>
             </label>
-          </div>
+          </div> */}
 
           <Button variant="solid" size="md">
             Save Changes
@@ -109,25 +109,29 @@ const CreatorCollectionPage = () => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collections[0].name}</h1>
+        <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
       </div>
 
       <div className="mt-6">
         <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 className="text-gray-700">{collections[0].description}</h2>
-            <Badge
-              className="h-min"
-              size="lg"
-              label={`Linked to ${collections[0].premiumChannel?.name}`}
-            />
+            <h2 className="text-gray-700">{collection.description}</h2>
+            {collection.premiumChannel ? (
+              <Badge
+                className="h-min"
+                size="lg"
+                label={`Linked to ${collection.premiumChannel?.name}`}
+              />
+            ) : null}
           </div>
 
           <div className="mt-4 flex flex-col justify-between gap-4 sm:flex-row">
             <div className="flex flex-col gap-y-4">
               <span>
                 <p className="text-sm text-gray-700">Price</p>
-                <p className="text-lg font-semibold text-blue-600">$5</p>
+                <p className="text-lg font-semibold text-blue-600">
+                  ${collection.fixedPrice}
+                </p>
               </span>
             </div>
 
@@ -142,10 +146,7 @@ const CreatorCollectionPage = () => {
             </div>
           </div>
         </div>
-        <CollectibleGrid
-          data={collections[0].collectibles}
-          collectedTab={false}
-        />
+        <CollectibleGrid data={collection.merchandise} collectedTab={false} />
       </div>
     </main>
   );
