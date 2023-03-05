@@ -10,7 +10,7 @@ import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
 import TextArea from "../../components/TextArea";
 import { Collectible } from "../../utils/types";
-import { createCollection } from "../../lib/merchandise-helpers";
+import { createCollection } from "../../lib/api-helpers/collection-api";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";

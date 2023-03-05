@@ -4,7 +4,7 @@ import { FaEdit, FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 import {
   pauseCollectionMint,
   startCollectionMint,
-} from "../../lib/merchandise-helpers";
+} from "../../lib/api-helpers/collection-api";
 import Badge from "../Badge";
 
 type CollectionTableProps = {
