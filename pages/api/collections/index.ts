@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import {
   PrismaClient,
   Collection,
@@ -15,7 +15,7 @@ import {
   MerchandisePartialType,
   searchMerchandise,
   updatedMerchandise,
-} from "../../../lib/merch";
+} from "../../../lib/prisma/merchandise-prisma";
 import {
   checkIfStringIsBase64,
   retrieveImageUrl,
@@ -114,7 +114,7 @@ export default async function handler(
           creatorId: userId ? userId : undefined,
           collectionName: { contains: keyword, mode: "insensitive" },
         },
-        include : {merchandise : true}
+        include: { merchandise: true },
       });
       res.status(200).json(collections);
     } catch (error) {

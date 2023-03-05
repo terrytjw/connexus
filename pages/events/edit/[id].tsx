@@ -21,12 +21,12 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../../lib/constants";
+import { smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
-import { formatDateForInput } from "../../../lib/date-util";
+import { formatDateForInput } from "../../../utils/date-util";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(

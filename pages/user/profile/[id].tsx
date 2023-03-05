@@ -19,6 +19,7 @@ import { profile, collections, collectibles } from "../../../utils/dummyData";
 import copy from "copy-to-clipboard";
 import { toast, Toaster } from "react-hot-toast";
 import { UserWithAllInfo } from "../../api/users/[userId]";
+import { getUserInfo } from "../../../lib/api-helpers/user-api";
 
 type UserProfilePageProps = {
   userData: UserWithAllInfo;
@@ -113,7 +114,9 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 setActiveTab(index);
               }}
             >
-              {activeTab == 0 && <UserProfileFeatured products={userData.merchandise} />}
+              {activeTab == 0 && (
+                <UserProfileFeatured products={userData.merchandise} />
+              )}
               {activeTab == 1 && <UserProfileCreations />}
               {activeTab == 2 && (
                 <UserProfileCollections products={collections} />
@@ -144,10 +147,16 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
   const userId = session?.user.userId;
 
-  // use axios GET method to fetch data
-  const { data: userData } = await axios.get(
-    `http://localhost:3000/api/users/${userId}`
-  );
+  if (!userId) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  const userData = await getUserInfo(parseInt(userId));
 
   return {
     props: {

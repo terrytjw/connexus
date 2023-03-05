@@ -3,8 +3,8 @@ import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import Badge from "../Badge";
 import axios from "axios";
 import Link from "next/link";
-import { formatDate } from "../../lib/date-util";
-import { truncateString } from "../../lib/text-truncate";
+import { formatDate } from "../../utils/date-util";
+import { truncateString } from "../../utils/text-truncate";
 import router from "next/router";
 import { CategoryType } from "@prisma/client";
 function classNames(...classes: string[]) {

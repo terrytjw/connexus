@@ -16,7 +16,7 @@ import Button from "../../../Button";
 import TicketCard from "../../TicketCard";
 import { UseFormWatch } from "react-hook-form";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
-import { formatDate } from "../../../../lib/date-util";
+import { formatDate } from "../../../../utils/date-util";
 
 type EventPreviewPageProps = {
   watch: UseFormWatch<EventWithTicketsandAddress>;

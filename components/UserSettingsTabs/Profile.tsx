@@ -1,20 +1,21 @@
 import React, { useState } from "react";
-import Avatar from "../Avatar";
 import AvatarInput from "../AvatarInput";
-import Banner from "../Banner";
 import Button from "../Button";
 import Input from "../Input";
 import TextArea from "../TextArea";
 import { Controller, useForm } from "react-hook-form";
 import BannerInput from "../BannerInput";
 import InputGroup from "../InputGroup";
-import axios from "axios";
 import { User } from "@prisma/client";
+import { updateUserInfo } from "../../lib/api-helpers/user-api";
+import { useRouter } from "next/router";
 
 type ProfileSettingsProps = {
   userData: User;
 };
 const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
+  const router = useRouter();
+
   type EditProfileForm = {
     displayName: string;
     username: string;
@@ -35,19 +36,16 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
   });
 
   const [bannerPic, profilePic] = watch(["bannerPic", "profilePic"]);
-  console.log("user data!! -> ", userData);
 
   const onSubmit = async (formData: EditProfileForm) => {
     const updatedUserData = {
       ...userData, // this is the user data from the database
       ...formData, // this is the user data fields from the form overwriting the database data
     };
-    const res = await axios.post(
-      `http://localhost:3000/api/users/${userData.userId}`,
-      updatedUserData
-    );
-    const temp = res.data;
-    console.log("temp -> ", temp);
+
+    const response = await updateUserInfo(userData.userId, updatedUserData);
+    router.push(`/user/profile/${userData.userId}`);
+    // TODO: add toast in the future
   };
 
   return (

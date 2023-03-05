@@ -1,7 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
-import { PrismaClient, Community, CategoryType, ChannelType } from "@prisma/client";
-import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../lib/supabase";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
+import {
+  PrismaClient,
+  Community,
+  CategoryType,
+  ChannelType,
+} from "@prisma/client";
+import {
+  checkIfStringIsBase64,
+  retrieveImageUrl,
+  uploadImage,
+} from "../../../lib/supabase";
 import { COMMUNITY_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();
@@ -56,10 +65,10 @@ const prisma = new PrismaClient();
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb'
-    }
-  }
-}
+      sizeLimit: "20mb",
+    },
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -94,18 +103,20 @@ export default async function handler(
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { communityId: cursor } : undefined,
         orderBy: {
-          communityId: 'asc'
+          communityId: "asc",
         },
         where: {
-          tags: filter ? {
-            hasSome: filter
-          } : undefined,
+          tags: filter
+            ? {
+                hasSome: filter,
+              }
+            : undefined,
         },
         include: {
           members: {
-            select: { userId: true }
-          }
-        }
+            select: { userId: true },
+          },
+        },
       });
       res.status(200).json(communities);
     } catch (error) {
@@ -114,7 +125,11 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(keyword: string, cursor: number, filter?: CategoryType[]) {
+  async function handleGETWithKeyword(
+    keyword: string,
+    cursor: number,
+    filter?: CategoryType[]
+  ) {
     try {
       const communities = await prisma.community.findMany({
         take: 10,
@@ -126,18 +141,20 @@ export default async function handler(
         where: {
           name: {
             contains: keyword,
-            mode: 'insensitive'
+            mode: "insensitive",
           },
-          tags: filter ? {
-            hasSome: filter
-          } : undefined,
+          tags: filter
+            ? {
+                hasSome: filter,
+              }
+            : undefined,
         },
         include: {
           members: {
-            select: { userId: true }
-          }
-        }
-      })
+            select: { userId: true },
+          },
+        },
+      });
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -152,10 +169,7 @@ export default async function handler(
       let bannerPicUrl = "";
 
       if (profilePic && checkIfStringIsBase64(profilePic)) {
-        const { data, error } = await uploadImage(
-          COMMUNITY_BUCKET,
-          profilePic
-        );
+        const { data, error } = await uploadImage(COMMUNITY_BUCKET, profilePic);
 
         if (error) {
           const errorResponse = handleError(error);
@@ -170,10 +184,7 @@ export default async function handler(
       }
 
       if (bannerPic && checkIfStringIsBase64(bannerPic)) {
-        const { data, error } = await uploadImage(
-          COMMUNITY_BUCKET,
-          bannerPic
-        );
+        const { data, error } = await uploadImage(COMMUNITY_BUCKET, bannerPic);
 
         if (error) {
           const errorResponse = handleError(error);
@@ -188,19 +199,19 @@ export default async function handler(
         profilePic: profilePictureUrl,
         bannerPic: bannerPicUrl,
       };
-      
+
       const response = await prisma.community.create({
-        data: { 
+        data: {
           ...updatedCommunityInfo,
           channels: {
             create: [
               {
                 name: "Home Channel",
-                channelType: ChannelType.REGULAR
-              }
-            ]
-          }
-        }
+                channelType: ChannelType.REGULAR,
+              },
+            ],
+          },
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

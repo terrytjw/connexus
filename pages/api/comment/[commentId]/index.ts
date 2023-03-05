@@ -1,6 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -114,12 +117,12 @@ export default async function handler(
         data: { ...comment },
         include: {
           likes: {
-            select: { userId: true }
+            select: { userId: true },
           },
           commenter: {
-            select: { userId: true, username: true, profilePic: true }
-          }
-        }
+            select: { userId: true, username: true, profilePic: true },
+          },
+        },
       });
       res.status(200).json(response);
     } catch (error) {

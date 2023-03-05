@@ -22,7 +22,7 @@ import {
 } from "../../../utils/types";
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../../lib/constants";
+import { smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Link from "next/link";

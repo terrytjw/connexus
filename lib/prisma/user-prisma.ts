@@ -1,5 +1,5 @@
 import { PrismaClient, User } from "@prisma/client";
-import { generateUniqueUsername } from "./user-util";
+import { generateUniqueUsername } from "../../utils/user-util";
 
 export interface UserPartialType extends Partial<User> {}
 
@@ -24,14 +24,14 @@ export async function searchUser(searchType: UserPartialType) {
       joinedCommunities: {
         include: {
           _count: {
-            select: { members: true }
-          }
-        }
+            select: { members: true },
+          },
+        },
       },
       joinedChannels: true,
       tickets: true,
-      merchandise: true
-    }
+      merchandise: true,
+    },
   });
 }
 

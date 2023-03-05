@@ -1,24 +1,28 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import CollectionTable from "../CollectionTable";
 import Button from "../../Button";
 import Input from "../../Input";
 import Modal from "../../Modal";
-import Select from "../../Select";
 import TabGroupBordered from "../../TabGroupBordered";
-import { collections, channels } from "../../../utils/dummyData";
-import { ChannelType, Collection } from "../../../utils/types";
+import { Collection } from "../../../utils/types";
 import useSWR from "swr";
 import { swrFetcher } from "../../../lib/swrFetcher";
 import Loading from "../../Loading";
-import { updateCollection } from "../../../lib/merchandise-helpers";
+import {
+  searchCollectionByName,
+  updateCollection,
+} from "../../../lib/api-helpers/collection-api";
 import { useSession } from "next-auth/react";
 
 const CreatorCollectionsPage = () => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
 
+  /**
+   * To be changed
+   */
   const {
     data: collectionData,
     error,
@@ -33,9 +37,6 @@ const CreatorCollectionsPage = () => {
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // const [query, setFilteredCollection] = useState<Collection[]>(collectionData);
-  const [query, setQuery] = useState("");
-
   const { handleSubmit, setValue, watch } = useForm<Collection>({
     defaultValues: {
       name: "",
@@ -45,30 +46,11 @@ const CreatorCollectionsPage = () => {
     },
   });
 
-  // useEffect(() => {
-  //     setFilteredCollection(collectionData)
-  // }, [collectionData])
-  const filteredData =
-    query === ""
-      ? collectionData
-      : collectionData.filter((item: any) =>
-          item.collectionName
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, ""))
-        );
-
   const [name, description, premiumChannel] = watch([
     "name",
     "description",
     "premiumChannel",
   ]);
-
-  // function filterCollection(collectionData : any[]){
-  //   return collectionData.filter((collection: any) => {
-  //     return collection.collectionName.toLowerCase().includes(searchString.toLowerCase());
-  //   })
-  // }
 
   if (isCollectionDataLoading) return <Loading />;
 
@@ -222,10 +204,9 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
-                setQuery(e.target.value);
-                console.log(e.target.value);
-                // setFilteredCollection(filterCollection(collectionData)) // to be removed in future
-                console.log(filteredData);
+
+                // TODO: to display this in the table according to latest design (with infinite scrolling/pagination)
+                searchCollectionByName(0, parseInt(userId!), e.target.value);
               }}
             />
           </div>
@@ -243,7 +224,7 @@ const CreatorCollectionsPage = () => {
       >
         {activeTab == 0 && (
           <CollectionTable
-            data={filteredData}
+            data={[]} // TODO: hook up @LW
             columns={[
               "Collection No.",
               "Collection Name",

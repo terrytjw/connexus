@@ -1,6 +1,6 @@
 import { PrismaClient, Merchandise } from "@prisma/client";
 import axios from "axios";
-import prisma from "./prisma";
+import prisma from ".";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
 export enum MerchandisePriceType {

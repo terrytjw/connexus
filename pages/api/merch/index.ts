@@ -1,12 +1,16 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
 import {
   filterMerchandiseByPriceType,
   findAllMerchandise,
-} from "../../../lib/merch";
-import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+} from "../../../lib/prisma/merchandise-prisma";
+import {
+  checkIfStringIsBase64,
+  retrieveImageUrl,
+  uploadImage,
+} from "./../../../lib/supabase";
 
 export interface MerchandisePartialType extends Partial<Merchandise> {}
 export enum MerchandisePriceType {

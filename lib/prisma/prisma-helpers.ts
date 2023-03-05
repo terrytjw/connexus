@@ -1,5 +1,6 @@
 import { Prisma } from "@prisma/client";
 
+// Prismas error handling
 export function handleError(error: any): ErrorResponse {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     const errorResponse: ErrorResponse = {

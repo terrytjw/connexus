@@ -10,7 +10,7 @@ import {
   CollectionState,
   TicketType,
 } from "@prisma/client";
-import { saveUser } from "../lib/user";
+import { saveUser } from "../lib/prisma/user-prisma";
 
 const prisma = new PrismaClient();
 

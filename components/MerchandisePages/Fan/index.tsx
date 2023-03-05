@@ -8,8 +8,7 @@ import { MerchandisePriceType } from "../../../pages/api/merch";
 import {
   filterMerchandiseByName,
   filterMerchandiseByPriceType,
-} from "../../../lib/merchandise";
-import { filterCollectionByName } from "../../../lib/collection";
+} from "../../../lib/api-helpers/merchandise-api";
 
 const FanCollectionsPage = ({ merchandise, collections }: any) => {
   const [activeTab, setActiveTab] = useState(0);
@@ -79,11 +78,13 @@ const FanCollectionsPage = ({ merchandise, collections }: any) => {
               setSearchString(e.target.value);
               if (activeTab === 0) {
                 setFilteredMerchandise(
-                  filterMerchandiseByName(merchandise, e.target.value)
+                  [] // TODO: add in when filter endpoint is ready
+                  // filterMerchandiseByName(merchandise, e.target.value)
                 );
               } else {
                 setFilteredCollections(
-                  filterCollectionByName(collections, e.target.value)
+                  [] // TODO: add in when filter endpoint is ready
+                  // filterCollectionByName(collections, e.target.value)
                 );
               }
             }}
@@ -131,11 +132,13 @@ const FanCollectionsPage = ({ merchandise, collections }: any) => {
                 setSearchString(e.target.value);
                 if (activeTab === 0) {
                   setFilteredMerchandise(
-                    filterMerchandiseByName(merchandise, e.target.value)
+                    [] // TODO: add in when filter endpoint is ready
+                    // filterMerchandiseByName(merchandise, e.target.value)
                   );
                 } else {
                   setFilteredCollections(
-                    filterCollectionByName(collections, e.target.value)
+                    [] // TODO: add in when filter endpoint is ready
+                    // filterCollectionByName(collections, e.target.value)
                   );
                 }
               }}

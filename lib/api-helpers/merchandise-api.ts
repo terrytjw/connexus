@@ -1,5 +1,5 @@
-import { MerchandisePriceType } from "../pages/api/merch";
-import { API_URL, MERCHANDISE_ENDPOINT } from "./constant";
+import { MerchandisePriceType } from "../../pages/api/merch";
+import { API_URL, MERCHANDISE_ENDPOINT } from "../constant";
 import axios from "axios";
 
 // export async function filterMerchandiseByPriceType(

@@ -1,9 +1,13 @@
 import { Merchandise, Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User, Prisma } from "@prisma/client";
-import { deleteUser, searchUser, updateUser } from "../../../lib/user";
+import {
+  deleteUser,
+  searchUser,
+  updateUser,
+} from "../../../lib/prisma/user-prisma";
 import { USER_PROFILE_BUCKET } from "../../../lib/constant";
 import {
   uploadImage,
