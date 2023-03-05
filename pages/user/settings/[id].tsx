@@ -8,19 +8,14 @@ import ProfileSettings from "../../../components/UserSettingsTabs/Profile";
 import SMSPreferenceSettings from "../../../components/UserSettingsTabs/SMSPreference";
 import useSWR from "swr";
 import Loading from "../../../components/Loading";
-import { swrFetcher } from "../../../lib/swrFetcher";
 import { useSession } from "next-auth/react";
+import { getUserInfo } from "../../../lib/user-api";
 
 const UserSettingsPage = () => {
   const { data: session, status } = useSession();
-  // const userId = session?.user.userId;
-  const userId = 4;
+  const userId = session?.user.userId;
 
-  const {
-    data: userData,
-    error,
-    isLoading,
-  } = useSWR(`http://localhost:3000/api/users/${userId}`, swrFetcher);
+  const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const [activeTab, setActiveTab] = useState(0);
 

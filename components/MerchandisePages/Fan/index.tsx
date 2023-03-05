@@ -9,7 +9,7 @@ import {
   filterMerchandiseByName,
   filterMerchandiseByPriceType,
 } from "../../../lib/merchandise";
-import { filterCollectionByName } from "../../../lib/collection";
+import { filterCollectionByName } from "../../../lib/collection-api";
 
 const FanCollectionsPage = ({ merchandise, collections }: any) => {
   const [activeTab, setActiveTab] = useState(0);

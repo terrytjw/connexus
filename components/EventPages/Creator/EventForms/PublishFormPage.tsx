@@ -6,7 +6,7 @@ import Button from "../../../Button";
 import Image from "next/image";
 import { PrivacyType, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../../../utils/types";
-import { formatDate } from "../../../../lib/date-util";
+import { formatDate } from "../../../../utils/date-util";
 
 type PublishFormPageProps = {
   watch: UseFormWatch<EventWithTicketsandAddress>;

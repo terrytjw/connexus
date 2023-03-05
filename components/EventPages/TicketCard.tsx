@@ -1,6 +1,6 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
-import { formatDate } from "../../lib/date-util";
+import { formatDate } from "../../utils/date-util";
 
 type TicketCardProps = {
   ticket: Ticket;

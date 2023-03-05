@@ -19,7 +19,7 @@ import axios from "axios";
 import { GetServerSideProps } from "next";
 import { Ticket, User, Address } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
-import { formatDate } from "../../lib/date-util";
+import { formatDate } from "../../utils/date-util";
 import { getSession } from "next-auth/react";
 
 type EventPageProps = {

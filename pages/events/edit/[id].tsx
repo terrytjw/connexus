@@ -26,7 +26,7 @@ import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
-import { formatDateForInput } from "../../../lib/date-util";
+import { formatDateForInput } from "../../../utils/date-util";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(

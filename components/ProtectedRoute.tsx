@@ -9,8 +9,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { data: session, status } = useSession();
   const router = useRouter();
 
-  console.log("session -> ", session);
-
   // comment away this for easier development
   if (status === "loading") {
     return <Loading />;

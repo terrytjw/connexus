@@ -5,7 +5,7 @@ import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FaHeart } from "react-icons/fa";
-import { formatDate } from "../../lib/date-util";
+import { formatDate } from "../../utils/date-util";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
