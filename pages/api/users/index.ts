@@ -5,9 +5,9 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User } from "@prisma/client";
-import { findAllUser, saveUser } from "../../../lib/user";
+import { findAllUser, saveUser } from "../../../lib/prisma/user-prisma";
 
 /**
  * @swagger

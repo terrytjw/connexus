@@ -1,16 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../auth/[...nextauth]";
-import { uploadImage, retrieveImageUrl, checkIfStringIsBase64 } from "../../../lib/supabase";
-import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 import {
-  deleteEvent,
-  searchEvent,
-  updateEvent,
-} from "../../../lib/event";
+  uploadImage,
+  retrieveImageUrl,
+  checkIfStringIsBase64,
+} from "../../../lib/supabase";
+import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
@@ -124,9 +124,9 @@ export default async function handler(
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
-      if(eventPic && checkIfStringIsBase64(eventPic)){
-        const{data, error} = await uploadImage(
-          EVENT_PROFILE_BUCKET, 
+      if (eventPic && checkIfStringIsBase64(eventPic)) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
           eventPic
         );
         if (error) {

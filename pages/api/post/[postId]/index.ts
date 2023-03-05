@@ -1,8 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Post } from "@prisma/client";
-import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import {
+  checkIfStringIsBase64,
+  retrieveImageUrl,
+  uploadImage,
+} from "../../../../lib/supabase";
 import { POST_BUCKET } from "../../../../lib/constant";
 
 const prisma = new PrismaClient();
@@ -71,10 +78,10 @@ const prisma = new PrismaClient();
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb'
-    }
-  }
-}
+      sizeLimit: "20mb",
+    },
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -121,33 +128,26 @@ export default async function handler(
       let updatedMedia = [];
 
       for (let pic of media) {
-        if (! checkIfStringIsBase64(pic)) {
+        if (!checkIfStringIsBase64(pic)) {
           updatedMedia.push(pic);
           continue;
         }
         let picPath = "";
-        const { data, error } = await uploadImage(
-          POST_BUCKET,
-          pic
-        );
+        const { data, error } = await uploadImage(POST_BUCKET, pic);
 
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
 
-        if (data)
-          picPath = await retrieveImageUrl(
-            POST_BUCKET,
-            data.path
-          );
-        
+        if (data) picPath = await retrieveImageUrl(POST_BUCKET, data.path);
+
         updatedMedia.push(picPath);
       }
 
       const updatedPostInfo = {
         ...post,
-        media: updatedMedia
+        media: updatedMedia,
       };
       const response = await prisma.post.update({
         where: {
@@ -156,11 +156,11 @@ export default async function handler(
         data: { ...updatedPostInfo },
         include: {
           likes: {
-            select: { userId: true }
+            select: { userId: true },
           },
           creator: {
-            select: { userId: true, profilePic: true, username: true }
-          }
+            select: { userId: true, profilePic: true, username: true },
+          },
         },
       });
       res.status(200).json(response);

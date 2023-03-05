@@ -1,6 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community } from "@prisma/client";
 import channelHandler from "../../channel/[channelId]/join";
 import axios from "axios";
@@ -62,41 +65,41 @@ export default async function handler(
         data: {
           members: {
             connect: {
-              userId: userId
-            }
+              userId: userId,
+            },
           },
         },
         include: {
           members: {
-            select: { userId: true }
+            select: { userId: true },
           },
           channels: {
             include: {
               members: {
-                select: { userId: true, username: true, profilePic: true }
-              }
-            }
-          }
-        }
+                select: { userId: true, username: true, profilePic: true },
+              },
+            },
+          },
+        },
       });
       await joinChannel(communityToJoin.channels[0].channelId, userId);
       const response = await prisma.community.findFirst({
         where: {
-          communityId: communityId
+          communityId: communityId,
         },
         include: {
           members: {
-            select: { userId: true }
+            select: { userId: true },
           },
           channels: {
             include: {
               members: {
-                select: { userId: true, username: true, profilePic: true }
-              }
-            }
-          }
-        }
-      })
+                select: { userId: true, username: true, profilePic: true },
+              },
+            },
+          },
+        },
+      });
       res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);

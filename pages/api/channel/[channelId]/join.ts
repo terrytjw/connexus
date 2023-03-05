@@ -1,6 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -58,13 +61,13 @@ export default async function handler(
         data: {
           members: {
             connect: {
-              userId: userId
-            }
-          }
+              userId: userId,
+            },
+          },
         },
         include: {
-          members: true
-        }
+          members: true,
+        },
       });
       res.status(200).json(response);
     } catch (error) {

@@ -9,7 +9,7 @@ import SMSPreferenceSettings from "../../../components/UserSettingsTabs/SMSPrefe
 import useSWR from "swr";
 import Loading from "../../../components/Loading";
 import { useSession } from "next-auth/react";
-import { getUserInfo } from "../../../lib/user-api";
+import { getUserInfo } from "../../../lib/api-helpers/user-api";
 
 const UserSettingsPage = () => {
   const { data: session, status } = useSession();

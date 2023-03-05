@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Ticket } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -58,7 +58,6 @@ const prisma = new PrismaClient();
  *             schema:
  *               $ref: "#/components/schemas/Ticket"
  */
-
 
 export const config = {
   api: {

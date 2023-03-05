@@ -1,9 +1,16 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community } from "@prisma/client";
 import { COMMUNITY_BUCKET } from "../../../../lib/constant";
-import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "../../../../lib/supabase";
+import {
+  checkIfStringIsBase64,
+  retrieveImageUrl,
+  uploadImage,
+} from "../../../../lib/supabase";
 
 const prisma = new PrismaClient();
 
@@ -70,10 +77,10 @@ const prisma = new PrismaClient();
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb'
-    }
-  }
-}
+      sizeLimit: "20mb",
+    },
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -108,17 +115,17 @@ export default async function handler(
           channels: {
             include: {
               members: {
-                select: { userId: true, username: true, profilePic: true }
-              }
-            }
+                select: { userId: true, username: true, profilePic: true },
+              },
+            },
           },
           creator: {
-            select: { profilePic: true, username: true }
+            select: { profilePic: true, username: true },
           },
           members: {
-            select: { userId: true }
-          }
-        }
+            select: { userId: true },
+          },
+        },
       });
 
       if (!community) res.status(200).json({});
@@ -136,10 +143,7 @@ export default async function handler(
       let bannerPicUrl = bannerPic;
 
       if (profilePic && checkIfStringIsBase64(profilePic)) {
-        const { data, error } = await uploadImage(
-          COMMUNITY_BUCKET,
-          profilePic
-        );
+        const { data, error } = await uploadImage(COMMUNITY_BUCKET, profilePic);
 
         if (error) {
           const errorResponse = handleError(error);
@@ -154,10 +158,7 @@ export default async function handler(
       }
 
       if (bannerPic && checkIfStringIsBase64(bannerPic)) {
-        const { data, error } = await uploadImage(
-          COMMUNITY_BUCKET,
-          bannerPic
-        );
+        const { data, error } = await uploadImage(COMMUNITY_BUCKET, bannerPic);
 
         if (error) {
           const errorResponse = handleError(error);
@@ -172,7 +173,7 @@ export default async function handler(
         profilePic: profilePictureUrl,
         bannerPic: bannerPicUrl,
       };
-      
+
       const response = await prisma.community.update({
         where: {
           communityId: communityId,

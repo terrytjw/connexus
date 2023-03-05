@@ -1,4 +1,4 @@
-import { searchUser } from "../lib/user";
+import { searchUser } from "../lib/prisma/user-prisma";
 
 export function randomIntBetweenNumber(
   min: number = 1,

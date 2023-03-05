@@ -1,6 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma-util";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel, User } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -52,17 +55,18 @@ export default async function handler(
     try {
       const channel = await prisma.channel.findFirst({
         where: {
-          channelId: channelId
+          channelId: channelId,
         },
         include: {
           members: {
-            select: { userId: true, username: true, profilePic: true}
-          }
-        }
+            select: { userId: true, username: true, profilePic: true },
+          },
+        },
       });
       if (!channel) res.status(200).json({});
-      const users = channel!.members
-        .filter(x => x.username.includes(keyword));
+      const users = channel!.members.filter((x) =>
+        x.username.includes(keyword)
+      );
       res.status(200).json(users);
     } catch (error) {
       const errorResponse = handleError(error);

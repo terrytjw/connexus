@@ -19,7 +19,7 @@ import { profile, collections, collectibles } from "../../../utils/dummyData";
 import copy from "copy-to-clipboard";
 import { toast, Toaster } from "react-hot-toast";
 import { UserWithAllInfo } from "../../api/users/[userId]";
-import { getUserInfo } from "../../../lib/user-api";
+import { getUserInfo } from "../../../lib/api-helpers/user-api";
 
 type UserProfilePageProps = {
   userData: UserWithAllInfo;

@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -63,21 +63,21 @@ export default async function handler(
 
   async function handleGET(postId: number) {
     try {
-      const communities = await prisma.comment.findMany({  
+      const communities = await prisma.comment.findMany({
         where: {
-          postId: postId
+          postId: postId,
         },
         include: {
           likes: {
-            select: { userId: true }
+            select: { userId: true },
           },
           commenter: {
-            select: { userId: true, username: true, profilePic: true }
-          }
+            select: { userId: true, username: true, profilePic: true },
+          },
         },
         orderBy: {
-          date: 'desc'
-        }
+          date: "desc",
+        },
       });
       res.status(200).json(communities);
     } catch (error) {
@@ -94,12 +94,12 @@ export default async function handler(
         },
         include: {
           likes: {
-            select: { userId: true }
+            select: { userId: true },
           },
           commenter: {
-            select: { userId: true, username: true, profilePic: true }
-          }
-        }
+            select: { userId: true, username: true, profilePic: true },
+          },
+        },
       });
       res.status(200).json([response]);
     } catch (error) {

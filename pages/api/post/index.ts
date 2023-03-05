@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Post } from "@prisma/client";
 import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 import { POST_BUCKET } from "../../../lib/constant";
@@ -46,10 +46,10 @@ const prisma = new PrismaClient();
 export const config = {
   api: {
     bodyParser: {
-      sizeLimit: '20mb'
-    }
-  }
-}
+      sizeLimit: "20mb",
+    },
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -75,25 +75,25 @@ export default async function handler(
     try {
       const posts = await prisma.post.findMany({
         where: {
-          channelId: channelId
+          channelId: channelId,
         },
         include: {
           likes: {
             select: {
-              userId: true
-            }
+              userId: true,
+            },
           },
           creator: {
             select: {
               userId: true,
               profilePic: true,
-              username: true
-            }
-          }
+              username: true,
+            },
+          },
         },
         orderBy: {
-          date: 'desc'
-        }
+          date: "desc",
+        },
       });
       res.status(200).json(posts);
     } catch (error) {
@@ -109,38 +109,31 @@ export default async function handler(
 
       for (let pic of media) {
         let picPath = "";
-        const { data, error } = await uploadImage(
-          POST_BUCKET,
-          pic
-        );
+        const { data, error } = await uploadImage(POST_BUCKET, pic);
 
         if (error) {
           const errorResponse = handleError(error);
           res.status(400).json(errorResponse);
         }
 
-        if (data)
-          picPath = await retrieveImageUrl(
-            POST_BUCKET,
-            data.path
-          );
-        
+        if (data) picPath = await retrieveImageUrl(POST_BUCKET, data.path);
+
         updatedMedia.push(picPath);
       }
 
       const updatedPostInfo = {
         ...post,
-        media: updatedMedia
+        media: updatedMedia,
       };
       const response = await prisma.post.create({
         data: { ...updatedPostInfo, postId: undefined },
         include: {
           likes: {
-            select: { userId: true }
+            select: { userId: true },
           },
           creator: {
-            select: { userId: true, profilePic: true, username: true }
-          }
+            select: { userId: true, profilePic: true, username: true },
+          },
         },
       });
       res.status(200).json([response]);

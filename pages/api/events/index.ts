@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma-util";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import {
   PrismaClient,
   Event,
@@ -9,7 +9,11 @@ import {
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { checkIfStringIsBase64, retrieveImageUrl, uploadImage } from "./../../../lib/supabase";
+import {
+  checkIfStringIsBase64,
+  retrieveImageUrl,
+  uploadImage,
+} from "./../../../lib/supabase";
 import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
@@ -60,7 +64,6 @@ export default async function handler(
 
   const { method, body, query } = req;
 
-
   const keyword = query.keyword as string;
   const cursor = parseInt(query.cursor as string);
   const filter = query.filter as CategoryType[];
@@ -91,9 +94,11 @@ export default async function handler(
           eventId: "asc",
         },
         where: {
-          category: filter ? {
-            hasSome: filter
-          } : undefined,
+          category: filter
+            ? {
+                hasSome: filter,
+              }
+            : undefined,
         },
       });
       res.status(200).json(events);
@@ -121,9 +126,11 @@ export default async function handler(
             contains: keyword,
             mode: "insensitive",
           },
-          category: filter ? {
-            hasSome: filter
-          } : undefined,
+          category: filter
+            ? {
+                hasSome: filter,
+              }
+            : undefined,
         },
       });
       res.status(200).json(events);
@@ -143,9 +150,9 @@ export default async function handler(
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
-      if(eventPic && checkIfStringIsBase64(eventPic)){
-        const{data, error} = await uploadImage(
-          EVENT_PROFILE_BUCKET, 
+      if (eventPic && checkIfStringIsBase64(eventPic)) {
+        const { data, error } = await uploadImage(
+          EVENT_PROFILE_BUCKET,
           eventPic
         );
         if (error) {
