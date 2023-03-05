@@ -5,7 +5,7 @@ import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
 import {
   filterMerchandiseByPriceType,
   findAllMerchandise,
-} from "../../../lib/merch";
+} from "../../../lib/prisma/merchandise-prisma";
 import {
   checkIfStringIsBase64,
   retrieveImageUrl,

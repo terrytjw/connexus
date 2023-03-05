@@ -10,7 +10,11 @@ import {
   checkIfStringIsBase64,
 } from "../../../lib/supabase";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
-import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
+import {
+  deleteEvent,
+  searchEvent,
+  updateEvent,
+} from "../../../lib/prisma/event-prisma";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;

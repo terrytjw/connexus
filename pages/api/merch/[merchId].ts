@@ -7,7 +7,7 @@ import {
   deleteMerchandise,
   searchMerchandise,
   updatedMerchandise,
-} from "../../../lib/merch";
+} from "../../../lib/prisma/merchandise-prisma";
 import {
   uploadImage,
   retrieveImageUrl,

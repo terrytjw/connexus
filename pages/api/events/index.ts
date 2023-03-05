@@ -14,7 +14,11 @@ import {
   retrieveImageUrl,
   uploadImage,
 } from "./../../../lib/supabase";
-import { deleteEvent, searchEvent, updateEvent } from "../../../lib/event";
+import {
+  deleteEvent,
+  searchEvent,
+  updateEvent,
+} from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
 const prisma = new PrismaClient();

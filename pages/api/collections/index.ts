@@ -15,7 +15,7 @@ import {
   MerchandisePartialType,
   searchMerchandise,
   updatedMerchandise,
-} from "../../../lib/merch";
+} from "../../../lib/prisma/merchandise-prisma";
 import {
   checkIfStringIsBase64,
   retrieveImageUrl,

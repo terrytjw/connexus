@@ -10,7 +10,7 @@ import useSWR from "swr";
 import axios from "axios";
 import React from "react";
 import { ethers } from "ethers";
-import { smartContract } from "../lib/constants";
+import { smartContract } from "../lib/constant";
 import { img } from "../lib/image";
 import { swrFetcher } from "../lib/swrFetcher";
 

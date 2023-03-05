@@ -5,7 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
-import { leaveChannel } from "../../../../lib/channel";
+import { leaveChannel } from "../../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 

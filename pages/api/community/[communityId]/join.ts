@@ -8,7 +8,7 @@ import { PrismaClient, Community } from "@prisma/client";
 import channelHandler from "../../channel/[channelId]/join";
 import axios from "axios";
 import { url } from "inspector";
-import { joinChannel } from "../../../../lib/channel";
+import { joinChannel } from "../../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 
