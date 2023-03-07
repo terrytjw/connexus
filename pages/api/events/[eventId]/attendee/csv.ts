@@ -3,15 +3,16 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import {
   handleError,
   ErrorResponse,
-} from "../../../../lib/prisma/prisma-helpers";
+} from "../../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User } from "@prisma/client";
-import prisma from "../../../../lib/prisma";
+import prisma from "../../../../../lib/prisma";
+import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
 
 /**
  * @swagger
- * /api/events/{commentId}/attendee
+ * /api/events/{eventId}/attendee/csv
  *   comment:
- *     description: Retrieve a list of User objects that are attending the Event
+ *     description: Export a list of User objects that are attending the Event
  *     parameters:
  *       - in: path
  *         name: eventId
@@ -21,11 +22,7 @@ import prisma from "../../../../lib/prisma";
  *           type: string
  *     responses:
  *       200:
- *         description: A list of User object
- *         content:
- *           application/json:
- *             schema:
- *               $ref: "#/components/schemas/User"
+ *         description: A url pointing to the csv file
  */
 
 export default async function handler(
@@ -46,26 +43,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const tickets = await prisma.ticket.findMany({
-        where: {
-          eventId: eventId,
-        },
-      });
-
-      const ticketIds = tickets.map((ticket) => ticket.ticketId);
-
-      const response = await prisma.user.findMany({
-        where: {
-          tickets: {
-            some: {
-              ticketId: {
-                in: ticketIds,
-              },
-            },
-          },
-        },
-      });
-
+      const response = await retrieveAttendee(eventId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
