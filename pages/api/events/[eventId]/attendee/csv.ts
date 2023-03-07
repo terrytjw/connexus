@@ -5,8 +5,14 @@ import {
   ErrorResponse,
 } from "../../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User } from "@prisma/client";
-import prisma from "../../../../../lib/prisma";
 import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
+import { createObjectCsvWriter } from "csv-writer";
+import { join } from "path";
+import { createReadStream } from "fs";
+import { promisify } from "util";
+import fs from "fs";
+
+const unlink = promisify(fs.unlink);
 
 /**
  * @swagger
@@ -27,7 +33,7 @@ import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<User[] | ErrorResponse | {}>
+  res: NextApiResponse<String | ErrorResponse>
 ) {
   const { query, method } = req;
   const eventId = parseInt(query.eventId as string);
@@ -44,7 +50,34 @@ export default async function handler(
   async function handleGET(eventId: number) {
     try {
       const response = await retrieveAttendee(eventId);
-      res.status(200).json(response);
+      const csvWriter = createObjectCsvWriter({
+        path: join(process.cwd(), "public", "data.csv"),
+        header: [
+          { id: "userId", title: "UserId" },
+          { id: "phoneNumber", title: "Phone Number" },
+          { id: "displayName", title: "Display Name" },
+          { id: "username", title: "Username" },
+          { id: "email", title: "Email" },
+        ],
+      });
+
+      // Write the data to a CSV file
+      await csvWriter.writeRecords(response);
+
+      // Set the response headers to allow file download
+      res.setHeader("Content-Disposition", "attachment; filename=data.csv");
+      res.setHeader("Content-Type", "text/csv");
+
+      // Send the CSV file to the client
+      const stream = createReadStream(
+        join(process.cwd(), "public", "data.csv")
+      );
+      stream.pipe(res);
+
+      // Delete the CSV file after a specified amount of time has elapsed
+      setTimeout(async () => {
+        await unlink(join(process.cwd(), "public", "data.csv"));
+      }, 5000); // delete the file after 5 seconds
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

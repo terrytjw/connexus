@@ -34,6 +34,7 @@
     "alchemy-sdk": "^2.4.3",
     "axios": "^1.2.1",
     "bignumber.js": "^9.1.1",
+    "csv-writer": "^1.6.0",
     "daisyui": "^2.46.1",
     "date-fns": "^2.29.3",
     "ether.js": "^1.0.0",
