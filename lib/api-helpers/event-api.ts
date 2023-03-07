@@ -38,3 +38,9 @@ export async function unlikeEvent(eventId: number, userId: number) {
   const response = (await axios.post(url)).data;
   return response;
 }
+
+export async function viewAttendeeList(eventId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee`;
+  const response = (await axios.post(url)).data;
+  return response;
+}
