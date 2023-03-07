@@ -113,6 +113,12 @@
           "items": {
             "$ref": "#/definitions/Merchandise"
           }
+        },
+        "likedEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
         }
       }
     },
@@ -432,6 +438,12 @@
         },
         "scAddress": {
           "type": "string"
+        },
+        "userLikes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
         }
       }
     },

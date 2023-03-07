@@ -26,3 +26,15 @@ export async function registerEvent(eventId: number) {
   const response = (await axios.post(url)).data;
   return response;
 }
+
+export async function likeEvent(eventId: number, userId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/like?userId=${userId}`;
+  const response = (await axios.post(url)).data;
+  return response;
+}
+
+export async function unlikeEvent(eventId: number, userId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/unlike?userId=${userId}`;
+  const response = (await axios.post(url)).data;
+  return response;
+}
