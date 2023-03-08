@@ -35,7 +35,7 @@ export async function getCommunityById(communityId: number) {
   });
 }
 
-export async function searchCommunity(searchType: CommunityPartialType, filter?: CategoryType[]) {
+export async function searchCommunities(searchType: CommunityPartialType, filter?: CategoryType[]) {
   const { name } = searchType;
 
   return prisma.community.findMany({
@@ -63,7 +63,7 @@ export async function searchCommunity(searchType: CommunityPartialType, filter?:
   });
 }
 
-export async function findAllCommunity(cursor: number, filter?: CategoryType[]) {
+export async function findAllCommunities(cursor: number, filter?: CategoryType[]) {
   const filterCondition = {
     tags : filter 
     ? {
