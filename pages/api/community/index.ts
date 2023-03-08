@@ -4,7 +4,6 @@ import {
   PrismaClient,
   Community,
   CategoryType,
-  ChannelType,
 } from "@prisma/client";
 import {
   checkIfStringIsBase64,
@@ -12,6 +11,7 @@ import {
   uploadImage,
 } from "../../../lib/supabase";
 import { COMMUNITY_BUCKET } from "../../../lib/constant";
+import { findAllCommunities, saveCommunity, searchCommunities } from "../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
@@ -98,26 +98,7 @@ export default async function handler(
 
   async function handleGET(cursor: number, filter?: CategoryType[]) {
     try {
-      const communities = await prisma.community.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId: cursor } : undefined,
-        orderBy: {
-          communityId: "asc",
-        },
-        where: {
-          tags: filter
-            ? {
-                hasSome: filter,
-              }
-            : undefined,
-        },
-        include: {
-          members: {
-            select: { userId: true },
-          },
-        },
-      });
+      const communities = await findAllCommunities(cursor, filter);
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -131,30 +112,7 @@ export default async function handler(
     filter?: CategoryType[]
   ) {
     try {
-      const communities = await prisma.community.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { communityId: cursor } : undefined,
-        orderBy: {
-          communityId: "asc",
-        },
-        where: {
-          name: {
-            contains: keyword,
-            mode: "insensitive",
-          },
-          tags: filter
-            ? {
-                hasSome: filter,
-              }
-            : undefined,
-        },
-        include: {
-          members: {
-            select: { userId: true },
-          },
-        },
-      });
+      const communities = await searchCommunities(keyword, cursor, filter);
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -200,19 +158,7 @@ export default async function handler(
         bannerPic: bannerPicUrl,
       };
 
-      const response = await prisma.community.create({
-        data: {
-          ...updatedCommunityInfo,
-          channels: {
-            create: [
-              {
-                name: "Home Channel",
-                channelType: ChannelType.REGULAR,
-              },
-            ],
-          },
-        },
-      });
+      const response = await saveCommunity(updatedCommunityInfo);
       res.status(200).json([response]);
     } catch (error) {
       const errorResponse = handleError(error);
