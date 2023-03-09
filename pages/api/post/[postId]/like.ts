@@ -46,7 +46,6 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const post = JSON.parse(JSON.stringify(req.body)) as Post;
       await handlePOST(postId, userId);
       break;
     default:

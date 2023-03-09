@@ -40,18 +40,14 @@ export async function updatePost(
   postId: number, 
   content: string,
   media: string[],
-  isPinned: boolean,
-  creatorId: number,
-  channelId: number
+  isPinned: boolean
 ) {
   const url = baseUrl + `/${postId}`;
   const response = (await axios.post(url, 
     {
       content: content,
       media: media,
-      isPinned: isPinned,
-      creatorId: creatorId,
-      channelId: channelId
+      isPinned: isPinned
     })).data;
   return response;
 }
