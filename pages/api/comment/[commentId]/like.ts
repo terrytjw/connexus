@@ -45,8 +45,7 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const comment = JSON.parse(JSON.stringify(req.body)) as Comment;
-      await handlePOST(commentId, comment, userId);
+      await handlePOST(commentId, userId);
       break;
     default:
       res.setHeader("Allow", ["POST"]);
@@ -55,7 +54,6 @@ export default async function handler(
 
   async function handlePOST(
     commentId: number,
-    comment: Comment,
     userId: number
   ) {
     try {
@@ -64,7 +62,6 @@ export default async function handler(
           commentId: commentId,
         },
         data: {
-          ...comment,
           likes: {
             connect: {
               userId: userId,
