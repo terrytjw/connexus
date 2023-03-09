@@ -40,7 +40,6 @@ model User {
 
 model Post {
   postId    Int       @id @default(autoincrement())
-  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
