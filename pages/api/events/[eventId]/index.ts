@@ -14,8 +14,7 @@ import {
 } from "../../../../lib/supabase";
 import { EVENT_PROFILE_BUCKET } from "../../../../lib/constant";
 import {
-  deleteEvent,
-  searchEvent,
+  retrieveEventInfo,
   updateEvent,
 } from "../../../../lib/prisma/event-prisma";
 
@@ -110,12 +109,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const event = await prisma.event.findUnique({
-        where: {
-          eventId: eventId,
-        },
-        include: { tickets: true },
-      });
+      const event = await retrieveEventInfo(eventId);
 
       if (!event) res.status(200).json({});
       else res.status(200).json(event);

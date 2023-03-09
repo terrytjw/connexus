@@ -3,6 +3,7 @@ export const MERCHANDISE_ENDPOINT = "merch";
 export const COLLECTION_ENDPOINT = "collections";
 export const USER_ENDPOINT = "users";
 export const EVENT_ENDPOINT = "events";
+export const TICKET_ENDPOINT = "tickets";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";

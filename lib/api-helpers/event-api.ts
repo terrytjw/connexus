@@ -3,6 +3,9 @@ import { Collection, User } from "@prisma/client";
 import { API_URL, COLLECTION_ENDPOINT, USER_ENDPOINT } from "../constant";
 import axios from "axios";
 
+/**
+ * APIs for Creator
+ */
 export async function getEventInfo(eventId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}`;
   const response = (await axios.get(url)).data;
@@ -21,11 +24,15 @@ export async function createEvent(eventInfo: Event) {
   return response;
 }
 
-export async function registerEvent(eventId: number) {
-  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/register`;
+export async function viewAttendeeList(eventId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee`;
   const response = (await axios.post(url)).data;
   return response;
 }
+
+/**
+ * APIs for Fans
+ */
 
 export async function likeEvent(eventId: number, userId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/like?userId=${userId}`;
@@ -35,12 +42,6 @@ export async function likeEvent(eventId: number, userId: number) {
 
 export async function unlikeEvent(eventId: number, userId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/unlike?userId=${userId}`;
-  const response = (await axios.post(url)).data;
-  return response;
-}
-
-export async function viewAttendeeList(eventId: number) {
-  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee`;
   const response = (await axios.post(url)).data;
   return response;
 }

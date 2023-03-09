@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
+import { unlikeEvent } from "../../../../lib/prisma/event-prisma";
 
 const prisma = new PrismaClient();
 
@@ -45,32 +46,16 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as Event;
-      await handlePOST(eventId, event, userId);
+      await handlePOST(eventId, userId);
       break;
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(eventId: number, event: Event, userId: number) {
+  async function handlePOST(eventId: number, userId: number) {
     try {
-      const response = await prisma.event.update({
-        where: {
-          eventId: eventId,
-        },
-        data: {
-          ...event,
-          userLikes: {
-            disconnect: {
-              userId: userId,
-            },
-          },
-        },
-        include: {
-          userLikes: true,
-        },
-      });
+      const response = await unlikeEvent(eventId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
