@@ -9,7 +9,7 @@ import channelHandler from "../../channel/[channelId]/join";
 import axios from "axios";
 import { url } from "inspector";
 import { joinChannel } from "../../../../lib/prisma/channel-prisma";
-import { joinCommunity } from "../../../../lib/api-helpers/community-api";
+import { joinCommunity } from "../../../../lib/prisma/community-prisma";
 import { getCommunityById } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();

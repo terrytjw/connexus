@@ -37,6 +37,8 @@ export async function getAllCommunities(cursor: number, filter?: CategoryType[])
 			filter: filter ? filter : undefined
 		}
 	})).data;
+
+  return response;
 }
 
 export async function searchCommunities(keyword: string, cursor: number, filter?: CategoryType[]) {
@@ -48,18 +50,28 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
 			filter: filter ? filter : undefined
 		}
 	})).data;
+
+  return response;
 }
 
 export async function joinCommunity(communityId: number, userId: number) {
 	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}/join`;
-  const response = (await axios.post(url, userId)).data;
-
+  const response = (await axios.post(url, {}, // empty object for empty req body
+    {
+    params: {
+      userId: userId
+    }
+  })).data;
 	return response;
 }
 
 export async function leaveCommunity(communityId: number, userId: number) {
 	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}/leave`;
-  const response = (await axios.post(url, userId)).data;
+  const response = (await axios.post(url, {}, { // empty object for empty req body
+    params: {
+      userId: userId
+    }
+  })).data;
 
 	return response;
 }
