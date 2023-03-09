@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
+import { likeComment } from "../../../../lib/prisma/comment-prisma";
 
 const prisma = new PrismaClient();
 
@@ -57,18 +58,7 @@ export default async function handler(
     userId: number
   ) {
     try {
-      const response = await prisma.comment.update({
-        where: {
-          commentId: commentId,
-        },
-        data: {
-          likes: {
-            connect: {
-              userId: userId,
-            },
-          },
-        },
-      });
+      const response = await likeComment(commentId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
