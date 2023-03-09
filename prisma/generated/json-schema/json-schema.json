@@ -102,6 +102,12 @@
             "$ref": "#/definitions/Comment"
           }
         },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Ticket"
+          }
+        },
         "merchandise": {
           "type": "array",
           "items": {
@@ -114,7 +120,7 @@
             "$ref": "#/definitions/Event"
           }
         },
-        "tickets": {
+        "userTicket": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/UserTicket"
@@ -535,6 +541,12 @@
           }
         },
         "users": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "userTicket": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/UserTicket"

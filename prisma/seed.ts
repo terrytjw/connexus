@@ -9,8 +9,14 @@ import {
   Currency,
   CollectionState,
   TicketType,
+  Ticket,
 } from "@prisma/client";
 import { saveUser } from "../lib/prisma/user-prisma";
+import { retrieveEventInfo } from "../lib/prisma/event-prisma";
+import {
+  TicketWithUser,
+  saveUserTicket,
+} from "../lib/prisma/user-ticket-prisma";
 
 const prisma = new PrismaClient();
 
@@ -588,6 +594,13 @@ async function generateEvent() {
   }
 }
 
+async function generateUserWithTicket() {
+  const event = await retrieveEventInfo(1);
+  const tickets =
+    (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
+  await saveUserTicket(tickets);
+}
+
 async function main() {
   await generateUser();
   await generateCommunity();
@@ -596,6 +609,7 @@ async function main() {
   await generateComment();
   await generateEvent();
   await generateCollection();
+  await generateUserWithTicket();
 }
 main()
   .then(async () => {

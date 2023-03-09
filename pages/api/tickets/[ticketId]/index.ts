@@ -1,12 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Ticket } from "@prisma/client";
 import {
   deleteTicket,
   retrieveTicketInfo,
   updateTicket,
-} from "../../../lib/prisma/ticket-prisma";
+} from "../../../../lib/prisma/ticket-prisma";
 
 const prisma = new PrismaClient();
 

@@ -1,4 +1,9 @@
-import { ALCHEMY_API, EVENT_ENDPOINT, smartContract } from "./../constant";
+import {
+  ALCHEMY_API,
+  EVENT_ENDPOINT,
+  TICKET_ENDPOINT,
+  smartContract,
+} from "./../constant";
 import { Collection, Event, User } from "@prisma/client";
 import { API_URL, COLLECTION_ENDPOINT, USER_ENDPOINT } from "../constant";
 import axios from "axios";
@@ -64,15 +69,13 @@ export async function checkIn(
     abi,
     signer
   );
-  console.log(
-    await eventContract.checkIn(ticketId, {
-      gasLimit: 2100000,
-    })
-  );
 
-  
+  const tx = await eventContract.checkIn(ticketId, {
+    gasLimit: 2100000,
+  });
 
-  // const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/unlike?userId=${userId}`;
-  // const response = (await axios.post(url)).data;
-  // return response;
+  const url = `${API_URL}/${TICKET_ENDPOINT}/${ticketId}/checkin?userId=${userId}`;
+  const response = (await axios.post(url)).data;
+
+  return response;
 }

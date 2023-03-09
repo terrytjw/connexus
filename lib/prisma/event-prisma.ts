@@ -17,7 +17,11 @@ export async function retrieveEventInfo(eventId: number) {
     where: {
       eventId: eventId,
     },
-    include: { tickets: true },
+    include: {
+      tickets: {
+        include: { users: true },
+      },
+    },
   });
 }
 
