@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel } from "@prisma/client";
+import { joinChannel } from "../../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 
@@ -54,21 +55,7 @@ export default async function handler(
 
   async function handlePOST(channelId: number, userId: number) {
     try {
-      const response = await prisma.channel.update({
-        where: {
-          channelId: channelId,
-        },
-        data: {
-          members: {
-            connect: {
-              userId: userId,
-            },
-          },
-        },
-        include: {
-          members: true,
-        },
-      });
+      const response = await joinChannel(channelId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

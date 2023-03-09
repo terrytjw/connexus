@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel, User } from "@prisma/client";
+import { searchUsersInChannel } from "../../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 
@@ -53,20 +54,7 @@ export default async function handler(
 
   async function handleGET(channelId: number, keyword: string) {
     try {
-      const channel = await prisma.channel.findFirst({
-        where: {
-          channelId: channelId,
-        },
-        include: {
-          members: {
-            select: { userId: true, username: true, profilePic: true },
-          },
-        },
-      });
-      if (!channel) res.status(200).json({});
-      const users = channel!.members.filter((x) =>
-        x.username.includes(keyword)
-      );
+      const users = await searchUsersInChannel(channelId, keyword);
       res.status(200).json(users);
     } catch (error) {
       const errorResponse = handleError(error);
