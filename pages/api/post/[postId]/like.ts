@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Post } from "@prisma/client";
+import { likePost } from "../../../../lib/prisma/post-prisma";
 
 const prisma = new PrismaClient();
 
@@ -55,18 +56,7 @@ export default async function handler(
 
   async function handlePOST(postId: number, userId: number) {
     try {
-      const response = await prisma.post.update({
-        where: {
-          postId: postId,
-        },
-        data: {
-          likes: {
-            connect: {
-              userId: userId,
-            },
-          },
-        },
-      });
+      const response = await likePost(postId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

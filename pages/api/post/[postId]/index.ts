@@ -11,6 +11,7 @@ import {
   uploadImage,
 } from "../../../../lib/supabase";
 import { POST_BUCKET } from "../../../../lib/constant";
+import { deletePost, getPost, updatePost } from "../../../../lib/prisma/post-prisma";
 
 const prisma = new PrismaClient();
 
@@ -108,12 +109,7 @@ export default async function handler(
 
   async function handleGET(postId: number) {
     try {
-      const post = await prisma.post.findUnique({
-        where: {
-          postId: postId,
-        },
-      });
-
+      const post = await getPost(postId);
       if (!post) res.status(200).json({});
       else res.status(200).json(post);
     } catch (error) {
@@ -149,20 +145,7 @@ export default async function handler(
         ...post,
         media: updatedMedia,
       };
-      const response = await prisma.post.update({
-        where: {
-          postId: postId,
-        },
-        data: { ...updatedPostInfo },
-        include: {
-          likes: {
-            select: { userId: true },
-          },
-          creator: {
-            select: { userId: true, profilePic: true, username: true },
-          },
-        },
-      });
+      const response = await updatePost(postId, updatedPostInfo);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -172,11 +155,7 @@ export default async function handler(
 
   async function handleDELETE(postId: number) {
     try {
-      const response = await prisma.post.delete({
-        where: {
-          postId: postId,
-        },
-      });
+      const response = await deletePost(postId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
