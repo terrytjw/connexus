@@ -48,7 +48,7 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
 
   return prisma.community.findMany({
     take: 10,
-    skip: cursor ? 1 : undefined, // Skip cursor
+    skip: cursor == 0 ? 0 : 1, // Skip cursor
     cursor: cursor ? { communityId: cursor } : undefined,
     where: {
       name: {
@@ -90,7 +90,7 @@ export async function findAllCommunities(cursor: number, filter?: CategoryType[]
 
   return prisma.community.findMany({
     take: 10,
-    skip: cursor ? 1 : undefined, // Skip cursor
+    skip: cursor == 0 ? 0 : 1, // Skip cursor
     cursor: cursor ? { communityId: cursor } : undefined,
     where: { ...filterCondition },
     include: {
