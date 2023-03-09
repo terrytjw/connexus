@@ -18,3 +18,5 @@ export const smartContract = {
 } as const;
 export const COMMUNITY_BUCKET = "community";
 export const POST_BUCKET = "post";
+
+export const POST_ENDPOINT = "post";
