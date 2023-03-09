@@ -9,6 +9,12 @@ export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
 export const MERCH_PROFILE_BUCKET = "merch-profile";
 
+export const COMMUNITY_BUCKET = "community";
+export const POST_BUCKET = "post";
+
+export const ALCHEMY_API =
+  "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R";
+
 export const smartContract = {
   pinataApiKey: "be74f69d81d8435228e2",
   pinataSecretApiKey:
@@ -18,5 +24,3 @@ export const smartContract = {
   privateKey:
     "3340e2f92064b7494823da63fcaa1dd1515e87e72aaa2d18e461238ce4133cf9",
 } as const;
-export const COMMUNITY_BUCKET = "community";
-export const POST_BUCKET = "post";

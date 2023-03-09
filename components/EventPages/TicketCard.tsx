@@ -1,12 +1,18 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
 import { formatDate } from "../../utils/date-util";
+import { checkIn } from "../../lib/api-helpers/event-api";
 
 type TicketCardProps = {
   ticket: Ticket;
 };
 
 const TicketCard = ({ ticket }: TicketCardProps) => {
+  const onCheckIn = async () => {
+    const response = await checkIn(1, 1, 4);
+    console.log(response);
+  };
+
   return (
     <div>
       <div className="pb-2 sm:pb-4">
@@ -50,6 +56,9 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
               </p>
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
+
+            {/* To be edited */}
+            <button onClick={onCheckIn}>Check In</button>
           </div>
         </div>
       </div>

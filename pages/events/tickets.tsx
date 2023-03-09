@@ -65,6 +65,10 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     return event;
   };
 
+  console.log("TESTTEST");
+
+  console.log(userData);
+
   // build a ticket type with event name in it
   const parsedTickets = await Promise.all(
     userData.tickets.map(async (ticket: Ticket) => {

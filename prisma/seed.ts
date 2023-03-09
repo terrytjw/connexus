@@ -419,7 +419,7 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: { userId: 1 } },
+            users: { connect: { userId: 4 } },
             currentTicketSupply: 1,
             ticketType: TicketType.ON_SALE,
           },

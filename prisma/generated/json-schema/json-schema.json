@@ -102,12 +102,6 @@
             "$ref": "#/definitions/Comment"
           }
         },
-        "tickets": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Ticket"
-          }
-        },
         "merchandise": {
           "type": "array",
           "items": {
@@ -118,6 +112,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Event"
+          }
+        },
+        "tickets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserTicket"
           }
         }
       }
@@ -537,8 +537,26 @@
         "users": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/User"
+            "$ref": "#/definitions/UserTicket"
           }
+        }
+      }
+    },
+    "UserTicket": {
+      "type": "object",
+      "properties": {
+        "userTicketId": {
+          "type": "integer"
+        },
+        "checkIn": {
+          "type": "boolean",
+          "default": false
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
         }
       }
     },
@@ -702,6 +720,9 @@
     },
     "ticket": {
       "$ref": "#/definitions/Ticket"
+    },
+    "userTicket": {
+      "$ref": "#/definitions/UserTicket"
     },
     "promotion": {
       "$ref": "#/definitions/Promotion"

@@ -25,18 +25,16 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../lib/constant";
+import { ALCHEMY_API, smartContract } from "../../lib/constant";
 import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
 
 // smart contract stuff
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
-);
+const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
-var signer = new ethers.Wallet(smartContract.privateKey, provider);
+const signer = new ethers.Wallet(smartContract.privateKey, provider);
 // console.log(signer);
 
 const CreatorEventCreate = () => {
