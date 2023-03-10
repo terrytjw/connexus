@@ -4,7 +4,7 @@ import axios from "axios";
 
 const baseUrl = `${API_URL}/${COMMUNITY_ENDPOINT}`;
 
-export async function getCommunity(communityId: number) {
+export async function getCommunityAPI(communityId: number) {
 	const url = baseUrl + `/${communityId}`;
 	const response = (await axios.get(url)).data;
 
@@ -21,13 +21,13 @@ export type UpdateCommunityParams = {
 	maxMembers?: number
 }
 
-export async function updateCommunity(community: UpdateCommunityParams) {
+export async function updateCommunityAPI(community: UpdateCommunityParams) {
 	const url = baseUrl + `/${community.communityId}`;
   const response = (await axios.post(url, community)).data;
 
   return response;
 }
-export async function deleteCommunity(communityId: Number) {
+export async function deleteCommunityAPI(communityId: Number) {
 	const url = baseUrl + `/${communityId}`;
   const response = (await axios.delete(url)).data;
 
@@ -44,13 +44,13 @@ export type CreateCommunityParams = {
 	userId: number
 }
 
-export async function createCommunity(community: CreateCommunityParams) {
+export async function createCommunityAPI(community: CreateCommunityParams) {
   const response = (await axios.post(baseUrl, community)).data;
 
   return response;
 }
 
-export async function getAllCommunities(cursor: number, filter?: CategoryType[]) {
+export async function getAllCommunitiesAPI(cursor: number, filter?: CategoryType[]) {
   const response = (await axios.get(baseUrl, {
 		params: {
 			cursor: cursor,
@@ -61,7 +61,7 @@ export async function getAllCommunities(cursor: number, filter?: CategoryType[])
   return response;
 }
 
-export async function searchCommunities(keyword: string, cursor: number, filter?: CategoryType[]) {
+export async function searchCommunitiesAPI(keyword: string, cursor: number, filter?: CategoryType[]) {
   const response = (await axios.get(baseUrl, {
 		params: {
 			keyword: keyword,
@@ -73,7 +73,7 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
   return response;
 }
 
-export async function joinCommunity(communityId: number, userId: number) {
+export async function joinCommunityAPI(communityId: number, userId: number) {
 	const url = baseUrl + `/${communityId}/join`;
   const response = (await axios.post(url, {}, // empty object for empty req body
     {
@@ -84,7 +84,7 @@ export async function joinCommunity(communityId: number, userId: number) {
 	return response;
 }
 
-export async function leaveCommunity(communityId: number, userId: number) {
+export async function leaveCommunityAPI(communityId: number, userId: number) {
 	const url = baseUrl + `/${communityId}/leave`;
   const response = (await axios.post(url, {}, { // empty object for empty req body
     params: {
