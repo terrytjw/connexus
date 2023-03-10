@@ -6,8 +6,7 @@ import {
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
 import { leaveChannel } from "../../../../lib/prisma/channel-prisma";
-import { getCommunityById } from "../../../../lib/prisma/community-prisma";
-import { leaveCommunity } from "../../../../lib/api-helpers/community-api";
+import { getCommunityById, leaveCommunity } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
