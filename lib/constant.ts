@@ -8,7 +8,6 @@ export const USER_TICKET_ENDPOINT = "user-tickets";
 export const POST_ENDPOINT = "post";
 export const COMMENT_ENDPOINT = "comment";
 export const COMMUNITY_ENDPOINT = "community";
-
 export const CHANNEL_ENDPOINT = "channel";
 
 export const USER_PROFILE_BUCKET = "user-profile";
