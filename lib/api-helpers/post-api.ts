@@ -4,14 +4,14 @@ import axios from "axios";
 
 const baseUrl = `${API_URL}/${POST_ENDPOINT}`;
 
-export async function getPost(postId: number) {
+export async function getPostAPI(postId: number) {
   const url = baseUrl + `/${postId}`;
   const response = (await axios.get(url)).data;
 
   return response;
 }
 
-export async function getAllPostsInChannel(channelId: number) {
+export async function getAllPostsInChannelAPI(channelId: number) {
   const response = (await axios.get(baseUrl, {
     params: {
       channelId: channelId
@@ -21,7 +21,7 @@ export async function getAllPostsInChannel(channelId: number) {
   return response;
 }
 
-export async function createPost(
+export async function createPostAPI(
   content: string,
   media: string[],
   creatorId: number,
@@ -38,7 +38,7 @@ export async function createPost(
   return response;
 }
 
-export async function updatePost(
+export async function updatePostAPI(
   postId: number, 
   content: string,
   media: string[],
@@ -54,13 +54,13 @@ export async function updatePost(
   return response;
 }
 
-export async function deletePost(postId: number) {
+export async function deletePostAPI(postId: number) {
   const url = baseUrl + `/${postId}`;
   const response = (await axios.delete(url)).data;
   return response;
 }
 
-export async function likePost(postId: number, userId: number) {
+export async function likePostAPI(postId: number, userId: number) {
   const url = baseUrl + `/${postId}/like`;
   const response = (await axios.post(url, {}, {
     params: {
@@ -70,7 +70,7 @@ export async function likePost(postId: number, userId: number) {
   return response;
 }
 
-export async function unlikePost(postId: number, userId: number) {
+export async function unlikePostAPI(postId: number, userId: number) {
   const url = baseUrl + `/${postId}/unlike`;
   const response = (await axios.post(url, {}, {
     params: {
