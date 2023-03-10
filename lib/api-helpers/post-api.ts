@@ -5,7 +5,7 @@ import axios from "axios";
 const baseUrl = `${API_URL}/${POST_ENDPOINT}`;
 
 export async function getPost(postId: number) {
-  const url = baseUrl + `${postId}`;
+  const url = baseUrl + `/${postId}`;
   const response = (await axios.get(url)).data;
 
   return response;
