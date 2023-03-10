@@ -16,7 +16,11 @@ export async function getChannel(channelId: number) {
 }
 
 export async function getAllChannelsInCommunity(communityId: number) {
-  return prisma.channel.findMany();
+  return prisma.channel.findMany({
+    where: {
+      communityId: communityId
+    }
+  });
 }
 
 export async function createChannel(channel: Channel) {
