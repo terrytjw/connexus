@@ -37,7 +37,7 @@ export async function updateChannel(
   name: string
 ) {
   const url = baseUrl + `/${channelId}`;
-  const response = (await axios.post(baseUrl, {
+  const response = (await axios.post(url, {
     name: name
   })).data;
   return response;
@@ -45,13 +45,13 @@ export async function updateChannel(
 
 export async function deleteChannel(channelId: number) {
   const url = baseUrl + `/${channelId}`;
-  const response = (await axios.delete(baseUrl)).data;
+  const response = (await axios.delete(url)).data;
   return response;
 }
 
 export async function joinChannel(channelId: number, userId: number) {
   const url = baseUrl + `/${channelId}/join`;
-  const response = (await axios.post(baseUrl, {}, {
+  const response = (await axios.post(url, {}, {
     params: {
       userId: userId
     }
@@ -61,7 +61,7 @@ export async function joinChannel(channelId: number, userId: number) {
 
 export async function leaveChannel(channelId: number, userId: number) {
   const url = baseUrl + `/${channelId}/leave`;
-  const response = (await axios.post(baseUrl, {}, {
+  const response = (await axios.post(url, {}, {
     params: {
       userId: userId
     }
@@ -71,7 +71,7 @@ export async function leaveChannel(channelId: number, userId: number) {
 
 export async function searchUsersInChannel(channelId: number, keyword: string) {
   const url = baseUrl + `/${channelId}/users`;
-  const response = (await axios.get(baseUrl,{
+  const response = (await axios.get(url,{
     params: {
       keyword: keyword
     }
