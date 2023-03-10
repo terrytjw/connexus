@@ -6,8 +6,8 @@ import {
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
 import { leaveChannel } from "../../../../lib/prisma/channel-prisma";
-import { leaveCommunity } from "../../../../lib/api-helpers/community-api";
 import { getCommunityById } from "../../../../lib/prisma/community-prisma";
+import { leaveCommunity } from "../../../../lib/api-helpers/community-api";
 
 const prisma = new PrismaClient();
 
@@ -62,6 +62,7 @@ export default async function handler(
       const response = await getCommunityById(communityId);
       res.status(200).json(response!);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
