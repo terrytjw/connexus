@@ -22,11 +22,13 @@ export async function getAllCommentsOnPost(postId: number) {
 
 export async function createComment(
   content: string,
-  postId: number
+  postId: number,
+  userId: number
 ) {
   const response = (await axios.post(baseUrl, {
     content: content,
-    postId: postId
+    postId: postId,
+    userId: userId
   })).data;
   return response;
 }
