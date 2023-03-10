@@ -554,8 +554,8 @@
       ]
     },
     "/Users/colin/Desktop/creator-economy/contracts/DigitalBadge.sol": {
-      "lastModificationDate": 1678434690158,
-      "contentHash": "4a1c92e01b2c890230537ae9536b9c09",
+      "lastModificationDate": 1678435310577,
+      "contentHash": "a0c65775d2dcfec1507e7d7bc5580107",
       "sourceName": "contracts/DigitalBadge.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -596,8 +596,8 @@
       ]
     },
     "/Users/colin/Desktop/creator-economy/contracts/SimpleEvent.sol": {
-      "lastModificationDate": 1678434879833,
-      "contentHash": "a0c65775d2dcfec1507e7d7bc5580107",
+      "lastModificationDate": 1678435317291,
+      "contentHash": "59f5de5309d9ca8917858d1213a37a00",
       "sourceName": "contracts/SimpleEvent.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -634,7 +634,7 @@
         "^0.8.0"
       ],
       "artifacts": [
-        "DigitalBadge"
+        "SimpleEvent"
       ]
     }
   }
