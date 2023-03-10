@@ -4,13 +4,13 @@ import axios from "axios";
 
 const baseUrl = `${API_URL}/${CHANNEL_ENDPOINT}`;
 
-export async function getChannel(channelId: number) {
+export async function getChannelAPI(channelId: number) {
   const url = baseUrl + `/${channelId}`;
   const response = (await axios.get(url)).data;
   return response;
 }
 
-export async function getAllChannelsInCommunity(communityId: number) {
+export async function getAllChannelsInCommunityAPI(communityId: number) {
   const response = (await axios.get(baseUrl, {
     params: {
       communityId: communityId
@@ -19,7 +19,7 @@ export async function getAllChannelsInCommunity(communityId: number) {
   return response;
 }
 
-export async function createChannel(
+export async function createChannelAPI(
   name: string,
   channelType: ChannelType,
   communityId: number
@@ -32,7 +32,7 @@ export async function createChannel(
   return response;
 }
 
-export async function updateChannel(
+export async function updateChannelAPI(
   channelId: number,
   name: string
 ) {
@@ -43,13 +43,13 @@ export async function updateChannel(
   return response;
 }
 
-export async function deleteChannel(channelId: number) {
+export async function deleteChannelAPI(channelId: number) {
   const url = baseUrl + `/${channelId}`;
   const response = (await axios.delete(url)).data;
   return response;
 }
 
-export async function joinChannel(channelId: number, userId: number) {
+export async function joinChannelAPI(channelId: number, userId: number) {
   const url = baseUrl + `/${channelId}/join`;
   const response = (await axios.post(url, {}, {
     params: {
@@ -59,7 +59,7 @@ export async function joinChannel(channelId: number, userId: number) {
   return response;
 }
 
-export async function leaveChannel(channelId: number, userId: number) {
+export async function leaveChannelAPI(channelId: number, userId: number) {
   const url = baseUrl + `/${channelId}/leave`;
   const response = (await axios.post(url, {}, {
     params: {
@@ -69,7 +69,7 @@ export async function leaveChannel(channelId: number, userId: number) {
   return response;
 }
 
-export async function searchUsersInChannel(channelId: number, keyword: string) {
+export async function searchUsersInChannelAPI(channelId: number, keyword: string) {
   const url = baseUrl + `/${channelId}/users`;
   const response = (await axios.get(url,{
     params: {
