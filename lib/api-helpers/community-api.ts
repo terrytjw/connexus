@@ -12,6 +12,7 @@ export async function getCommunity(communityId: number) {
 }
 
 export type UpdateCommunityParams = {
+	communityId: number
 	name?: string,
 	description?: string,
 	profilePic?: string,
@@ -20,8 +21,8 @@ export type UpdateCommunityParams = {
 	maxMembers?: number
 }
 
-export async function updateCommunity(communityId: number, community: UpdateCommunityParams) {
-	const url = baseUrl + `/${communityId}`;
+export async function updateCommunity(community: UpdateCommunityParams) {
+	const url = baseUrl + `/${community.communityId}`;
   const response = (await axios.post(url, community)).data;
 
   return response;
