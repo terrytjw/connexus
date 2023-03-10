@@ -4,14 +4,14 @@ import axios from "axios";
 
 const baseUrl = `${API_URL}/${COMMENT_ENDPOINT}`;
 
-export async function getComment(commentId: number) {
+export async function getCommentAPI(commentId: number) {
   const url = baseUrl + `/${commentId}`;
   const response = (await axios.get(url)).data;
 
   return response;
 }
 
-export async function getAllCommentsOnPost(postId: number) {
+export async function getAllCommentsOnPostAPI(postId: number) {
   const response = (await axios.get(baseUrl, {
     params: {
       postId: postId
@@ -20,7 +20,7 @@ export async function getAllCommentsOnPost(postId: number) {
   return response;
 }
 
-export async function createComment(
+export async function createCommentAPI(
   content: string,
   postId: number,
   userId: number
@@ -33,7 +33,7 @@ export async function createComment(
   return response;
 }
 
-export async function updateComment(
+export async function updateCommentAPI(
   commentId: number,
   content: string
 ) {
@@ -44,13 +44,13 @@ export async function updateComment(
   return response;
 }
 
-export async function deleteComment(commentId: number) {
+export async function deleteCommentAPI(commentId: number) {
   const url = baseUrl + `/${commentId}`;
   const response = (await axios.delete(url)).data;
   return response;
 }
 
-export async function likeComment(commentId: number, userId: number) {
+export async function likeCommentAPI(commentId: number, userId: number) {
   const url = baseUrl + `/${commentId}/like`;
   const response = (await axios.post(url, {}, {
     params: {
@@ -60,7 +60,7 @@ export async function likeComment(commentId: number, userId: number) {
   return response;
 }
 
-export async function unlikeComment(commentId: number, userId: number) {
+export async function unlikeCommentAPI(commentId: number, userId: number) {
   const url = baseUrl + `/${commentId}/unlike`;
   const response = (await axios.post(url, {}, {
     params: {
