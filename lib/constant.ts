@@ -2,6 +2,7 @@ export const API_URL = "http://localhost:3000/api";
 export const MERCHANDISE_ENDPOINT = "merch";
 export const COLLECTION_ENDPOINT = "collections";
 export const USER_ENDPOINT = "users";
+export const POST_ENDPOINT = "post";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
@@ -18,5 +19,3 @@ export const smartContract = {
 } as const;
 export const COMMUNITY_BUCKET = "community";
 export const POST_BUCKET = "post";
-
-export const POST_ENDPOINT = "post";
