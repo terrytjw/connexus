@@ -2,36 +2,36 @@ import { CategoryType, Community } from "@prisma/client";
 import { API_URL, COMMUNITY_ENDPOINT } from "../constant";
 import axios from "axios";
 
-export async function getCommunityInfo(communityId: number) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}`;
+const baseUrl = `${API_URL}/${COMMUNITY_ENDPOINT}`;
+
+export async function getCommunity(communityId: number) {
+	const url = baseUrl + `/${communityId}`;
 	const response = (await axios.get(url)).data;
 
 	return response;
 }
 
-export async function updateCommunityInfo(communityId: number, communityInfo: Community) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}`;
+export async function updateCommunity(communityId: number, communityInfo: Community) {
+	const url = baseUrl + `/${communityId}`;
   const response = (await axios.post(url, communityInfo)).data;
 
   return response;
 }
 export async function deleteCommunity(communityId: Number) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}`;
+	const url = baseUrl + `/${communityId}`;
   const response = (await axios.delete(url)).data;
 
   return response;
 }
 
 export async function createCommunity(communityInfo: Community) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}`;
-  const response = (await axios.post(url, communityInfo)).data;
+  const response = (await axios.post(baseUrl, communityInfo)).data;
 
   return response;
 }
 
 export async function getAllCommunities(cursor: number, filter?: CategoryType[]) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}`;
-  const response = (await axios.get(url, {
+  const response = (await axios.get(baseUrl, {
 		params: {
 			cursor: cursor,
 			filter: filter ? filter : undefined
@@ -42,8 +42,7 @@ export async function getAllCommunities(cursor: number, filter?: CategoryType[])
 }
 
 export async function searchCommunities(keyword: string, cursor: number, filter?: CategoryType[]) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}`;
-  const response = (await axios.get(url, {
+  const response = (await axios.get(baseUrl, {
 		params: {
 			keyword: keyword,
 			cursor: cursor,
@@ -55,7 +54,7 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
 }
 
 export async function joinCommunity(communityId: number, userId: number) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}/join`;
+	const url = baseUrl + `/${communityId}/join`;
   const response = (await axios.post(url, {}, // empty object for empty req body
     {
     params: {
@@ -66,7 +65,7 @@ export async function joinCommunity(communityId: number, userId: number) {
 }
 
 export async function leaveCommunity(communityId: number, userId: number) {
-	const url = `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}/leave`;
+	const url = baseUrl + `/${communityId}/leave`;
   const response = (await axios.post(url, {}, { // empty object for empty req body
     params: {
       userId: userId
