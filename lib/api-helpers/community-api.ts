@@ -11,9 +11,18 @@ export async function getCommunity(communityId: number) {
 	return response;
 }
 
-export async function updateCommunity(communityId: number, communityInfo: Community) {
+export type UpdateCommunityParams = {
+	name?: string,
+	description?: string,
+	profilePic?: string,
+	bannerPic?: string,
+	tags: CategoryType[],
+	maxMembers?: number
+}
+
+export async function updateCommunity(communityId: number, community: UpdateCommunityParams) {
 	const url = baseUrl + `/${communityId}`;
-  const response = (await axios.post(url, communityInfo)).data;
+  const response = (await axios.post(url, community)).data;
 
   return response;
 }
@@ -24,8 +33,18 @@ export async function deleteCommunity(communityId: Number) {
   return response;
 }
 
-export async function createCommunity(communityInfo: Community) {
-  const response = (await axios.post(baseUrl, communityInfo)).data;
+export type CreateCommunityParams = {
+	name: string,
+	description?: string,
+	profilePic?: string,
+	bannerPic?: string,
+	tags: CategoryType[],
+	maxMembers?: number,
+	userId: number
+}
+
+export async function createCommunity(community: CreateCommunityParams) {
+  const response = (await axios.post(baseUrl, community)).data;
 
   return response;
 }
