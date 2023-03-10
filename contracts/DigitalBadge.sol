@@ -23,7 +23,7 @@ contract DigitalBadge is  Ownable, ReentrancyGuard, ERC721URIStorage {
 
     struct Badge{
         address organizer;
-        address badgeOwner; 
+        address ticketOwner; 
         string category; //category within ticket 
 
     }   
@@ -40,17 +40,17 @@ contract DigitalBadge is  Ownable, ReentrancyGuard, ERC721URIStorage {
     } 
 
 
-    function mint(string memory category, address owner, string memory tokenURI) public virtual payable returns(uint256){
+    function mint(string memory category, string memory tokenURI) public virtual payable returns(uint256){
         Badge memory newBadge = Badge( 
-            organizer,owner, category
+            organizer, msg.sender, category
         ); 
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _safeMint(owner, newItemId);
+        _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, tokenURI); 
         badgeIDs[newItemId]= newBadge;
-        emit badgeMinted(newItemId, owner);
+        emit badgeMinted(newItemId, msg.sender);
 
         return newItemId;  //get the newItemId
     }
