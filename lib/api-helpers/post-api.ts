@@ -17,6 +17,8 @@ export async function getAllPostsInChannel(channelId: number) {
       channelId: channelId
     }
   })).data;
+
+  return response;
 }
 
 export async function createPost(
