@@ -2,6 +2,7 @@ import {
   ALCHEMY_API,
   EVENT_ENDPOINT,
   TICKET_ENDPOINT,
+  USER_TICKET_ENDPOINT,
   smartContract,
 } from "./../constant";
 import { Collection, Event, User } from "@prisma/client";
@@ -77,5 +78,11 @@ export async function checkIn(
   const url = `${API_URL}/${TICKET_ENDPOINT}/${ticketId}/checkin?userId=${userId}`;
   const response = (await axios.post(url)).data;
 
+  return response;
+}
+
+export async function retrieveVisitedEvents(userId: number) {
+  const url = `${API_URL}/${USER_TICKET_ENDPOINT}/${userId}/visited`;
+  const response = (await axios.get(url)).data;
   return response;
 }

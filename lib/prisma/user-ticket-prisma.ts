@@ -1,5 +1,6 @@
 import { Prisma, PrismaClient, Ticket, User } from "@prisma/client";
 import { generateUniqueUsername } from "../../utils/user-util";
+import { filterEvent, searchEventContainingTickets } from "./event-prisma";
 
 const prisma = new PrismaClient();
 
@@ -40,4 +41,40 @@ export async function checkIn(ticketId: number, userId: number) {
       checkIn: true,
     },
   });
+}
+
+export async function retrieveVisitedEvents(
+  ticketId: number | undefined,
+  userId: number | undefined
+) {
+  const userTickets = await prisma.userTicket.findMany({
+    where: {
+      ticketId: ticketId,
+      userId: userId,
+      checkIn: true,
+    },
+  });
+
+  const ticketIds = userTickets.map((userTicket) => userTicket.ticketId);
+  const events = await searchEventContainingTickets(ticketIds);
+
+  return events.filter((event) => event.endDate < new Date());
+}
+
+export async function retrieveExpiredEvents(
+  ticketId: number | undefined,
+  userId: number | undefined
+) {
+  const userTickets = await prisma.userTicket.findMany({
+    where: {
+      ticketId: ticketId,
+      userId: userId,
+      checkIn: false,
+    },
+  });
+
+  const ticketIds = userTickets.map((userTicket) => userTicket.ticketId);
+  const events = await searchEventContainingTickets(ticketIds);
+
+  return events.filter((event) => event.endDate < new Date());
 }

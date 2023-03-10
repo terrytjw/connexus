@@ -168,3 +168,28 @@ export async function likeEvent(eventId: number, userId: number) {
     },
   });
 }
+
+export async function searchEventContainingTickets(ticketId: number[]) {
+  return prisma.event.findMany({
+    where: {
+      tickets: {
+        some: {
+          ticketId: {
+            in: ticketId,
+          },
+        },
+      },
+    },
+  });
+}
+
+export async function retrieveTrendingEvents() {
+  return prisma.event.findMany({
+    orderBy: {
+      userLikes: {
+        _count: "desc",
+      },
+    },
+    take: 1,
+  });
+}

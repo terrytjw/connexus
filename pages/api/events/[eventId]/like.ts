@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 
 /**
  * @swagger
- * /api/events/{commentId}/like
+ * /api/events/{EventId}/like
  *   comment:
  *     description: Updates an Event object with a like from a User
  *     parameters:
