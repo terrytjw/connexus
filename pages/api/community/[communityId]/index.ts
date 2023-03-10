@@ -11,8 +11,7 @@ import {
   retrieveImageUrl,
   uploadImage,
 } from "../../../../lib/supabase";
-import { getCommunityById, updateCommunity } from "../../../../lib/prisma/community-prisma";
-import { deleteCommunity } from "../../../../lib/api-helpers/community-api";
+import { deleteCommunity, getCommunityById, updateCommunity } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
