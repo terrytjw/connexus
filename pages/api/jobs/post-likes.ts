@@ -24,7 +24,7 @@ export default async function handler(
       const posts = await prisma.post.findMany({
         include: {
           _count: {
-            select: { likes: true }
+            select: { likes: true, comments: true }
           }
         }
       });
@@ -38,7 +38,17 @@ export default async function handler(
               }
             }
           }
-        })
+        });
+        await prisma.postCommentsTimestamp.create({
+          data: {
+            comments: post._count.comments,
+            post: {
+              connect: {
+                postId: post.postId
+              }
+            }
+          }
+        });
       }
       res.status(200).json(true);
     } catch (error) {
