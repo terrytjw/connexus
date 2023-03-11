@@ -8,7 +8,7 @@ export async function getTicketInfo(ticketId: number) {
 }
 
 export async function getTicketsOwned(userId: number) {
-  const url = `${API_URL}/${TICKET_ENDPOINT}/user/${userId}`;
+  const url = `${API_URL}/${TICKET_ENDPOINT}?userId=${userId}`;
   const response = (await axios.get(url)).data;
   return response;
 }

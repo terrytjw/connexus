@@ -27,6 +27,10 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
+  const [trendingEvents, setTrendingEvents] = useState<
+    EventWithTicketsandAddress[]
+  >([]);
+
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -100,6 +104,54 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   }, [searchString, selectedTopics]);
 
   const ListedTabContent = () => {
+    // temp client filter to separate list and expired events
+    const listedEvents = searchAndFilterResults.filter(
+      (event: EventWithTicketsandAddress) =>
+        new Date(event.endDate) >= new Date()
+    );
+
+    // console.log("upcoming -> ", filterListedEvents());
+    return (
+      <>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {selectedTopics.map((label) => {
+            return (
+              <Button
+                key={label}
+                size="sm"
+                variant="outlined"
+                onClick={(e) => e.preventDefault()}
+                className="font-normal"
+              >
+                {label}
+                <FaTimes
+                  onClick={() => {
+                    setSelectedTopics(
+                      selectedTopics.filter((topic) => {
+                        return topic != label;
+                      })
+                    );
+                  }}
+                />
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Trending Events  */}
+        <div>
+          <h2 className="my-2 text-xl font-semibold">Trending Events</h2>
+          <EventsGrid data={listedEvents} />
+        </div>
+        <div>
+          <h2 className="my-2 text-xl font-semibold">Events in Singapore</h2>
+          <EventsGrid data={listedEvents} />
+        </div>
+      </>
+    );
+  };
+
+  const VisitedTabContent = () => {
     // temp client filter to separate list and expired events
     const listedEvents = searchAndFilterResults.filter(
       (event: EventWithTicketsandAddress) =>
@@ -253,15 +305,15 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
         <div className="relative">
           <TabGroupBordered
-            tabs={["Listed", "Expired"]}
+            tabs={["Listed", "Visited", "Expired"]}
             activeTab={activeTab}
             setActiveTab={(index: number) => {
               setActiveTab(index);
             }}
           >
             {activeTab == 0 && <ListedTabContent />}
-            {/* {activeTab == 1 && <VisitedTabContent />} */}
-            {activeTab == 1 && <ExpiredTabContent />}
+            {activeTab == 1 && <VisitedTabContent />}
+            {activeTab == 2 && <ExpiredTabContent />}
           </TabGroupBordered>
 
           {/* desktop */}

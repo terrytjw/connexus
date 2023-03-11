@@ -125,3 +125,10 @@ export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
 export type UserWithTickets = Prisma.UserGetPayload<{
   include: { tickets: true };
 }>;
+
+export type AttendeeListType = {
+  userId: number;
+  displayName: string;
+  email: string;
+  checkIn: boolean;
+};

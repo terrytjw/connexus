@@ -4,8 +4,9 @@ import Button from "../Button";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaHeart } from "react-icons/fa";
+import { FaAddressCard, FaHeart } from "react-icons/fa";
 import { formatDate } from "../../utils/date-util";
+import { likeEvent, unlikeEvent } from "../../lib/api-helpers/event-api";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -17,8 +18,12 @@ type CollectionGridItemProps = {
 const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
   if (!item) return <Skeleton height={350} />;
 
+  // localhost:3000/api/events/1/like?userId=4
+  // localhost:3000/api/events/1/unlike?userId=4
+
   return (
-    <Link href={`/events/${item.eventId}`} className="group text-sm">
+    // <Link href={`/events/${item.eventId}`} className="group text-sm">
+    <div>
       <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
         <Image
           src={item.eventPic || "/images/bear.jpg"}
@@ -33,8 +38,26 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
             variant="solid"
             size="sm"
             className="relative ml-auto rounded-full text-lg font-semibold text-white"
+            onClick={async (e) => {
+              // prevent row on click
+              e.stopPropagation();
+              await likeEvent(1, 4);
+            }}
           >
             <FaHeart />
+          </Button>
+          {/* Condiitonally render this unlike function */}
+          <Button
+            variant="solid"
+            size="sm"
+            className="relative ml-auto rounded-full text-lg font-semibold text-white"
+            onClick={async (e) => {
+              // prevent row on click
+              e.stopPropagation();
+              await unlikeEvent(1, 4);
+            }}
+          >
+            <FaAddressCard />
           </Button>
         </div>
       </div>
@@ -53,7 +76,8 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
       <p className="text-s mt-2 font-semibold text-blue-600">
         {item.maxAttendee} attendees
       </p>
-    </Link>
+      {/* </Link> */}
+    </div>
   );
 };
 

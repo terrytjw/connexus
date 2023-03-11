@@ -111,6 +111,7 @@ export async function updateEvent(
   });
 }
 
+// to implement with checkin status
 export async function retrieveAttendee(eventId: number) {
   const tickets = await prisma.ticket.findMany({
     where: {
@@ -130,7 +131,24 @@ export async function retrieveAttendee(eventId: number) {
         },
       },
     },
+    include: { tickets: true },
   });
+
+  // const users = prisma.user.findMany({
+  //   where: {
+  //     tickets: {
+  //       some: {
+  //         ticketId: {
+  //           in: ticketIds,
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+
+  // const userTickets = await prisma.userTicket.findMany({
+  //   where: {},
+  // });
 }
 
 export async function unlikeEvent(eventId: number, userId: number) {

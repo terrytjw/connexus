@@ -39,7 +39,7 @@ export async function createEvent(eventInfo: Event) {
 
 export async function viewAttendeeList(eventId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee`;
-  const response = (await axios.post(url)).data;
+  const response = (await axios.get(url)).data;
   return response;
 }
 
@@ -53,7 +53,7 @@ export async function likeEvent(eventId: number, userId: number) {
   return response;
 }
 
-export async function unlikeEvent(eventId: number, userId: number) {
+export async  function unlikeEvent(eventId: number, userId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/unlike?userId=${userId}`;
   const response = (await axios.post(url)).data;
   return response;
@@ -81,8 +81,36 @@ export async function checkIn(
   return response;
 }
 
-export async function retrieveVisitedEvents(userId: number) {
-  const url = `${API_URL}/${USER_TICKET_ENDPOINT}/${userId}/visited`;
+// export async function retrieveVisitedEvents(userId: number) {
+//   const url = `${API_URL}/${USER_TICKET_ENDPOINT}/${userId}/visited`;
+//   const response = (await axios.get(url)).data;
+//   return response;
+// }
+
+export async function viewTrendingEvents() {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/trending`;
   const response = (await axios.get(url)).data;
   return response;
+}
+
+export async function retrieveVisitedEvents(userId: number) {
+  const url = `${API_URL}/${USER_TICKET_ENDPOINT}/?userId=${userId}&viewVisitedEvent=true`;
+  const response = (await axios.get(url)).data;
+  return response;
+}
+
+export async function viewExpiredEvent(userId: number) {
+  const url = `${API_URL}/${USER_TICKET_ENDPOINT}/?userId=${userId}&viewVisitedEvent=false`;
+  const response = (await axios.get(url)).data;
+  return response;
+}
+
+export function exportPDF(eventId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee/pdf`;
+  return url;
+}
+
+export function exportCSV(eventId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee/csv`;
+  return url;
 }

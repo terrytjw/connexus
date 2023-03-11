@@ -11,7 +11,8 @@ import { GetServerSideProps } from "next";
 import axios from "axios";
 import { Event } from "@prisma/client";
 import Modal from "../../components/Modal";
-import { QRCodeCanvas } from "qrcode.react";
+import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
+// import { QRCodeCanvas } from "qrcode.react";
 
 type TicketsPageProps = {
   tickets: Ticket[] & Partial<Event>;
@@ -46,7 +47,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             setIsOpen={setIsModalOpen}
             className="min-w-fit"
           >
-            <QRCodeCanvas value="https://reactjs.org/" />
+            {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
           </Modal>
           {/* Header */}
           <nav className="flex items-center gap-6">
@@ -57,7 +58,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
           </nav>
           <section>
             <div className="pt-6">
-              {[].map((ticket: Ticket & Partial<Event>) => (
+              {tickets.map((ticket: Ticket & Partial<Event>) => (
                 <div key={ticket.ticketId}>
                   <h3 className="mb-4 text-xl font-bold text-gray-800">
                     {ticket.eventName}
@@ -102,16 +103,11 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   console.log(userData);
 
   // build a ticket type with event name in it
-  const parsedTickets = await Promise.all(
-    userData.tickets.map(async (ticket: Ticket) => {
-      const eventData = await getEventFromTicket(ticket.eventId.toString());
-      return { ...ticket, eventName: eventData?.eventName };
-    })
-  );
+  const ownedTickets = await getTicketsOwned(4);
 
   return {
     props: {
-      tickets: parsedTickets,
+      tickets: ownedTickets,
     },
   };
 };

@@ -10,12 +10,13 @@ import router from "next/router";
 import { CategoryType, Ticket, User } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
 import Button from "../Button";
+import { checkIn } from "../../lib/api-helpers/event-api";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 type AttendeesTableProps = {
-  data: User[];
+  data: User[]; // replace this with prisma attendee user type
   columns: string[];
 };
 
@@ -42,18 +43,23 @@ const AttendeesTable = ({ data, columns }: AttendeesTableProps) => {
 
               <td className="text-gray-700">{data?.displayName}</td>
               <td className="text-gray-700">{data?.email}</td>
-              <td className="text-gray-700">placeholder status</td>
 
               <th className=" text-gray-700">
-                {/* note: these buttons display depending on tab a user is on */}
-                <Button
-                  href="/events/create"
-                  variant="solid"
-                  size="md"
-                  className="max-w-xs shadow-md"
-                >
-                  Send Badge
-                </Button>
+                {data?.checkIn ? (
+                  "Checked In"
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="md"
+                    className="max-w-xs"
+                    onClick={async () => {
+                      const res = await checkIn(1, 1, 4);
+                      console.log(res);
+                    }}
+                  >
+                    Check In
+                  </Button>
+                )}
               </th>
             </tr>
           ))}

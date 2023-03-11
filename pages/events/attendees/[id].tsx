@@ -11,6 +11,11 @@ import { User } from "@prisma/client";
 import Modal from "../../../components/Modal";
 // import { Html5QrcodeScanner } from "html5-qrcode";
 import { QrReader } from "react-qr-reader";
+import {
+  viewAttendeeList,
+  exportCSV,
+  exportPDF,
+} from "../../../lib/api-helpers/event-api";
 
 type AttendeesPageProps = {
   users: User[];
@@ -19,6 +24,9 @@ type AttendeesPageProps = {
 const AttendeesPage = ({ users }: AttendeesPageProps) => {
   const [isQrModalOpenOpen, setIsQrModalOpen] = useState(false);
   const [data, setData] = useState("No result");
+
+  // event id, user id, ticket id
+  console.log("users", users);
 
   return (
     <ProtectedRoute>
@@ -63,8 +71,17 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
             </div>
 
             <div className="flex items-center gap-4">
+              {/* TODO: refactor buttons into dropdown  */}
               <Button
-                href="/events/create"
+                href={exportPDF(1)} // redirect users to the url
+                variant="solid"
+                size="md"
+                className="max-w-xs "
+              >
+                Export PDF
+              </Button>
+              <Button
+                href={exportCSV(1)} // redirect users to the url
                 variant="solid"
                 size="md"
                 className="max-w-xs "
@@ -86,13 +103,7 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
             <div className="pt-6">
               <AttendeesTable
                 data={users}
-                columns={[
-                  "ID",
-                  "Name",
-                  "Email Address",
-                  "Check-in Status",
-                  "Digital Badge Status",
-                ]}
+                columns={["Name", "Email Address", "Check-in Status"]}
               />
             </div>
           </section>
@@ -105,8 +116,7 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
 export default AttendeesPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  //  TODO: replace this data with users associated with this event
-  const { data: users } = await axios.get(`http://localhost:3000/api/users`);
+  const users = await viewAttendeeList(1);
 
   return {
     props: {
