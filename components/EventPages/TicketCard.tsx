@@ -2,12 +2,19 @@ import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
 import { formatDate } from "../../utils/date-util";
 import { checkIn } from "../../lib/api-helpers/event-api";
+import Button from "../Button";
 
 type TicketCardProps = {
   ticket: Ticket;
+  isOwnedTicket?: boolean;
+  setIsModalOpen: (value: boolean) => void;
 };
 
-const TicketCard = ({ ticket }: TicketCardProps) => {
+const TicketCard = ({
+  ticket,
+  isOwnedTicket,
+  setIsModalOpen,
+}: TicketCardProps) => {
   const onCheckIn = async () => {
     const response = await checkIn(1, 1, 4);
     console.log(response);
@@ -60,6 +67,18 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
             {/* To be edited */}
             <button onClick={onCheckIn}>Check In</button>
           </div>
+          {isOwnedTicket && (
+            <div className="flex items-end">
+              <Button
+                variant="solid"
+                size="md"
+                className="max-w-xs "
+                onClick={() => setIsModalOpen(true)}
+              >
+                Generate QR Code
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>

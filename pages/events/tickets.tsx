@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TicketCard from "../../components/EventPages/TicketCard";
 
 import { getSession } from "next-auth/react";
@@ -10,6 +10,8 @@ import Link from "next/link";
 import { GetServerSideProps } from "next";
 import axios from "axios";
 import { Event } from "@prisma/client";
+import Modal from "../../components/Modal";
+import { QRCodeCanvas } from "qrcode.react";
 
 type TicketsPageProps = {
   tickets: Ticket[] & Partial<Event>;
@@ -17,10 +19,35 @@ type TicketsPageProps = {
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
   console.log("tickets ->", tickets);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+  const testTickets = [
+    {
+      ticketId: 1,
+      name: "General Admission",
+      totalTicketSupply: 45,
+      currentTicketSupply: 1,
+      price: 10,
+      ticketType: "ON_SALE",
+      startDate: "2023-02-22T00:00:00.000Z",
+      endDate: "2023-02-25T00:00:00.000Z",
+      description: "Freebies, photo-taking session and on-stage event!",
+      eventId: 1,
+    },
+  ];
+
   return (
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          {/* QR Modal */}
+          <Modal
+            isOpen={isModalOpen}
+            setIsOpen={setIsModalOpen}
+            className="min-w-fit"
+          >
+            <QRCodeCanvas value="https://reactjs.org/" />
+          </Modal>
           {/* Header */}
           <nav className="flex items-center gap-6">
             <Link href="/events">
@@ -30,12 +57,17 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
           </nav>
           <section>
             <div className="pt-6">
-              {tickets.map((ticket: Ticket & Partial<Event>) => (
+              {[].map((ticket: Ticket & Partial<Event>) => (
                 <div key={ticket.ticketId}>
                   <h3 className="mb-4 text-xl font-bold text-gray-800">
                     {ticket.eventName}
                   </h3>
-                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                  <TicketCard
+                    key={ticket.ticketId}
+                    ticket={ticket}
+                    isOwnedTicket={true} // render buttons
+                    setIsModalOpen={() => {}}
+                  />
                 </div>
               ))}
             </div>

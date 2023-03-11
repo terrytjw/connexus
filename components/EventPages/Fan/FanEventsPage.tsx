@@ -133,7 +133,16 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             );
           })}
         </div>
-        <EventsGrid data={listedEvents} />
+
+        {/* Trending Events  */}
+        <div>
+          <h2 className="my-2 text-xl font-semibold">Trending Events</h2>
+          <EventsGrid data={listedEvents} />
+        </div>
+        <div>
+          <h2 className="my-2 text-xl font-semibold">Events in Singapore</h2>
+          <EventsGrid data={listedEvents} />
+        </div>
       </>
     );
   };
@@ -213,7 +222,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
         <h3 className="mt-4">Register for a new event </h3>
 
         <div className="mt-6 mb-3 flex flex-wrap justify-between">
-          <h2 className="mt-2 text-xl font-bold">Events in Singapore</h2>
           <Link href="/events/tickets">
             <Button variant="solid" size="md" className="max-w-xs">
               View Tickets
