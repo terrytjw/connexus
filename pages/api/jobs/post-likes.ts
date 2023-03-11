@@ -21,20 +21,20 @@ export default async function handler(
 
   async function handlePOST() {
     try {
-      const communities = await prisma.community.findMany({
+      const posts = await prisma.post.findMany({
         include: {
           _count: {
-            select: { members: true }
+            select: { likes: true }
           }
         }
       });
-      for (let community of communities) {
-        await prisma.communitySizeTimestamp.create({
+      for (let post of posts) {
+        await prisma.postLikesTimestamp.create({
           data: {
-            members: community._count.members,
-            community: {
+            likes: post._count.likes,
+            post: {
               connect: {
-                communityId: community.communityId
+                postId: post.postId
               }
             }
           }

@@ -51,6 +51,7 @@ model Post {
   channelId Int
   likes     User[]    @relation(name: "likedPosts")
   comments  Comment[]
+  postLikeTimestamps PostLikeTimestamp[]
 }
 
 model Community {
@@ -259,4 +260,12 @@ model CommunitySizeTimestamp {
   date DateTime @default(now())
   community Community @relation(fields: [communityId], references: [communityId])
   communityId Int
+}
+
+model PostLikeTimestamp {
+  id Int @id @default(autoincrement())
+  likes Int
+  date DateTime @default(now())
+  post Post @relation(fields: [postId], references: [postId])
+  postId Int
 }
