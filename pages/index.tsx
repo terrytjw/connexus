@@ -11,6 +11,7 @@ import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
+import StripeCheckoutForm from "../components/Stripe/StripeCheckoutForm";
 
 const HomePage: NextPage = () => {
   const router = useRouter();
@@ -55,8 +56,14 @@ const HomePage: NextPage = () => {
             Login
           </Button>
           <Modal isOpen={isAuthModalOpen} setIsOpen={setIsAuthModalOpen}>
-            <SocialLoginDynamic isAuthModalOpen={isAuthModalOpen}/>
+            <SocialLoginDynamic isAuthModalOpen={isAuthModalOpen} />
           </Modal>
+        </section>
+
+        <div className="divider" />
+        <h2 className="mt-10 mb-6 text-xl font-semibold">Stripe payments</h2>
+        <section className="">
+          <StripeCheckoutForm />
         </section>
 
         <div className="divider" />
