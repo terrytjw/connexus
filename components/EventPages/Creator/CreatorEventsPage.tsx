@@ -10,6 +10,8 @@ import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import { Event } from "@prisma/client";
+import { FiCalendar } from "react-icons/fi";
+import EventWordToggle from "../EventWordToggle";
 
 const DELAY_TIME = 400;
 
@@ -18,6 +20,7 @@ type CreatorEventsPageProps = {
 };
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
+  const [isCreated, setIsCreated] = useState<boolean>(true);
   const [selectedTopics, setSelectedTopics] = useState<
     string[] | CategoryType[]
   >([]);
@@ -171,6 +174,22 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
         {/* dekstop filter and search */}
         <div className="invisible mt-6 flex flex-wrap justify-between sm:visible">
           <div className="flex gap-4">
+            <EventWordToggle
+              leftWord="Created"
+              rightWord="Ended"
+              isChecked={isCreated}
+              setIsChecked={setIsCreated}
+            />
+            <Button
+              href="/events/create"
+              variant="solid"
+              size="md"
+              className="max-w-xs shadow-md"
+            >
+              <FiCalendar className="text-lg text-neutral-50" />
+            </Button>
+          </div>
+          <div className="flex gap-4">
             <div className="relative w-full items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
@@ -195,14 +214,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>
-          <Button
-            href="/events/create"
-            variant="solid"
-            size="md"
-            className="max-w-xs"
-          >
-            Create Event
-          </Button>
         </div>
         {/* mobile search and filter */}
         <div className="mt-8 flex w-full gap-2 sm:hidden">
@@ -264,8 +275,10 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             columns={[
               "Event Name",
               "Date",
-              "Attendees Number",
               "Location",
+              "Attendees Number",
+              "Tickets Sold",
+              "Revenue",
               "Tags",
               "Status",
             ]}

@@ -1,12 +1,19 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
 import { formatDate } from "../../utils/date-util";
+import Button from "../Button";
 
 type TicketCardProps = {
   ticket: Ticket;
+  isOwnedTicket?: boolean;
+  setIsModalOpen: (value: boolean) => void;
 };
 
-const TicketCard = ({ ticket }: TicketCardProps) => {
+const TicketCard = ({
+  ticket,
+  isOwnedTicket,
+  setIsModalOpen,
+}: TicketCardProps) => {
   return (
     <div>
       <div className="pb-2 sm:pb-4">
@@ -51,6 +58,18 @@ const TicketCard = ({ ticket }: TicketCardProps) => {
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
           </div>
+          {isOwnedTicket && (
+            <div className="flex items-end">
+              <Button
+                variant="solid"
+                size="md"
+                className="max-w-xs "
+                onClick={() => setIsModalOpen(true)}
+              >
+                Generate QR Code
+              </Button>
+            </div>
+          )}
         </div>
       </div>
     </div>
