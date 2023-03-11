@@ -65,6 +65,7 @@ model Community {
   userId      Int
   members     User[]         @relation(name: "joinedCommunities")
   channels    Channel[]
+  communitySizeTimeStamp CommunitySizeTimestamp[]
 }
 
 model Channel {
@@ -146,7 +147,7 @@ model Ticket {
   users               User[]
 }
 
-enum TicketType{
+enum TicketType {
   PAUSED
   ON_SALE
 }
@@ -250,4 +251,12 @@ model Merchandise {
   collection       Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   collectionId     Int
   users            User[]
+}
+
+model CommunitySizeTimestamp {
+  id Int @id @default(autoincrement())
+  members Int
+  date DateTime @default(now())
+  community Community @relation(fields: [communityId], references: [communityId])
+  communityId Int
 }
