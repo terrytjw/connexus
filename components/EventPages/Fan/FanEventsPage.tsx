@@ -10,6 +10,8 @@ import { EventWithTicketsandAddress } from "../../../utils/types";
 import Link from "next/link";
 import { CategoryType, Event } from "@prisma/client";
 import axios from "axios";
+import { paginateEvent } from "../../../lib/api-helpers/event-api";
+import useSWR from "swr";
 
 const DELAY_TIME = 400;
 
@@ -27,6 +29,10 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
+  const [paginationIndex, setPaginationIndex] = useState(0);
+  // const { data: event } = useSWR(paginationIndex * 2, paginateEvent);
+  const { data: eventTemp } = useSWR(paginationIndex.toString(), paginateEvent);
+  console.log("eventTemp -> ", eventTemp);
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -134,6 +140,40 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           })}
         </div>
         <EventsGrid data={listedEvents} />
+        <div
+          className="btn-group mt-20 flex justify-center"
+          onClick={() => {
+            setPaginationIndex(0);
+          }}
+        >
+          <button className="btn-md btn border-r-0 border-blue-600 bg-blue-50 text-blue-600 hover:border-blue-600 hover:bg-blue-600 hover:text-white">
+            {paginationIndex + 1}
+          </button>
+          <button
+            className="btn-md btn border-x-0 border-blue-600 bg-blue-50 text-blue-600 hover:border-blue-600 hover:bg-blue-600 hover:text-white"
+            onClick={() => {
+              setPaginationIndex(1);
+            }}
+          >
+            {paginationIndex + 2}
+          </button>
+          <button
+            className="btn-md btn border-x-0 border-blue-600 bg-blue-50 text-blue-600 hover:border-blue-600 hover:bg-blue-600 hover:text-white"
+            onClick={() => {
+              setPaginationIndex(2);
+            }}
+          >
+            {paginationIndex + 3}
+          </button>
+          <button
+            className="btn-md btn border-l-0 border-blue-600 bg-blue-50 text-blue-600 hover:border-blue-600 hover:bg-blue-600 hover:text-white"
+            onClick={() => {
+              setPaginationIndex(3);
+            }}
+          >
+            {paginationIndex + 4}
+          </button>
+        </div>
       </>
     );
   };

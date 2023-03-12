@@ -179,18 +179,17 @@ export async function startCollectionMint(collectionId: number) {
   return updatedCollectionResponse;
 }
 
+// can be used for both search or get a specific number of collections
 export async function searchCollectionByName(
   cursor?: number,
   userId?: number,
-  keyword?: string
+  keyword: string = ""
 ) {
   const object = { cursor, userId, keyword } as any;
 
   const params = new URLSearchParams(object).toString();
   const url = `${API_URL}/${COLLECTION_ENDPOINT}?${params}`;
   const response = (await axios.get(url)).data;
-  console.log("search response: ", response);
-
   response.map((item: Collection) => {
     return {
       collectionName: item.collectionName,

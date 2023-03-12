@@ -9,6 +9,7 @@ import { getSession, useSession } from "next-auth/react";
 import { GetServerSideProps } from "next";
 import axios from "axios";
 import { Merchandise } from "@prisma/client";
+import { searchCollectionByName } from "../../lib/api-helpers/collection-api";
 
 type CollectionsPageProps = {
   userData: any;
@@ -63,6 +64,8 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const { data: collectionsData } = await axios.get(
     `http://localhost:3000/api/collections`
   );
+
+  // const collectionsData = await searchCollectionByName(1, 4);
 
   const { merchandise } = userData;
 
