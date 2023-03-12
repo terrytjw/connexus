@@ -3,6 +3,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { Merchandise } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
 import {
+  createMerchandise,
   filterMerchandiseByPriceType,
   findAllMerchandise,
 } from "../../../lib/prisma/merchandise-prisma";
@@ -19,6 +20,7 @@ export enum MerchandisePriceType {
 }
 
 import prisma from "../../../lib/prisma";
+import { createProduct } from "../../../lib/stripe/api-helpers";
 
 /**
  * @swagger
@@ -52,7 +54,7 @@ import prisma from "../../../lib/prisma";
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Merchandise[] | ErrorResponse>
+  res: NextApiResponse<Merchandise[] | Merchandise | ErrorResponse>
 ) {
   const { method, body, query } = req;
 
@@ -105,10 +107,23 @@ export default async function handler(
 
       console.log(imageUrl);
 
-      const response = await prisma.merchandise.create({
-        data: { ...merchInfo, image: imageUrl, merchId: undefined },
-      });
-      res.status(200).json([response]);
+      const stripePriceId = await createProduct(
+        merchInfo.name,
+        "", // merchInfo.description,
+        imageUrl,
+        false,
+        merchInfo.price
+      );
+
+      const merchandise = {
+        ...merchInfo,
+        image: imageUrl,
+        stripePriceId: stripePriceId,
+      } as Merchandise;
+
+      const response = await createMerchandise(merchandise);
+
+      res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

@@ -36,6 +36,7 @@ model User {
   likedComments       Comment[]     @relation(name: "likedComments")
   tickets             Ticket[]
   merchandise         Merchandise[]
+  walletBalance       Float         @default(0)
 }
 
 model Post {
@@ -93,25 +94,25 @@ model Comment {
 }
 
 model Event {
-  eventId            Int            @id @default(autoincrement())
-  eventName          String
-  category           CategoryType[]
-  address            Address        @relation(fields: [addressId], references: [addressId])
-  addressId          Int
-  startDate          DateTime       @default(now())
-  endDate            DateTime       @default(now())
-  summary            String?
-  description        String?
-  visibilityType     VisibilityType
-  privacyType        PrivacyType
-  eventPic           String?
-  bannerPic          String?
-  maxAttendee        Int            @default(0)
-  publishType        PublishType
-  publishStartDate   DateTime       @default(now())
-  tickets            Ticket[]
-  ticketURIs         String[]
-  scAddress          String
+  eventId          Int            @id @default(autoincrement())
+  eventName        String
+  category         CategoryType[]
+  address          Address        @relation(fields: [addressId], references: [addressId])
+  addressId        Int
+  startDate        DateTime       @default(now())
+  endDate          DateTime       @default(now())
+  summary          String?
+  description      String?
+  visibilityType   VisibilityType
+  privacyType      PrivacyType
+  eventPic         String?
+  bannerPic        String?
+  maxAttendee      Int            @default(0)
+  publishType      PublishType
+  publishStartDate DateTime       @default(now())
+  tickets          Ticket[]
+  ticketURIs       String[]
+  scAddress        String
 }
 
 enum PublishType {
@@ -146,7 +147,7 @@ model Ticket {
   users               User[]
 }
 
-enum TicketType{
+enum TicketType {
   PAUSED
   ON_SALE
 }
@@ -165,30 +166,30 @@ model Promotion {
 
 enum CategoryType {
   AUTOCAR
-BOAT
-AIR
-PROFESSIONAL
-CULTURE
-FASHION
-BEAUTY
-POLITICS
-HOBBIES
-ARTS
-RELIGION
-SCHOOL
-SCIENCE
-TECHNOLOGY
-HOLIDAY
-FITNESS
-NFT
-TRAVEL
-HEALTH
-PHOTOGRAPHY
-LIFESTYLE
-ENTERTAINMENT
-ANIMALS
-EDUCATION
-FOOD
+  BOAT
+  AIR
+  PROFESSIONAL
+  CULTURE
+  FASHION
+  BEAUTY
+  POLITICS
+  HOBBIES
+  ARTS
+  RELIGION
+  SCHOOL
+  SCIENCE
+  TECHNOLOGY
+  HOLIDAY
+  FITNESS
+  NFT
+  TRAVEL
+  HEALTH
+  PHOTOGRAPHY
+  LIFESTYLE
+  ENTERTAINMENT
+  ANIMALS
+  EDUCATION
+  FOOD
 }
 
 enum VisibilityType {
@@ -217,7 +218,7 @@ model Collection {
   collectionName  String          @unique
   description     String?
   currency        Currency        @default(USD)
-  collectionState CollectionState @default(CREATED)
+  collectionState CollectionState @default(ON_SALE)
   merchandise     Merchandise[]
   fixedPrice      Float           @default(0)
   scAddress       String
@@ -244,6 +245,7 @@ model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
   image            String?
+  stripePriceId    String? //Optional To be removed
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
   currMerchSupply  Int        @default(0)

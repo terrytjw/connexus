@@ -6,6 +6,7 @@ import {
   Prisma,
   Merchandise,
   CategoryType,
+  CollectionState,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -21,6 +22,7 @@ import {
   retrieveImageUrl,
   uploadImage,
 } from "./../../../lib/supabase";
+import { createProduct } from "../../../lib/stripe/api-helpers";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -151,6 +153,15 @@ export default async function handler(
         merchandise.map(async (merch: Merchandise) => {
           const { merchId, collectionId, image, ...merchInfo } = merch;
           let updatedMerchInfo = await updateMerchMedia(image, merchInfo);
+
+          const stripePriceId = await createProduct(
+            merchInfo.name,
+            collectionwithMerch.description ?? "NIL",
+            updatedMerchInfo.image ?? "",
+            collectionwithMerch.collectionState === CollectionState.ON_SALE,
+            merchInfo.price
+          );
+          updatedMerchInfo.stripePriceId = stripePriceId;
           return updatedMerchInfo;
         })
       );
