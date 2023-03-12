@@ -2,7 +2,6 @@ import React from "react";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { TbClipboardText } from "react-icons/tb";
 import Badge from "../Badge";
-import axios from "axios";
 import Link from "next/link";
 import { formatDate } from "../../utils/date-util";
 import { truncateString } from "../../utils/text-truncate";
@@ -16,9 +15,16 @@ function classNames(...classes: string[]) {
 type EventsTableProps = {
   data: EventWithTicketsandAddress[]; // TODO: change type any to data type
   columns: string[];
+  setDeleteConfirmationModalOpen: (value: boolean) => void;
+  setEventIdToDelete: (value: number) => void;
 };
 
-const EventsTable = ({ data, columns }: EventsTableProps) => {
+const EventsTable = ({
+  data,
+  columns,
+  setDeleteConfirmationModalOpen,
+  setEventIdToDelete,
+}: EventsTableProps) => {
   const getTicketsSold = (tickets: Ticket[]) => {
     const currentTicketsSold = tickets.reduce((accumulator, ticket) => {
       return accumulator + ticket.currentTicketSupply;
@@ -125,11 +131,8 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                     onClick={async (e) => {
                       // prevent row on click
                       e.stopPropagation();
-                      await axios.delete(
-                        `http://localhost:3000/api/events/${data.eventId}`
-                      );
-                      // console.log("Event Deleted");
-                      router.reload();
+                      setEventIdToDelete(data.eventId);
+                      setDeleteConfirmationModalOpen(true);
                     }}
                   >
                     <FaTrashAlt className="text-lg text-red-400" />

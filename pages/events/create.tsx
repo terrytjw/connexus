@@ -35,7 +35,6 @@ const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
-// console.log(signer);
 
 const CreatorEventCreate = () => {
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
@@ -73,6 +72,8 @@ const CreatorEventCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>();
   const [isCreateSuccessModalOpen, setIsCreateSuccessModalOpen] =
     useState(false);
+  const [createdEventId, setCreatedEventId] = useState<number | undefined>();
+
   // create contract and db entry
   const createEvent = async (event: any) => {
     /*
@@ -113,16 +114,17 @@ const CreatorEventCreate = () => {
     console.log("Contract successfully deployed => ", event_contract.address);
 
     // call post api
-    let { data: response } = await axios.post(
+    const { data: response } = await axios.post(
       "http://localhost:3000/api/events",
       {
         ...event,
         scAddress: event_contract.address,
       }
     );
-    let data = response.data;
-    console.log("Event Created");
+    const data = response;
+    console.log("Event Created -> ", data);
     setIsLoading(false);
+    setCreatedEventId(data.eventId); // used to route to event
   };
 
   const parseAndCreate = (event: EventWithTicketsandAddress): void => {
@@ -271,19 +273,23 @@ const CreatorEventCreate = () => {
             setIsOpen={setIsCreateSuccessModalOpen}
           >
             {isLoading ? (
-              <Loading className="!h-full" />
+              <Loading className="!h-full !bg-transparent" />
             ) : (
-              <div className="flex items-center justify-between">
-                <h3 className="ml-2 text-xl font-semibold">Event Created!</h3>
+              <div className="flex flex-col gap-6 py-4">
+                <h3 className="text-xl font-semibold">Event Created!</h3>
+                <h3 className="text-md font-normal text-gray-500">
+                  Your Event Page can be viewed in the 'Events' tab in the
+                  navigation bar.
+                </h3>
 
-                <Link href="/events">
+                <Link href={`/events/${createdEventId}`}>
                   <Button
                     variant="solid"
                     size="md"
                     className="border-0"
                     onClick={() => setIsCreateSuccessModalOpen(false)}
                   >
-                    View Event
+                    Confirm
                   </Button>
                 </Link>
               </div>
@@ -310,7 +316,7 @@ const CreatorEventCreate = () => {
           {/* Steps */}
           <div className="justify-cente relative sm:py-8">
             {/* conditionally rendered via css */}
-            <StepsDesktop steps={steps} />
+            <StepsDesktop steps={steps} setSteps={setSteps} />
             <StepsMobile currentStep={currentStep} steps={steps} />
           </div>
 

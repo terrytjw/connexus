@@ -57,13 +57,13 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
               <Button
                 size="sm"
                 variant="outlined"
-                className="!btn-circle relative ml-auto rounded-full border-0 text-lg font-semibold text-white"
+                className="!btn-circle relative ml-auto rounded-full border-0 text-lg font-semibold text-white hover:bg-blue-600 hover:bg-opacity-30 hover:text-blue-500"
                 onClick={async (e) => {
                   // prevent parent link navigation on click
                   e.preventDefault();
                   await likeEvent(item.eventId, Number(userId));
 
-                  // mutate events
+                  // mutate
                   console.log("liking event");
                 }}
               >

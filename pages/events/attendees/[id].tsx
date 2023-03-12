@@ -52,7 +52,7 @@ const AttendeesPage = () => {
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
-            <h1>Scan a QR code</h1>
+            <h2 className="text-2xl font-bold sm:text-2xl">Scan a QR code</h2>
             <div className="mt-4">
               {!isCheckingIn ? (
                 <QrScanner

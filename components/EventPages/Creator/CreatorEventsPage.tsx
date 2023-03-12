@@ -12,6 +12,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import { Event } from "@prisma/client";
 import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
+import { useRouter } from "next/router";
 
 const DELAY_TIME = 400;
 
@@ -20,6 +21,7 @@ type CreatorEventsPageProps = {
 };
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
+  const router = useRouter();
   const [isCreated, setIsCreated] = useState<boolean>(true);
   const [selectedTopics, setSelectedTopics] = useState<
     string[] | CategoryType[]
@@ -29,6 +31,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
+  const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] =
+    useState<boolean>(false);
+  const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
   console.log(events);
 
   // Initialize a variable to hold the timeout ID
@@ -106,63 +111,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        {/* Abstract Fitler modal */}
-        <Modal
-          isOpen={isFilterModalOpen}
-          setIsOpen={setIsFilterModalOpen}
-          className="min-w-fit"
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
-            <Button
-              variant="outlined"
-              size="sm"
-              className="border-0"
-              onClick={() => setIsFilterModalOpen(false)}
-            >
-              Done
-            </Button>
-          </div>
-
-          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.values(CategoryType).map((label, index) => {
-              return (
-                <Badge
-                  key={index}
-                  label={label}
-                  size="lg"
-                  selected={
-                    selectedTopics.length > 0 &&
-                    selectedTopics.indexOf(label) != -1
-                  }
-                  onClick={() => {
-                    if (selectedTopics.indexOf(label) == -1) {
-                      setSelectedTopics([...selectedTopics, label]);
-                      return;
-                    }
-                    setSelectedTopics(
-                      selectedTopics.filter((topic) => {
-                        return topic != label;
-                      })
-                    );
-                  }}
-                  className="h-8 w-full sm:w-48"
-                />
-              );
-            })}
-          </div>
-          <Button
-            variant="outlined"
-            size="sm"
-            className="mt-8 w-full text-red-500"
-            onClick={() => {
-              setSelectedTopics([]);
-            }}
-          >
-            Clear selected topics
-          </Button>
-        </Modal>
-
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
 
@@ -281,8 +229,106 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               "Tags",
               "Status",
             ]}
+            setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
+            setEventIdToDelete={setEventIdToDelete}
           />
         </section>
+
+        {/* Abstract Fitler modal */}
+        <Modal
+          isOpen={isFilterModalOpen}
+          setIsOpen={setIsFilterModalOpen}
+          className="min-w-fit"
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
+            <Button
+              variant="outlined"
+              size="sm"
+              className="border-0"
+              onClick={() => setIsFilterModalOpen(false)}
+            >
+              Done
+            </Button>
+          </div>
+
+          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Object.values(CategoryType).map((label, index) => {
+              return (
+                <Badge
+                  key={index}
+                  label={label}
+                  size="lg"
+                  selected={
+                    selectedTopics.length > 0 &&
+                    selectedTopics.indexOf(label) != -1
+                  }
+                  onClick={() => {
+                    if (selectedTopics.indexOf(label) == -1) {
+                      setSelectedTopics([...selectedTopics, label]);
+                      return;
+                    }
+                    setSelectedTopics(
+                      selectedTopics.filter((topic) => {
+                        return topic != label;
+                      })
+                    );
+                  }}
+                  className="h-8 w-full sm:w-48"
+                />
+              );
+            })}
+          </div>
+          <Button
+            variant="outlined"
+            size="sm"
+            className="mt-8 w-full text-red-500"
+            onClick={() => {
+              setSelectedTopics([]);
+            }}
+          >
+            Clear selected topics
+          </Button>
+        </Modal>
+
+        {/* Confirm Delete Modal */}
+        <Modal
+          isOpen={deleteConfirmationModalOpen}
+          setIsOpen={setDeleteConfirmationModalOpen}
+        >
+          <div className="flex flex-col gap-6 py-4">
+            <h3 className="text-xl font-semibold">Confirm Delete Event?</h3>
+            <h3 className="text-md font-normal text-gray-500">
+              Warning - This action is permanent
+            </h3>
+            <div className="flex justify-end gap-6">
+              <Button
+                variant="outlined"
+                size="md"
+                className="border-0 text-gray-500"
+                onClick={async () => {
+                  setDeleteConfirmationModalOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="solid"
+                size="md"
+                className="bg-red-600 hover:bg-red-500"
+                onClick={async () => {
+                  await axios.delete(
+                    `http://localhost:3000/api/events/${eventIdToDelete}`
+                  );
+                  router.reload();
+                  setDeleteConfirmationModalOpen(false);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </main>
     </div>
   );

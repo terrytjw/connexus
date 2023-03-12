@@ -27,6 +27,7 @@ import Link from "next/link";
 import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
+import { useRouter } from "next/router";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -43,6 +44,8 @@ type CreatorEventPageProps = {
 };
 
 const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
+  const router = useRouter();
+  const { id: eventId } = router.query;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
@@ -509,19 +512,23 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
             setIsOpen={setIsCreateSuccessModalOpen}
           >
             {isLoading ? (
-              <Loading className="!h-full" />
+              <Loading className="!h-full !bg-transparent" />
             ) : (
-              <div className="flex items-center justify-between">
-                <h3 className="ml-2 text-xl font-semibold">Event Updated!</h3>
+              <div className="flex flex-col gap-6 py-4">
+                <h3 className="text-xl font-semibold">Event Updated!</h3>
+                <h3 className="text-md font-normal text-gray-500">
+                  Your Event Page can be viewed in the 'Events' tab in the
+                  navigation bar.
+                </h3>
 
-                <Link href="/events">
+                <Link href={`/events/${eventId}`}>
                   <Button
                     variant="solid"
                     size="md"
                     className="border-0"
                     onClick={() => setIsCreateSuccessModalOpen(false)}
                   >
-                    View Event
+                    Confirm
                   </Button>
                 </Link>
               </div>
@@ -548,7 +555,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           {/* Steps */}
           <div className="justify-cente relative sm:py-8">
             {/* conditionally rendered via css */}
-            <StepsDesktop steps={steps} />
+            <StepsDesktop steps={steps} setSteps={setSteps} isEdit={true} />
             <StepsMobile currentStep={currentStep} steps={steps} />
           </div>
 
