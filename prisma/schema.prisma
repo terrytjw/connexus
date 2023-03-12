@@ -115,6 +115,7 @@ model Event {
   tickets            Ticket[]
   ticketURIs         String[]
   scAddress          String
+  eventTicketsSoldTimestamps EventTicketsSoldTimestamp[]
 }
 
 enum PublishType {
@@ -277,4 +278,12 @@ model PostCommentsTimestamp {
   date DateTime @default(now())
   post Post @relation(fields: [postId], references: [postId])
   postId Int
+}
+
+model EventTicketsSoldTimestamp {
+  id Int @id @default(autoincrement())
+  ticketsSold Int
+  date DateTime @default(now())
+  event Event @relation(fields: [eventId], references: [eventId])
+  eventId Int
 }
