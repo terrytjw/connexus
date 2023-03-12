@@ -4,6 +4,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Collection, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { getCollection } from "../../../lib/prisma/collection-prisma";
 
 const prisma = new PrismaClient();
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -98,12 +99,7 @@ export default async function handler(
 
   async function handleGET(collectionId: number) {
     try {
-      const collection = await prisma.collection.findUnique({
-        where: {
-          collectionId: collectionId,
-        },
-        include: { merchandise: true },
-      });
+      const collection = await getCollection(collectionId);
 
       if (!collection) res.status(200).json({});
       else res.status(200).json(collection);
