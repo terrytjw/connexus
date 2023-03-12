@@ -1,26 +1,32 @@
-import React from "react";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { TbClipboardText } from "react-icons/tb";
-import Badge from "../Badge";
-import axios from "axios";
-import Link from "next/link";
-import { formatDate } from "../../utils/date-util";
-import { truncateString } from "../../utils/text-truncate";
-import router from "next/router";
-import { CategoryType, Ticket, User } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import React, { useState } from "react";
+import { AttendeeListType } from "../../utils/types";
 import Button from "../Button";
 import { checkIn } from "../../lib/api-helpers/event-api";
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import Loading from "../Loading";
+import { KeyedMutator } from "swr";
+import { FaCheckCircle } from "react-icons/fa";
 
 type AttendeesTableProps = {
-  data: User[]; // replace this with prisma attendee user type
+  data: AttendeeListType[]; // replace this with prisma attendee user type
   columns: string[];
+  mutateAttendees: any;
 };
 
-const AttendeesTable = ({ data, columns }: AttendeesTableProps) => {
+const AttendeesTable = ({
+  data,
+  columns,
+  mutateAttendees,
+}: AttendeesTableProps) => {
+  const router = useRouter();
+  const { id: eventId } = router.query;
+
+  const { data: session, status } = useSession();
+  const userId = Number(session?.user.userId);
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="table w-full ">
@@ -32,32 +38,47 @@ const AttendeesTable = ({ data, columns }: AttendeesTableProps) => {
                 {headerTitle}
               </th>
             ))}
-            <th className="bg-blue-gray-200 text-gray-700"></th>
           </tr>
         </thead>
         <tbody>
           {/* <!-- row 1 --> */}
           {data.map((data, index) => (
             <tr key={index} className="hover: cursor-pointer">
-              <td className="text-gray-700">{data.userId}</td>
-
               <td className="text-gray-700">{data?.displayName}</td>
               <td className="text-gray-700">{data?.email}</td>
 
-              <th className=" text-gray-700">
-                {data?.checkIn ? (
-                  "Checked In"
+              <th className="text-gray-700">
+                {/* replace boolean with the field data?.checkIn */}
+                {false ? (
+                  <FaCheckCircle className="text-2xl text-green-500" />
                 ) : (
                   <Button
                     variant="outlined"
-                    size="md"
-                    className="max-w-xs"
+                    size="sm"
+                    className="max-w-xs border-0"
                     onClick={async () => {
-                      const res = await checkIn(1, 1, 4);
+                      setIsLoading(true);
+                      const res = await checkIn(
+                        Number(eventId),
+                        data.tickets[0].ticketId, // only 1 ticket per user so just check in that one
+                        userId
+                      );
                       console.log(res);
+
+                      mutateAttendees((data: AttendeeListType[]) => {
+                        data.map((attendee) =>
+                          attendee.userId == res.userId
+                            ? { ...attendee, checkIn: true }
+                            : attendee
+                        );
+
+                        return data;
+                      });
+                      setIsLoading(false);
                     }}
+                    disabled={isLoading}
                   >
-                    Check In
+                    {!isLoading ? "Check In" : "Checking In ..."}
                   </Button>
                 )}
               </th>

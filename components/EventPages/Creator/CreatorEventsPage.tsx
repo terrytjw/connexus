@@ -165,7 +165,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
-        <h3 className="text-md mt-4 sm:text-lg">Set up a new event </h3>
 
         <div className="mt-6 flex flex-wrap justify-between">
           <h2 className="text-md mt-2 font-bold sm:text-xl">Created Events</h2>
@@ -189,7 +188,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               <FiCalendar className="text-lg text-neutral-50" />
             </Button>
           </div>
-          <div className="flex gap-4">
+          <div className="flex basis-1/3 gap-4">
             <div className="relative w-full items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
@@ -198,7 +197,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="input-outlined input input-md block w-full rounded-md pl-10"
                 type="text"
                 value={searchString}
-                placeholder="Search Events"
+                placeholder="Search Events by Name"
                 onChange={(e) => {
                   setSearchString(e.target.value);
                 }}
@@ -210,7 +209,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               className="max-w-sm !bg-white !text-gray-700"
               onClick={() => setIsFilterModalOpen(true)}
             >
-              Filter by Category
+              Filter
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>
@@ -278,7 +277,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               "Location",
               "Attendees Number",
               "Tickets Sold",
-              "Revenue",
+              "Revenue ($)",
               "Tags",
               "Status",
             ]}

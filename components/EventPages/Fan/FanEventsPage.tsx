@@ -10,6 +10,14 @@ import { EventWithTicketsandAddress } from "../../../utils/types";
 import Link from "next/link";
 import { CategoryType, Event } from "@prisma/client";
 import axios from "axios";
+import {
+  retrieveVisitedEvents,
+  viewExpiredEvent,
+  viewTrendingEvents,
+} from "../../../lib/api-helpers/event-api";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import Loading from "../../Loading";
 
 const DELAY_TIME = 400;
 
@@ -30,6 +38,10 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [trendingEvents, setTrendingEvents] = useState<
     EventWithTicketsandAddress[]
   >([]);
+
+  // fetch userId if from session
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
 
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
@@ -90,11 +102,9 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   useEffect(() => {
     // dont debounce on first page load
     if (searchString !== "" || selectedTopics.length > 0) {
-      // console.log("search api called");
       debounceSearchApiCall(searchString);
     } else {
       // using this state to display events on initial page load
-      // console.log("search api NOT called ");
       setSearchAndFilterResults(events);
     }
 
@@ -103,14 +113,25 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     };
   }, [searchString, selectedTopics]);
 
+  // Listed Tab
   const ListedTabContent = () => {
-    // temp client filter to separate list and expired events
+    // client filter for listed events
     const listedEvents = searchAndFilterResults.filter(
       (event: EventWithTicketsandAddress) =>
         new Date(event.endDate) >= new Date()
     );
 
-    // console.log("upcoming -> ", filterListedEvents());
+    // fetch trending events separately
+    const {
+      data: trendingEvents,
+      error: trendingEventsError,
+      isLoading: isTrendingEventsLoading,
+    } = useSWR("trendingEvents", viewTrendingEvents);
+
+    if (isTrendingEventsLoading) return <Loading />;
+
+    console.log("listedEvents -> ", trendingEvents);
+
     return (
       <>
         <div className="mb-4 flex flex-wrap gap-2">
@@ -140,25 +161,34 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
         {/* Trending Events  */}
         <div>
-          <h2 className="my-2 text-xl font-semibold">Trending Events</h2>
-          <EventsGrid data={listedEvents} />
+          <h2 className="mb-6 text-2xl font-semibold text-slate-600">
+            Trending Events in SG
+          </h2>
+          <EventsGrid data={trendingEvents} />
         </div>
         <div>
-          <h2 className="my-2 text-xl font-semibold">Events in Singapore</h2>
+          <h2 className="mt-12 mb-6 text-2xl font-semibold text-slate-600">
+            Events in Singapore
+          </h2>
           <EventsGrid data={listedEvents} />
         </div>
       </>
     );
   };
 
+  // Visited Tab
   const VisitedTabContent = () => {
-    // temp client filter to separate list and expired events
-    const listedEvents = searchAndFilterResults.filter(
-      (event: EventWithTicketsandAddress) =>
-        new Date(event.endDate) >= new Date()
+    const {
+      data: visitedEvents,
+      error,
+      isLoading,
+    } = useSWR(
+      "visitedEvents",
+      async () => await retrieveVisitedEvents(Number(userId))
     );
 
-    // console.log("upcoming -> ", filterListedEvents());
+    if (isLoading) return <Loading />;
+
     return (
       <>
         <div className="mb-4 flex flex-wrap gap-2">
@@ -186,25 +216,27 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           })}
         </div>
 
-        {/* Trending Events  */}
+        {/* Visited Events  */}
         <div>
-          <h2 className="my-2 text-xl font-semibold">Trending Events</h2>
-          <EventsGrid data={listedEvents} />
-        </div>
-        <div>
-          <h2 className="my-2 text-xl font-semibold">Events in Singapore</h2>
-          <EventsGrid data={listedEvents} />
+          <EventsGrid data={visitedEvents} />
         </div>
       </>
     );
   };
 
+  // Expired Tab
   const ExpiredTabContent = () => {
-    // temp client filter to separate list and expired events
-    const expiredEvents = events.filter(
-      (event: EventWithTicketsandAddress) =>
-        new Date(event.endDate) < new Date()
+    const {
+      data: expiredEvents,
+      error,
+      isLoading,
+    } = useSWR(
+      "expiredEvents",
+      async () => await viewExpiredEvent(Number(userId))
     );
+
+    if (isLoading) return <Loading />;
+
     return (
       <div>
         <EventsGrid data={expiredEvents} />

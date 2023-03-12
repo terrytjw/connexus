@@ -42,6 +42,7 @@
     "firebase": "^9.15.0",
     "framer-motion": "^8.1.9",
     "hardhat": "^2.12.7",
+    "html5-qrcode": "^2.3.7",
     "lodash": "^4.17.21",
     "next": "^13.1.0",
     "next-auth": "^4.19.2",

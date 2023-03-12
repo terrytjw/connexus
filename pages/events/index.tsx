@@ -7,7 +7,7 @@ import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 
-import { Event, PrivacyType, VisibilityType } from "@prisma/client";
+import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
 
 type EventsPageProps = {
@@ -51,8 +51,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  // use axios GET method to fetch data
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const { data } = await axios.get("http://localhost:3000/api/events");
 
   const events = await Promise.all(

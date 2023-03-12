@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Ticket } from "@prisma/client";
 
 export type Community = {
   communityId: number;
@@ -131,4 +131,5 @@ export type AttendeeListType = {
   displayName: string;
   email: string;
   checkIn: boolean;
+  tickets: Ticket[];
 };

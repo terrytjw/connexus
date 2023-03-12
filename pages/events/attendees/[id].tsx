@@ -3,30 +3,44 @@ import React, { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
-import { GetServerSideProps } from "next";
-import axios from "axios";
 import Button from "../../../components/Button";
 import AttendeesTable from "../../../components/EventPages/AttendeesTable";
-import { User } from "@prisma/client";
 import Modal from "../../../components/Modal";
-// import { Html5QrcodeScanner } from "html5-qrcode";
-import { QrReader } from "react-qr-reader";
 import {
   viewAttendeeList,
   exportCSV,
   exportPDF,
+  checkIn,
 } from "../../../lib/api-helpers/event-api";
+import useSWR from "swr";
+import { useRouter } from "next/router";
+import Loading from "../../../components/Loading";
+import QrScanner from "../../../components/EventPages/QrScanner";
 
-type AttendeesPageProps = {
-  users: User[];
-};
-
-const AttendeesPage = ({ users }: AttendeesPageProps) => {
+const AttendeesPage = () => {
   const [isQrModalOpenOpen, setIsQrModalOpen] = useState(false);
-  const [data, setData] = useState("No result");
+  const router = useRouter();
+  const { id: eventId } = router.query;
+  const [isCheckingIn, setIsCheckingIn] = useState<boolean>(false);
 
-  // event id, user id, ticket id
-  console.log("users", users);
+  const {
+    data: attendeees,
+    error,
+    isLoading,
+    mutate: mutate,
+  } = useSWR(eventId, async () => await viewAttendeeList(Number(eventId)));
+  console.log("attendees", attendeees);
+
+  if (isLoading) return <Loading />;
+
+  const onNewScanResult = async (scanResult: string) => {
+    console.log("scan result ->", scanResult);
+    setIsCheckingIn(true);
+    const idList = scanResult.split(",");
+    const [eventId, ticketId, userId] = idList;
+    await checkIn(Number(eventId), Number(ticketId), Number(userId));
+    setIsCheckingIn(false);
+  };
 
   return (
     <ProtectedRoute>
@@ -39,21 +53,29 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
             className="min-w-fit"
           >
             <h1>Scan a QR code</h1>
-            <QrReader
-              onResult={(result, error) => {
-                if (!!result) {
-                  setData(result?.text);
-                }
-
-                if (!!error) {
-                  console.info(error);
-                }
-              }}
-              //this is facing mode : "environment " it will open backcamera of the smartphone and if not found will
-              // open the front camera
-              constraints={{ facingMode: "environment" }}
-            />
-            <p>Result: {data}</p>
+            <div className="mt-4">
+              {!isCheckingIn ? (
+                <QrScanner
+                  fps={10}
+                  qrbox={250}
+                  disableFlip={false}
+                  rememberLastUsedCamera={true} // auto start video feed if permission was granted
+                  qrCodeSuccessCallback={onNewScanResult}
+                />
+              ) : (
+                <Loading className="!h-full bg-transparent" />
+              )}
+            </div>
+            <div className="mt-4 flex justify-end">
+              <Button
+                className="border-0"
+                variant="outlined"
+                size="md"
+                onClick={() => setIsQrModalOpen(false)}
+              >
+                Done
+              </Button>
+            </div>
           </Modal>
 
           {/* Header */}
@@ -73,15 +95,18 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
             <div className="flex items-center gap-4">
               {/* TODO: refactor buttons into dropdown  */}
               <Button
-                href={exportPDF(1)} // redirect users to the url
                 variant="solid"
                 size="md"
-                className="max-w-xs "
+                className="max-w-xs"
+                onClick={() => {
+                  history.pushState({}, "", exportPDF(Number(eventId)));
+                  history.back();
+                }}
               >
                 Export PDF
               </Button>
               <Button
-                href={exportCSV(1)} // redirect users to the url
+                href={exportCSV(Number(eventId))} // redirect users to the url
                 variant="solid"
                 size="md"
                 className="max-w-xs "
@@ -102,8 +127,9 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
           <section>
             <div className="pt-6">
               <AttendeesTable
-                data={users}
+                data={attendeees}
                 columns={["Name", "Email Address", "Check-in Status"]}
+                mutateAttendees={mutate}
               />
             </div>
           </section>
@@ -114,13 +140,3 @@ const AttendeesPage = ({ users }: AttendeesPageProps) => {
 };
 
 export default AttendeesPage;
-
-export const getServerSideProps: GetServerSideProps = async () => {
-  const users = await viewAttendeeList(1);
-
-  return {
-    props: {
-      users,
-    },
-  };
-};

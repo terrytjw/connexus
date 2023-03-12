@@ -1,23 +1,28 @@
 import React from "react";
 import { Ticket, TicketType } from "@prisma/client";
 import { formatDate } from "../../utils/date-util";
-import { checkIn } from "../../lib/api-helpers/event-api";
 import Button from "../Button";
+import { useSession } from "next-auth/react";
 
 type TicketCardProps = {
   ticket: Ticket;
   isOwnedTicket?: boolean;
   setIsModalOpen: (value: boolean) => void;
+  setQrValue: (value: string) => void;
 };
 
 const TicketCard = ({
   ticket,
   isOwnedTicket,
   setIsModalOpen,
+  setQrValue,
 }: TicketCardProps) => {
-  const onCheckIn = async () => {
-    const response = await checkIn(1, 1, 4);
-    console.log(response);
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
+
+  const getQrString = (): string => {
+    const qrString = ticket.eventId + "," + ticket.ticketId + "," + userId;
+    return qrString;
   };
 
   return (
@@ -63,9 +68,6 @@ const TicketCard = ({
               </p>
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
-
-            {/* To be edited */}
-            <button onClick={onCheckIn}>Check In</button>
           </div>
           {isOwnedTicket && (
             <div className="flex items-end">
@@ -73,7 +75,10 @@ const TicketCard = ({
                 variant="solid"
                 size="md"
                 className="max-w-xs "
-                onClick={() => setIsModalOpen(true)}
+                onClick={() => {
+                  setQrValue(getQrString());
+                  setIsModalOpen(true);
+                }}
               >
                 Generate QR Code
               </Button>

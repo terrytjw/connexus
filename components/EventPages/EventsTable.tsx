@@ -88,8 +88,7 @@ const EventsTable = ({ data, columns }: EventsTableProps) => {
                     size="lg"
                     selected={false}
                   />
-                ))}{" "}
-                ...
+                ))}
               </td>
               <td className=" text-sm font-bold text-red-400">
                 {data?.visibilityType}
