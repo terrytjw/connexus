@@ -91,7 +91,7 @@ export default async function handler(
   async function handleGET(cursor: number, filter?: CategoryType[]) {
     try {
       const events = await prisma.event.findMany({
-        take: 10,
+        take: 1,
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
@@ -119,7 +119,7 @@ export default async function handler(
   ) {
     try {
       const events = await prisma.event.findMany({
-        take: 10,
+        take: 1,
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { eventId: cursor } : undefined,
         orderBy: {
