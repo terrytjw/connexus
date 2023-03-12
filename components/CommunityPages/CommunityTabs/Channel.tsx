@@ -9,12 +9,13 @@ import Loading from "../../Loading";
 import Modal from "../../Modal";
 import Post from "../Post";
 import PostInput from "../PostInput";
-import useSWR from "swr";
+import useSWR, { Key } from "swr";
 import { swrFetcher } from "../../../lib/swrFetcher";
 import {
   ChannelWithMembers,
   PostWithCreatorAndLikes,
 } from "../../../utils/types";
+import { getAllPostsInChannelAPI } from "../../../lib/api-helpers/post-api";
 
 type ChannelTabProps = {
   channel: ChannelWithMembers;
@@ -32,8 +33,8 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
     isLoading,
     mutate,
   } = useSWR(
-    `http://localhost:3000/api/post?channelId=${channel.channelId}`,
-    swrFetcher
+    channel.channelId as unknown as Key,
+    getAllPostsInChannelAPI
   );
 
   const searchMembers = async () => {

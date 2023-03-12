@@ -22,6 +22,7 @@ import {
   CommentWithCommenterAndLikes,
   PostWithCreatorAndLikes,
 } from "../../utils/types";
+import { likePostAPI, unlikePostAPI, deletePostAPI } from "../../lib/api-helpers/post-api";
 
 type PostProps = {
   post: PostWithCreatorAndLikes;
@@ -50,14 +51,10 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   const userId = Number(session?.user.userId);
 
   const likePost = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/post/${post.postId}/like?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await likePostAPI(post.postId, userId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
-        .find((post) => post.postId == temp.postId)
+        .find((post) => post.postId == res.postId)
         ?.likes.push({ userId: Number(userId) });
 
       return data;
@@ -65,14 +62,10 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const unlikePost = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/post/${post.postId}/unlike?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await unlikePostAPI(post.postId, userId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
-        .find((post) => post.postId == temp.postId)
+        .find((post) => post.postId == res.postId)
         ?.likes.filter((like) => like.userId != userId);
 
       return data;
@@ -80,13 +73,9 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const deletePost = async () => {
-    const res = await axios.delete(
-      `http://localhost:3000/api/post/${post.postId}`
-    );
-
-    const temp = res.data;
+    const res = await deletePostAPI(post.postId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
-      return data.filter((post) => post.postId != temp.postId);
+      return data.filter((post) => post.postId != res.postId);
     });
   };
 
