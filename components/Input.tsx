@@ -45,7 +45,7 @@ const Input = ({
       </label>
       <input
         className={classNames(
-          "input-group input",
+          "input-group input relative",
           `input-${variant}`,
           `input-${size}`,
           "w-full",
