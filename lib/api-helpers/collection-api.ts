@@ -9,7 +9,7 @@ import axios from "axios";
 import { ethers } from "ethers";
 import { API_URL, COLLECTION_ENDPOINT, smartContract } from "../constant";
 
-type CollectionwithMerch = Prisma.CollectionGetPayload<{
+export type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
 }>;
 
@@ -82,7 +82,7 @@ export async function createCollection(
   };
 
   const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
-  const createdResponseData = (await axios.post(collectionUrl, newCollection))
+  const createdResponseData = await axios.post(collectionUrl, newCollection);
   console.log("==================================");
   console.log("Collection created: ", createdResponseData);
   console.log("==================================");
