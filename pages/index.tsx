@@ -63,7 +63,10 @@ const HomePage: NextPage = () => {
         <div className="divider" />
         <h2 className="mt-10 mb-6 text-xl font-semibold">Stripe payments</h2>
         <section className="">
-          <StripeCheckoutForm />
+          <StripeCheckoutForm
+            priceId="price_1MkhJ5CmKD4DhrYcwR3xsNCA"
+            creatorId={1}
+          />
         </section>
 
         <div className="divider" />

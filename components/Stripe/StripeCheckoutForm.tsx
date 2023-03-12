@@ -17,7 +17,11 @@ export const AMOUNT_STEP = 5.0;
 
 const PAYMENT_AMOUNT: number = 2;
 
-const CheckoutForm = () => {
+type CheckoutForm = {
+  priceId: string; // price API ID from stripe product
+  creatorId: number;
+};
+const CheckoutForm = ({ priceId, creatorId }: CheckoutForm) => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
@@ -25,7 +29,8 @@ const CheckoutForm = () => {
     setLoading(true);
     // Create a Checkout Session.
     const response = await fetchPostJSON("/api/checkout_sessions", {
-      amount: PAYMENT_AMOUNT,
+      priceId,
+      creatorId,
     });
 
     if (response.statusCode === 500) {

@@ -73,7 +73,7 @@ export async function createCollection(
     collectionName: collectionName,
     description: description,
     currency: "USD",
-    collectionState: CollectionState.CREATED,
+    collectionState: CollectionState.ON_SALE,
     scAddress: collection_contract.address,
     merchURIs: [],
     merchandise: collectibles,
@@ -83,8 +83,6 @@ export async function createCollection(
 
   const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
   const createdResponseData = (await axios.post(collectionUrl, newCollection))
-    .data;
-
   console.log("==================================");
   console.log("Collection created: ", createdResponseData);
   console.log("==================================");

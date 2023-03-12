@@ -19,12 +19,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   if (req.method === "POST") {
-    const amount: number = req.body.amount;
+    const priceId: string = req.body.priceId;
+    const creatorId: string = req.body.creatorId;
+
     try {
-      // Optional validation of the amount that was passed from the client:
-      // if (!(amount >= MIN_AMOUNT && amount <= MAX_AMOUNT)) {
-      //   throw new Error("Invalid amount.");
-      // }
       // Create Checkout Sessions from body params.
       const params: Stripe.Checkout.SessionCreateParams = {
         submit_type: "pay",
@@ -32,20 +30,11 @@ export default async function handler(
         mode: "payment",
         line_items: [
           {
-            // price_data: {
-            //   currency: CURRENCY,
-            //   unit_amount: formatAmountForStripe(amount, CURRENCY),
-            //   product_data: {
-            //     name: "Product", // to be dynamic
-            //     description: "Product description", // to be dynamic
-            //     // images: ["https://example.com/t-shirt.png", "https://example.com/t-shirt2.png"],
-            //   },
-            // },
-            price: "price_1MkOJvCmKD4DhrYcFxZB869R", // to be dynamic
+            price: priceId,
             quantity: 1,
-            // adjustable_quantity: { enabled: true, minimum: 1, maximum: 10 },
           },
         ],
+        client_reference_id: creatorId, // the creator's Id for querying the DB later to add to his balance
         success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}`, // go back to the page where the user came from
       };

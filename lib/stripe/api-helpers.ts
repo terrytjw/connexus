@@ -1,3 +1,6 @@
+import getStripe from ".";
+import { formatAmountForStripe } from "./stripe-helpers";
+
 export async function fetchGetJSON(url: string) {
   try {
     const data = await fetch(url).then((res) => res.json());
@@ -33,4 +36,28 @@ export async function fetchPostJSON(url: string, data?: {}) {
     }
     throw err;
   }
+}
+
+export async function createProduct(
+  name: string,
+  description: string,
+  imageUrl: string,
+  isOnSale: boolean,
+  price: number
+) {
+
+  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
+  const product = await stripe?.products.create({
+    name, // merch name
+    description, // merch description
+    images: [imageUrl], // an array, so only pass in one e.g. ["www.unsplash.com/hdH745FGkd"]
+    active: isOnSale, // whether the item's collectionState is ON_SALE
+    default_price_data: {
+      currency: "sgd",
+      unit_amount_decimal: formatAmountForStripe(price, "sgd"), // price of item
+    },
+  });
+
+  return product.default_price;
 }
