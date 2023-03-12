@@ -76,7 +76,7 @@ export default async function handler(
 ) {
   const { method, body, query } = req;
   const keyword = query.keyword as string;
-  const filter = query.filter as CategoryType[];
+  const filter = query["filter[]"] as CategoryType[];
   const cursor = parseInt(query.cursor as string);
 
   switch (method) {
