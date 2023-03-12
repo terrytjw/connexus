@@ -113,6 +113,10 @@
           "items": {
             "$ref": "#/definitions/Merchandise"
           }
+        },
+        "walletBalance": {
+          "type": "number",
+          "default": 0
         }
       }
     },
@@ -594,7 +598,7 @@
         },
         "collectionState": {
           "type": "string",
-          "default": "CREATED",
+          "default": "ON_SALE",
           "enum": [
             "CREATED",
             "ON_SALE",
@@ -636,6 +640,12 @@
           "type": "string"
         },
         "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stripePriceId": {
           "type": [
             "string",
             "null"
