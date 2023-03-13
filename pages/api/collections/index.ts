@@ -67,6 +67,7 @@ export const config = {
     },
   },
 };
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Collection[] | ErrorResponse>
@@ -80,13 +81,15 @@ export default async function handler(
 
   const { method, body, query } = req;
 
-  const userId = parseInt(query.userId as string);
-  const keyword = query.keyword as string;
-  const cursor = parseInt(query.cursor as string);
+  // const userId = parseInt(query.userId as string);
+  // const keyword = query.keyword as string;
+  // const cursor = parseInt(query.cursor as string);
 
   switch (req.method) {
     case "GET":
-      await handleGETWithKeyword(userId, keyword, cursor);
+      const params = convertParams(query);
+      console.log(params);
+      await handleGETWithParams(params);
       break;
     case "POST":
       const collection = JSON.parse(
@@ -99,27 +102,31 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGETWithKeyword(
-    userId: number,
-    keyword: string,
-    cursor: number
-  ) {
+  async function handleGETWithParams({
+    userId,
+    keyword,
+    cursor,
+    isFeatured = false,
+    collectionState,
+    isLinked
+  }: CollectionsGetParams) {
     try {
       const collections = await prisma.collection.findMany({
         take: 10,
         skip: cursor ? 1 : undefined, // Skip cursor
         cursor: cursor ? { collectionId: cursor } : undefined,
-        orderBy: {
-          collectionId: "asc",
-        },
         where: {
           creatorId: userId ? userId : undefined,
           collectionName: { contains: keyword, mode: "insensitive" },
+          isFeatured: isFeatured,
+          collectionState: collectionState ? collectionState : undefined,
+          premiumChannel: handleIsLinked(isLinked)
         },
-        include: { merchandise: true },
+        include: { merchandise: true, premiumChannel: true },
       });
       res.status(200).json(collections);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
@@ -185,5 +192,42 @@ export default async function handler(
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
+  }
+}
+
+type CollectionsGetParams = {
+  userId?: number,
+  keyword?: string,
+  cursor?: number,
+  isFeatured: boolean,
+  collectionState?: CollectionState,
+  isLinked: CollectionLink
+}
+
+enum CollectionLink {
+  LINKED,
+  UNLINKED,
+  ALL
+}
+
+function convertParams(query: any): CollectionsGetParams {
+  return {
+    userId: parseInt(query.userId as string),
+    keyword: query.keyword,
+    cursor: parseInt(query.cursor as string),
+    isFeatured: query.isFeatured === "true",
+    collectionState: query.collectionState as CollectionState,
+    isLinked: query.isLinked === undefined ? CollectionLink.ALL : (query.isLinked === "true" ? CollectionLink.LINKED : CollectionLink.UNLINKED)
+  }
+}
+
+function handleIsLinked(isLinked: CollectionLink) {
+  switch(isLinked) {
+    case CollectionLink.ALL:
+      return undefined; // get all collections
+    case CollectionLink.LINKED:
+      return { is: {} }; // get collections linked to a premium channel
+    case CollectionLink.UNLINKED:
+      return { isNot: {} } // get collections not linked to a premium channel
   }
 }

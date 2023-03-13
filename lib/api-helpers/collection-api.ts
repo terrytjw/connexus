@@ -22,6 +22,8 @@ const abi = contract.abi;
 const bytecode = contract.bytecode;
 var signer = new ethers.Wallet(smartContract.privateKey, provider);
 
+const baseUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
+
 /**
  * Description: Creates a new collection
  * Parameters:
@@ -81,8 +83,7 @@ export async function createCollection(
     creatorId: creator_id,
   };
 
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
-  const createdResponseData = await axios.post(collectionUrl, newCollection);
+  const createdResponseData = await axios.post(baseUrl, newCollection);
   console.log("==================================");
   console.log("Collection created: ", createdResponseData);
   console.log("==================================");
@@ -101,7 +102,7 @@ export async function updateCollection(
   updatedDescription: string,
   collectionId: number
 ) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   console.log("retrieved collection: ", retrievedCollectionResponse);
@@ -134,7 +135,7 @@ export async function updateCollection(
  * - collection_id: number (id of the collection u are updating)
  */
 export async function pauseCollectionMint(collectionId: number) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   const { merchandise, ...collectionInfo } =
@@ -159,7 +160,7 @@ export async function pauseCollectionMint(collectionId: number) {
  * - collection_id: number (id of the collection u are updating)
  */
 export async function startCollectionMint(collectionId: number) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   const { merchandise, ...collectionInfo } =
@@ -179,15 +180,40 @@ export async function startCollectionMint(collectionId: number) {
   return updatedCollectionResponse;
 }
 
+export async function searchAllCollections(
+  cursor: number,
+  keyword: string,
+  isLinked?: boolean
+) {
+  const params = { cursor, keyword, isLinked }
+  const response = (await axios.get(baseUrl, {
+    params: params
+  })).data;
+
+  return response;
+}
+
+export async function getLinkedCollections(userId: number) {
+  const params = { userId: userId };
+  const response = (await axios.get(baseUrl, {
+    params: params
+  })).data;
+  
+  return response;
+}
+
+// export async function searchCollectionsByState() {}
+
+// export async function getUnsoldUnlinkedCollections() {}
+
 export async function searchCollectionByName(
   cursor?: number,
   userId?: number,
   keyword?: string
 ) {
   const object = { cursor, userId, keyword } as any;
-
   const params = new URLSearchParams(object).toString();
-  const url = `${API_URL}/${COLLECTION_ENDPOINT}?${params}`;
+  const url = baseUrl + `?${params}`;
   const response = (await axios.get(url)).data;
   console.log("search response: ", response);
 
@@ -201,7 +227,7 @@ export async function searchCollectionByName(
 
 // get all collection info @@To be edited because we need additional endpoint to retrieve collection info by userId
 export async function getCollectionInfo(userId: number) {
-  const url = `${API_URL}/${COLLECTION_ENDPOINT}/${userId}`;
+  const url = baseUrl + `/${userId}`;
   const response = (await axios.get(url)).data;
   return response;
 }

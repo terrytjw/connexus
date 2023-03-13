@@ -10,7 +10,7 @@ export async function getCollection(collectionId: number) {
       collectionId: collectionId,
     },
     include: { 
-      merchandise: true
+      merchandise: true,
       premiumChannel: { select: { name: true }}
     },
   });

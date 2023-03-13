@@ -228,6 +228,7 @@ model Collection {
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
   premiumChannel  Channel?
+  isFeatured      Boolean @default(false)
 }
 
 enum CollectionState {
