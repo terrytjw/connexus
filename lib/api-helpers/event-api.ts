@@ -43,6 +43,28 @@ export async function viewAttendeeList(eventId: number) {
   return response;
 }
 
+export async function filterAttendeeList(
+  eventId: number,
+  cursor: number | undefined,
+  displayName: string = ""
+) {
+  const object = {
+    displayName,
+  } as any;
+  if (cursor) object["cursor"] = cursor;
+
+  const params = new URLSearchParams(object).toString();
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee?${params}`;
+  const response = (await axios.get(url)).data;
+  return response;
+}
+
+export async function viewEndedEvents(userId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/?userId=${userId}&viewEndedEvent=true`;
+  const response = (await axios.get(url)).data;
+  return response;
+}
+
 /**
  * APIs for Fans
  */
@@ -53,7 +75,7 @@ export async function likeEvent(eventId: number, userId: number) {
   return response;
 }
 
-export async  function unlikeEvent(eventId: number, userId: number) {
+export async function unlikeEvent(eventId: number, userId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/unlike?userId=${userId}`;
   const response = (await axios.post(url)).data;
   return response;

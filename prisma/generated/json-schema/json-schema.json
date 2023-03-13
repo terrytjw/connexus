@@ -125,6 +125,12 @@
           "items": {
             "$ref": "#/definitions/UserTicket"
           }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
         }
       }
     },
@@ -450,6 +456,9 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
         }
       }
     },

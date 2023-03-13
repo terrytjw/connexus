@@ -22,7 +22,9 @@ import {
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
+export type EventCreation = Prisma.EventGetPayload<{
+  include: { tickets: true; address: true };
+}>;
 
 /**
  * @swagger
@@ -109,7 +111,7 @@ export default async function handler(
       );
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(body)) as EventWithTickets;
+      const event = JSON.parse(JSON.stringify(body)) as EventCreation;
       await handlePOST(event);
       break;
     default:
@@ -145,9 +147,10 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(eventWithTickets: EventWithTickets) {
+  async function handlePOST(eventWithTickets: EventCreation) {
     try {
-      const { tickets, eventPic, bannerPic, ...eventInfo } = eventWithTickets;
+      const { tickets, eventPic, bannerPic, creatorId, ...eventInfo } =
+        eventWithTickets;
       const updatedTickets = tickets.map((ticket: Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
@@ -195,11 +198,12 @@ export default async function handler(
         ...eventInfo,
         eventPic: eventImageUrl,
         bannerPic: eventBannerPictureUrl,
-      } as Event;
+      } as EventCreation;
 
       const response = await createEventWithTickets(
-        updatedEvent as Event,
-        updatedTickets as Ticket[]
+        updatedEvent as EventCreation,
+        updatedTickets as Ticket[],
+        creatorId
       );
 
       res.status(200).json(response);

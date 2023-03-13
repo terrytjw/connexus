@@ -7,6 +7,8 @@ import {
   PublishType,
   Address,
 } from "@prisma/client";
+import { AttendeeListType } from "../../utils/types";
+import { EventCreation } from "../../pages/api/events";
 
 export interface EventPartialType extends Partial<Event> {}
 
@@ -21,13 +23,26 @@ export async function retrieveEventInfo(eventId: number) {
       tickets: {
         include: { users: true },
       },
+      userLikes: true,
     },
   });
 }
 
-export async function createEventWithTickets(event: Event, tickets: Ticket[]) {
+export async function createEventWithTickets(
+  event: EventCreation,
+  tickets: Ticket[],
+  creatorId: number
+) {
   return prisma.event.create({
-    data: { ...event, eventId: undefined, tickets: { create: tickets } },
+    data: {
+      ...event,
+      eventId: undefined,
+      addressId: undefined,
+      creatorId: undefined,
+      tickets: { create: tickets },
+      address: { create: event.address },
+      creator: { connect: { userId: creatorId } },
+    },
     include: { tickets: true },
   });
 }
@@ -111,44 +126,57 @@ export async function updateEvent(
   });
 }
 
-// to implement with checkin status
-export async function retrieveAttendee(eventId: number) {
-  const tickets = await prisma.ticket.findMany({
-    where: {
-      eventId: eventId,
-    },
-  });
-
-  const ticketIds = tickets.map((ticket) => ticket.ticketId);
-
-  return prisma.user.findMany({
-    where: {
-      tickets: {
-        some: {
-          ticketId: {
-            in: ticketIds,
-          },
+export async function filterAttendee(
+  eventId: number,
+  cursor?: number,
+  displayName?: string
+) {
+  const userTickets = await prisma.userTicket.findMany({
+    include: {
+      user: true,
+      ticket: {
+        include: {
+          event: true,
         },
       },
     },
-    include: { tickets: true },
+    take: 10,
+    skip: cursor ? 1 : undefined, // Skip cursor
+    cursor: cursor ? { userTicketId: cursor } : undefined,
+    where: {
+      ticket: {
+        eventId: eventId,
+      },
+      user: {
+        displayName: {
+          contains: displayName,
+          mode: "insensitive",
+        },
+      },
+    },
+    orderBy: {
+      user: {
+        userId: "asc",
+      },
+    },
   });
 
-  // const users = prisma.user.findMany({
-  //   where: {
-  //     tickets: {
-  //       some: {
-  //         ticketId: {
-  //           in: ticketIds,
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
+  const response = [] as AttendeeListType[];
+  for (const userTicket of userTickets) {
+    const userId = userTicket.userId;
+    const displayName = userTicket.user.displayName;
+    const email = userTicket.user.email;
+    const checkInStatus = userTicket.checkIn;
 
-  // const userTickets = await prisma.userTicket.findMany({
-  //   where: {},
-  // });
+    response.push({
+      userId: userId,
+      displayName: displayName,
+      email: email,
+      checkIn: checkInStatus,
+    } as AttendeeListType);
+  }
+
+  return response;
 }
 
 export async function unlikeEvent(eventId: number, userId: number) {

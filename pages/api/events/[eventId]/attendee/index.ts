@@ -6,7 +6,7 @@ import {
 } from "../../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User } from "@prisma/client";
 import prisma from "../../../../../lib/prisma";
-import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
+import { filterAttendee } from "../../../../../lib/prisma/event-prisma";
 
 /**
  * @swagger
@@ -35,6 +35,8 @@ export default async function handler(
 ) {
   const { query, method } = req;
   const eventId = parseInt(query.eventId as string);
+  const displayName = query.displayName as string;
+  const cursor = query.cursor ? parseInt(query.cursor as string) : undefined;
 
   switch (req.method) {
     case "GET":
@@ -47,7 +49,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const response = await retrieveAttendee(eventId);
+      const response = await filterAttendee(eventId, cursor, displayName);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

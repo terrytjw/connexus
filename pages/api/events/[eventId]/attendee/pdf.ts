@@ -4,7 +4,7 @@ import {
   handleError,
   ErrorResponse,
 } from "../../../../../lib/prisma/prisma-helpers";
-import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
+import { filterAttendee } from "../../../../../lib/prisma/event-prisma";
 import { createObjectCsvWriter } from "csv-writer";
 import { join } from "path";
 import PDFDocument from "pdfkit";
@@ -44,7 +44,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const response = await retrieveAttendee(eventId);
+      const response = await filterAttendee(eventId);
 
       const doc = new PDFDocument();
 
