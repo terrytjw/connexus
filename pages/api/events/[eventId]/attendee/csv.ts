@@ -5,7 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User } from "@prisma/client";
-import { retrieveAttendee } from "../../../../../lib/prisma/event-prisma";
+import { filterAttendee } from "../../../../../lib/prisma/event-prisma";
 import { createObjectCsvWriter } from "csv-writer";
 import { join } from "path";
 import { createReadStream } from "fs";
@@ -49,7 +49,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const response = await retrieveAttendee(eventId);
+      const response = await filterAttendee(eventId);
       const csvWriter = createObjectCsvWriter({
         path: join(process.cwd(), "public", "data.csv"),
         header: [
