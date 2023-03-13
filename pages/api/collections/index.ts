@@ -107,7 +107,7 @@ export default async function handler(
     keyword,
     cursor,
     collectionState,
-    isLinked
+    isLinked,
   }: CollectionsGetParams) {
     try {
       const collections = await prisma.collection.findMany({
@@ -118,7 +118,7 @@ export default async function handler(
           creatorId: userId ? userId : undefined,
           collectionName: { contains: keyword, mode: "insensitive" },
           collectionState: collectionState ? collectionState : undefined,
-          premiumChannel: handleIsLinked(isLinked)
+          premiumChannel: handleIsLinked(isLinked),
         },
         include: { merchandise: true, premiumChannel: true },
       });
@@ -194,17 +194,17 @@ export default async function handler(
 }
 
 export type CollectionsGetParams = {
-  userId?: number,
-  keyword?: string,
-  cursor?: number,
-  collectionState?: CollectionState,
-  isLinked: CollectionLink
-}
+  userId?: number;
+  keyword?: string;
+  cursor?: number;
+  collectionState?: CollectionState;
+  isLinked: CollectionLink;
+};
 
 enum CollectionLink {
   LINKED,
   UNLINKED,
-  ALL
+  ALL,
 }
 
 function convertParams(query: any): CollectionsGetParams {
@@ -213,17 +213,22 @@ function convertParams(query: any): CollectionsGetParams {
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
     collectionState: query.collectionState as CollectionState,
-    isLinked: query.isLinked === undefined ? CollectionLink.ALL : (query.isLinked === "true" ? CollectionLink.LINKED : CollectionLink.UNLINKED)
-  }
+    isLinked:
+      query.isLinked === undefined
+        ? CollectionLink.ALL
+        : query.isLinked === "true"
+        ? CollectionLink.LINKED
+        : CollectionLink.UNLINKED,
+  };
 }
 
 function handleIsLinked(isLinked: CollectionLink) {
-  switch(isLinked) {
+  switch (isLinked) {
     case CollectionLink.ALL:
       return undefined; // get all collections
     case CollectionLink.LINKED:
       return { is: {} }; // get collections linked to a premium channel
     case CollectionLink.UNLINKED:
-      return { isNot: {} } // get collections not linked to a premium channel
+      return { isNot: {} }; // get collections not linked to a premium channel
   }
 }

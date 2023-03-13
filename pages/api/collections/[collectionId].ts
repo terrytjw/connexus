@@ -11,6 +11,10 @@ type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
 }>;
 
+type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
+  include: { merchandise: true; premiumChannel: true };
+}>;
+
 /**
  * @swagger
  * /api/collections/{collectionId}:
@@ -86,7 +90,7 @@ export default async function handler(
     case "POST":
       const collection = JSON.parse(
         JSON.stringify(req.body)
-      ) as CollectionwithMerch;
+      ) as CollectionWithMerchAndPremiumChannel;
       await handlePOST(collectionId, collection);
       break;
     case "DELETE":
@@ -111,16 +115,31 @@ export default async function handler(
 
   async function handlePOST(
     collectionId: number,
-    collectionwithMerch: Collection
+    collectionwithMerch: CollectionWithMerchAndPremiumChannel
   ) {
     try {
       console.log(collectionwithMerch);
-
+      const { merchandise, premiumChannel, ...collectionInfo } =
+        collectionwithMerch;
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,
         },
-        data: { ...collectionwithMerch, collectionId: undefined },
+        data: {
+          ...collectionwithMerch,
+          collectionId: undefined,
+          merchandise: {
+            connect: merchandise,
+          },
+          premiumChannel:
+            premiumChannel === null
+              ? undefined
+              : {
+                  connect: {
+                    channelId: premiumChannel.channelId,
+                  },
+                },
+        },
       });
       res.status(200).json(response);
     } catch (error) {

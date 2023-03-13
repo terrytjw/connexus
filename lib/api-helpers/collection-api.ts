@@ -13,6 +13,10 @@ export type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
 }>;
 
+export type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
+  include: { merchandise: true; premiumChannel: true };
+}>;
+
 /** Smart Contract information */
 const contract = require("../../artifacts/contracts/Collection.sol/Collection.json");
 const provider = new ethers.providers.JsonRpcProvider(
@@ -108,7 +112,7 @@ export async function updateCollection(
   console.log("retrieved collection: ", retrievedCollectionResponse);
 
   const { merchandise, ...collectionInfo } =
-    retrievedCollectionResponse as CollectionwithMerch;
+    retrievedCollectionResponse as CollectionWithMerchAndPremiumChannel;
 
   /** update ur collection in the collectionName and description fields below */
   const updatedCollection: Partial<Collection> = {
@@ -185,32 +189,47 @@ export async function searchAllCollections(
   keyword: string,
   isLinked?: boolean
 ) {
-  const params = { cursor, keyword, isLinked }
-  const response = (await axios.get(baseUrl, {
-    params: params
-  })).data;
+  const params = { cursor, keyword, isLinked };
+  const response = (
+    await axios.get(baseUrl, {
+      params: params,
+    })
+  ).data;
 
   return response;
 }
 
 export async function getLinkedCollections(userId: number) {
   const params = { userId };
-  const response = (await axios.get(baseUrl, {
-    params: params
-  })).data;
-  
+  const response = (
+    await axios.get(baseUrl, {
+      params: params,
+    })
+  ).data;
+
   return response;
 }
 
-export async function searchCreatorCollectionsByState(
-  userId: number,
-  collectionState: CollectionState,
-  keyword: string
-) {
-  const params = { userId, collectionState, keyword };
-  const response = (await axios.get(baseUrl, {
-    params: params
-  })).data;
+export async function searchCreatorCollectionsByState({
+  userId,
+  collectionState,
+  keyword,
+}: {
+  userId: number;
+  collectionState: CollectionState;
+  keyword: string;
+}) {
+  const params = {
+    userId: userId,
+    collectionState: collectionState,
+    keyword: keyword,
+  };
+  console.log(params);
+  const response = (
+    await axios.get(baseUrl, {
+      params: params,
+    })
+  ).data;
 
   return response;
 }
@@ -222,10 +241,12 @@ async function searchCreatorCollections(
   collectionState?: CollectionState,
   isLinked?: boolean
 ) {
-  const params = { userId, keyword, cursor, collectionState, isLinked }
-  const response = (await axios.get(baseUrl, {
-    params: params
-  })).data;
+  const params = { userId, keyword, cursor, collectionState, isLinked };
+  const response = (
+    await axios.get(baseUrl, {
+      params: params,
+    })
+  ).data;
 
   return response;
 }
