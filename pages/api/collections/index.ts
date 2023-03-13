@@ -23,6 +23,7 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import { createProduct } from "../../../lib/stripe/api-helpers";
+import { searchCollections } from "../../../lib/prisma/collection-prisma";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -102,26 +103,9 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGETWithParams({
-    userId,
-    keyword,
-    cursor,
-    collectionState,
-    isLinked,
-  }: CollectionsGetParams) {
+  async function handleGETWithParams(params: CollectionsGETParams) {
     try {
-      const collections = await prisma.collection.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { collectionId: cursor } : undefined,
-        where: {
-          creatorId: userId ? userId : undefined,
-          collectionName: { contains: keyword, mode: "insensitive" },
-          collectionState: collectionState ? collectionState : undefined,
-          premiumChannel: handleIsLinked(isLinked),
-        },
-        include: { merchandise: true, premiumChannel: true },
-      });
+      const collections = await searchCollections(params)
       res.status(200).json(collections);
     } catch (error) {
       console.log(error);
@@ -193,42 +177,25 @@ export default async function handler(
   }
 }
 
-export type CollectionsGetParams = {
+export type CollectionsGETParams = {
   userId?: number;
   keyword?: string;
   cursor?: number;
-  collectionState?: CollectionState;
-  isLinked: CollectionLink;
+  collectionStates?: CollectionState[];
+  isLinked?: boolean
 };
 
-enum CollectionLink {
-  LINKED,
-  UNLINKED,
-  ALL,
-}
-
-function convertParams(query: any): CollectionsGetParams {
+function convertParams(query: any): CollectionsGETParams {
   return {
     userId: parseInt(query.userId as string),
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
-    collectionState: query.collectionState as CollectionState,
+    collectionStates: query.collectionStates as CollectionState[],
     isLinked:
-      query.isLinked === undefined
-        ? CollectionLink.ALL
-        : query.isLinked === "true"
-        ? CollectionLink.LINKED
-        : CollectionLink.UNLINKED,
+      query.isLinked
+        ? true
+        : query.isLinked === undefined
+        ? undefined
+        : false
   };
-}
-
-function handleIsLinked(isLinked: CollectionLink) {
-  switch (isLinked) {
-    case CollectionLink.ALL:
-      return undefined; // get all collections
-    case CollectionLink.LINKED:
-      return { is: {} }; // get collections linked to a premium channel
-    case CollectionLink.UNLINKED:
-      return { isNot: {} }; // get collections not linked to a premium channel
-  }
 }
