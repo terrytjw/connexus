@@ -49,7 +49,7 @@ const AttendeesTable = ({
 
               <th className="text-gray-700">
                 {/* replace boolean with the field data?.checkIn */}
-                {false ? (
+                {data.checkIn ? (
                   <FaCheckCircle className="text-2xl text-green-500" />
                 ) : (
                   <Button
@@ -60,8 +60,8 @@ const AttendeesTable = ({
                       setIsLoading(true);
                       const res = await checkIn(
                         Number(eventId),
-                        data.tickets[0].ticketId, // only 1 ticket per user so just check in that one
-                        userId
+                        data.ticket.ticketId, // only 1 ticket per user so just check in that one
+                        data.userId
                       );
                       console.log(res);
 

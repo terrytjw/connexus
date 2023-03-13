@@ -119,7 +119,7 @@ export type CommentWithCommenterAndLikes = Prisma.CommentGetPayload<{
 }>;
 
 export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true };
+  include: { tickets: true; address: true, userLikes: true };
 }>;
 
 export type UserWithTickets = Prisma.UserGetPayload<{
@@ -131,5 +131,5 @@ export type AttendeeListType = {
   displayName: string;
   email: string;
   checkIn: boolean;
-  tickets: Ticket[];
+  ticket: Ticket;
 };

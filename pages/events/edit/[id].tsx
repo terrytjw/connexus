@@ -305,6 +305,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       const {
         address,
         tickets: { tempTickets },
+        userLikes,
         ...newEventWOTicketsNAddress
       } = newEvent;
 
@@ -341,6 +342,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       const {
         address,
         tickets: { tempTickets },
+        userLikes,
         ...newEventWOTicketsNAddress
       } = newEvent;
 

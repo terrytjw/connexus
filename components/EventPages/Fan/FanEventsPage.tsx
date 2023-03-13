@@ -35,9 +35,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
-  const [trendingEvents, setTrendingEvents] = useState<
-    EventWithTicketsandAddress[]
-  >([]);
 
   // fetch userId if from session
   const { data: session, status } = useSession();
@@ -82,17 +79,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       const { data } = await axios.get(url);
 
       // fetch addresses using address ID
-      const eventsWithAddresses: EventWithTicketsandAddress[] =
-        await Promise.all(
-          data.map(async (event: Partial<Event>) => {
-            const { data: address } = await axios.get(
-              `http://localhost:3000/api/addresses/${event?.addressId}`
-            );
-
-            return { ...event, address };
-          })
-        );
-      setSearchAndFilterResults(eventsWithAddresses);
+      setSearchAndFilterResults(data);
     } catch (error) {
       console.error(error);
     }
@@ -121,16 +108,21 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
         new Date(event.endDate) >= new Date()
     );
 
-    // fetch trending events separately
     const {
       data: trendingEvents,
-      error: trendingEventsError,
       isLoading: isTrendingEventsLoading,
+      mutate: mutateTrendingEvents,
     } = useSWR("trendingEvents", viewTrendingEvents);
 
     if (isTrendingEventsLoading) return <Loading />;
 
-    console.log("listedEvents -> ", trendingEvents);
+    console.log(
+      "search results -> ",
+      searchAndFilterResults.filter(
+        (event: EventWithTicketsandAddress) =>
+          new Date(event.endDate) >= new Date()
+      )
+    );
 
     return (
       <>
@@ -164,13 +156,19 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <h2 className="mb-6 text-2xl font-semibold text-slate-600">
             Trending Events in SG
           </h2>
-          <EventsGrid data={trendingEvents} />
+          <EventsGrid
+            data={trendingEvents}
+            mutateTrendingEvents={mutateTrendingEvents}
+          />
         </div>
         <div>
           <h2 className="mt-12 mb-6 text-2xl font-semibold text-slate-600">
             Events in Singapore
           </h2>
-          <EventsGrid data={listedEvents} />
+          <EventsGrid
+            data={listedEvents}
+            setSearchAndFilterResults={setSearchAndFilterResults}
+          />
         </div>
       </>
     );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import { FaChevronLeft } from "react-icons/fa";
+import { FaCheckCircle, FaChevronLeft } from "react-icons/fa";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import Button from "../../../components/Button";
@@ -9,7 +9,6 @@ import Modal from "../../../components/Modal";
 import {
   viewAttendeeList,
   exportCSV,
-  exportPDF,
   checkIn,
 } from "../../../lib/api-helpers/event-api";
 import useSWR from "swr";
@@ -17,29 +16,44 @@ import { useRouter } from "next/router";
 import Loading from "../../../components/Loading";
 import QrScanner from "../../../components/EventPages/QrScanner";
 
+enum CheckInStatus {
+  INITIAL,
+  LOADING,
+  SUCCESS,
+  ERROR,
+}
+
 const AttendeesPage = () => {
   const [isQrModalOpenOpen, setIsQrModalOpen] = useState(false);
   const router = useRouter();
   const { id: eventId } = router.query;
-  const [isCheckingIn, setIsCheckingIn] = useState<boolean>(false);
+  const [checkInStatus, setCheckInStatus] = useState<CheckInStatus>(
+    CheckInStatus.INITIAL
+  );
 
   const {
     data: attendeees,
-    error,
     isLoading,
     mutate: mutate,
   } = useSWR(eventId, async () => await viewAttendeeList(Number(eventId)));
-  console.log("attendees", attendeees);
 
   if (isLoading) return <Loading />;
 
   const onNewScanResult = async (scanResult: string) => {
-    console.log("scan result ->", scanResult);
-    setIsCheckingIn(true);
-    const idList = scanResult.split(",");
-    const [eventId, ticketId, userId] = idList;
-    await checkIn(Number(eventId), Number(ticketId), Number(userId));
-    setIsCheckingIn(false);
+    setCheckInStatus(CheckInStatus.LOADING);
+    if (isValidQr()) {
+      console.log("scan result ->", scanResult);
+      const idList = scanResult.split(",");
+      const [eventId, ticketId, userId] = idList;
+      await checkIn(Number(eventId), Number(ticketId), Number(userId));
+      setCheckInStatus(CheckInStatus.SUCCESS);
+    } else {
+      setCheckInStatus(CheckInStatus.ERROR);
+    }
+  };
+
+  const isValidQr = () => {
+    return true;
   };
 
   return (
@@ -52,9 +66,17 @@ const AttendeesPage = () => {
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
-            <h2 className="text-2xl font-bold sm:text-2xl">Scan a QR code</h2>
-            <div className="mt-4">
-              {!isCheckingIn ? (
+            <h2 className="text-2xl font-bold sm:text-2xl">
+              {checkInStatus !== CheckInStatus.LOADING
+                ? "Scan a QR code"
+                : "Scanning..."}
+            </h2>
+            <div className="mt-16">
+              {checkInStatus === CheckInStatus.LOADING && (
+                <Loading className="!h-full bg-transparent" />
+              )}
+              {(checkInStatus === CheckInStatus.ERROR ||
+                checkInStatus === CheckInStatus.INITIAL) && (
                 <QrScanner
                   fps={10}
                   qrbox={250}
@@ -62,8 +84,19 @@ const AttendeesPage = () => {
                   rememberLastUsedCamera={true} // auto start video feed if permission was granted
                   qrCodeSuccessCallback={onNewScanResult}
                 />
-              ) : (
-                <Loading className="!h-full bg-transparent" />
+              )}
+              {checkInStatus === CheckInStatus.SUCCESS && (
+                <div className="flex flex-col items-center">
+                  <FaCheckCircle className="text-5xl text-green-500" />
+                  <h3 className="mt-4 flex justify-center font-semibold text-red-500">
+                    Check-in Success!
+                  </h3>
+                </div>
+              )}
+              {checkInStatus === CheckInStatus.ERROR && (
+                <h3 className="mt-4 flex justify-center font-semibold text-red-500">
+                  Invalid QR Code!
+                </h3>
               )}
             </div>
             <div className="mt-4 flex justify-end">
@@ -94,7 +127,7 @@ const AttendeesPage = () => {
 
             <div className="flex items-center gap-4">
               {/* TODO: refactor buttons into dropdown  */}
-              <Button
+              {/* <Button
                 variant="solid"
                 size="md"
                 className="max-w-xs"
@@ -104,7 +137,7 @@ const AttendeesPage = () => {
                 }}
               >
                 Export PDF
-              </Button>
+              </Button> */}
               <Button
                 href={exportCSV(Number(eventId))} // redirect users to the url
                 variant="solid"

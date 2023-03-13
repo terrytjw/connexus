@@ -3,26 +3,90 @@ import React from "react";
 import Button from "../Button";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { FaAddressCard, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { formatDate } from "../../utils/date-util";
 import { likeEvent, unlikeEvent } from "../../lib/api-helpers/event-api";
 import { EventWithTicketsandAddress } from "../../utils/types";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { User } from "@prisma/client";
 
 type CollectionGridItemProps = {
   item: EventWithTicketsandAddress;
+  mutateTrendingEvents?: any;
+  setSearchAndFilterResults?: any;
 };
-const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+const CollectionGridItem = ({
+  item,
+  mutateTrendingEvents,
+  setSearchAndFilterResults,
+}: CollectionGridItemProps) => {
+  const { data: session } = useSession();
   const userId = session?.user.userId;
 
   if (!item) return <Skeleton height={350} />;
 
-  const isEventLiked = (): boolean => {
-    return item?.userLikes.find((event: any) => {});
+  const handleLike = async (e: any) => {
+    // prevent parent link navigation on click
+    e.preventDefault();
+    const res = await likeEvent(item.eventId, Number(userId));
+
+    // mutate
+    console.log("liking event -> ", res);
+    if (mutateTrendingEvents) {
+      mutateTrendingEvents((data: EventWithTicketsandAddress[]) => {
+        data
+          .find((event) => event.eventId == res.event)
+          ?.userLikes.push({ userId: Number(userId) } as User);
+        return data;
+      });
+    } else if (setSearchAndFilterResults) {
+      setSearchAndFilterResults((prev: EventWithTicketsandAddress[]) =>
+        prev.map((event) =>
+          event.eventId === item.eventId
+            ? {
+                ...event,
+                userLikes: [
+                  ...event.userLikes,
+                  {
+                    userId: Number(userId),
+                  },
+                ],
+              }
+            : event
+        )
+      );
+    }
+  };
+
+  const handleUnlike = async (e: any) => {
+    // prevent parent link navigation on click
+    e.preventDefault();
+    const res = await unlikeEvent(item.eventId, Number(userId));
+    // mutate events
+    console.log("UNliking event");
+    if (mutateTrendingEvents) {
+      mutateTrendingEvents((data: EventWithTicketsandAddress[]) => {
+        data
+          .find((event) => event.eventId === res.eventId)
+          ?.userLikes.filter((like: User) => like.userId !== Number(userId));
+
+        return data;
+      });
+    } else if (setSearchAndFilterResults) {
+      setSearchAndFilterResults((prev: EventWithTicketsandAddress[]) =>
+        prev.map((event) =>
+          event.eventId === item.eventId
+            ? {
+                ...event,
+                userLikes: event.userLikes.filter(
+                  (like: User) => like.userId !== Number(userId)
+                ),
+              }
+            : event
+        )
+      );
+    }
   };
 
   return (
@@ -39,17 +103,15 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
             <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
             {/* TODO: Replace boolean with like check*/}
-            {false ? (
+            {item.userLikes &&
+            item.userLikes.find(
+              (user: User) => user.userId === Number(userId)
+            ) ? (
               <Button
                 size="sm"
                 variant="solid"
                 className="!btn-circle relative ml-auto rounded-full border-0 !bg-transparent text-lg font-semibold !text-blue-600"
-                onClick={async (e) => {
-                  // prevent parent link navigation on click
-                  e.preventDefault();
-                  await unlikeEvent(item.eventId, Number(userId));
-                  // mutate events
-                }}
+                onClick={async (e) => await handleUnlike(e)}
               >
                 <FaHeart size={24} />
               </Button>
@@ -58,14 +120,7 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
                 size="sm"
                 variant="outlined"
                 className="!btn-circle relative ml-auto rounded-full border-0 text-lg font-semibold text-white hover:bg-blue-600 hover:bg-opacity-30 hover:text-blue-500"
-                onClick={async (e) => {
-                  // prevent parent link navigation on click
-                  e.preventDefault();
-                  await likeEvent(item.eventId, Number(userId));
-
-                  // mutate
-                  console.log("liking event");
-                }}
+                onClick={async (e) => await handleLike(e)}
               >
                 <FaRegHeart size={24} />
               </Button>
@@ -97,12 +152,23 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
 
 type EventsGridProps = {
   data: any[]; // todo: remove any type and set a proper type
+  mutateTrendingEvents?: any;
+  setSearchAndFilterResults?: any;
 };
-const EventsGrid = ({ data }: EventsGridProps) => {
+const EventsGrid = ({
+  data,
+  mutateTrendingEvents,
+  setSearchAndFilterResults,
+}: EventsGridProps) => {
   return (
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
       {data.map((item) => (
-        <CollectionGridItem key={item.eventId} item={item} />
+        <CollectionGridItem
+          key={item.eventId}
+          item={item}
+          mutateTrendingEvents={mutateTrendingEvents}
+          setSearchAndFilterResults={setSearchAndFilterResults}
+        />
       ))}
     </div>
   );

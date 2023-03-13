@@ -7,8 +7,8 @@ import { useSession } from "next-auth/react";
 type TicketCardProps = {
   ticket: Ticket;
   isOwnedTicket?: boolean;
-  setIsModalOpen: (value: boolean) => void;
-  setQrValue: (value: string) => void;
+  setIsModalOpen?: (value: boolean) => void;
+  setQrValue?: (value: string) => void;
 };
 
 const TicketCard = ({
@@ -76,8 +76,10 @@ const TicketCard = ({
                 size="md"
                 className="max-w-xs "
                 onClick={() => {
-                  setQrValue(getQrString());
-                  setIsModalOpen(true);
+                  if (setIsModalOpen && setQrValue) {
+                    setQrValue(getQrString());
+                    setIsModalOpen(true);
+                  }
                 }}
               >
                 Generate QR Code

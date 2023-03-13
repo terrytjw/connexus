@@ -13,6 +13,7 @@ import { Event } from "@prisma/client";
 import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
+import Input from "../../Input";
 
 const DELAY_TIME = 400;
 
@@ -241,24 +242,28 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
+            <h3 className="text-xl font-semibold">Filter Events</h3>
             <Button
               variant="outlined"
               size="sm"
               className="border-0"
-              onClick={() => setIsFilterModalOpen(false)}
+              onClick={() => {
+                setSelectedTopics([]);
+              }}
             >
-              Done
+              Clear
             </Button>
           </div>
 
-          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Categories */}
+          <h3 className="mt-8 text-sm font-medium text-gray-500">CATEGORIES</h3>
+          <div className="mt-2 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {Object.values(CategoryType).map((label, index) => {
               return (
                 <Badge
                   key={index}
                   label={label}
-                  size="lg"
+                  size="md"
                   selected={
                     selectedTopics.length > 0 &&
                     selectedTopics.indexOf(label) != -1
@@ -274,20 +279,56 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                       })
                     );
                   }}
-                  className="h-8 w-full sm:w-48"
+                  className="h-8 w-full sm:w-32"
                 />
               );
             })}
           </div>
+          <div className="divider"></div>
+          {/* Date Range */}
+          <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
+          <div className="mt-2 flex justify-between gap-8">
+            <Input
+              type="datetime-local"
+              label="From"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+            <Input
+              type="datetime-local"
+              label="To"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+          </div>
+
+          <div className="divider"></div>
+          {/* Liked */}
+          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
           <Button
             variant="outlined"
-            size="sm"
-            className="mt-8 w-full text-red-500"
-            onClick={() => {
-              setSelectedTopics([]);
-            }}
+            size="md"
+            className="mt-2"
+            onClick={() => setIsFilterModalOpen(false)}
           >
-            Clear selected topics
+            Select Liked Evevnts Only
+          </Button>
+
+          <Button
+            variant="solid"
+            size="md"
+            className="mt-8"
+            onClick={() => setIsFilterModalOpen(false)}
+          >
+            Submit
           </Button>
         </Modal>
 

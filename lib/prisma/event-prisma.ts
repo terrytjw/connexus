@@ -10,7 +10,7 @@ import {
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
 
-export interface EventPartialType extends Partial<Event> {}
+export interface EventPartialType extends Partial<Event> { }
 
 const prisma = new PrismaClient();
 
@@ -24,6 +24,7 @@ export async function retrieveEventInfo(eventId: number) {
         include: { users: true },
       },
       userLikes: true,
+      address: true
     },
   });
 }
@@ -58,6 +59,7 @@ export async function filterEvent(
   status: PublishType | undefined
 ) {
   return prisma.event.findMany({
+    include: { userLikes: true, address: true },
     take: 10,
     skip: cursor ? 1 : undefined, // Skip cursor
     cursor: cursor ? { eventId: cursor } : undefined,
@@ -67,14 +69,14 @@ export async function filterEvent(
     where: {
       category: tags
         ? {
-            hasSome: tags,
-          }
+          hasSome: tags,
+        }
         : undefined,
 
       eventId: eventIds
         ? {
-            in: eventIds,
-          }
+          in: eventIds,
+        }
         : undefined,
       address: {
         locationName: {
@@ -167,12 +169,14 @@ export async function filterAttendee(
     const displayName = userTicket.user.displayName;
     const email = userTicket.user.email;
     const checkInStatus = userTicket.checkIn;
+    const ticket = userTicket.ticket
 
     response.push({
       userId: userId,
       displayName: displayName,
       email: email,
       checkIn: checkInStatus,
+      ticket: ticket
     } as AttendeeListType);
   }
 
@@ -217,6 +221,7 @@ export async function likeEvent(eventId: number, userId: number) {
 
 export async function searchEventContainingTickets(ticketId: number[]) {
   return prisma.event.findMany({
+    include: { userLikes: true, address: true },
     where: {
       tickets: {
         some: {
@@ -237,5 +242,6 @@ export async function retrieveTrendingEvents() {
       },
     },
     take: 1,
+    include: { userLikes: true, address: true },
   });
 }

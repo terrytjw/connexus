@@ -29,6 +29,7 @@ import { ALCHEMY_API, smartContract } from "../../lib/constant";
 import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
+import { useSession } from "next-auth/react";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
@@ -37,6 +38,8 @@ const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const CreatorEventCreate = () => {
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
@@ -105,7 +108,7 @@ const CreatorEventCreate = () => {
       category_quantity,
       event.eventName,
       new Date(event.startDate), // what is this?
-      event.address.create.locationName,
+      event.address.locationName,
       1,
       100,
       event.eventName
@@ -130,15 +133,12 @@ const CreatorEventCreate = () => {
   const parseAndCreate = (event: EventWithTicketsandAddress): void => {
     console.log("Submitting Form Data", event);
 
-    const { address, tickets, startDate, endDate, maxAttendee } = event;
+    const { tickets, startDate, endDate, maxAttendee } = event;
 
     console.log(tickets.map((ticket) => ({ ...ticket })));
     // parse to prisma type
     const prismaEvent = {
       ...event,
-      address: {
-        create: { ...address },
-      },
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       maxAttendee: Number(maxAttendee),
@@ -159,6 +159,7 @@ const CreatorEventCreate = () => {
           endDate: new Date(endDate),
         })
       ),
+      creatorId: userId,
     };
     createEvent(prismaEvent);
   };
