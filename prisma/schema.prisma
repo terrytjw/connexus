@@ -231,7 +231,6 @@ model Collection {
 }
 
 enum CollectionState {
-  CREATED
   ON_SALE
   SOLD
   PAUSED
