@@ -106,7 +106,6 @@ export default async function handler(
     userId,
     keyword,
     cursor,
-    isFeatured = false,
     collectionState,
     isLinked
   }: CollectionsGetParams) {
@@ -118,7 +117,6 @@ export default async function handler(
         where: {
           creatorId: userId ? userId : undefined,
           collectionName: { contains: keyword, mode: "insensitive" },
-          isFeatured: isFeatured,
           collectionState: collectionState ? collectionState : undefined,
           premiumChannel: handleIsLinked(isLinked)
         },
@@ -195,11 +193,10 @@ export default async function handler(
   }
 }
 
-type CollectionsGetParams = {
+export type CollectionsGetParams = {
   userId?: number,
   keyword?: string,
   cursor?: number,
-  isFeatured: boolean,
   collectionState?: CollectionState,
   isLinked: CollectionLink
 }
@@ -215,7 +212,6 @@ function convertParams(query: any): CollectionsGetParams {
     userId: parseInt(query.userId as string),
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
-    isFeatured: query.isFeatured === "true",
     collectionState: query.collectionState as CollectionState,
     isLinked: query.isLinked === undefined ? CollectionLink.ALL : (query.isLinked === "true" ? CollectionLink.LINKED : CollectionLink.UNLINKED)
   }

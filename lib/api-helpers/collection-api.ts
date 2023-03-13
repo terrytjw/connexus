@@ -194,7 +194,7 @@ export async function searchAllCollections(
 }
 
 export async function getLinkedCollections(userId: number) {
-  const params = { userId: userId };
+  const params = { userId };
   const response = (await axios.get(baseUrl, {
     params: params
   })).data;
@@ -202,7 +202,33 @@ export async function getLinkedCollections(userId: number) {
   return response;
 }
 
-// export async function searchCollectionsByState() {}
+export async function searchCreatorCollectionsByState(
+  userId: number,
+  collectionState: CollectionState,
+  keyword: string
+) {
+  const params = { userId, collectionState, keyword };
+  const response = (await axios.get(baseUrl, {
+    params: params
+  })).data;
+
+  return response;
+}
+
+async function searchCreatorCollections(
+  userId: number,
+  keyword: string = "",
+  cursor: number = 0,
+  collectionState?: CollectionState,
+  isLinked?: boolean
+) {
+  const params = { userId, keyword, cursor, collectionState, isLinked }
+  const response = (await axios.get(baseUrl, {
+    params: params
+  })).data;
+
+  return response;
+}
 
 // export async function getUnsoldUnlinkedCollections() {}
 
