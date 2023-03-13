@@ -196,6 +196,7 @@ export default async function handler(
           eventPic: eventImageUrl,
           bannerPic: eventBannerPictureUrl,
           tickets: { create: updatedTickets },
+          eventTicketsSoldTimestamps: { create: { ticketsSold: 0 } }
         },
         include: {
           tickets: true,
