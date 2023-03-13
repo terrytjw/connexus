@@ -21,33 +21,33 @@ export default async function handler(
 
   async function handlePOST() {
     try {
-      const events = await prisma.event.findMany({
-        include: { tickets: true, eventTicketsSoldTimestamps: true }
+      const collections = await prisma.collection.findMany({
+        include: { merchandise: true, collectionMerchSoldTimestamps: true }
       });
-      for (let event of events) {
-        const prevTicketsSoldTimestamp = event.eventTicketsSoldTimestamps.at(-1);
-        let ticketsSold = 0 - prevTicketsSoldTimestamp!.ticketsSold;
+      for (let collection of collections) {
+        const prevTicketsSoldTimestamp = collection.collectionMerchSoldTimestamps.at(-1);
+        let merchSold = 0 - prevTicketsSoldTimestamp!.merchSold;
         let revenue = 0
-        for (let ticket of event.tickets) {
-          ticketsSold += ticket.currentTicketSupply
-          revenue += ticket.currentTicketSupply * ticket.price // we shall pretend promotions do not exist xd
+        for (let merch of collection.merchandise) {
+          merchSold += merch.currMerchSupply
+          revenue += merch.currMerchSupply * merch.price
         }
-        await prisma.eventTicketsSoldTimestamp.create({
+        await prisma.collectionMerchSoldTimestamp.create({
           data: {
-            ticketsSold: ticketsSold,
-            event: {
+            merchSold: merchSold,
+            collection: {
               connect: {
-                eventId: event.eventId
+                collectionId: collection.collectionId
               }
             }
           }
         });
-        await prisma.eventRevenueTimestamp.create({
+        await prisma.collectionRevenueTimestamp.create({
           data: {
             revenue: revenue,
-            event: {
+            collection: {
               connect: {
-                eventId: event.eventId
+                collectionId: collection.collectionId
               }
             }
           }

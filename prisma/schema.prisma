@@ -116,6 +116,7 @@ model Event {
   ticketURIs         String[]
   scAddress          String
   eventTicketsSoldTimestamps EventTicketsSoldTimestamp[]
+  eventRevenueTimestamps EventRevenueTimestamp[]
 }
 
 enum PublishType {
@@ -228,6 +229,8 @@ model Collection {
   merchURIs       String[]
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
+  collectionRevenueTimestamps CollectionRevenueTimestamp[]
+  collectionMerchSoldTimestamps CollectionMerchSoldTimestamp[]
 }
 
 enum CollectionState {
@@ -286,4 +289,28 @@ model EventTicketsSoldTimestamp {
   date DateTime @default(now())
   event Event @relation(fields: [eventId], references: [eventId])
   eventId Int
+}
+
+model EventRevenueTimestamp {
+  id Int @id @default(autoincrement())
+  revenue Int
+  date DateTime @default(now())
+  event Event @relation(fields: [eventId], references: [eventId])
+  eventId Int
+}
+
+model CollectionMerchSoldTimestamp {
+  id Int @id @default(autoincrement())
+  merchSold Int
+  date DateTime @default(now())
+  collection Collection @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int
+}
+
+model CollectionRevenueTimestamp {
+  id Int @id @default(autoincrement())
+  revenue Int
+  date DateTime @default(now())
+  collection Collection @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int
 }
