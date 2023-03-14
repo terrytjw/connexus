@@ -201,13 +201,13 @@ export async function searchAllCollections(
     keyword: keyword,
     isLinked: isLinked,
   };
-  const response = await searchCreatorCollections(params);
+  const response = await sendCollectionsGetReq(params);
   return response;
 }
 
 export async function getLinkedCollections(userId: number) {
   const params = { userId: userId };
-  const response = await searchCreatorCollections(params);
+  const response = await sendCollectionsGetReq(params);
 
   return response;
 }
@@ -217,7 +217,7 @@ export async function searchCreatorCollectionsByState(params: {
   collectionState: CollectionState;
   keyword: string;
 }) {
-  const response = await searchCreatorCollections(params);
+  const response = await sendCollectionsGetReq(params);
   return response;
 }
 
@@ -228,7 +228,7 @@ export async function getUnsoldUnlinkedCollections(userId: number) {
     omitSold: true,
   };
 
-  const response = await searchCreatorCollections(params);
+  const response = await sendCollectionsGetReq(params);
   return response;
 }
 
@@ -239,7 +239,7 @@ function setDefaultParams(params: CollectionsGETParams) {
   return params;
 }
 
-async function searchCreatorCollections(params: CollectionsGETParams) {
+async function sendCollectionsGetReq(params: CollectionsGETParams) {
   setDefaultParams(params);
   const response = (
     await axios.get(baseUrl, {
