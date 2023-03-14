@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Ticket } from "@prisma/client";
 
 export type Community = {
   communityId: number;
@@ -119,9 +119,17 @@ export type CommentWithCommenterAndLikes = Prisma.CommentGetPayload<{
 }>;
 
 export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true };
+  include: { tickets: true; address: true, userLikes: true };
 }>;
 
 export type UserWithTickets = Prisma.UserGetPayload<{
   include: { tickets: true };
 }>;
+
+export type AttendeeListType = {
+  userId: number;
+  displayName: string;
+  email: string;
+  checkIn: boolean;
+  ticket: Ticket;
+};

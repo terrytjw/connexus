@@ -25,21 +25,21 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../lib/constant";
+import { ALCHEMY_API, smartContract } from "../../lib/constant";
 import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
+import { useSession } from "next-auth/react";
 
 // smart contract stuff
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
-);
+const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
-var signer = new ethers.Wallet(smartContract.privateKey, provider);
-// console.log(signer);
+const signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const CreatorEventCreate = () => {
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithTicketsandAddress>({
       defaultValues: {
@@ -75,6 +75,8 @@ const CreatorEventCreate = () => {
   const [isLoading, setIsLoading] = useState<boolean>();
   const [isCreateSuccessModalOpen, setIsCreateSuccessModalOpen] =
     useState(false);
+  const [createdEventId, setCreatedEventId] = useState<number | undefined>();
+
   // create contract and db entry
   const createEvent = async (event: any) => {
     /*
@@ -106,7 +108,7 @@ const CreatorEventCreate = () => {
       category_quantity,
       event.eventName,
       new Date(event.startDate), // what is this?
-      event.address.create.locationName,
+      event.address.locationName,
       1,
       100,
       event.eventName
@@ -115,30 +117,28 @@ const CreatorEventCreate = () => {
     console.log("Contract successfully deployed => ", event_contract.address);
 
     // call post api
-    let { data: response } = await axios.post(
+    const { data: response } = await axios.post(
       "http://localhost:3000/api/events",
       {
         ...event,
         scAddress: event_contract.address,
       }
     );
-    let data = response.data;
-    console.log("Event Created");
+    const data = response;
+    console.log("Event Created -> ", data);
     setIsLoading(false);
+    setCreatedEventId(data.eventId); // used to route to event
   };
 
   const parseAndCreate = (event: EventWithTicketsandAddress): void => {
     console.log("Submitting Form Data", event);
 
-    const { address, tickets, startDate, endDate, maxAttendee } = event;
+    const { tickets, startDate, endDate, maxAttendee } = event;
 
     console.log(tickets.map((ticket) => ({ ...ticket })));
     // parse to prisma type
     const prismaEvent = {
       ...event,
-      address: {
-        create: { ...address },
-      },
       startDate: new Date(startDate),
       endDate: new Date(endDate),
       maxAttendee: Number(maxAttendee),
@@ -159,6 +159,7 @@ const CreatorEventCreate = () => {
           endDate: new Date(endDate),
         })
       ),
+      creatorId: userId,
     };
     createEvent(prismaEvent);
   };
@@ -273,19 +274,23 @@ const CreatorEventCreate = () => {
             setIsOpen={setIsCreateSuccessModalOpen}
           >
             {isLoading ? (
-              <Loading className="!h-full" />
+              <Loading className="!h-full !bg-transparent" />
             ) : (
-              <div className="flex items-center justify-between">
-                <h3 className="ml-2 text-xl font-semibold">Event Created!</h3>
+              <div className="flex flex-col gap-6 py-4">
+                <h3 className="text-xl font-semibold">Event Created!</h3>
+                <h3 className="text-md font-normal text-gray-500">
+                  Your Event Page can be viewed in the 'Events' tab in the
+                  navigation bar.
+                </h3>
 
-                <Link href="/events">
+                <Link href={`/events/${createdEventId}`}>
                   <Button
                     variant="solid"
                     size="md"
                     className="border-0"
                     onClick={() => setIsCreateSuccessModalOpen(false)}
                   >
-                    View Event
+                    Confirm
                   </Button>
                 </Link>
               </div>
@@ -312,7 +317,7 @@ const CreatorEventCreate = () => {
           {/* Steps */}
           <div className="justify-cente relative sm:py-8">
             {/* conditionally rendered via css */}
-            <StepsDesktop steps={steps} />
+            <StepsDesktop steps={steps} setSteps={setSteps} />
             <StepsMobile currentStep={currentStep} steps={steps} />
           </div>
 
