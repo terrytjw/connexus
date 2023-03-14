@@ -14,7 +14,7 @@ import useSWR from "swr";
 import {
   CollectionWithMerchAndPremiumChannel,
   getCollection,
-  updateCollection,
+  updateCollectionAPI,
 } from "../../../lib/api-helpers/collection-api";
 
 const CreatorCollectionPage = () => {
@@ -44,7 +44,7 @@ const CreatorCollectionPage = () => {
       return;
     }
 
-    await updateCollection(
+    await updateCollectionAPI(
       formData.collectionName,
       formData.description,
       formData.collectionId
