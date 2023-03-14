@@ -82,10 +82,6 @@ export default async function handler(
 
   const { method, body, query } = req;
 
-  // const userId = parseInt(query.userId as string);
-  // const keyword = query.keyword as string;
-  // const cursor = parseInt(query.cursor as string);
-
   switch (req.method) {
     case "GET":
       const params = convertParams(query);

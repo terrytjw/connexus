@@ -69,7 +69,7 @@ export default async function handler(
     case "GET":
       if (query) {
         // await handleGETWithFilter(cursor, collectionId, priceType);
-        await handleGETWithKeyword(userId, keyword, cursor, priceType);
+        await handleGETWithParams(userId, keyword, cursor, priceType);
       } else {
         await handleGET();
       }
@@ -93,14 +93,13 @@ export default async function handler(
     }
   }
 
-  async function handleGETWithKeyword(
+  async function handleGETWithParams(
     userId: number,
     keyword: string,
     cursor: number,
     priceType?: MerchandisePriceType
   ) {
     try {
-      console.log({ userId, keyword, cursor, priceType });
       const merch = await searchMerchandiseByUser(
         userId,
         keyword,
@@ -154,41 +153,4 @@ export default async function handler(
       res.status(400).json(errorResponse);
     }
   }
-
-  async function handleGETWithFilter(
-    cursor: number,
-    collectionId: number,
-    priceType: MerchandisePriceType
-  ) {
-    try {
-      const response = await filterMerchandiseByPriceType(
-        cursor,
-        collectionId,
-        priceType
-      );
-      res.status(200).json(response);
-    } catch (error) {
-      const errorResponse = handleError(error);
-      res.status(400).json(errorResponse);
-    }
-  }
 }
-
-// xxx.com/api/merch?cursor=1&collectionId=1&priceType=0
-// export async function filterByMerchandisePurchaseType(
-//   cursor: number = 1,
-//   collectionId: number,
-//   priceType: MerchandisePriceType
-// ) {
-//   const filterCondition =
-//     priceType === MerchandisePriceType.FREE ? { equals: 0 } : { gt: 0 };
-
-//   return prisma.merchandise.findMany({
-//     take: 10,
-//     skip: cursor ? 1 : undefined, // Skip cursor
-//     cursor: cursor ? { merchId: cursor } : undefined,
-//     // where: {
-//     //   price: filterCondition,
-//     // },
-//   });
-// }

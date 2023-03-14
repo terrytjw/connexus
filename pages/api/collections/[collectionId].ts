@@ -4,7 +4,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Collection, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
-import { getCollection } from "../../../lib/prisma/collection-prisma";
+import { getCollection, updateCollection } from "../../../lib/prisma/collection-prisma";
 
 const prisma = new PrismaClient();
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -118,17 +118,7 @@ export default async function handler(
     collection: CollectionWithMerchAndPremiumChannel
   ) {
     try {
-      console.log(collection);
-      const { merchandise, premiumChannel, ...collectionInfo } = collection;
-      const response = await prisma.collection.update({
-        where: {
-          collectionId: collectionId,
-        },
-        data: { 
-          ...collectionInfo,
-          collectionId: undefined,
-        },
-      });
+      const response = await updateCollection(collectionId, collection);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

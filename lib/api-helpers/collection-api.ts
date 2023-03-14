@@ -108,7 +108,7 @@ export async function createCollection(
  * - updatedDescription: string (description of collection)
  * - collection_id: number (id of the collection u are updating)
  */
-export async function updateCollection(
+export async function updateCollectionAPI(
   updatedName: string,
   updatedDescription: string,
   collectionId: number
@@ -208,6 +208,7 @@ export async function searchAllCollections(
 export async function getLinkedCollections(userId: number) {
   const params = { userId: userId };
   const response = await searchCreatorCollections(params);
+
   return response;
 }
 
@@ -216,11 +217,6 @@ export async function searchCreatorCollectionsByState(params: {
   collectionState: CollectionState;
   keyword: string;
 }) {
-  // const params = {
-  //   userId: userId,
-  //   collectionState: collectionState,
-  //   keyword: keyword,
-  // };
   const convertedParams = {
     userId: params.userId,
     collectionState: params.collectionState,
@@ -250,7 +246,6 @@ function setDefaultParams(params: CollectionsGETParams) {
 
 async function searchCreatorCollections(params: CollectionsGETParams) {
   setDefaultParams(params);
-  console.log(params);
   const response = (
     await axios.get(baseUrl, {
       params: params,
@@ -261,34 +256,6 @@ async function searchCreatorCollections(params: CollectionsGETParams) {
 
 export async function getCollection(collectionId: number) {
   const url = baseUrl + `/${collectionId}`;
-  const response = (await axios.get(url)).data;
-  return response;
-}
-
-// Old functions
-
-export async function searchCollectionByName(
-  cursor?: number,
-  userId?: number,
-  keyword?: string
-) {
-  const object = { cursor, userId, keyword } as any;
-  const params = new URLSearchParams(object).toString();
-  const url = baseUrl + `?${params}`;
-  const response = (await axios.get(url)).data;
-  console.log("search response: ", response);
-
-  response.map((item: Collection) => {
-    return {
-      collectionName: item.collectionName,
-    };
-  });
-  return response;
-}
-
-// get all collection info @@To be edited because we need additional endpoint to retrieve collection info by userId
-export async function getCollectionInfo(userId: number) {
-  const url = baseUrl + `/${userId}`;
   const response = (await axios.get(url)).data;
   return response;
 }
