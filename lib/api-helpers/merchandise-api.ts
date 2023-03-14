@@ -37,12 +37,14 @@ export function filterMerchandiseByName(merchandise: any[], keyword: string) {
 export async function searchCollectedMerchandise(
   userId: number,
   keyword: string,
+  cursor: number,
   priceType: MerchandisePriceType
 ) {
   const response = (await axios.get(baseUrl, {
     params: {
       userId: userId,
       keyword: keyword,
+      cursor: cursor,
       priceType: priceType
     }
   })).data;

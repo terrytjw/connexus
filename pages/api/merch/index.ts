@@ -6,6 +6,7 @@ import {
   createMerchandise,
   filterMerchandiseByPriceType,
   findAllMerchandise,
+  searchMerchandiseByUser,
 } from "../../../lib/prisma/merchandise-prisma";
 import {
   checkIfStringIsBase64,
@@ -83,6 +84,21 @@ export default async function handler(
     try {
       const merchandises = await findAllMerchandise();
       res.status(200).json(merchandises);
+    } catch (error) {
+      const errorResponse = handleError(error);
+      res.status(400).json(errorResponse);
+    }
+  }
+
+  async function handleGETWithKeyword(
+    userId: number,
+    keyword: string,
+    cursor: number,
+    priceType: MerchandisePriceType
+  ) {
+    try {
+      const merch = await searchMerchandiseByUser(userId, keyword, cursor, priceType);
+      res.status(200).json(merch);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
