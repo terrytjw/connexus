@@ -48,7 +48,7 @@ const CollectionsPage = (props: any) => {
     //Whole list of collection and merch info
     const description = "NFT merch digital";
     const currency = "USD";
-    const collectionState = "CREATED";
+    const collectionState = "ON_SALE";
     const creator_id = 1;
     const collectionName = "collections123";
 
