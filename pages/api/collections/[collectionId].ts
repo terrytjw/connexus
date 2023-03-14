@@ -120,7 +120,6 @@ export default async function handler(
     try {
       console.log(collection);
       const { merchandise, premiumChannel, ...collectionInfo } = collection;
-      console.log(collectionInfo);
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,

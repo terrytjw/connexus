@@ -16,6 +16,8 @@ import axios from "axios";
 //   return response;
 // }
 
+const baseUrl = `${API_URL}/${MERCHANDISE_ENDPOINT}`;
+
 export function filterMerchandiseByPriceType(
   merchandises: any[],
   priceType: MerchandisePriceType
@@ -30,4 +32,19 @@ export function filterMerchandiseByName(merchandise: any[], keyword: string) {
   return merchandise.filter((item: any) => {
     return item.name.toLowerCase().includes(keyword.toLowerCase());
   });
+}
+
+export async function searchCollectedMerchandise(
+  userId: number,
+  keyword: string,
+  priceType: MerchandisePriceType
+) {
+  const response = (await axios.get(baseUrl, {
+    params: {
+      userId: userId,
+      keyword: keyword,
+      priceType: priceType
+    }
+  })).data;
+  return response;
 }

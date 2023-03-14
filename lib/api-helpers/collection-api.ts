@@ -254,6 +254,15 @@ async function searchCreatorCollections(params: CollectionsGETParams) {
   return response;
 }
 
+export async function getCollection(collectionId: number) {
+  const url = baseUrl + `${collectionId}`;
+  const response = (await axios.get(url)).data;
+  return response;
+}
+
+
+// Old functions
+
 export async function searchCollectionByName(
   cursor?: number,
   userId?: number,
@@ -279,3 +288,4 @@ export async function getCollectionInfo(userId: number) {
   const response = (await axios.get(url)).data;
   return response;
 }
+
