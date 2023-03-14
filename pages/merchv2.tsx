@@ -107,7 +107,7 @@ const CollectionsPage = (props: any) => {
       collectionName: collectionName,
       description: description,
       currency: "USD",
-      collectionState: CollectionState.CREATED,
+      collectionState: CollectionState.ON_SALE,
       scAddress: collection_contract.address,
       merchURIs: [],
       merchandise: merchandise_categories,
@@ -479,7 +479,7 @@ const CollectionsPage = (props: any) => {
       collectionName: "updated collection name!!!!",
       description: "updated collection description.",
       currency: "USD",
-      collectionState: CollectionState.CREATED,
+      collectionState: CollectionState.ON_SALE,
       merchURIs,
     };
 
