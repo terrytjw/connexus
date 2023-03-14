@@ -4,6 +4,7 @@ export const COLLECTION_ENDPOINT = "collections";
 export const USER_ENDPOINT = "users";
 export const POST_ENDPOINT = "post";
 export const COMMENT_ENDPOINT = "comment";
+export const COMMUNITY_ENDPOINT = "community";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
@@ -18,5 +19,3 @@ export const smartContract = {
   privateKey:
     "3340e2f92064b7494823da63fcaa1dd1515e87e72aaa2d18e461238ce4133cf9",
 } as const;
-export const COMMUNITY_BUCKET = "community";
-export const POST_BUCKET = "post";

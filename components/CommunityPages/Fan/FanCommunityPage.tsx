@@ -15,6 +15,7 @@ import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
 import { collections } from "../../../utils/dummyData";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
+import { joinCommunityAPI, leaveCommunityAPI } from "../../../lib/api-helpers/community-api";
 
 type CommunityPagePageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
@@ -31,19 +32,13 @@ const FanCommunityPage = ({
   const userId = Number(session?.user.userId);
 
   const joinCommunity = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/community/${community.communityId}/join?userId=${userId}`
-    );
-    const temp = res.data;
-    setCommunity(temp);
+    const res = await joinCommunityAPI(community.communityId, userId);
+    setCommunity(res);
   };
 
   const leaveCommunity = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/community/${community.communityId}/leave?userId=${userId}`
-    );
-    const temp = res.data;
-    setCommunity(temp);
+    const res = await leaveCommunityAPI(community.communityId, userId);
+    setCommunity(res);
   };
 
   return (
