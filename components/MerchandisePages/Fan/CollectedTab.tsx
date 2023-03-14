@@ -1,13 +1,14 @@
 import React from "react";
 import CollectibleGrid from "../../CollectibleGrid";
+import { MerchandiseWithCollectionName } from "../../../utils/types";
 
 type CollectedTabProps = {
-  products: any; // TODO: type this
+  collectedMerchandise: MerchandiseWithCollectionName[];
 };
-const CollectedTab = ({ products }: CollectedTabProps) => {
+const CollectedTab = ({ collectedMerchandise }: CollectedTabProps) => {
   return (
     <div>
-      <CollectibleGrid data={products} collectedTab={true} />
+      <CollectibleGrid data={collectedMerchandise} collectedTab={true} />
     </div>
   );
 };
