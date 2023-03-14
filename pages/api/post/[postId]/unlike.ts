@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Post } from "@prisma/client";
+import { unlikePost } from "../../../../lib/prisma/post-prisma";
 
 const prisma = new PrismaClient();
 
@@ -45,29 +46,16 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const post = JSON.parse(JSON.stringify(req.body)) as Post;
-      await handlePOST(postId, post, userId);
+      await handlePOST(postId, userId);
       break;
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(postId: number, post: Post, userId: number) {
+  async function handlePOST(postId: number, userId: number) {
     try {
-      const response = await prisma.post.update({
-        where: {
-          postId: postId,
-        },
-        data: {
-          ...post,
-          likes: {
-            disconnect: {
-              userId: userId,
-            },
-          },
-        },
-      });
+      const response = await unlikePost(postId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

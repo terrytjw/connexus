@@ -16,6 +16,8 @@ import TabGroupBordered from "../../components/TabGroupBordered";
 import useSWR from "swr";
 import { swrFetcher } from "../../lib/swrFetcher";
 import { CommunityWithMemberIds } from "../../utils/types";
+import { getUserInfo } from "../../lib/api-helpers/user-api";
+import { getAllCommunitiesAPI, searchCommunitiesAPI } from "../../lib/api-helpers/community-api";
 
 type CommunitiesPagePageProps = {
   communitiesData: CommunityWithMemberIds[];
@@ -23,41 +25,23 @@ type CommunitiesPagePageProps = {
 
 const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
   const [communities, setCommunities] = useState(communitiesData);
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: session } = useSession();
-  const userId = Number(session?.user.userId);
+  const userId = session?.user.userId;
 
   const {
     data: userData,
     error,
     isLoading,
-  } = useSWR(`http://localhost:3000/api/users/${userId}`, swrFetcher);
+  } = useSWR(userId, getUserInfo);
 
   const searchAndFilterCommunities = async () => {
-    let url = "http://localhost:3000/api/community";
-
-    if (searchString) {
-      url = url + `?keyword=${searchString}`;
-      selectedTopics.forEach((topic) => (url = url + `&filter=${topic}`));
-    } else {
-      if (selectedTopics.length > 0) {
-        selectedTopics.forEach((topic, index) => {
-          if (index == 0) {
-            url = url + `?filter=${topic}`;
-          } else {
-            url = url + `&filter=${topic}`;
-          }
-        });
-      }
-    }
-
-    const res = await axios.get(url);
-    const temp = res.data;
-    setCommunities(temp);
+    const res = await searchCommunitiesAPI(searchString, 0, selectedTopics);
+    setCommunities(res);
   };
 
   useEffect(() => {
@@ -238,9 +222,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
 export default CommunitiesPage;
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const { data: communitiesData } = await axios.get(
-    `http://localhost:3000/api/community`
-  );
+  const communitiesData = await getAllCommunitiesAPI(0);
 
   return {
     props: {

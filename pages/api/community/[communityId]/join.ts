@@ -8,7 +8,8 @@ import { PrismaClient, Community } from "@prisma/client";
 import channelHandler from "../../channel/[channelId]/join";
 import axios from "axios";
 import { url } from "inspector";
-import { joinChannel } from "../../../../lib/prisma/channel-prisma";
+import { joinChannel, } from "../../../../lib/prisma/channel-prisma";
+import { joinCommunity, getCommunityById } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
@@ -58,48 +59,9 @@ export default async function handler(
 
   async function handlePOST(communityId: number, userId: number) {
     try {
-      const communityToJoin = await prisma.community.update({
-        where: {
-          communityId: communityId,
-        },
-        data: {
-          members: {
-            connect: {
-              userId: userId,
-            },
-          },
-        },
-        include: {
-          members: {
-            select: { userId: true },
-          },
-          channels: {
-            include: {
-              members: {
-                select: { userId: true, username: true, profilePic: true },
-              },
-            },
-          },
-        },
-      });
+      const communityToJoin = await joinCommunity(communityId, userId);
       await joinChannel(communityToJoin.channels[0].channelId, userId);
-      const response = await prisma.community.findFirst({
-        where: {
-          communityId: communityId,
-        },
-        include: {
-          members: {
-            select: { userId: true },
-          },
-          channels: {
-            include: {
-              members: {
-                select: { userId: true, username: true, profilePic: true },
-              },
-            },
-          },
-        },
-      });
+      const response = await getCommunityById(communityId);
       res.status(200).json(response!);
     } catch (error) {
       const errorResponse = handleError(error);

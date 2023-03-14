@@ -11,6 +11,7 @@ import {
   retrieveImageUrl,
   uploadImage,
 } from "../../../../lib/supabase";
+import { deleteCommunity, getCommunityById, updateCommunity } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
@@ -107,26 +108,7 @@ export default async function handler(
 
   async function handleGET(communityId: number) {
     try {
-      const community = await prisma.community.findUnique({
-        where: {
-          communityId: communityId,
-        },
-        include: {
-          channels: {
-            include: {
-              members: {
-                select: { userId: true, username: true, profilePic: true },
-              },
-            },
-          },
-          creator: {
-            select: { profilePic: true, username: true },
-          },
-          members: {
-            select: { userId: true },
-          },
-        },
-      });
+      const community = await getCommunityById(communityId);
 
       if (!community) res.status(200).json({});
       else res.status(200).json(community);
@@ -174,12 +156,7 @@ export default async function handler(
         bannerPic: bannerPicUrl,
       };
 
-      const response = await prisma.community.update({
-        where: {
-          communityId: communityId,
-        },
-        data: { ...updatedCommunityInfo, communityId: undefined },
-      });
+      const response = await updateCommunity(communityId, updatedCommunityInfo);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -189,11 +166,7 @@ export default async function handler(
 
   async function handleDELETE(communityId: number) {
     try {
-      const response = await prisma.community.delete({
-        where: {
-          communityId: communityId,
-        },
-      });
+      const response = await deleteCommunity(communityId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
