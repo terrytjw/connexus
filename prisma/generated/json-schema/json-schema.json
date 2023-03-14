@@ -126,9 +126,6 @@
         "postId": {
           "type": "integer"
         },
-        "title": {
-          "type": "string"
-        },
         "content": {
           "type": "string"
         },
@@ -176,10 +173,7 @@
           "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "profilePic": {
           "type": [
