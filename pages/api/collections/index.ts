@@ -193,7 +193,7 @@ function convertParams(query: any): CollectionsGETParams {
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
     collectionState: query.collectionState as CollectionState,
-    isLinked: query.isLinked
+    isLinked: query.isLinked === "true"
       ? true
       : query.isLinked === undefined
       ? undefined
