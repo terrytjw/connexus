@@ -16,12 +16,13 @@ import CommentInput from "./CommentInput";
 import CustomLink from "../CustomLink";
 import Modal from "../Modal";
 import PostInput from "./PostInput";
-import useSWR from "swr";
+import useSWR, { Key } from "swr";
 import { swrFetcher } from "../../lib/swrFetcher";
 import {
   CommentWithCommenterAndLikes,
   PostWithCreatorAndLikes,
 } from "../../utils/types";
+import { getAllCommentsOnPostAPI, createCommentAPI } from "../../lib/api-helpers/comment-api";
 
 type PostProps = {
   post: PostWithCreatorAndLikes;
@@ -42,8 +43,8 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     isLoading,
     mutate,
   } = useSWR(
-    `http://localhost:3000/api/comment?postId=${post.postId}`,
-    swrFetcher
+    post.postId as unknown as Key,
+    getAllCommentsOnPostAPI
   );
 
   const { data: session } = useSession();
@@ -91,13 +92,9 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const createComment = async () => {
-    const res = await axios.post("http://localhost:3000/api/comment", {
-      content: newComment,
-      postId: post.postId,
-      userId: userId,
-    });
-
-    const temp = res.data[0];
+    const res = await createCommentAPI(newComment, post.postId, userId);
+    
+    const temp = res[0];
     mutate((data: CommentWithCommenterAndLikes[]) => {
       data.unshift(temp);
       return data;

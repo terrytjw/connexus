@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
+import { unlikeComment } from "../../../../lib/prisma/comment-prisma";
 
 const prisma = new PrismaClient();
 
@@ -45,8 +46,7 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const comment = JSON.parse(JSON.stringify(req.body)) as Comment;
-      await handlePOST(commentId, comment, userId);
+      await handlePOST(commentId, userId);
       break;
     default:
       res.setHeader("Allow", ["POST"]);
@@ -55,23 +55,10 @@ export default async function handler(
 
   async function handlePOST(
     commentId: number,
-    comment: Comment,
     userId: number
   ) {
     try {
-      const response = await prisma.comment.update({
-        where: {
-          commentId: commentId,
-        },
-        data: {
-          ...comment,
-          likes: {
-            disconnect: {
-              userId: userId,
-            },
-          },
-        },
-      });
+      const response = await unlikeComment(commentId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
+import { createComment, getAllCommentsOnPost } from "../../../lib/prisma/comment-prisma";
 
 const prisma = new PrismaClient();
 
@@ -63,22 +64,7 @@ export default async function handler(
 
   async function handleGET(postId: number) {
     try {
-      const communities = await prisma.comment.findMany({
-        where: {
-          postId: postId,
-        },
-        include: {
-          likes: {
-            select: { userId: true },
-          },
-          commenter: {
-            select: { userId: true, username: true, profilePic: true },
-          },
-        },
-        orderBy: {
-          date: "desc",
-        },
-      });
+      const communities = await getAllCommentsOnPost(postId);
       res.status(200).json(communities);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -88,19 +74,7 @@ export default async function handler(
 
   async function handlePOST(comment: Comment) {
     try {
-      const response = await prisma.comment.create({
-        data: {
-          ...comment,
-        },
-        include: {
-          likes: {
-            select: { userId: true },
-          },
-          commenter: {
-            select: { userId: true, username: true, profilePic: true },
-          },
-        },
-      });
+      const response = await createComment(comment);
       res.status(200).json([response]);
     } catch (error) {
       const errorResponse = handleError(error);
