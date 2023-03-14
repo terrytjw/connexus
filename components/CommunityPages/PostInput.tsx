@@ -7,6 +7,7 @@ import { FaImages } from "react-icons/fa";
 import Button from "../Button";
 import Carousel from "../Carousel";
 import TextArea from "../TextArea";
+import { createPostAPI, updatePostAPI } from "../../lib/api-helpers/post-api";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -28,22 +29,22 @@ const PostInput = ({
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
-  type CreatePostForm = {
-    title: string; // to be removed
+  type postForm = {
+    postId: number;
     content: string;
     media: string[];
-    creatorId: number;
+    isPinned: boolean;
     channelId: number;
   };
 
   const { handleSubmit, setValue, control, watch, reset } =
-    useForm<CreatePostForm>({
+    useForm<postForm>({
       defaultValues: {
-        title: "", // to be removed
+        postId: post ? post.postId : null as unknown as number,
         content: post ? post.content : "",
         media: post ? post.media : ([] as string[]),
-        creatorId: Number(userId),
-        channelId: post ? post.channelId : channelId,
+        isPinned: post ? post.isPinned : null as unknown as boolean,
+        channelId: channelId ?? null as unknown as number
       },
     });
 
@@ -85,9 +86,9 @@ const PostInput = ({
     e.target.value = ""; // reset value of input
   };
 
-  const onCreate = async (formData: CreatePostForm) => {
-    const res = await axios.post("http://localhost:3000/api/post", formData);
-    const temp = res.data[0];
+  const onCreate = async (formData: postForm) => {
+    const res = await createPostAPI(formData.content, formData.media, userId, formData.channelId);
+    const temp = res[0];
     mutatePosts((data: Post[]) => {
       data.unshift(temp);
       return data;
@@ -96,17 +97,13 @@ const PostInput = ({
     reset(); // reset form values
   };
 
-  const onEdit = async (formData: CreatePostForm) => {
-    const res = await axios.post(
-      `http://localhost:3000/api/post/${post?.postId}`,
-      formData
-    );
+  const onEdit = async (formData: postForm) => {
+    const res = await updatePostAPI(formData.postId, formData.content, formData.media, formData.isPinned);
 
-    const temp = res.data;
     mutatePosts((data: Post[]) => {
       const updatedItems = data.map((item) => {
-        if (item.postId === temp.postId) {
-          return { ...item, ...temp };
+        if (item.postId === res.postId) {
+          return { ...item, ...res };
         }
         return item;
       });

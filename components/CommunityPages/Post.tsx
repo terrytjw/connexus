@@ -16,12 +16,14 @@ import CommentInput from "./CommentInput";
 import CustomLink from "../CustomLink";
 import Modal from "../Modal";
 import PostInput from "./PostInput";
-import useSWR from "swr";
+import useSWR, { Key } from "swr";
 import { swrFetcher } from "../../lib/swrFetcher";
 import {
   CommentWithCommenterAndLikes,
   PostWithCreatorAndLikes,
 } from "../../utils/types";
+import { likePostAPI, unlikePostAPI, deletePostAPI } from "../../lib/api-helpers/post-api";
+import { getAllCommentsOnPostAPI, createCommentAPI } from "../../lib/api-helpers/comment-api";
 
 type PostProps = {
   post: PostWithCreatorAndLikes;
@@ -42,22 +44,18 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     isLoading,
     mutate,
   } = useSWR(
-    `http://localhost:3000/api/comment?postId=${post.postId}`,
-    swrFetcher
+    post.postId as unknown as Key,
+    getAllCommentsOnPostAPI
   );
 
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
   const likePost = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/post/${post.postId}/like?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await likePostAPI(post.postId, userId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
-        .find((post) => post.postId == temp.postId)
+        .find((post) => post.postId == res.postId)
         ?.likes.push({ userId: Number(userId) });
 
       return data;
@@ -65,14 +63,10 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const unlikePost = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/post/${post.postId}/unlike?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await unlikePostAPI(post.postId, userId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
-        .find((post) => post.postId == temp.postId)
+        .find((post) => post.postId == res.postId)
         ?.likes.filter((like) => like.userId != userId);
 
       return data;
@@ -80,24 +74,16 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const deletePost = async () => {
-    const res = await axios.delete(
-      `http://localhost:3000/api/post/${post.postId}`
-    );
-
-    const temp = res.data;
+    const res = await deletePostAPI(post.postId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
-      return data.filter((post) => post.postId != temp.postId);
+      return data.filter((post) => post.postId != res.postId);
     });
   };
 
   const createComment = async () => {
-    const res = await axios.post("http://localhost:3000/api/comment", {
-      content: newComment,
-      postId: post.postId,
-      userId: userId,
-    });
-
-    const temp = res.data[0];
+    const res = await createCommentAPI(newComment, post.postId, userId);
+    
+    const temp = res[0];
     mutate((data: CommentWithCommenterAndLikes[]) => {
       data.unshift(temp);
       return data;

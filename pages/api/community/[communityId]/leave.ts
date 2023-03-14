@@ -6,6 +6,7 @@ import {
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
 import { leaveChannel } from "../../../../lib/prisma/channel-prisma";
+import { getCommunityById, leaveCommunity } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
 
@@ -55,45 +56,12 @@ export default async function handler(
 
   async function handlePOST(communityId: number, userId: number) {
     try {
-      const communityToLeave = await prisma.community.update({
-        where: {
-          communityId: communityId,
-        },
-        data: {
-          members: {
-            disconnect: {
-              userId: userId,
-            },
-          },
-        },
-        include: {
-          channels: {
-            orderBy: {
-              channelId: "asc",
-            },
-          },
-        },
-      });
+      const communityToLeave = await leaveCommunity(communityId, userId);
       await leaveChannel(communityToLeave.channels[0].channelId, userId);
-      const response = await prisma.community.findFirst({
-        where: {
-          communityId: communityId,
-        },
-        include: {
-          members: {
-            select: { userId: true },
-          },
-          channels: {
-            include: {
-              members: {
-                select: { userId: true, username: true, profilePic: true },
-              },
-            },
-          },
-        },
-      });
+      const response = await getCommunityById(communityId);
       res.status(200).json(response!);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }

@@ -5,6 +5,7 @@ import { FaHeart, FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import Button from "../Button";
 import CustomLink from "../CustomLink";
 import { CommentWithCommenterAndLikes } from "../../utils/types";
+import { likeCommentAPI, unlikeCommentAPI, deleteCommentAPI } from "../../lib/api-helpers/comment-api";
 
 type CommentProps = {
   comment: CommentWithCommenterAndLikes;
@@ -17,14 +18,10 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
   const userId = Number(session?.user.userId);
 
   const likeComment = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/comment/${comment.commentId}/like?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await likeCommentAPI(comment.commentId, userId);
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
       data
-        .find((comment) => comment.commentId == temp.commentId)
+        .find((comment) => comment.commentId == res.commentId)
         ?.likes.push({ userId: userId });
 
       return data;
@@ -32,14 +29,10 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
   };
 
   const unlikeComment = async () => {
-    const res = await axios.post(
-      `http://localhost:3000/api/comment/${comment.commentId}/unlike?userId=${userId}`
-    );
-
-    const temp = res.data;
+    const res = await unlikeCommentAPI(comment.commentId, userId);
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
       data
-        .find((comment) => comment.commentId == temp.commentId)
+        .find((comment) => comment.commentId == res.commentId)
         ?.likes.filter((like) => like.userId != userId);
 
       return data;
@@ -47,13 +40,9 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
   };
 
   const deleteComment = async () => {
-    const res = await axios.delete(
-      `http://localhost:3000/api/comment/${comment.commentId}`
-    );
-
-    const temp = res.data;
+    const res = await deleteCommentAPI(comment.commentId);
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
-      return data.filter((comment) => comment.commentId != temp.commentId);
+      return data.filter((comment) => comment.commentId != res.commentId);
     });
   };
 

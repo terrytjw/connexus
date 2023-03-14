@@ -3,6 +3,7 @@ import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Post } from "@prisma/client";
 import { retrieveImageUrl, uploadImage } from "../../../lib/supabase";
 import { POST_BUCKET } from "../../../lib/constant";
+import { createPost, getAllPostsInChannel } from "../../../lib/prisma/post-prisma";
 
 const prisma = new PrismaClient();
 
@@ -73,28 +74,7 @@ export default async function handler(
 
   async function handleGET(channelId: number) {
     try {
-      const posts = await prisma.post.findMany({
-        where: {
-          channelId: channelId,
-        },
-        include: {
-          likes: {
-            select: {
-              userId: true,
-            },
-          },
-          creator: {
-            select: {
-              userId: true,
-              profilePic: true,
-              username: true,
-            },
-          },
-        },
-        orderBy: {
-          date: "desc",
-        },
-      });
+      const posts = await getAllPostsInChannel(channelId);
       res.status(200).json(posts);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -125,17 +105,7 @@ export default async function handler(
         ...post,
         media: updatedMedia,
       };
-      const response = await prisma.post.create({
-        data: { ...updatedPostInfo, postId: undefined },
-        include: {
-          likes: {
-            select: { userId: true },
-          },
-          creator: {
-            select: { userId: true, profilePic: true, username: true },
-          },
-        },
-      });
+      const response = await createPost(updatedPostInfo);
       res.status(200).json([response]);
     } catch (error) {
       const errorResponse = handleError(error);

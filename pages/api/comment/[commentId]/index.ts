@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Comment } from "@prisma/client";
+import { deleteComment, getComment, updateComment } from "../../../../lib/prisma/comment-prisma";
 
 const prisma = new PrismaClient();
 
@@ -94,11 +95,7 @@ export default async function handler(
 
   async function handleGET(commentId: number) {
     try {
-      const comment = await prisma.comment.findUnique({
-        where: {
-          commentId: commentId,
-        },
-      });
+      const comment = await getComment(commentId);
 
       if (!comment) res.status(200).json({});
       else res.status(200).json(comment);
@@ -110,20 +107,7 @@ export default async function handler(
 
   async function handlePOST(commentId: number, comment: Comment) {
     try {
-      const response = await prisma.comment.update({
-        where: {
-          commentId: commentId,
-        },
-        data: { ...comment },
-        include: {
-          likes: {
-            select: { userId: true },
-          },
-          commenter: {
-            select: { userId: true, username: true, profilePic: true },
-          },
-        },
-      });
+      const response = await updateComment(commentId, comment);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -133,11 +117,7 @@ export default async function handler(
 
   async function handleDELETE(commentId: number) {
     try {
-      const response = await prisma.comment.delete({
-        where: {
-          commentId: commentId,
-        },
-      });
+      const response = await deleteComment(commentId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

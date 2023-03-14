@@ -5,11 +5,13 @@ export const USER_ENDPOINT = "users";
 export const EVENT_ENDPOINT = "events";
 export const TICKET_ENDPOINT = "tickets";
 export const USER_TICKET_ENDPOINT = "user-tickets";
+export const POST_ENDPOINT = "post";
+export const COMMENT_ENDPOINT = "comment";
+export const COMMUNITY_ENDPOINT = "community";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
 export const MERCH_PROFILE_BUCKET = "merch-profile";
-
 export const COMMUNITY_BUCKET = "community";
 export const POST_BUCKET = "post";
 

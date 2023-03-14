@@ -114,23 +114,9 @@
             "$ref": "#/definitions/Merchandise"
           }
         },
-        "likedEvents": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Event"
-          }
-        },
-        "userTicket": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/UserTicket"
-          }
-        },
-        "events": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Event"
-          }
+        "walletBalance": {
+          "type": "number",
+          "default": 0
         }
       }
     },
@@ -139,9 +125,6 @@
       "properties": {
         "postId": {
           "type": "integer"
-        },
-        "title": {
-          "type": "string"
         },
         "content": {
           "type": "string"
@@ -190,10 +173,7 @@
           "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "profilePic": {
           "type": [
@@ -645,7 +625,7 @@
         },
         "collectionState": {
           "type": "string",
-          "default": "CREATED",
+          "default": "ON_SALE",
           "enum": [
             "CREATED",
             "ON_SALE",
@@ -687,6 +667,12 @@
           "type": "string"
         },
         "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stripePriceId": {
           "type": [
             "string",
             "null"

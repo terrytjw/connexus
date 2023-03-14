@@ -8,6 +8,12 @@ export enum MerchandisePriceType {
   PAID,
 }
 
+export async function createMerchandise(merchandise: Merchandise) {
+  return prisma.merchandise.create({
+    data: { ...merchandise, merchId: undefined },
+  });
+}
+
 export async function searchMerchandise(searchType: MerchandisePartialType) {
   return prisma.merchandise.findFirst({
     where: {

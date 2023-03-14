@@ -39,11 +39,11 @@ model User {
   likedEvents         Event[]       @relation("eventLikes")
   userTicket          UserTicket[]
   events              Event[]       @relation("createdEvents")
+  walletBalance       Float         @default(0)
 }
 
 model Post {
   postId    Int       @id @default(autoincrement())
-  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
@@ -59,7 +59,7 @@ model Post {
 model Community {
   communityId Int            @id @default(autoincrement())
   name        String
-  description String?
+  description String
   profilePic  String?
   bannerPic   String?
   tags        CategoryType[]
@@ -236,7 +236,7 @@ model Collection {
   collectionName  String          @unique
   description     String?
   currency        Currency        @default(USD)
-  collectionState CollectionState @default(CREATED)
+  collectionState CollectionState @default(ON_SALE)
   merchandise     Merchandise[]
   fixedPrice      Float           @default(0)
   scAddress       String
@@ -263,6 +263,7 @@ model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
   image            String?
+  stripePriceId    String? //Optional To be removed
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
   currMerchSupply  Int        @default(0)

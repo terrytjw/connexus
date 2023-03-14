@@ -133,7 +133,6 @@ async function generateChannel() {
 async function generatePost() {
   const posts = [
     {
-      title: "New valorant map",
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/valorantnewmap-media.jpg",
@@ -152,7 +151,6 @@ async function generatePost() {
       date: new Date("2023-02-22"),
     },
     {
-      title: "Anime Fanart",
       content: "I just drew this, what do yall think?",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
@@ -171,7 +169,6 @@ async function generatePost() {
       date: new Date("2023-02-23"),
     },
     {
-      title: "Travelling",
       content: "Would love to experience living in a cabin during winter!",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
