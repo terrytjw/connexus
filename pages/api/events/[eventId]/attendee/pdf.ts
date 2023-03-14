@@ -5,8 +5,6 @@ import {
   ErrorResponse,
 } from "../../../../../lib/prisma/prisma-helpers";
 import { filterAttendee } from "../../../../../lib/prisma/event-prisma";
-import { createObjectCsvWriter } from "csv-writer";
-import { join } from "path";
 import PDFDocument from "pdfkit";
 
 /**
@@ -57,9 +55,7 @@ export default async function handler(
       doc.fontSize(14).text("User data:", { underline: true });
       response.forEach((item) => {
         doc.fontSize(12).text(`User ID: ${item.userId}`);
-        doc.fontSize(12).text(`Phone Number: ${item.phoneNumber}`);
         doc.fontSize(12).text(`Display Name: ${item.displayName}`);
-        doc.fontSize(12).text(`Username: ${item.username}`);
         doc.fontSize(12).text(`Email: ${item.email}`);
         doc.moveDown();
       });

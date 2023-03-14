@@ -4,7 +4,6 @@ import {
   handleError,
   ErrorResponse,
 } from "../../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, User } from "@prisma/client";
 import { filterAttendee } from "../../../../../lib/prisma/event-prisma";
 import { createObjectCsvWriter } from "csv-writer";
 import { join } from "path";
