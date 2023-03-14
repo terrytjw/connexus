@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Ticket } from "@prisma/client";
 
 export enum ChannelType {
   HOME,
@@ -48,7 +48,7 @@ export type CommentWithCommenterAndLikes = Prisma.CommentGetPayload<{
 }>;
 
 export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true };
+  include: { tickets: true; address: true; userLikes: true };
 }>;
 
 export type UserWithTickets = Prisma.UserGetPayload<{
@@ -60,3 +60,11 @@ export type MerchandiseWithCollectionName = Prisma.MerchandiseGetPayload<{
     collection: { select: { collectionName: true } };
   };
 }>;
+
+export type AttendeeListType = {
+  userId: number;
+  displayName: string;
+  email: string;
+  checkIn: boolean;
+  ticket: Ticket;
+};

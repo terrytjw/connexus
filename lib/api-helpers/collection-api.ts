@@ -7,7 +7,12 @@ import {
 } from "@prisma/client";
 import axios from "axios";
 import { ethers } from "ethers";
-import { API_URL, COLLECTION_ENDPOINT, smartContract } from "../constant";
+import {
+  ALCHEMY_API,
+  API_URL,
+  COLLECTION_ENDPOINT,
+  smartContract,
+} from "../constant";
 import { CollectionsGETParams } from "../../pages/api/collections";
 
 export type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -20,12 +25,10 @@ export type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
 
 /** Smart Contract information */
 const contract = require("../../artifacts/contracts/Collection.sol/Collection.json");
-const provider = new ethers.providers.JsonRpcProvider(
-  "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
-);
+const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
-var signer = new ethers.Wallet(smartContract.privateKey, provider);
+const signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const baseUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
 

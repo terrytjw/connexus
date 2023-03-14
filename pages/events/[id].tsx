@@ -25,10 +25,9 @@ import { getSession } from "next-auth/react";
 type EventPageProps = {
   event: EventWithTicketsandAddress;
   userData: User & { tickets: Ticket[] };
-  address: Address;
 };
 
-const EventPage = ({ event, userData, address }: EventPageProps) => {
+const EventPage = ({ event, userData }: EventPageProps) => {
   console.log("event ->", event);
   const {
     eventId,
@@ -139,11 +138,11 @@ const EventPage = ({ event, userData, address }: EventPageProps) => {
                   <FaMapPin className="text-md" />
                   <span className="sm:text-md ml-2 flex-col text-sm">
                     <p className="font-bold">Location</p>
-                    <p>{address?.locationName}</p>
+                    <p>{event.address.locationName}</p>
                     <p>
-                      {address?.address2} {address?.address1}
+                      {event.address.address2} {event.address.address1}
                     </p>
-                    <p>{address?.postalCode}</p>
+                    <p>{event.address.postalCode}</p>
                   </span>
                 </div>
               </div>
@@ -155,7 +154,11 @@ const EventPage = ({ event, userData, address }: EventPageProps) => {
               </h1>
               <div className="pt-6">
                 {tickets.map((ticket: Ticket) => (
-                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                  <TicketCard
+                    key={ticket.ticketId}
+                    ticket={ticket}
+                    setIsModalOpen={() => {}}
+                  />
                 ))}
               </div>
             </section>
@@ -236,14 +239,10 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     `http://localhost:3000/api/users/${userId}`
   );
 
-  const { data: address } = await axios.get(
-    `http://localhost:3000/api/addresses/${event.addressId}`
-  );
   return {
     props: {
       event,
       userData,
-      address,
     },
   };
 };

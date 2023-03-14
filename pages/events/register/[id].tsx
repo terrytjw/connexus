@@ -320,20 +320,23 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           setIsOpen={setIsRegisterSuccessModalOpen}
         >
           {isLoading ? (
-            <Loading className="!h-full" />
+            <Loading className="!h-full !bg-transparent" />
           ) : (
-            <div className="flex items-center justify-between">
-              <h3 className="ml-2 text-xl font-semibold">
-                Registered and Minted Tickets!
+            <div className="flex flex-col gap-6 py-4">
+              <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+              <h3 className="text-md font-normal text-gray-500">
+                You have successfully purchased Name of NFT from Prem CC2! See
+                the tabs in the community page you joined.
               </h3>
+
               <Link href="/events/tickets">
                 <Button
-                  variant="outlined"
-                  size="sm"
+                  variant="solid"
+                  size="md"
                   className="border-0"
                   onClick={() => setIsRegisterSuccessModalOpen(false)}
                 >
-                  View Tickets
+                  Got it, thanks!
                 </Button>
               </Link>
             </div>
@@ -361,7 +364,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           {/* Steps */}
           <div className="justify-cente relative sm:py-8">
             {/* conditionally rendered via css */}
-            <StepsDesktop steps={steps} />
+            <StepsDesktop steps={steps} setSteps={setSteps} />
             <StepsMobile currentStep={currentStep} steps={steps} />
           </div>
 

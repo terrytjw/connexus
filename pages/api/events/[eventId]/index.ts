@@ -1,20 +1,22 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Event, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
-import { authOptions } from "../auth/[...nextauth]";
+import { authOptions } from "../../auth/[...nextauth]";
 import {
   uploadImage,
   retrieveImageUrl,
   checkIfStringIsBase64,
-} from "../../../lib/supabase";
-import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+} from "../../../../lib/supabase";
+import { EVENT_PROFILE_BUCKET } from "../../../../lib/constant";
 import {
-  deleteEvent,
-  searchEvent,
+  retrieveEventInfo,
   updateEvent,
-} from "../../../lib/prisma/event-prisma";
+} from "../../../../lib/prisma/event-prisma";
 
 const prisma = new PrismaClient();
 type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
@@ -107,12 +109,7 @@ export default async function handler(
 
   async function handleGET(eventId: number) {
     try {
-      const event = await prisma.event.findUnique({
-        where: {
-          eventId: eventId,
-        },
-        include: { tickets: true },
-      });
+      const event = await retrieveEventInfo(eventId);
 
       if (!event) res.status(200).json({});
       else res.status(200).json(event);

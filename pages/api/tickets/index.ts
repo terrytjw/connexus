@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Ticket } from "@prisma/client";
+import { createTicket, filterTickets } from "../../../lib/prisma/ticket-prisma";
 
 const prisma = new PrismaClient();
 
@@ -43,13 +44,16 @@ export const config = {
 };
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Ticket[] | ErrorResponse>
+  res: NextApiResponse<Ticket[] | Ticket | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, query, body } = req;
 
   switch (method) {
     case "GET":
-      await handleGET();
+      const userId = query.userId
+        ? parseInt(query.userId as string)
+        : undefined;
+      await handleGET(userId);
       break;
     case "POST":
       const ticket = JSON.parse(JSON.stringify(body)) as Ticket;
@@ -60,9 +64,9 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(userId: number | undefined) {
     try {
-      const tickets = await prisma.ticket.findMany({});
+      const tickets = await filterTickets(userId);
       res.status(200).json(tickets);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -72,10 +76,8 @@ export default async function handler(
 
   async function handlePOST(ticket: Ticket) {
     try {
-      const response = await prisma.ticket.create({
-        data: { ...ticket },
-      });
-      res.status(200).json([response]);
+      const response = await createTicket(ticket);
+      res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

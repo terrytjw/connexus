@@ -33,6 +33,7 @@ export function handleError(error: any): ErrorResponse {
     };
     return errorResponse;
   } else {
+    console.log(error);
     const errorResponse: ErrorResponse = {
       error: "400",
       message: "Something went wrong",

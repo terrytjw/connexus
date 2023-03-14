@@ -1,26 +1,56 @@
-import React from "react";
+import React, { useState } from "react";
 import TicketCard from "../../components/EventPages/TicketCard";
 
-import { getSession } from "next-auth/react";
 import { Ticket } from "@prisma/client";
 import { FaChevronLeft } from "react-icons/fa";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
-import axios from "axios";
 import { Event } from "@prisma/client";
+import Modal from "../../components/Modal";
+import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
+import QRCode from "react-qr-code";
+import Button from "../../components/Button";
 
 type TicketsPageProps = {
-  tickets: Ticket[] & Partial<Event>;
+  tickets: (Ticket & Partial<Event>)[];
 };
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
   console.log("tickets ->", tickets);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [qrValue, setQrValue] = useState<string>("");
   return (
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          {/* QR Modal */}
+          <Modal
+            isOpen={isModalOpen}
+            setIsOpen={setIsModalOpen}
+            className="flex flex-col items-center"
+          >
+            <h2 className="text-2xl font-bold sm:text-2xl">
+              QR Code for {tickets[0].eventName}
+            </h2>
+            {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
+            <QRCode
+              className="mt-4 flex items-center"
+              size={128}
+              value={qrValue}
+            />
+            <div className="mt-4 flex justify-end">
+              <Button
+                className="border-0"
+                variant="outlined"
+                size="md"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Done
+              </Button>
+            </div>
+          </Modal>
           {/* Header */}
           <nav className="flex items-center gap-6">
             <Link href="/events">
@@ -35,7 +65,13 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                   <h3 className="mb-4 text-xl font-bold text-gray-800">
                     {ticket.eventName}
                   </h3>
-                  <TicketCard key={ticket.ticketId} ticket={ticket} />
+                  <TicketCard
+                    key={ticket.ticketId}
+                    ticket={ticket}
+                    isOwnedTicket={true} // render buttons
+                    setIsModalOpen={setIsModalOpen}
+                    setQrValue={setQrValue}
+                  />
                 </div>
               ))}
             </div>
@@ -50,32 +86,12 @@ export default TicketsPage;
 
 // use axios GET method to fetch data
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-  const userId = session?.user.userId;
-
-  // use axios GET method to fetch data
-  const { data: userData } = await axios.get(
-    `http://localhost:3000/api/users/${userId}`
-  );
-
-  const getEventFromTicket = async (eventId: string) => {
-    const { data: event } = await axios.get(
-      `http://localhost:3000/api/events/${eventId}`
-    );
-    return event;
-  };
-
   // build a ticket type with event name in it
-  const parsedTickets = await Promise.all(
-    userData.tickets.map(async (ticket: Ticket) => {
-      const eventData = await getEventFromTicket(ticket.eventId.toString());
-      return { ...ticket, eventName: eventData?.eventName };
-    })
-  );
+  const ownedTickets = await getTicketsOwned(4);
 
   return {
     props: {
-      tickets: parsedTickets,
+      tickets: ownedTickets,
     },
   };
 };
