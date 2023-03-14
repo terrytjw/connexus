@@ -71,15 +71,15 @@ model Community {
 }
 
 model Channel {
-  channelId   Int         @id @default(autoincrement())
-  name        String
-  channelType ChannelType @default(PREMIUM)
-  members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId Int
-  posts       Post[]
-  collection Collection? @relation(fields: [collectionId], references: [collectionId])
-  collectionId Int? @unique
+  channelId    Int         @id @default(autoincrement())
+  name         String
+  channelType  ChannelType @default(PREMIUM)
+  members      User[]
+  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId  Int
+  posts        Post[]
+  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int?        @unique
 
   @@unique([communityId, name])
 }
