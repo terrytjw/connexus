@@ -217,12 +217,7 @@ export async function searchCreatorCollectionsByState(params: {
   collectionState: CollectionState;
   keyword: string;
 }) {
-  const convertedParams = {
-    userId: params.userId,
-    collectionState: params.collectionState,
-    keyword: params.keyword,
-  };
-  const response = await searchCreatorCollections(convertedParams);
+  const response = await searchCreatorCollections(params);
   return response;
 }
 
