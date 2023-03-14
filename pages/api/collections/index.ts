@@ -194,5 +194,6 @@ function convertParams(query: any): CollectionsGETParams {
       : query.isLinked === undefined
       ? undefined
       : false,
+    omitSold: query.omitSold === "true"
   };
 }
