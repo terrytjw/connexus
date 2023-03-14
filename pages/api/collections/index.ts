@@ -89,7 +89,6 @@ export default async function handler(
   switch (req.method) {
     case "GET":
       const params = convertParams(query);
-      console.log(params);
       await handleGETWithParams(params);
       break;
     case "POST":
@@ -181,8 +180,9 @@ export type CollectionsGETParams = {
   userId?: number;
   keyword?: string;
   cursor?: number;
-  collectionStates?: CollectionState[];
-  isLinked?: boolean
+  collectionState?: CollectionState
+  isLinked?: boolean,
+  omitSold?: boolean
 };
 
 function convertParams(query: any): CollectionsGETParams {
@@ -190,7 +190,7 @@ function convertParams(query: any): CollectionsGETParams {
     userId: parseInt(query.userId as string),
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
-    collectionStates: query.collectionStates as CollectionState[],
+    collectionState: query.collectionState as CollectionState,
     isLinked:
       query.isLinked
         ? true

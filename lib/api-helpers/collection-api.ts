@@ -217,7 +217,7 @@ export async function searchCreatorCollectionsByState(params: {
   // };
   const convertedParams = {
     userId: params.userId,
-    collectionStates: [params.collectionState],
+    collectionState: params.collectionState,
     keyword: params.keyword
   }
   const response = await searchCreatorCollections(convertedParams)
@@ -228,18 +228,24 @@ export async function searchCreatorCollectionsByState(params: {
 export async function getUnsoldUnlinkedCollections(userId: number) {
   const params = {
     userId: userId,
-    collectionStates: [CollectionState.ON_SALE, CollectionState.PAUSED],
-    isLinked: false
+    isLinked: false,
+    omitSold: true
   }
 
   const response = await searchCreatorCollections(params);
   return response;
 }
 
-async function searchCreatorCollections(params: CollectionsGETParams = {
-  keyword: "",
-  cursor: 0
-}) {
+function setDefaultParams(params: CollectionsGETParams) {
+  if (!params.keyword) params.keyword = "";
+  if (!params.cursor) params.cursor = 0;
+  if (!params.omitSold) params.omitSold = false;
+  return params;
+}
+
+async function searchCreatorCollections(params: CollectionsGETParams) {
+  setDefaultParams(params);
+  console.log(params);
   const response = (
     await axios.get(baseUrl, {
       params: params,

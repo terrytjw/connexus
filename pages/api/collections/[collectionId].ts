@@ -90,7 +90,7 @@ export default async function handler(
     case "POST":
       const collection = JSON.parse(
         JSON.stringify(req.body)
-      ) as Collection;
+      ) as CollectionWithMerchAndPremiumChannel;
       await handlePOST(collectionId, collection);
       break;
     case "DELETE":
@@ -115,15 +115,20 @@ export default async function handler(
 
   async function handlePOST(
     collectionId: number,
-    collection: Collection
+    collection: CollectionWithMerchAndPremiumChannel
   ) {
     try {
       console.log(collection);
+      const { merchandise, premiumChannel, ...collectionInfo } = collection;
+      console.log(collectionInfo);
       const response = await prisma.collection.update({
         where: {
           collectionId: collectionId,
         },
-        data: { ...collection, collectionId: undefined },
+        data: { 
+          ...collectionInfo,
+          collectionId: undefined,
+        },
       });
       res.status(200).json(response);
     } catch (error) {
