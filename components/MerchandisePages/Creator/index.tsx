@@ -1,88 +1,168 @@
-import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Collection, CollectionState } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
 import CollectionTable from "../CollectionTable";
 import Button from "../../Button";
 import Input from "../../Input";
+import Loading from "../../Loading";
 import Modal from "../../Modal";
 import TabGroupBordered from "../../TabGroupBordered";
-import { Collection } from "../../../utils/types";
+import TextArea from "../../TextArea";
 import useSWR from "swr";
-import { swrFetcher } from "../../../lib/swrFetcher";
-import Loading from "../../Loading";
 import {
-  searchCollectionByName,
+  CollectionWithMerchAndPremiumChannel,
+  searchCreatorCollectionsByState,
   updateCollection,
 } from "../../../lib/api-helpers/collection-api";
-import { useSession } from "next-auth/react";
 
 const CreatorCollectionsPage = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user.userId;
-
-  /**
-   * To be changed
-   */
-  const {
-    data: collectionData,
-    error,
-    isLoading: isCollectionDataLoading,
-    mutate,
-  } = useSWR(
-    `http://localhost:3000/api/collections?userId=${userId}`,
-    swrFetcher
-  );
 
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [onSaleCollections, setOnSaleCollections] = useState<
+    CollectionWithMerchAndPremiumChannel[]
+  >([]);
+  const [pausedCollections, setPausedCollections] = useState<
+    CollectionWithMerchAndPremiumChannel[]
+  >([]);
+  const [soldCollections, setSoldCollections] = useState<
+    CollectionWithMerchAndPremiumChannel[]
+  >([]);
 
-  const { handleSubmit, setValue, watch } = useForm<Collection>({
+  const {
+    isLoading: isOnSaleCollectionsDataLoading,
+    mutate: mutateOnSaleCollections,
+  } = useSWR(
+    {
+      userId: userId,
+      collectionState: CollectionState.ON_SALE,
+      keyword: "",
+    },
+    searchCreatorCollectionsByState,
+    { onSuccess: setOnSaleCollections, revalidateOnFocus: false }
+  );
+
+  const {
+    isLoading: isPausedCollectionsDataLoading,
+    mutate: mutatePausedCollections,
+  } = useSWR(
+    {
+      userId: userId,
+      collectionState: CollectionState.PAUSED,
+      keyword: "",
+    },
+    searchCreatorCollectionsByState,
+    { onSuccess: setPausedCollections, revalidateOnFocus: false }
+  );
+
+  const { isLoading: isSoldCollectionsDataLoading } = useSWR(
+    {
+      userId: userId,
+      collectionState: CollectionState.SOLD,
+      keyword: "",
+    },
+    searchCreatorCollectionsByState,
+    { onSuccess: setSoldCollections, revalidateOnFocus: false }
+  );
+
+  const searchCollections = async () => {
+    if (activeTab == 0) {
+      const res = await searchCreatorCollectionsByState({
+        userId: Number(userId),
+        collectionState: CollectionState.ON_SALE,
+        keyword: searchString,
+      });
+      setOnSaleCollections(res);
+    } else if (activeTab == 1) {
+      const res = await searchCreatorCollectionsByState({
+        userId: Number(userId),
+        collectionState: CollectionState.PAUSED,
+        keyword: searchString,
+      });
+      setPausedCollections(res);
+    } else if (activeTab == 2) {
+      const res = await searchCreatorCollectionsByState({
+        userId: Number(userId),
+        collectionState: CollectionState.SOLD,
+        keyword: searchString,
+      });
+      setSoldCollections(res);
+    }
+  };
+
+  useEffect(() => {
+    searchCollections();
+  }, [searchString]);
+
+  const { control, handleSubmit, setValue } = useForm<Collection>({
     defaultValues: {
-      name: "",
+      collectionName: "",
       description: "",
-      // premiumChannel: null,
-      collectionId: 0,
+      collectionId: null as unknown as number,
     },
   });
 
-  const [name, description, premiumChannel] = watch([
-    "name",
-    "description",
-    "premiumChannel",
-  ]);
+  const onEdit = async (formData: Collection) => {
+    // to prevent auto form submission upon closing modal
+    if (!isModalOpen) {
+      return;
+    }
 
-  if (isCollectionDataLoading) return <Loading />;
+    await updateCollection(
+      formData.collectionName,
+      formData.description,
+      formData.collectionId
+    );
+
+    if (activeTab == 0) {
+      await searchCollections();
+      // setOnSaleCollections(
+      //   onSaleCollections.map(
+      //     (collection: CollectionWithMerchAndPremiumChannel) => {
+      //       if (collection.collectionId === formData.collectionId) {
+      //         return { ...collection, ...formData };
+      //       }
+      //       return collection;
+      //     }
+      //   )
+      // );
+    } else if (activeTab == 1) {
+      await searchCollections();
+      // setPausedCollections(
+      //   pausedCollections.map(
+      //     (collection: CollectionWithMerchAndPremiumChannel) => {
+      //       if (collection.collectionId === formData.collectionId) {
+      //         return { ...collection, ...formData };
+      //       }
+      //       return collection;
+      //     }
+      //   )
+      // );
+    }
+
+    toast(`${formData.collectionName} has been updated.`);
+    setIsModalOpen(false);
+  };
+
+  if (
+    isOnSaleCollectionsDataLoading ||
+    isPausedCollectionsDataLoading ||
+    isSoldCollectionsDataLoading
+  ) {
+    return <Loading />;
+  }
 
   return (
     <main className="py-12 px-4 sm:px-12">
-      <Modal
-        isOpen={isModalOpen}
-        setIsOpen={setIsModalOpen}
-        className="overflow-visible"
-      >
-        <form
-          onSubmit={handleSubmit(async (val: any) => {
-            // to prevent auto form submission upon closing modal
-            if (!isModalOpen) {
-              return;
-            }
-
-            await updateCollection(val.name, val.description, val.collectionId);
-
-            let updatedCollection = collectionData.find(
-              (collection: any) => collection.collectionId === val.collectionId
-            );
-            updatedCollection = {
-              ...updatedCollection,
-              name: val.name,
-              description: val.description,
-            };
-
-            mutate([...collectionData, updatedCollection]); // TODO: ordering is messed up after update, need to clean up
-            setIsModalOpen(false);
-          })}
-        >
+      <Toaster />
+      <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+        <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xl font-semibold">Edit Collection</h3>
             <Button
@@ -95,48 +175,40 @@ const CreatorCollectionsPage = () => {
             </Button>
           </div>
 
-          <Input
-            type="text"
-            label="Name"
-            value={name}
-            onChange={(e) => setValue("name", e.target.value)}
-            size="md"
-            variant="bordered"
+          <Controller
+            control={control}
+            name="collectionName"
+            rules={{
+              required: "Collection Name is required",
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                type="text"
+                label="Name"
+                value={value}
+                onChange={onChange}
+                size="md"
+                variant="bordered"
+                errorMessage={error?.message}
+              />
+            )}
           />
 
-          <Input
-            type="text"
-            label="Description"
-            value={description}
-            onChange={(e) => setValue("description", e.target.value)}
-            size="md"
-            variant="bordered"
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Description is required",
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextArea
+                label="Description"
+                value={value}
+                onChange={onChange}
+                errorMessage={error?.message}
+              />
+            )}
           />
-
-          {/* <div className="form-control mb-4 w-full">
-            <label className="label">
-              <span className="label-text">Link to Premium Channel</span>
-            </label>
-            <Select
-              data={[{ name: "Not Linked" }].concat(
-                channels.filter(
-                  (channel) => channel.channelType == ChannelType.PREMIUM
-                )
-              )}
-              selected={premiumChannel ?? { name: "Not Linked" }}
-              setSelected={(value) => {
-                if (value.channelId) {
-                  setValue("premiumChannel", value);
-                  return;
-                }
-                // collection is not linked to any premium channel
-                setValue("premiumChannel", null);
-              }}
-            />
-            <label className="label">
-              <span className="label-text-alt text-red-500"></span>
-            </label>
-          </div> */}
 
           <Button variant="solid" size="md">
             Save Changes
@@ -146,8 +218,7 @@ const CreatorCollectionsPage = () => {
 
       <h1 className="text-4xl font-bold">Your Digital Merchandise Creation</h1>
       <h3 className="mt-4">
-        View all your featured, created, on sale and sold digital merchandise
-        collections
+        View all your on sale paused, and sold digital merchandise collections
       </h3>
 
       {/* mobile */}
@@ -155,7 +226,7 @@ const CreatorCollectionsPage = () => {
         <div className="flex gap-x-2">
           <div className="relative w-full items-center justify-center rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch />
+              <FaSearch className="text-gray-500" />
             </div>
             <input
               className="input-outlined input input-md block w-full rounded-md pl-10"
@@ -164,38 +235,31 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
-                // console.log(e.target.value)
-                // setFilteredCollection(filterCollection(collectionData)) // to be removed in future
               }}
             />
           </div>
         </div>
 
-        <div className="flex gap-x-4">
-          <Button href="/merchandise/create" variant="solid" size="md">
-            Create <span className="hidden sm:contents">Collection</span>
-          </Button>
-          <Button variant="outlined" size="md">
-            Feature <span className="hidden sm:contents">Collection</span>
-          </Button>
-        </div>
+        <Button
+          href="/merchandise/create"
+          variant="solid"
+          size="md"
+          className="w-fit"
+        >
+          Create a New Collection
+        </Button>
       </div>
 
       {/* desktop */}
       <div className="mt-10 hidden items-center justify-between gap-x-4 lg:flex">
-        <div className="flex gap-x-4">
-          <Button href="/merchandise/create" variant="solid" size="md">
-            Create collection
-          </Button>
-          <Button variant="outlined" size="md">
-            Feature collection
-          </Button>
-        </div>
+        <Button href="/merchandise/create" variant="solid" size="md">
+          Create a New Collection
+        </Button>
 
         <div className="flex gap-x-4">
           <div className="relative items-center justify-center rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch />
+              <FaSearch className="text-gray-500" />
             </div>
             <input
               className="input-outlined input input-md block w-full rounded-md pl-10"
@@ -204,9 +268,6 @@ const CreatorCollectionsPage = () => {
               placeholder="Search Collection"
               onChange={(e) => {
                 setSearchString(e.target.value);
-
-                // TODO: to display this in the table according to latest design (with infinite scrolling/pagination)
-                searchCollectionByName(0, parseInt(userId!), e.target.value);
               }}
             />
           </div>
@@ -214,9 +275,7 @@ const CreatorCollectionsPage = () => {
       </div>
 
       <TabGroupBordered
-        // hiding for 1sr
-        // tabs={["Featured", "On Sale", "Sold"]}
-        tabs={["Created"]}
+        tabs={["On Sale", "Paused", "Sold"]}
         activeTab={activeTab}
         setActiveTab={(index: number) => {
           setActiveTab(index);
@@ -224,46 +283,55 @@ const CreatorCollectionsPage = () => {
       >
         {activeTab == 0 && (
           <CollectionTable
-            data={[]} // TODO: hook up @LW
+            data={onSaleCollections}
             columns={[
               "Collection No.",
               "Collection Name",
               "Description",
-              "Quantity",
+              "Quantity Left",
               "Fee",
               "Premium Channel",
             ]}
             onEdit={(index: number) => {
-              setValue("name", collectionData[index].collectionName);
-              setValue("description", collectionData[index].description);
-              setValue("premiumChannel", collectionData[index].premiumChannel);
-              setValue("collectionId", collectionData[index].collectionId); // might want to replace with collection id
+              setValue(
+                "collectionName",
+                onSaleCollections[index].collectionName
+              );
+              setValue("description", onSaleCollections[index].description);
+              setValue("collectionId", onSaleCollections[index].collectionId);
               setIsModalOpen(true);
             }}
+            mutateOnSaleCollections={mutateOnSaleCollections}
+            mutatePausedCollections={mutatePausedCollections}
           />
         )}
-        {/* {activeTab == 1 && (
+        {activeTab == 1 && (
           <CollectionTable
-            data={filteredData}
+            data={pausedCollections}
             columns={[
               "Collection No.",
               "Collection Name",
               "Description",
-              "Quantity",
+              "Quantity Left",
               "Fee",
               "Premium Channel",
             ]}
             onEdit={(index: number) => {
-              setValue("name", collections[index].name);
-              setValue("description", collections[index].description);
-              setValue("premiumChannel", collections[index].premiumChannel);
+              setValue(
+                "collectionName",
+                pausedCollections[index].collectionName
+              );
+              setValue("description", pausedCollections[index].description);
+              setValue("collectionId", pausedCollections[index].collectionId);
               setIsModalOpen(true);
             }}
+            mutateOnSaleCollections={mutateOnSaleCollections}
+            mutatePausedCollections={mutatePausedCollections}
           />
-        )} */}
-        {/* {activeTab == 2 && (
+        )}
+        {activeTab == 2 && (
           <CollectionTable
-            data={collections}
+            data={soldCollections}
             columns={[
               "Collection No.",
               "Collection Name",
@@ -273,7 +341,7 @@ const CreatorCollectionsPage = () => {
               "Premium Channel",
             ]}
           />
-        )} */}
+        )}
       </TabGroupBordered>
     </main>
   );
