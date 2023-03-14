@@ -16,6 +16,7 @@ import Layout from "../../components/Layout";
 import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TextArea from "../../components/TextArea";
+import { createCommunityAPI, updateCommunityAPI, deleteCommunityAPI } from "../../lib/api-helpers/community-api";
 
 type CreateCommunityPageProps = {
   community: Community;
@@ -30,28 +31,28 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  type CreateCommunityForm = {
+  type CommunityForm = {
+    communityId?: number;
     name: string;
     description: string;
     bannerPic: string;
     profilePic: string;
     maxMembers: number;
-    tags: string[];
-    userId: number;
+    tags: CategoryType[];
+    userId?: number;
   };
 
   const { handleSubmit, setValue, control, watch } =
-    useForm<CreateCommunityForm>({
+    useForm<CommunityForm>({
       defaultValues: {
         name: community ? community.name : "",
         description: community ? (community.description as string) : "",
-        bannerPic: community ? (community.bannerPic as string) : "",
         profilePic: community ? (community.profilePic as string) : "",
+        bannerPic: community ? (community.bannerPic as string) : "",
+        tags: community ? community.tags : ([] as CategoryType[]),
         maxMembers: community
           ? community.maxMembers
           : ("" as unknown as number),
-        tags: community ? community.tags : ([] as string[]),
-        userId: community ? community.userId : userId,
       },
     });
 
@@ -61,74 +62,58 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
     "tags",
   ]);
 
-  const onCreate = async (formData: CreateCommunityForm) => {
+  const onCreate = async (formData: CommunityForm) => {
     toast.loading("Creating new community...");
     setIsLoading(true);
 
     const userId = Number(session?.user.userId);
-    const communityData = {
+    const createCommunityParams = {
       ...formData,
       maxMembers: Number(formData.maxMembers),
       userId: userId,
     };
-
-    console.log(communityData);
-    const res = await axios.post(
-      "http://localhost:3000/api/community",
-      communityData
-    );
+    const res = await createCommunityAPI(createCommunityParams);
 
     toast.dismiss();
     toast.success("Community successfully created!");
     setIsLoading(false);
 
-    const temp = res.data[0];
-    if (res.status === 200) {
-      router.push(`/communities/${temp.communityId}`);
-    }
+    const temp = res[0];
+    router.push(`/communities/${temp.communityId}`);
   };
 
-  const onEdit = async (formData: CreateCommunityForm) => {
+  const onEdit = async (formData: CommunityForm) => {
     toast.loading("Updating community...");
     setIsLoading(true);
 
-    const communityData = {
+    const updateCommunityParams = {
       ...formData,
       maxMembers: Number(formData.maxMembers),
+      communityId: community.communityId,
     };
-    const res = await axios.post(
-      `http://localhost:3000/api/community/${community.communityId}`,
-      communityData
-    );
+    const res = await updateCommunityAPI(updateCommunityParams);
 
     toast.dismiss();
     toast.success("Community successfully updated!");
     setIsLoading(false);
 
-    const temp = res.data;
-
+    const temp = res;
     mutate(`http://localhost:3000/api/community/${temp.communityId}`);
 
-    if (res.status === 200) {
-      router.push(`/communities/${temp.communityId}`);
-    }
+    router.push(`/communities/${temp.communityId}`);
   };
 
   const onDelete = async () => {
     toast.loading("Deleting community...");
     setIsLoading(true);
 
-    const res = await axios.delete(
-      `http://localhost:3000/api/community/${community.communityId}`
-    );
+    await deleteCommunityAPI(community.communityId);
 
     toast.dismiss();
     toast.success("Community successfully deleted!");
     setIsLoading(false);
 
-    if (res.status === 200) {
-      router.push(`/communities/create`);
-    }
+    router.push(`/communities/create`);
   };
 
   return (

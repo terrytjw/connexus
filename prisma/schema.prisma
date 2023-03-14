@@ -57,7 +57,7 @@ model Post {
 model Community {
   communityId Int            @id @default(autoincrement())
   name        String
-  description String?
+  description String
   profilePic  String?
   bannerPic   String?
   tags        CategoryType[]
