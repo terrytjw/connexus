@@ -108,18 +108,18 @@ const CollectionGridItem = ({
               (user: User) => user.userId === Number(userId)
             ) ? (
               <Button
-                size="sm"
+                size="md"
                 variant="solid"
-                className="!btn-circle relative ml-auto rounded-full border-0 !bg-transparent text-lg font-semibold !text-blue-600"
+                className="!btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold !text-blue-600 hover:!bg-opacity-30"
                 onClick={async (e) => await handleUnlike(e)}
               >
                 <FaHeart size={24} />
               </Button>
             ) : (
               <Button
-                size="sm"
+                size="md"
                 variant="outlined"
-                className="!btn-circle relative ml-auto rounded-full border-0 text-lg font-semibold text-white hover:bg-blue-600 hover:bg-opacity-30 hover:text-blue-500"
+                className=" !btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
                 onClick={async (e) => await handleLike(e)}
               >
                 <FaRegHeart size={24} />
