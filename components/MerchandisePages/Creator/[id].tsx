@@ -1,31 +1,67 @@
+import { Collection, CollectionState } from "@prisma/client";
+import { useRouter } from "next/router";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { FaChevronLeft, FaTimes } from "react-icons/fa";
 import Badge from "../../Badge";
 import Button from "../../Button";
 import CollectibleGrid from "../../CollectibleGrid";
 import Input from "../../Input";
+import Loading from "../../Loading";
 import Modal from "../../Modal";
-import Select from "../../Select";
-import { channels, collections } from "../../../utils/dummyData";
-import { ChannelType, Collection } from "../../../utils/types";
+import TextArea from "../../TextArea";
+import useSWR from "swr";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  getCollection,
+  updateCollection,
+} from "../../../lib/api-helpers/collection-api";
 
-const CreatorCollectionPage = ({ collection }: any) => {
+const CreatorCollectionPage = () => {
+  const router = useRouter();
+  const { id } = router.query;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { handleSubmit, setValue, watch } = useForm<Collection>({
+  const {
+    data: collectionData,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR(id, getCollection);
+
+  const { control, handleSubmit, setValue } = useForm<Collection>({
     defaultValues: {
-      name: collection.collectionName,
-      description: collection.description,
-      premiumChannel: collection.premiumChannel,
+      collectionName: "",
+      description: "",
+      collectionId: null as unknown as number,
     },
   });
 
-  const [name, description, premiumChannel] = watch([
-    "name",
-    "description",
-    "premiumChannel",
-  ]);
+  const onEdit = async (formData: Collection) => {
+    // to prevent auto form submission upon closing modal
+    if (!isModalOpen) {
+      return;
+    }
+
+    await updateCollection(
+      formData.collectionName,
+      formData.description,
+      formData.collectionId
+    );
+
+    mutate((data: CollectionWithMerchAndPremiumChannel) => {
+      return {
+        ...data,
+        collectionName: formData.collectionName,
+        description: formData.description,
+      };
+    });
+
+    setIsModalOpen(false);
+  };
+
+  if (isLoading) return <Loading />;
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -34,11 +70,7 @@ const CreatorCollectionPage = ({ collection }: any) => {
         setIsOpen={setIsModalOpen}
         className="overflow-visible"
       >
-        <form
-          onSubmit={handleSubmit((val: any) => {
-            console.log("Edit collection: ", val);
-          })}
-        >
+        <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-xl font-semibold">Edit Collection</h3>
             <Button
@@ -51,48 +83,40 @@ const CreatorCollectionPage = ({ collection }: any) => {
             </Button>
           </div>
 
-          <Input
-            type="text"
-            label="Name"
-            value={name}
-            onChange={(e) => setValue("name", e.target.value)}
-            size="md"
-            variant="bordered"
+          <Controller
+            control={control}
+            name="collectionName"
+            rules={{
+              required: "Collection Name is required",
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <Input
+                type="text"
+                label="Name"
+                value={value}
+                onChange={onChange}
+                size="md"
+                variant="bordered"
+                errorMessage={error?.message}
+              />
+            )}
           />
 
-          <Input
-            type="text"
-            label="Description"
-            value={description}
-            onChange={(e) => setValue("description", e.target.value)}
-            size="md"
-            variant="bordered"
+          <Controller
+            control={control}
+            name="description"
+            rules={{
+              required: "Description is required",
+            }}
+            render={({ field: { onChange, value }, fieldState: { error } }) => (
+              <TextArea
+                label="Description"
+                value={value}
+                onChange={onChange}
+                errorMessage={error?.message}
+              />
+            )}
           />
-
-          {/* <div className="form-control mb-4 w-full">
-            <label className="label">
-              <span className="label-text">Link to Premium Channel</span>
-            </label>
-            <Select
-              data={[{ name: "Not Linked" }].concat(
-                channels.filter(
-                  (channel) => channel.channelType == ChannelType.PREMIUM
-                )
-              )}
-              selected={premiumChannel ?? { name: "Not Linked" }}
-              setSelected={(value) => {
-                if (value.channelId) {
-                  setValue("premiumChannel", value);
-                  return;
-                }
-                // collection is not linked to any premium channel
-                setValue("premiumChannel", null);
-              }}
-            />
-            <label className="label">
-              <span className="label-text-alt text-red-500"></span>
-            </label>
-          </div> */}
 
           <Button variant="solid" size="md">
             Save Changes
@@ -109,18 +133,18 @@ const CreatorCollectionPage = ({ collection }: any) => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+        <h1 className="text-3xl font-bold">{collectionData.collectionName}</h1>
       </div>
 
-      <div className="mt-6">
+      <div className="mt-6 lg:ml-16">
         <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
-            <h2 className="text-gray-700">{collection.description}</h2>
-            {collection.premiumChannel ? (
+            <h2 className="text-gray-700">{collectionData.description}</h2>
+            {collectionData.premiumChannel ? (
               <Badge
-                className="h-min"
+                className="h-min !bg-blue-100 !text-blue-500"
                 size="lg"
-                label={`Linked to ${collection.premiumChannel?.name}`}
+                label={`Unlocks ${collectionData.premiumChannel?.name}`}
               />
             ) : null}
           </div>
@@ -130,23 +154,33 @@ const CreatorCollectionPage = ({ collection }: any) => {
               <span>
                 <p className="text-sm text-gray-700">Price</p>
                 <p className="text-lg font-semibold text-blue-600">
-                  ${collection.fixedPrice}
+                  ${collectionData.fixedPrice}
                 </p>
               </span>
             </div>
 
             <div className="flex items-end gap-4">
-              <Button
-                variant="solid"
-                size="md"
-                onClick={() => setIsModalOpen(true)}
-              >
-                Edit Collection
-              </Button>
+              {collectionData.collectionState != CollectionState.SOLD ? (
+                <Button
+                  variant="solid"
+                  size="md"
+                  onClick={() => {
+                    setValue("collectionName", collectionData.collectionName);
+                    setValue("description", collectionData.description);
+                    setValue("collectionId", collectionData.collectionId);
+                    setIsModalOpen(true);
+                  }}
+                >
+                  Edit Collection
+                </Button>
+              ) : null}
             </div>
           </div>
         </div>
-        <CollectibleGrid data={collection.merchandise} collectedTab={false} />
+        <CollectibleGrid
+          data={collectionData.merchandise}
+          collectedTab={false}
+        />
       </div>
     </main>
   );
