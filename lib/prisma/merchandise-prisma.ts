@@ -26,23 +26,30 @@ export async function searchMerchandiseByUser(
   userId: number,
   keyword: string,
   cursor: number,
-  priceType: MerchandisePriceType
+  priceType?: MerchandisePriceType
 ) {
   const filterCondition =
-    priceType == MerchandisePriceType.FREE ? { equals: 0 } : { gt: 0 };
+    priceType == MerchandisePriceType.FREE
+      ? { equals: 0 }
+      : priceType == undefined
+      ? undefined
+      : { gt: 0 };
   return prisma.merchandise.findMany({
     take: 10,
     skip: cursor ? 1 : undefined, // Skip cursor
     cursor: cursor ? { merchId: cursor } : undefined,
-    where: { 
+    where: {
       users: {
-        some: { userId: userId }
+        some: { userId: userId },
       },
       name: {
         contains: keyword,
-        mode: 'insensitive'
+        mode: "insensitive",
       },
-      price: filterCondition
+      price: filterCondition,
+    },
+    include: {
+      collection: { select: { collectionName: true } },
     },
   });
 }

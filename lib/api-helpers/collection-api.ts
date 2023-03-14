@@ -42,7 +42,11 @@ export async function createCollection(
   description: string,
   creator_id: number,
   price: number,
-  collectibles: Merchandise[] // an array of collectible objects | TODO: change to collectible type
+  collectibles: {
+    name: string;
+    image: string;
+    totalMerchSupply: number;
+  }[] // an array of collectible objects | TODO: change to collectible type
 ) {
   const Collection_Contract = new ethers.ContractFactory(abi, bytecode, signer);
 
@@ -56,7 +60,6 @@ export async function createCollection(
     categories.push(cat.name);
     category_quantity.push(cat.totalMerchSupply);
     category_price.push(price);
-    collectibles[i].price = price;
   }
 
   /** Deploying a custom smart contract for a new collection */
@@ -190,10 +193,10 @@ export async function searchAllCollections(
   keyword: string,
   isLinked?: boolean
 ) {
-  const params = { 
+  const params = {
     cursor: cursor,
     keyword: keyword,
-    isLinked: isLinked 
+    isLinked: isLinked,
   };
   const response = await searchCreatorCollections(params);
   return response;
@@ -218,19 +221,18 @@ export async function searchCreatorCollectionsByState(params: {
   const convertedParams = {
     userId: params.userId,
     collectionState: params.collectionState,
-    keyword: params.keyword
-  }
-  const response = await searchCreatorCollections(convertedParams)
+    keyword: params.keyword,
+  };
+  const response = await searchCreatorCollections(convertedParams);
   return response;
 }
-
 
 export async function getUnsoldUnlinkedCollections(userId: number) {
   const params = {
     userId: userId,
     isLinked: false,
-    omitSold: true
-  }
+    omitSold: true,
+  };
 
   const response = await searchCreatorCollections(params);
   return response;
@@ -255,11 +257,10 @@ async function searchCreatorCollections(params: CollectionsGETParams) {
 }
 
 export async function getCollection(collectionId: number) {
-  const url = baseUrl + `${collectionId}`;
+  const url = baseUrl + `/${collectionId}`;
   const response = (await axios.get(url)).data;
   return response;
 }
-
 
 // Old functions
 
@@ -288,4 +289,3 @@ export async function getCollectionInfo(userId: number) {
   const response = (await axios.get(url)).data;
   return response;
 }
-

@@ -38,15 +38,17 @@ export async function searchCollectedMerchandise(
   userId: number,
   keyword: string,
   cursor: number,
-  priceType: MerchandisePriceType
+  priceType?: MerchandisePriceType
 ) {
-  const response = (await axios.get(baseUrl, {
-    params: {
-      userId: userId,
-      keyword: keyword,
-      cursor: cursor,
-      priceType: priceType
-    }
-  })).data;
+  const response = (
+    await axios.get(baseUrl, {
+      params: {
+        userId: userId,
+        keyword: keyword,
+        cursor: cursor,
+        priceType: priceType,
+      },
+    })
+  ).data;
   return response;
 }

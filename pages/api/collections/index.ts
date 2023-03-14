@@ -104,7 +104,7 @@ export default async function handler(
 
   async function handleGETWithParams(params: CollectionsGETParams) {
     try {
-      const collections = await searchCollections(params)
+      const collections = await searchCollections(params);
       res.status(200).json(collections);
     } catch (error) {
       console.log(error);
@@ -140,6 +140,8 @@ export default async function handler(
       const updatedMerchs = await Promise.all(
         merchandise.map(async (merch: Merchandise) => {
           const { merchId, collectionId, image, ...merchInfo } = merch;
+
+          merchInfo.price = collectionInfo.fixedPrice;
           let updatedMerchInfo = await updateMerchMedia(image, merchInfo);
 
           const stripePriceId = await createProduct(
@@ -180,9 +182,9 @@ export type CollectionsGETParams = {
   userId?: number;
   keyword?: string;
   cursor?: number;
-  collectionState?: CollectionState
-  isLinked?: boolean,
-  omitSold?: boolean
+  collectionState?: CollectionState;
+  isLinked?: boolean;
+  omitSold?: boolean;
 };
 
 function convertParams(query: any): CollectionsGETParams {
@@ -191,11 +193,10 @@ function convertParams(query: any): CollectionsGETParams {
     keyword: query.keyword,
     cursor: parseInt(query.cursor as string),
     collectionState: query.collectionState as CollectionState,
-    isLinked:
-      query.isLinked
-        ? true
-        : query.isLinked === undefined
-        ? undefined
-        : false
+    isLinked: query.isLinked
+      ? true
+      : query.isLinked === undefined
+      ? undefined
+      : false,
   };
 }

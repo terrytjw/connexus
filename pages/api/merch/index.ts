@@ -62,11 +62,14 @@ export default async function handler(
   const collectionId = parseInt(query.collectionId as string);
   const priceType = query.priceType as unknown as MerchandisePriceType;
   const cursor = parseInt(query.cursor as string);
+  const userId = parseInt(query.userId as string);
+  const keyword = query.keyword as string;
 
   switch (method) {
     case "GET":
       if (query) {
-        await handleGETWithFilter(cursor, collectionId, priceType);
+        // await handleGETWithFilter(cursor, collectionId, priceType);
+        await handleGETWithKeyword(userId, keyword, cursor, priceType);
       } else {
         await handleGET();
       }
@@ -94,10 +97,16 @@ export default async function handler(
     userId: number,
     keyword: string,
     cursor: number,
-    priceType: MerchandisePriceType
+    priceType?: MerchandisePriceType
   ) {
     try {
-      const merch = await searchMerchandiseByUser(userId, keyword, cursor, priceType);
+      console.log({ userId, keyword, cursor, priceType });
+      const merch = await searchMerchandiseByUser(
+        userId,
+        keyword,
+        cursor,
+        priceType
+      );
       res.status(200).json(merch);
     } catch (error) {
       const errorResponse = handleError(error);
