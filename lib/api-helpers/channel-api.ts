@@ -19,14 +19,15 @@ export async function getAllChannelsInCommunityAPI(communityId: number) {
   return response;
 }
 
-export async function createChannelAPI(
+export async function createPremiumChannelAPI(
   name: string,
-  channelType: ChannelType,
+  collectionId: number,
   communityId: number
 ) {
   const response = (await axios.post(baseUrl, {
     name: name,
-    channelType: channelType,
+    channelType: ChannelType.PREMIUM,
+    collectionId: collectionId,
     communityId: communityId
   })).data;
   return response;
