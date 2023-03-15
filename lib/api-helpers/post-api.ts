@@ -15,11 +15,10 @@ export async function getAllPostsInChannelAPI(params: { channelId: number }) {
   const response = (await axios.get(baseUrl, {
     params: params
   })).data;
-  const pinnedIndex = response.findIndex((post: Post) => post.isPinned);
-  const pinned = response[pinnedIndex];
-  response.splice(pinnedIndex, 1);
-  response.unshift(pinned);
-  return response;
+  const pinnedPosts = response.filter((post: Post) => post.isPinned);
+  const otherPosts = response.filter((post: Post) => ! post.isPinned);
+  const posts = pinnedPosts.concat(otherPosts);
+  return posts
 }
 
 export async function createPostAPI(
