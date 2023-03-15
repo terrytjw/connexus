@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel } from "@prisma/client";
+import { createChannel, getAllChannelsInCommunity } from "../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 
@@ -38,11 +39,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Channel[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
 
   switch (method) {
     case "GET":
-      await handleGET();
+      const communityId = parseInt(query.communityId as string);
+      await handleGET(communityId);
       break;
     case "POST":
       const channel = JSON.parse(JSON.stringify(body)) as Channel;
@@ -53,9 +55,9 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET() {
+  async function handleGET(communityId: number) {
     try {
-      const channels = await prisma.channel.findMany();
+      const channels = await getAllChannelsInCommunity(communityId);
       res.status(200).json(channels);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -65,11 +67,7 @@ export default async function handler(
 
   async function handlePOST(channel: Channel) {
     try {
-      const response = await prisma.channel.create({
-        data: {
-          ...channel,
-        },
-      });
+      const response = await createChannel(channel);
       res.status(200).json([response]);
     } catch (error) {
       const errorResponse = handleError(error);
