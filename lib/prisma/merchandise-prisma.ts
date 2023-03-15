@@ -31,7 +31,7 @@ export async function searchMerchandiseByUser(
   const filterCondition =
     priceType == MerchandisePriceType.FREE
       ? { equals: 0 }
-      : MerchandisePriceType.PAID
+      : priceType == MerchandisePriceType.PAID
       ? { gt: 0 }
       : undefined;
   return prisma.merchandise.findMany({
