@@ -7,6 +7,11 @@ export async function getQuestion(questionId: number) {
     where: {
       questionId: questionId,
     },
+    include: {
+      user: {
+        select: { username: true, profilePic: true }
+      }
+    },
   });
 }
 
