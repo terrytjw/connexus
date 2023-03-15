@@ -40,6 +40,7 @@ model User {
   userTicket          UserTicket[]
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
+  questions           Question[]
 }
 
 model Post {
@@ -71,13 +72,14 @@ model Community {
 }
 
 model Channel {
-  channelId   Int         @id @default(autoincrement())
-  name        String
-  channelType ChannelType @default(PREMIUM)
-  members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId Int
-  posts       Post[]
+  channelId    Int         @id @default(autoincrement())
+  name         String
+  channelType  ChannelType @default(PREMIUM)
+  members      User[]
+  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId  Int
+  posts        Post[]
+  questions    Question[]
 
   @@unique([communityId, name])
 }
@@ -270,4 +272,15 @@ model Merchandise {
   collection       Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   collectionId     Int
   users            User[]
+}
+
+model Question {
+  questionId Int      @id @default(autoincrement())
+  question   String
+  answer     String
+  date       DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [userId])
+  userId     Int
+  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channelId  Int
 }
