@@ -11,11 +11,9 @@ export async function getCommentAPI(commentId: number) {
   return response;
 }
 
-export async function getAllCommentsOnPostAPI(postId: number) {
+export async function getAllCommentsOnPostAPI(params: {postId: number}) {
   const response = (await axios.get(baseUrl, {
-    params: {
-      postId: postId
-    }
+    params
   })).data;
   return response;
 }
