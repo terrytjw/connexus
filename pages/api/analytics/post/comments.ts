@@ -1,15 +1,13 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, PostLikesTimestamp } from "@prisma/client";
+import { PrismaClient, Address, PostLikesTimestamp } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// TODO swagger
-
 /**
  * @swagger
- * /api/analytics/post/likes:
+ * /api/addresses/{addressId}:
  *   get:
  *     description: Returns a single Address object
  *     parameters:
@@ -19,6 +17,23 @@ const prisma = new PrismaClient();
  *         description: String ID of the Address to retrieve.
  *         schema:
  *           type: string
+ *     responses:
+ *       200:
+ *         description: A single Address object
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: "#/components/schemas/Address"
+ *   post:
+ *     description: Updates a single Address object
+ *     parameters:
+ *       - in: object
+ *         name: Address
+ *         required: true
+ *         description: Address object to update
+ *         application/json:
+ *          schema:
+ *            $ref: "#/components/schemas/Address"
  *     responses:
  *       200:
  *         description: A single Address object
