@@ -92,7 +92,7 @@ const FanCollectionsPage = ({
         className="min-w-fit"
       >
         <div className="flex items-center justify-between">
-          <h3 className="ml-2 text-xl font-semibold">
+          <h3 className="text-xl font-semibold">
             {activeTab == 0
               ? "Filter Collected Merchandise"
               : "Filter Collections"}
@@ -111,7 +111,10 @@ const FanCollectionsPage = ({
           </Button>
         </div>
 
-        <div className="mt-8 mb-4 flex flex-wrap gap-4">
+        <h3 className="mt-8 text-sm font-medium text-gray-500">
+          {activeTab == 0 ? "PRICE" : "LINK TO PREMIUM CHANNEL"}
+        </h3>
+        <div className="mt-2 mb-4 flex flex-wrap gap-4">
           {activeTab == 0 ? (
             <>
               <Badge
@@ -119,14 +122,14 @@ const FanCollectionsPage = ({
                 size="lg"
                 selected={collectedTabfilterSelected === "Free-of-Charge"}
                 onClick={() => setCollectedTabfilterSelected("Free-of-Charge")}
-                className="h-8 w-full min-w-fit rounded-lg sm:w-fit"
+                className="h-8 min-w-fit rounded-lg"
               />
               <Badge
                 label="Purchased"
                 size="lg"
                 selected={collectedTabfilterSelected === "Purchased"}
                 onClick={() => setCollectedTabfilterSelected("Purchased")}
-                className="h-8 w-full min-w-fit rounded-lg sm:w-fit"
+                className="h-8 min-w-fit rounded-lg"
               />
             </>
           ) : (
@@ -140,27 +143,25 @@ const FanCollectionsPage = ({
                 onClick={() =>
                   setMarketplaceTabfilterSelected("Linked to Premium Channel")
                 }
-                className="h-8 w-full min-w-fit rounded-lg sm:w-fit"
+                className="h-8 min-w-fit rounded-lg"
               />
               <Badge
                 label="Not Linked"
                 size="lg"
                 selected={marketplaceTabfilterSelected === "Not Linked"}
                 onClick={() => setMarketplaceTabfilterSelected("Not Linked")}
-                className="h-8 w-full min-w-fit rounded-lg sm:w-fit"
+                className="h-8 min-w-fit rounded-lg"
               />
             </>
           )}
         </div>
         <Button
           variant="solid"
-          size="sm"
-          className="mt-8 w-full"
-          onClick={() => {
-            setIsModalOpen(false);
-          }}
+          size="md"
+          className="mt-8"
+          onClick={() => setIsModalOpen(false)}
         >
-          Done
+          Submit
         </Button>
       </Modal>
 
