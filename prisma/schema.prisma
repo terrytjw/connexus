@@ -71,13 +71,15 @@ model Community {
 }
 
 model Channel {
-  channelId   Int         @id @default(autoincrement())
-  name        String
-  channelType ChannelType @default(PREMIUM)
-  members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId Int
-  posts       Post[]
+  channelId    Int         @id @default(autoincrement())
+  name         String
+  channelType  ChannelType @default(PREMIUM)
+  members      User[]
+  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId  Int
+  posts        Post[]
+  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int?        @unique
 
   @@unique([communityId, name])
 }
@@ -234,7 +236,7 @@ enum PromotionType {
 model Collection {
   collectionId    Int             @id @default(autoincrement())
   collectionName  String          @unique
-  description     String?
+  description     String
   currency        Currency        @default(USD)
   collectionState CollectionState @default(ON_SALE)
   merchandise     Merchandise[]
@@ -243,10 +245,10 @@ model Collection {
   merchURIs       String[]
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
+  premiumChannel  Channel?
 }
 
 enum CollectionState {
-  CREATED
   ON_SALE
   SOLD
   PAUSED
@@ -262,7 +264,7 @@ enum Currency {
 model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
-  image            String?
+  image            String
   stripePriceId    String? //Optional To be removed
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)

@@ -13,9 +13,14 @@ import {
   COLLECTION_ENDPOINT,
   smartContract,
 } from "../constant";
+import { CollectionsGETParams } from "../../pages/api/collections";
 
 export type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
+}>;
+
+export type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
+  include: { merchandise: true; premiumChannel: true };
 }>;
 
 /** Smart Contract information */
@@ -24,6 +29,8 @@ const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
+
+const baseUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
 
 /**
  * Description: Creates a new collection
@@ -38,7 +45,11 @@ export async function createCollection(
   description: string,
   creator_id: number,
   price: number,
-  collectibles: Merchandise[] // an array of collectible objects | TODO: change to collectible type
+  collectibles: {
+    name: string;
+    image: string;
+    totalMerchSupply: number;
+  }[] // an array of collectible objects | TODO: change to collectible type
 ) {
   const Collection_Contract = new ethers.ContractFactory(abi, bytecode, signer);
 
@@ -52,7 +63,6 @@ export async function createCollection(
     categories.push(cat.name);
     category_quantity.push(cat.totalMerchSupply);
     category_price.push(price);
-    collectibles[i].price = price;
   }
 
   /** Deploying a custom smart contract for a new collection */
@@ -84,8 +94,7 @@ export async function createCollection(
     creatorId: creator_id,
   };
 
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}`;
-  const createdResponseData = await axios.post(collectionUrl, newCollection);
+  const createdResponseData = await axios.post(baseUrl, newCollection);
   console.log("==================================");
   console.log("Collection created: ", createdResponseData);
   console.log("==================================");
@@ -99,18 +108,18 @@ export async function createCollection(
  * - updatedDescription: string (description of collection)
  * - collection_id: number (id of the collection u are updating)
  */
-export async function updateCollection(
+export async function updateCollectionAPI(
   updatedName: string,
   updatedDescription: string,
   collectionId: number
 ) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   console.log("retrieved collection: ", retrievedCollectionResponse);
 
   const { merchandise, ...collectionInfo } =
-    retrievedCollectionResponse as CollectionwithMerch;
+    retrievedCollectionResponse as CollectionWithMerchAndPremiumChannel;
 
   /** update ur collection in the collectionName and description fields below */
   const updatedCollection: Partial<Collection> = {
@@ -137,7 +146,7 @@ export async function updateCollection(
  * - collection_id: number (id of the collection u are updating)
  */
 export async function pauseCollectionMint(collectionId: number) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   const { merchandise, ...collectionInfo } =
@@ -162,7 +171,7 @@ export async function pauseCollectionMint(collectionId: number) {
  * - collection_id: number (id of the collection u are updating)
  */
 export async function startCollectionMint(collectionId: number) {
-  const collectionUrl = `${API_URL}/${COLLECTION_ENDPOINT}/${collectionId}`;
+  const collectionUrl = baseUrl + `/${collectionId}`;
   const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
 
   const { merchandise, ...collectionInfo } =
@@ -182,29 +191,66 @@ export async function startCollectionMint(collectionId: number) {
   return updatedCollectionResponse;
 }
 
-export async function searchCollectionByName(
-  cursor?: number,
-  userId?: number,
-  keyword?: string
+export async function searchAllCollections(
+  cursor: number,
+  keyword: string,
+  isLinked?: boolean
 ) {
-  const object = { cursor, userId, keyword } as any;
-
-  const params = new URLSearchParams(object).toString();
-  const url = `${API_URL}/${COLLECTION_ENDPOINT}?${params}`;
-  const response = (await axios.get(url)).data;
-  console.log("search response: ", response);
-
-  response.map((item: Collection) => {
-    return {
-      collectionName: item.collectionName,
-    };
-  });
+  const params = {
+    cursor: cursor,
+    keyword: keyword,
+    isLinked: isLinked,
+  };
+  const response = await sendCollectionsGetReq(params);
   return response;
 }
 
-// get all collection info @@To be edited because we need additional endpoint to retrieve collection info by userId
-export async function getCollectionInfo(userId: number) {
-  const url = `${API_URL}/${COLLECTION_ENDPOINT}/${userId}`;
+export async function getLinkedCollections(userId: number) {
+  const params = { userId: userId };
+  const response = await sendCollectionsGetReq(params);
+
+  return response;
+}
+
+export async function searchCreatorCollectionsByState(params: {
+  userId: number;
+  collectionState: CollectionState;
+  keyword: string;
+}) {
+  const response = await sendCollectionsGetReq(params);
+  return response;
+}
+
+export async function getUnsoldUnlinkedCollections(userId: number) {
+  const params = {
+    userId: userId,
+    isLinked: false,
+    omitSold: true,
+  };
+
+  const response = await sendCollectionsGetReq(params);
+  return response;
+}
+
+function setDefaultParams(params: CollectionsGETParams) {
+  if (!params.keyword) params.keyword = "";
+  if (!params.cursor) params.cursor = 0;
+  if (!params.omitSold) params.omitSold = false;
+  return params;
+}
+
+async function sendCollectionsGetReq(params: CollectionsGETParams) {
+  setDefaultParams(params);
+  const response = (
+    await axios.get(baseUrl, {
+      params: params,
+    })
+  ).data;
+  return response;
+}
+
+export async function getCollection(collectionId: number) {
+  const url = baseUrl + `/${collectionId}`;
   const response = (await axios.get(url)).data;
   return response;
 }

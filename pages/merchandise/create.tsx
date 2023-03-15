@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { FaChevronLeft } from "react-icons/fa";
@@ -8,34 +9,42 @@ import Button from "../../components/Button";
 import CollectibleInput from "../../components/CollectibleInput";
 import Input from "../../components/Input";
 import InputGroup from "../../components/InputGroup";
+import Loading from "../../components/Loading";
+import Modal from "../../components/Modal";
 import TextArea from "../../components/TextArea";
-import { Collectible } from "../../utils/types";
 import { createCollection } from "../../lib/api-helpers/collection-api";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import toast, { Toaster } from "react-hot-toast";
 
 export type CreateCollectionForm = {
-  collectibles: Collectible[];
+  collectibles: {
+    name: string;
+    image: string;
+    totalMerchSupply: number;
+  }[];
   collectionName: string;
   collectionDescription: string;
   price: number;
 };
 
 const CreateCollectionPage = () => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { handleSubmit, setValue, control, watch } =
-    useForm<CreateCollectionForm>({
-      defaultValues: {
-        collectibles: [{ image: "", name: "", totalMerchSupply: 1 }],
-        collectionName: "",
-        collectionDescription: "",
-        price: 0,
-      },
-    });
+  const {
+    handleSubmit,
+    setValue,
+    control,
+    watch,
+    trigger,
+    formState: { errors },
+  } = useForm<CreateCollectionForm>({
+    defaultValues: {
+      collectibles: [{ image: "", name: "", totalMerchSupply: 1 }],
+      collectionName: "",
+      collectionDescription: "",
+      price: "" as unknown as number,
+    },
+  });
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -43,6 +52,21 @@ const CreateCollectionPage = () => {
   });
 
   const [collectibles] = watch(["collectibles"]);
+
+  const onSubmit = async (formData: CreateCollectionForm) => {
+    setIsLoading(true);
+    setIsModalOpen(true);
+
+    await createCollection(
+      formData.collectionName,
+      formData.collectionDescription,
+      parseInt(session!.user.userId),
+      Number(formData.price),
+      formData.collectibles
+    );
+
+    setIsLoading(false);
+  };
 
   return (
     <ProtectedRoute>
@@ -52,31 +76,30 @@ const CreateCollectionPage = () => {
             <title>Merchandise | Connexus</title>
           </Head>
 
+          <Modal isOpen={isModalOpen} setIsOpen={() => {}}>
+            {isLoading ? (
+              <Loading className="!h-full" />
+            ) : (
+              <div className="flex flex-col gap-6">
+                <h3 className="text-xl font-semibold">Collected Created!</h3>
+
+                <p>
+                  Your collection can be viewed in the ‘On Sale’ tab in the
+                  Digital Merchandise page of yours.
+                </p>
+
+                <div className="flex gap-4">
+                  <Button variant="solid" size="md" href={`/merchandise`}>
+                    Confirm
+                  </Button>
+                </div>
+              </div>
+            )}
+          </Modal>
+
           <form
             className="py-12 px-4 sm:px-12"
-            onSubmit={handleSubmit(async (val: any) => {
-              setIsLoading(true);
-              toast.loading("Creating new merchandise...");
-
-              const collectionName = val.collectionName;
-              const description = val.collectionDescription;
-              const creator_id = parseInt(session!.user.userId);
-              const price = parseInt(val.price);
-              const collectibleArray = val.collectibles;
-
-              await createCollection(
-                collectionName,
-                description,
-                creator_id,
-                price,
-                collectibleArray
-              );
-
-              toast.dismiss();
-              toast.success("Collection successfully created!");
-              setIsLoading(false);
-              router.push("/merchandise");
-            })}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <div className="mb-8 flex items-center gap-4">
               <Button
@@ -98,41 +121,18 @@ const CreateCollectionPage = () => {
             </div>
 
             <div className="max-w-3xl lg:ml-16">
-              <section className="flex w-full flex-row flex-wrap gap-4 sm:flex-col">
-                <div className="flex w-full flex-col justify-between gap-2 sm:flex-row sm:items-end">
-                  <div>
-                    <label className="label pl-0">
-                      <span className="label-text">Upload Files*</span>
-                    </label>
-                    <p className="label-text">
-                      Supported file formats: JPEG, GIF, MP4
-                    </p>
-                  </div>
-
-                  <Button
-                    className="w-full sm:w-fit"
-                    variant="solid"
-                    size="sm"
-                    type="button"
-                    onClick={() => {
-                      append({ image: "", name: "", totalMerchSupply: 1 });
-                    }}
-                  >
-                    Add item
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 gap-y-6 gap-x-6 lg:grid-cols-2">
-                  {fields.map((field, index) => (
-                    <CollectibleInput
-                      key={field.id}
-                      collectible={collectibles[index]}
-                      index={index}
-                      setValue={setValue}
-                      remove={remove}
-                    />
-                  ))}
-                </div>
-              </section>
+              <CollectibleInput
+                control={control}
+                watch={watch}
+                trigger={trigger}
+                setValue={setValue}
+                fields={fields}
+                errors={errors}
+                addNewCollectible={() =>
+                  append({ image: "", name: "", totalMerchSupply: 1 })
+                }
+                remove={remove}
+              />
 
               <section className="mt-8">
                 <Controller
@@ -193,7 +193,6 @@ const CreateCollectionPage = () => {
                       label="Price*"
                       value={value}
                       onChange={onChange}
-                      placeholder="0"
                       errorMessage={error?.message}
                       size="md"
                       variant="bordered"
@@ -223,7 +222,6 @@ const CreateCollectionPage = () => {
               </section>
             </div>
           </form>
-          <Toaster />
         </div>
       </Layout>
     </ProtectedRoute>
