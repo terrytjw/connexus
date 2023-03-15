@@ -46,7 +46,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Question | ErrorResponse>
+  res: NextApiResponse<Question | ErrorResponse | {}>
 ) {
   const { method, body, query } = req;
   const questionId = parseInt(query.questionId as string);
