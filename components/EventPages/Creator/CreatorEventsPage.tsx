@@ -246,7 +246,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             <Button
               variant="outlined"
               size="sm"
-              className="border-0"
+              className="border-0 text-red-500"
               onClick={() => {
                 setSelectedTopics([]);
               }}
@@ -279,7 +279,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                       })
                     );
                   }}
-                  className="h-8 w-full sm:w-32"
+                  className="h-8 w-full rounded-lg sm:w-32"
                 />
               );
             })}
@@ -313,14 +313,13 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           <div className="divider"></div>
           {/* Liked */}
           <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
-          <Button
-            variant="outlined"
-            size="md"
-            className="mt-2"
-            onClick={() => setIsFilterModalOpen(false)}
-          >
-            Select Liked Evevnts Only
-          </Button>
+          <Badge
+            label="Select Liked Events Only"
+            size="lg"
+            selected={false}
+            onClick={() => {}}
+            className="mt-2 h-8 min-w-fit rounded-lg"
+          />
 
           <Button
             variant="solid"

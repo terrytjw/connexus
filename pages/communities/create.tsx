@@ -153,7 +153,7 @@ const CreateCommunityPage = ({
 
               <div className="flex gap-4">
                 <Button
-                  className="flex-grow"
+                  className="!bg-red-600"
                   variant="solid"
                   size="md"
                   onClick={() => onDelete()}
@@ -161,7 +161,7 @@ const CreateCommunityPage = ({
                   Confirm
                 </Button>
                 <Button
-                  className="flex-grow !text-red-500 sm:w-fit"
+                  className="border-0"
                   variant="outlined"
                   size="md"
                   onClick={() => setIsDeleteModalOpen(false)}

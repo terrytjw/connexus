@@ -92,7 +92,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                       })
                     );
                   }}
-                  className="h-8 w-full sm:w-32"
+                  className="h-8 w-full rounded-lg sm:w-32"
                 />
               );
             })}
