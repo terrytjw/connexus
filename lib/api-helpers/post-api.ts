@@ -11,13 +11,14 @@ export async function getPostAPI(postId: number) {
   return response;
 }
 
-export async function getAllPostsInChannelAPI(channelId: number) {
+export async function getAllPostsInChannelAPI(params: { channelId: number }) {
   const response = (await axios.get(baseUrl, {
-    params: {
-      channelId: channelId
-    }
+    params: params
   })).data;
-
+  const pinnedIndex = response.findIndex((post: Post) => post.isPinned);
+  const pinned = response[pinnedIndex];
+  response.splice(pinnedIndex, 1);
+  response.unshift(pinned);
   return response;
 }
 
