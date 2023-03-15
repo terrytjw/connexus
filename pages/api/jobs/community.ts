@@ -29,7 +29,7 @@ export default async function handler(
         }
       });
       for (let community of communities) {
-        await prisma.communitySizeTimestamp.create({
+        await prisma.communityAnalyticsTimestamp.create({
           data: {
             members: community._count.members,
             community: {

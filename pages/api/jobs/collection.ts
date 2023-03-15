@@ -22,28 +22,19 @@ export default async function handler(
   async function handlePOST() {
     try {
       const collections = await prisma.collection.findMany({
-        include: { merchandise: true, collectionMerchSoldTimestamps: true }
+        include: { merchandise: true, collectionAnalyticsTimestamps: true }
       });
       for (let collection of collections) {
-        const prevTicketsSoldTimestamp = collection.collectionMerchSoldTimestamps.at(-1);
-        let merchSold = 0 - prevTicketsSoldTimestamp!.merchSold;
+        const prevAnalyticsTimestamp = collection.collectionAnalyticsTimestamps.at(-1);
+        let merchSold = 0 - prevAnalyticsTimestamp!.merchSold;
         let revenue = 0
         for (let merch of collection.merchandise) {
           merchSold += merch.currMerchSupply
           revenue += merch.currMerchSupply * merch.price
         }
-        await prisma.collectionMerchSoldTimestamp.create({
+        await prisma.collectionAnalyticsTimestamp.create({
           data: {
             merchSold: merchSold,
-            collection: {
-              connect: {
-                collectionId: collection.collectionId
-              }
-            }
-          }
-        });
-        await prisma.collectionRevenueTimestamp.create({
-          data: {
             revenue: revenue,
             collection: {
               connect: {
@@ -51,7 +42,7 @@ export default async function handler(
               }
             }
           }
-        })
+        });
       }
       res.status(200).json(true);
     } catch (error) {

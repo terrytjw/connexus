@@ -22,28 +22,19 @@ export default async function handler(
   async function handlePOST() {
     try {
       const events = await prisma.event.findMany({
-        include: { tickets: true, eventTicketsSoldTimestamps: true }
+        include: { tickets: true, eventAnalyticsTimestamps: true }
       });
       for (let event of events) {
-        const prevTicketsSoldTimestamp = event.eventTicketsSoldTimestamps.at(-1);
-        let ticketsSold = 0 - prevTicketsSoldTimestamp!.ticketsSold;
+        const prevAnalyticsTimestamp = event.eventAnaltyicsTimestamps.at(-1);
+        let ticketsSold = 0 - prevAnalyticsTimestamp!.ticketsSold;
         let revenue = 0
         for (let ticket of event.tickets) {
           ticketsSold += ticket.currentTicketSupply
           revenue += ticket.currentTicketSupply * ticket.price // we shall pretend promotions do not exist xd
         }
-        await prisma.eventTicketsSoldTimestamp.create({
+        await prisma.eventAnalyticsTimestamp.create({
           data: {
             ticketsSold: ticketsSold,
-            event: {
-              connect: {
-                eventId: event.eventId
-              }
-            }
-          }
-        });
-        await prisma.eventRevenueTimestamp.create({
-          data: {
             revenue: revenue,
             event: {
               connect: {
@@ -51,7 +42,7 @@ export default async function handler(
               }
             }
           }
-        })
+        });
       }
       res.status(200).json(true);
     } catch (error) {

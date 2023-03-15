@@ -29,18 +29,9 @@ export default async function handler(
         }
       });
       for (let post of posts) {
-        await prisma.postLikesTimestamp.create({
+        await prisma.postAnalyticsTimestamp.create({
           data: {
             likes: post._count.likes,
-            post: {
-              connect: {
-                postId: post.postId
-              }
-            }
-          }
-        });
-        await prisma.postCommentsTimestamp.create({
-          data: {
             comments: post._count.comments,
             post: {
               connect: {

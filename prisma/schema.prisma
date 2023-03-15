@@ -51,8 +51,7 @@ model Post {
   channelId Int
   likes     User[]    @relation(name: "likedPosts")
   comments  Comment[]
-  postLikesTimestamps PostLikesTimestamp[]
-  postCommentsTimestamps PostCommentsTimestamp[]
+  analyticsTimestamps postAnalyticsTimestamp[]
 }
 
 model Community {
@@ -67,7 +66,7 @@ model Community {
   userId      Int
   members     User[]         @relation(name: "joinedCommunities")
   channels    Channel[]
-  communitySizeTimeStamp CommunitySizeTimestamp[]
+  analyticsTimestamps CommunityAnalyticsTimestamp[]
 }
 
 model Channel {
@@ -115,8 +114,7 @@ model Event {
   tickets            Ticket[]
   ticketURIs         String[]
   scAddress          String
-  eventTicketsSoldTimestamps EventTicketsSoldTimestamp[]
-  eventRevenueTimestamps EventRevenueTimestamp[]
+  analyticsTimestamps EventAnalyticsTimestamp[]
 }
 
 enum PublishType {
@@ -229,8 +227,7 @@ model Collection {
   merchURIs       String[]
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
-  collectionRevenueTimestamps CollectionRevenueTimestamp[]
-  collectionMerchSoldTimestamps CollectionMerchSoldTimestamp[]
+  analyticsTimestamps CollectionAnaltyicsTimestamp[]
 }
 
 enum CollectionState {
@@ -259,7 +256,7 @@ model Merchandise {
   users            User[]
 }
 
-model CommunitySizeTimestamp {
+model CommunityAnaltyicsTimestamp {
   id Int @id @default(autoincrement())
   members Int
   date DateTime @default(now())
@@ -267,48 +264,27 @@ model CommunitySizeTimestamp {
   communityId Int
 }
 
-model PostLikesTimestamp {
+model PostAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   likes Int
-  date DateTime @default(now())
-  post Post @relation(fields: [postId], references: [postId])
-  postId Int
-}
-
-model PostCommentsTimestamp {
-  id Int @id @default(autoincrement())
   comments Int
   date DateTime @default(now())
   post Post @relation(fields: [postId], references: [postId])
   postId Int
 }
 
-model EventTicketsSoldTimestamp {
+model EventAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   ticketsSold Int
-  date DateTime @default(now())
-  event Event @relation(fields: [eventId], references: [eventId])
-  eventId Int
-}
-
-model EventRevenueTimestamp {
-  id Int @id @default(autoincrement())
   revenue Int
   date DateTime @default(now())
   event Event @relation(fields: [eventId], references: [eventId])
   eventId Int
 }
 
-model CollectionMerchSoldTimestamp {
+model CollectionAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   merchSold Int
-  date DateTime @default(now())
-  collection Collection @relation(fields: [collectionId], references: [collectionId])
-  collectionId Int
-}
-
-model CollectionRevenueTimestamp {
-  id Int @id @default(autoincrement())
   revenue Int
   date DateTime @default(now())
   collection Collection @relation(fields: [collectionId], references: [collectionId])
