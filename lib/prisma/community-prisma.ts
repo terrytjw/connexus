@@ -12,7 +12,7 @@ export async function saveCommunity(community: Community) {
       channels: {
         create: [
           {
-            name: "Home Channel",
+            name: "Home",
             channelType: ChannelType.REGULAR,
           },
         ],
