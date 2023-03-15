@@ -1,9 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Question } from "@prisma/client";
-import { createQuestion, getAllQuestionsInChannel } from "../../../lib/prisma/question-prisma";
+import { getQuestion, updateQuestion } from "../../../lib/prisma/question-prisma";
 
 const prisma = new PrismaClient();
+
+// TODO swagger
 
 /**
  * @swagger
@@ -47,34 +49,35 @@ export default async function handler(
   res: NextApiResponse<Question[] | ErrorResponse>
 ) {
   const { method, body, query } = req;
+  const questionId = parseInt(query.questionId as string);
 
   switch (method) {
     case "GET":
-      const postId = parseInt(query.channelId as string);
-      await handleGET(postId);
+      await handleGET(questionId);
       break;
     case "POST":
-      const comment = JSON.parse(JSON.stringify(body)) as Question;
-      await handlePOST(comment);
+      const question = JSON.parse(JSON.stringify(body)) as Question;
+      await handlePOST(questionId, question);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(channelId: number) {
+  async function handleGET(questionId: number) {
     try {
-      const questions = await getAllQuestionsInChannel(channelId);
-      res.status(200).json(questions);
+      const question = await getQuestion(questionId);
+      if (!question) res.status(200).json({});
+      else res.status(200).json(question);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
   }
 
-  async function handlePOST(question: Question) {
+  async function handlePOST(questionId: number, question: Question) {
     try {
-      const response = await createQuestion(question);
+      const response = await updateQuestion(questionId, question);
       res.status(200).json([response]);
     } catch (error) {
       const errorResponse = handleError(error);

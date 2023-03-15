@@ -277,7 +277,7 @@ model Merchandise {
 model Question {
   questionId Int      @id @default(autoincrement())
   question   String
-  answer     String
+  answer     String   @default("")
   date       DateTime @default(now())
   user       User     @relation(fields: [userId], references: [userId])
   userId     Int

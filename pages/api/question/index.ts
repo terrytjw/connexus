@@ -50,21 +50,21 @@ export default async function handler(
 
   switch (method) {
     case "GET":
-      const postId = parseInt(query.channelId as string);
-      await handleGET(postId);
+      const channelId = parseInt(query.channelId as string);
+      await handleGET(channelId);
       break;
     case "POST":
-      const comment = JSON.parse(JSON.stringify(body)) as Question;
-      await handlePOST(comment);
+      const question = JSON.parse(JSON.stringify(body)) as Question;
+      await handlePOST(question);
       break;
     default:
       res.setHeader("Allow", ["GET", "POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(channelId: number) {
+  async function handleGET(questionId: number) {
     try {
-      const questions = await getAllQuestionsInChannel(channelId);
+      const questions = await getAllQuestionsInChannel(questionId);
       res.status(200).json(questions);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -77,6 +77,7 @@ export default async function handler(
       const response = await createQuestion(question);
       res.status(200).json([response]);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }

@@ -10,14 +10,14 @@ export async function getQuestion(questionId: number) {
   });
 }
 
-export async function getAllQuestionsInChannel(postId: number) {
+export async function getAllQuestionsInChannel(channelId: number) {
   return prisma.question.findMany({
     where: {
-      postId: postId,
+      channelId: channelId
     },
     include: {
       user: {
-        select: { name: true, profilePic: true }
+        select: { username: true, profilePic: true }
       }
     },
     orderBy: {
@@ -33,7 +33,7 @@ export async function createQuestion(question: Question) {
     },
     include: {
       user: {
-        select: { name: true, profilePic: true }
+        select: { username: true, profilePic: true }
       }
     },
   });
@@ -47,7 +47,7 @@ export async function updateQuestion(questionId: number, question: Question) {
     data: { ...question },
     include: {
       user: {
-        select: { name: true, profilePic: true }
+        select: { username: true, profilePic: true }
       }
     },
   });
