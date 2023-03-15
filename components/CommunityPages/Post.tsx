@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import { BsPinFill } from "react-icons/bs";
 import {
   FaEllipsisH,
   FaHeart,
@@ -16,14 +16,21 @@ import CommentInput from "./CommentInput";
 import CustomLink from "../CustomLink";
 import Modal from "../Modal";
 import PostInput from "./PostInput";
-import useSWR, { Key } from "swr";
-import { swrFetcher } from "../../lib/swrFetcher";
+import useSWR from "swr";
 import {
   CommentWithCommenterAndLikes,
   PostWithCreatorAndLikes,
 } from "../../utils/types";
-import { likePostAPI, unlikePostAPI, deletePostAPI } from "../../lib/api-helpers/post-api";
-import { getAllCommentsOnPostAPI, createCommentAPI } from "../../lib/api-helpers/comment-api";
+import {
+  likePostAPI,
+  unlikePostAPI,
+  deletePostAPI,
+  updatePostAPI,
+} from "../../lib/api-helpers/post-api";
+import {
+  getAllCommentsOnPostAPI,
+  createCommentAPI,
+} from "../../lib/api-helpers/comment-api";
 
 type PostProps = {
   post: PostWithCreatorAndLikes;
@@ -43,10 +50,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     error,
     isLoading,
     mutate,
-  } = useSWR(
-    post.postId as unknown as Key,
-    getAllCommentsOnPostAPI
-  );
+  } = useSWR({ postId: post.postId }, getAllCommentsOnPostAPI);
 
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
@@ -73,6 +77,32 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     });
   };
 
+  const pinPost = async () => {
+    const res = await updatePostAPI(
+      post.postId,
+      post.content,
+      post.media,
+      true
+    );
+    mutatePosts((data: PostWithCreatorAndLikes[]) => {
+      data.unshift(res);
+      return data;
+    });
+  };
+
+  const unpinPost = async () => {
+    const res = await updatePostAPI(
+      post.postId,
+      post.content,
+      post.media,
+      false
+    );
+    mutatePosts((data: PostWithCreatorAndLikes[]) => {
+      data.unshift(res);
+      return data;
+    });
+  };
+
   const deletePost = async () => {
     const res = await deletePostAPI(post.postId);
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
@@ -82,7 +112,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
 
   const createComment = async () => {
     const res = await createCommentAPI(newComment, post.postId, userId);
-    
+
     const temp = res[0];
     mutate((data: CommentWithCommenterAndLikes[]) => {
       data.unshift(temp);
@@ -93,7 +123,11 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   return (
-    <div className="card border-2 border-gray-200 bg-white">
+    <div
+      className={`card border-2 border-gray-200 bg-white ${
+        post.isPinned ? "shadow-md" : ""
+      }`}
+    >
       <Modal
         isOpen={isModalOpen}
         setIsOpen={setIsModalOpen}
@@ -137,49 +171,64 @@ const Post = ({ post, mutatePosts }: PostProps) => {
             </CustomLink>{" "}
           </div>
 
-          {post.creator.userId == userId ? (
-            <div className="dropdown-btm dropdown-end dropdown">
-              <label tabIndex={0}>
-                <Button variant="outlined" size="sm" className="border-0">
-                  <FaEllipsisH />
-                </Button>
-              </label>
-              <ul
-                tabIndex={0}
-                className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
-              >
-                {/* <li>
-                  <Button
-                    size="md"
-                    variant="solid"
-                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                  >
-                    Pin Post
+          <div className="flex items-center gap-2">
+            {post.isPinned ? <BsPinFill className="text-blue-500" /> : null}
+            {post.creator.userId == userId ? (
+              <div className="dropdown-btm dropdown-end dropdown">
+                <label tabIndex={0}>
+                  <Button variant="outlined" size="sm" className="border-0">
+                    <FaEllipsisH />
                   </Button>
-                </li> */}
-                <li>
-                  <Button
-                    size="md"
-                    variant="solid"
-                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                    onClick={() => setIsModalOpen(true)}
-                  >
-                    Edit Post
-                  </Button>
-                </li>
-                <li>
-                  <Button
-                    size="md"
-                    variant="solid"
-                    className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                    onClick={() => deletePost()}
-                  >
-                    Delete Post
-                  </Button>
-                </li>
-              </ul>
-            </div>
-          ) : null}
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                >
+                  <li>
+                    {post.isPinned ? (
+                      <Button
+                        size="md"
+                        variant="solid"
+                        className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                        onClick={() => unpinPost()}
+                      >
+                        Unpin Post
+                      </Button>
+                    ) : (
+                      <Button
+                        size="md"
+                        variant="solid"
+                        className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                        onClick={() => pinPost()}
+                      >
+                        Pin Post
+                      </Button>
+                    )}
+                  </li>
+                  <li>
+                    <Button
+                      size="md"
+                      variant="solid"
+                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => setIsModalOpen(true)}
+                    >
+                      Edit Post
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      size="md"
+                      variant="solid"
+                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => deletePost()}
+                    >
+                      Delete Post
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+            ) : null}
+          </div>
         </div>
 
         <Carousel images={post.media} />
@@ -281,21 +330,6 @@ const Post = ({ post, mutatePosts }: PostProps) => {
                   }}
                   mutateComments={mutate}
                 />
-                {/* <div className="pl-16">
-                  {comment.replies?.map(
-                    (reply: CommentWithCommenterAndLikes) => {
-                      return (
-                        <Comment
-                          key={reply.commentId}
-                          comment={reply}
-                          replyTo={() => {
-                            setActiveComment(reply);
-                          }}
-                        />
-                      );
-                    }
-                  )}
-                </div> */}
               </div>
             );
           })}
