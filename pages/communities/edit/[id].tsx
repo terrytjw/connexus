@@ -12,11 +12,12 @@ const EditCommunityPage = () => {
     data: community,
     error,
     isLoading,
+    mutate,
   } = useSWR(id, getCommunityAPI);
 
   if (isLoading) return <Loading />;
 
-  return <CreateCommunityPage community={community} />;
+  return <CreateCommunityPage community={community} mutateCommunity={mutate} />;
 };
 
 export default EditCommunityPage;

@@ -1,5 +1,4 @@
 import { CategoryType } from "@prisma/client";
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -14,10 +13,12 @@ import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TabGroupBordered from "../../components/TabGroupBordered";
 import useSWR from "swr";
-import { swrFetcher } from "../../lib/swrFetcher";
 import { CommunityWithMemberIds } from "../../utils/types";
 import { getUserInfo } from "../../lib/api-helpers/user-api";
-import { getAllCommunitiesAPI, searchCommunitiesAPI } from "../../lib/api-helpers/community-api";
+import {
+  getAllCommunitiesAPI,
+  searchCommunitiesAPI,
+} from "../../lib/api-helpers/community-api";
 
 type CommunitiesPagePageProps = {
   communitiesData: CommunityWithMemberIds[];
@@ -33,11 +34,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
   const { data: session } = useSession();
   const userId = session?.user.userId;
 
-  const {
-    data: userData,
-    error,
-    isLoading,
-  } = useSWR(userId, getUserInfo);
+  const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const searchAndFilterCommunities = async () => {
     const res = await searchCommunitiesAPI(searchString, 0, selectedTopics);
@@ -59,27 +56,27 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Add Topics</h3>
+            <h3 className="text-xl font-semibold">Filter Communities</h3>
             <Button
               variant="outlined"
               size="sm"
-              className="border-0"
+              className="border-0 text-red-500"
               onClick={() => {
-                setIsModalOpen(false);
-                searchAndFilterCommunities();
+                setSelectedTopics([]);
               }}
             >
-              Done
+              Clear
             </Button>
           </div>
 
-          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <h3 className="mt-8 text-sm font-medium text-gray-500">CATEGORIES</h3>
+          <div className="mt-2 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {Object.values(CategoryType).map((label, index) => {
               return (
                 <Badge
                   key={index}
                   label={label}
-                  size="lg"
+                  size="md"
                   selected={
                     selectedTopics.length > 0 &&
                     selectedTopics.indexOf(label) != -1
@@ -95,20 +92,18 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                       })
                     );
                   }}
-                  className="h-8 w-full sm:w-56"
+                  className="h-8 w-full rounded-lg sm:w-32"
                 />
               );
             })}
           </div>
           <Button
-            variant="outlined"
-            size="sm"
-            className="mt-8 w-full text-red-500"
-            onClick={() => {
-              setSelectedTopics([]);
-            }}
+            variant="solid"
+            size="md"
+            className="mt-8"
+            onClick={() => setIsModalOpen(false)}
           >
-            Clear selected topics
+            Submit
           </Button>
         </Modal>
 

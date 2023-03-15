@@ -9,8 +9,7 @@ import Loading from "../../Loading";
 import Modal from "../../Modal";
 import Post from "../Post";
 import PostInput from "../PostInput";
-import useSWR, { Key } from "swr";
-import { swrFetcher } from "../../../lib/swrFetcher";
+import useSWR from "swr";
 import {
   ChannelWithMembers,
   PostWithCreatorAndLikes,
@@ -32,10 +31,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
     error,
     isLoading,
     mutate,
-  } = useSWR(
-    channel.channelId as unknown as Key,
-    getAllPostsInChannelAPI
-  );
+  } = useSWR({ channelId: channel.channelId }, getAllPostsInChannelAPI);
 
   const searchMembers = async () => {
     const res = await axios.get(
