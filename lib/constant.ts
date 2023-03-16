@@ -8,6 +8,8 @@ export const USER_TICKET_ENDPOINT = "user-tickets";
 export const POST_ENDPOINT = "post";
 export const COMMENT_ENDPOINT = "comment";
 export const COMMUNITY_ENDPOINT = "community";
+export const EMAIL_ENDPOINT = "email";
+export const SMS_ENDPOINT = "sms";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
