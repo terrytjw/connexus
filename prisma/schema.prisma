@@ -40,6 +40,7 @@ model User {
   userTicket          UserTicket[]
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
+  questions           Question[]
 }
 
 model Post {
@@ -80,6 +81,7 @@ model Channel {
   posts        Post[]
   collection   Collection? @relation(fields: [collectionId], references: [collectionId])
   collectionId Int?        @unique
+  questions    Question[]
 
   @@unique([communityId, name])
 }
@@ -272,4 +274,15 @@ model Merchandise {
   collection       Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   collectionId     Int
   users            User[]
+}
+
+model Question {
+  questionId Int      @id @default(autoincrement())
+  question   String
+  answer     String   @default("")
+  date       DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [userId])
+  userId     Int
+  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channelId  Int
 }
