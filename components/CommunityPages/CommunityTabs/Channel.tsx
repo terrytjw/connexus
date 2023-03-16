@@ -1,20 +1,32 @@
 import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { FaSearch, FaTimes, FaUserFriends } from "react-icons/fa";
+import {
+  FaSearch,
+  FaTelegramPlane,
+  FaTimes,
+  FaUserFriends,
+} from "react-icons/fa";
 import Button from "../../Button";
 import InputGroup from "../../InputGroup";
 import Loading from "../../Loading";
 import Modal from "../../Modal";
 import Post from "../Post";
 import PostInput from "../PostInput";
+import Question from "../Question";
 import useSWR from "swr";
 import {
   ChannelWithMembers,
   PostWithCreatorAndLikes,
+  QuestionWithUser,
 } from "../../../utils/types";
 import { getAllPostsInChannelAPI } from "../../../lib/api-helpers/post-api";
+import {
+  createQuestionAPI,
+  getAllQuestionsInChannelAPI,
+} from "../../../lib/api-helpers/question-api";
 
 type ChannelTabProps = {
   channel: ChannelWithMembers;
@@ -22,16 +34,43 @@ type ChannelTabProps = {
 };
 
 const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [members, setMembers] = useState(channel.members ?? []);
+  const [displayFeed, setDisplayFeed] = useState(true);
+  const [question, setQuestion] = useState("");
 
   const {
     data: posts,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR({ channelId: channel.channelId }, getAllPostsInChannelAPI);
+    isLoading: isPostsDataLoading,
+    mutate: mutatePosts,
+  } = useSWR(
+    { key: "posts", channelId: channel.channelId },
+    getAllPostsInChannelAPI
+  );
+
+  const {
+    data: questions,
+    isLoading: isQuestionsDataLoading,
+    mutate: mutateQuestions,
+  } = useSWR(
+    { key: "questions", channelId: channel.channelId },
+    getAllQuestionsInChannelAPI
+  );
+
+  const createQuestion = async () => {
+    const res = await createQuestionAPI(question, channel.channelId, userId);
+
+    mutateQuestions((data: QuestionWithUser[]) => {
+      data.unshift(res[0]);
+      return data;
+    });
+
+    setQuestion("");
+  };
 
   const searchMembers = async () => {
     const res = await axios.get(
@@ -45,7 +84,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
     searchMembers();
   }, [searchString]);
 
-  if (isLoading) return <Loading />;
+  if (isPostsDataLoading || isQuestionsDataLoading) return <Loading />;
 
   return (
     <div>
@@ -114,31 +153,75 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
         )}
       </Modal>
       <div className="mb-4 flex w-full justify-end gap-4">
-        {/* <Button
-            variant="outlined"
-            size="sm"
-            onClick={() => {
-              document.getElementById("feed")?.classList.toggle("hidden");
-              document.getElementById("chatroom")?.classList.toggle("hidden");
-            }}
-          >
-            Chat Room
-          </Button> */}
-
+        <Button
+          variant="outlined"
+          size="sm"
+          onClick={() => {
+            setDisplayFeed(!displayFeed);
+          }}
+        >
+          {displayFeed ? "Q&A" : "Feed"}
+        </Button>
         <Button variant="solid" size="sm" onClick={() => setIsModalOpen(true)}>
           <FaUserFriends />
         </Button>
       </div>
 
-      <div id="feed" className="flex flex-col gap-4">
-        {isCreator ? (
-          <PostInput mutatePosts={mutate} channelId={channel.channelId} />
-        ) : null}
+      {displayFeed ? (
+        <div id="feed" className="flex flex-col gap-4">
+          {isCreator ? (
+            <PostInput
+              mutatePosts={mutatePosts}
+              channelId={channel.channelId}
+            />
+          ) : null}
 
-        {posts.map((post: PostWithCreatorAndLikes) => {
-          return <Post key={post.postId} post={post} mutatePosts={mutate} />;
-        })}
-      </div>
+          {posts.map((post: PostWithCreatorAndLikes) => {
+            return (
+              <Post key={post.postId} post={post} mutatePosts={mutatePosts} />
+            );
+          })}
+        </div>
+      ) : (
+        <div id="q&a" className="flex flex-col gap-4">
+          {!isCreator ? (
+            <div className="card border-2 border-gray-200 bg-white">
+              <div className="card-body p-2 sm:p-4">
+                <div className="relative mt-1 flex w-full items-center rounded-md">
+                  <textarea
+                    className="textarea block w-full items-center overflow-hidden rounded-md pr-12 focus:outline-none"
+                    placeholder="Send your question over here!"
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                  />
+                  <Button
+                    className="absolute bottom-4 right-2 flex items-center border-0"
+                    variant="outlined"
+                    size="sm"
+                    type="button"
+                    onClick={() => {
+                      createQuestion();
+                    }}
+                  >
+                    <FaTelegramPlane />
+                  </Button>
+                </div>
+              </div>
+            </div>
+          ) : null}
+
+          {questions.map((question: QuestionWithUser) => {
+            return (
+              <Question
+                key={question.questionId}
+                question={question}
+                mutateQuestions={mutateQuestions}
+                isCommunityCreator={isCreator}
+              />
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
