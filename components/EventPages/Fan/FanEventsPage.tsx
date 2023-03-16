@@ -10,6 +10,14 @@ import { EventWithTicketsandAddress } from "../../../utils/types";
 import Link from "next/link";
 import { CategoryType, Event } from "@prisma/client";
 import axios from "axios";
+import {
+  retrieveVisitedEvents,
+  viewExpiredEvent,
+  viewTrendingEvents,
+} from "../../../lib/api-helpers/event-api";
+import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import Loading from "../../Loading";
 
 const DELAY_TIME = 400;
 
@@ -27,6 +35,11 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
+
+  // fetch userId if from session
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
+
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
 
@@ -66,17 +79,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       const { data } = await axios.get(url);
 
       // fetch addresses using address ID
-      const eventsWithAddresses: EventWithTicketsandAddress[] =
-        await Promise.all(
-          data.map(async (event: Partial<Event>) => {
-            const { data: address } = await axios.get(
-              `http://localhost:3000/api/addresses/${event?.addressId}`
-            );
-
-            return { ...event, address };
-          })
-        );
-      setSearchAndFilterResults(eventsWithAddresses);
+      setSearchAndFilterResults(data);
     } catch (error) {
       console.error(error);
     }
@@ -86,11 +89,9 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   useEffect(() => {
     // dont debounce on first page load
     if (searchString !== "" || selectedTopics.length > 0) {
-      // console.log("search api called");
       debounceSearchApiCall(searchString);
     } else {
       // using this state to display events on initial page load
-      // console.log("search api NOT called ");
       setSearchAndFilterResults(events);
     }
 
@@ -99,14 +100,30 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     };
   }, [searchString, selectedTopics]);
 
+  // Listed Tab
   const ListedTabContent = () => {
-    // temp client filter to separate list and expired events
+    // client filter for listed events
     const listedEvents = searchAndFilterResults.filter(
       (event: EventWithTicketsandAddress) =>
         new Date(event.endDate) >= new Date()
     );
 
-    // console.log("upcoming -> ", filterListedEvents());
+    const {
+      data: trendingEvents,
+      isLoading: isTrendingEventsLoading,
+      mutate: mutateTrendingEvents,
+    } = useSWR("trendingEvents", viewTrendingEvents);
+
+    if (isTrendingEventsLoading) return <Loading />;
+
+    console.log(
+      "search results -> ",
+      searchAndFilterResults.filter(
+        (event: EventWithTicketsandAddress) =>
+          new Date(event.endDate) >= new Date()
+      )
+    );
+
     return (
       <>
         <div className="mb-4 flex flex-wrap gap-2">
@@ -133,17 +150,91 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             );
           })}
         </div>
-        <EventsGrid data={listedEvents} />
+
+        {/* Trending Events  */}
+        <div>
+          <h2 className="mb-6 text-2xl font-semibold text-slate-600">
+            Trending Events in SG
+          </h2>
+          <EventsGrid
+            data={trendingEvents}
+            mutateTrendingEvents={mutateTrendingEvents}
+          />
+        </div>
+        <div>
+          <h2 className="mt-12 mb-6 text-2xl font-semibold text-slate-600">
+            Events in Singapore
+          </h2>
+          <EventsGrid
+            data={listedEvents}
+            setSearchAndFilterResults={setSearchAndFilterResults}
+          />
+        </div>
       </>
     );
   };
 
-  const ExpiredTabContent = () => {
-    // temp client filter to separate list and expired events
-    const expiredEvents = events.filter(
-      (event: EventWithTicketsandAddress) =>
-        new Date(event.endDate) < new Date()
+  // Visited Tab
+  const VisitedTabContent = () => {
+    const {
+      data: visitedEvents,
+      error,
+      isLoading,
+    } = useSWR(
+      "visitedEvents",
+      async () => await retrieveVisitedEvents(Number(userId))
     );
+
+    if (isLoading) return <Loading />;
+
+    return (
+      <>
+        <div className="mb-4 flex flex-wrap gap-2">
+          {selectedTopics.map((label) => {
+            return (
+              <Button
+                key={label}
+                size="sm"
+                variant="outlined"
+                onClick={(e) => e.preventDefault()}
+                className="font-normal"
+              >
+                {label}
+                <FaTimes
+                  onClick={() => {
+                    setSelectedTopics(
+                      selectedTopics.filter((topic) => {
+                        return topic != label;
+                      })
+                    );
+                  }}
+                />
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Visited Events  */}
+        <div>
+          <EventsGrid data={visitedEvents} />
+        </div>
+      </>
+    );
+  };
+
+  // Expired Tab
+  const ExpiredTabContent = () => {
+    const {
+      data: expiredEvents,
+      error,
+      isLoading,
+    } = useSWR(
+      "expiredEvents",
+      async () => await viewExpiredEvent(Number(userId))
+    );
+
+    if (isLoading) return <Loading />;
+
     return (
       <div>
         <EventsGrid data={expiredEvents} />
@@ -213,7 +304,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
         <h3 className="mt-4">Register for a new event </h3>
 
         <div className="mt-6 mb-3 flex flex-wrap justify-between">
-          <h2 className="mt-2 text-xl font-bold">Events in Singapore</h2>
           <Link href="/events/tickets">
             <Button variant="solid" size="md" className="max-w-xs">
               View Tickets
@@ -245,15 +335,15 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
         <div className="relative">
           <TabGroupBordered
-            tabs={["Listed", "Expired"]}
+            tabs={["Listed", "Visited", "Expired"]}
             activeTab={activeTab}
             setActiveTab={(index: number) => {
               setActiveTab(index);
             }}
           >
             {activeTab == 0 && <ListedTabContent />}
-            {/* {activeTab == 1 && <VisitedTabContent />} */}
-            {activeTab == 1 && <ExpiredTabContent />}
+            {activeTab == 1 && <VisitedTabContent />}
+            {activeTab == 2 && <ExpiredTabContent />}
           </TabGroupBordered>
 
           {/* desktop */}

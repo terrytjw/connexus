@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import CreateCommunityPage from "../create";
 import Loading from "../../../components/Loading";
 import useSWR from "swr";
-import { swrFetcher } from "../../../lib/swrFetcher";
+import { getCommunityAPI } from "../../../lib/api-helpers/community-api";
 
 const EditCommunityPage = () => {
   const router = useRouter();
@@ -12,11 +12,12 @@ const EditCommunityPage = () => {
     data: community,
     error,
     isLoading,
-  } = useSWR(`http://localhost:3000/api/community/${id}`, swrFetcher);
+    mutate,
+  } = useSWR(id, getCommunityAPI);
 
   if (isLoading) return <Loading />;
 
-  return <CreateCommunityPage community={community} />;
+  return <CreateCommunityPage community={community} mutateCommunity={mutate} />;
 };
 
 export default EditCommunityPage;

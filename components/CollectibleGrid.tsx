@@ -1,16 +1,12 @@
+import { Merchandise } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
-import React from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Button from "./Button";
-
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { MerchandiseWithCollectionName } from "../utils/types";
 
 type CollectibleGridItemProps = {
-  item: any; // todo: remove any type and set a proper type
+  item: MerchandiseWithCollectionName | Merchandise;
   collectedTab: boolean;
 };
 
@@ -21,10 +17,7 @@ const CollectibleGridItem = ({
   if (!item) return <Skeleton height={350} />;
 
   return (
-    <Link
-      href={`/merchandise/${item.collectionId}`}
-      className="group rounded-lg p-2 text-sm hover:bg-gray-200"
-    >
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200">
       {!collectedTab ? (
         <div className="mb-2 flex w-full gap-3 text-gray-900">
           <progress
@@ -66,22 +59,25 @@ const CollectibleGridItem = ({
       </div>
       <h3 className="mt-4 font-medium text-gray-900">{item.name}</h3>
       {collectedTab ? (
-        <p className="mt-2 text-sm text-gray-500">From {item.collectionName}</p>
+        <p className="mt-2 text-sm text-gray-500">
+          From{" "}
+          {(item as MerchandiseWithCollectionName).collection.collectionName}
+        </p>
       ) : null}
-    </Link>
+    </div>
   );
 };
 
 type CollectibleGridProps = {
-  data: any[]; // todo: remove any type and set a proper type
+  data: MerchandiseWithCollectionName[] | Merchandise[];
   collectedTab: boolean;
 };
 const CollectibleGrid = ({ data, collectedTab }: CollectibleGridProps) => {
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
       {data.map((item) => (
         <CollectibleGridItem
-          key={item.collectibleId}
+          key={item.merchId}
           item={item}
           collectedTab={collectedTab}
         />

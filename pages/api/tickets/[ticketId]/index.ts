@@ -1,7 +1,15 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Ticket } from "@prisma/client";
+import {
+  deleteTicket,
+  retrieveTicketInfo,
+  updateTicket,
+} from "../../../../lib/prisma/ticket-prisma";
 
 const prisma = new PrismaClient();
 
@@ -91,12 +99,7 @@ export default async function handler(
 
   async function handleGET(ticketId: number) {
     try {
-      const ticket = await prisma.ticket.findUnique({
-        where: {
-          ticketId: ticketId,
-        },
-      });
-
+      const ticket = await retrieveTicketInfo(ticketId);
       if (!ticket) res.status(200).json({});
       else res.status(200).json(ticket);
     } catch (error) {
@@ -107,27 +110,17 @@ export default async function handler(
 
   async function handlePOST(ticketId: number, ticket: Ticket) {
     try {
-      const response = await prisma.ticket.update({
-        where: {
-          ticketId: ticketId,
-        },
-        data: { ...ticket, ticketId: undefined },
-      });
+      const response = await updateTicket(ticketId, ticket);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
-      console.log(errorResponse);
     }
   }
 
   async function handleDELETE(ticketId: number) {
     try {
-      const response = await prisma.ticket.delete({
-        where: {
-          ticketId: ticketId,
-        },
-      });
+      const response = await deleteTicket(ticketId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

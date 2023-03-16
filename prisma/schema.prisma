@@ -36,11 +36,14 @@ model User {
   likedComments       Comment[]     @relation(name: "likedComments")
   tickets             Ticket[]
   merchandise         Merchandise[]
+  likedEvents         Event[]       @relation("eventLikes")
+  userTicket          UserTicket[]
+  events              Event[]       @relation("createdEvents")
+  walletBalance       Float         @default(0)
 }
 
 model Post {
   postId    Int       @id @default(autoincrement())
-  title     String
   content   String
   date      DateTime  @default(now())
   media     String[]
@@ -57,7 +60,7 @@ model Post {
 model Community {
   communityId Int            @id @default(autoincrement())
   name        String
-  description String?
+  description String
   profilePic  String?
   bannerPic   String?
   tags        CategoryType[]
@@ -70,13 +73,15 @@ model Community {
 }
 
 model Channel {
-  channelId   Int         @id @default(autoincrement())
-  name        String
-  channelType ChannelType @default(PREMIUM)
-  members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId Int
-  posts       Post[]
+  channelId    Int         @id @default(autoincrement())
+  name         String
+  channelType  ChannelType @default(PREMIUM)
+  members      User[]
+  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId  Int
+  posts        Post[]
+  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int?        @unique
 
   @@unique([communityId, name])
 }
@@ -95,25 +100,28 @@ model Comment {
 }
 
 model Event {
-  eventId            Int            @id @default(autoincrement())
-  eventName          String
-  category           CategoryType[]
-  address            Address        @relation(fields: [addressId], references: [addressId])
-  addressId          Int
-  startDate          DateTime       @default(now())
-  endDate            DateTime       @default(now())
-  summary            String?
-  description        String?
-  visibilityType     VisibilityType
-  privacyType        PrivacyType
-  eventPic           String?
-  bannerPic          String?
-  maxAttendee        Int            @default(0)
-  publishType        PublishType
-  publishStartDate   DateTime       @default(now())
-  tickets            Ticket[]
-  ticketURIs         String[]
-  scAddress          String
+  eventId          Int            @id @default(autoincrement())
+  eventName        String
+  category         CategoryType[]
+  address          Address        @relation(fields: [addressId], references: [addressId])
+  addressId        Int
+  startDate        DateTime       @default(now())
+  endDate          DateTime       @default(now())
+  summary          String?
+  description      String?
+  visibilityType   VisibilityType
+  privacyType      PrivacyType
+  eventPic         String?
+  bannerPic        String?
+  maxAttendee      Int            @default(0)
+  publishType      PublishType
+  publishStartDate DateTime       @default(now())
+  tickets          Ticket[]
+  ticketURIs       String[]
+  scAddress        String
+  userLikes        User[]         @relation("eventLikes")
+  creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
+  creatorId        Int
   analyticsTimestamps EventAnalyticsTimestamp[]
 }
 
@@ -134,19 +142,32 @@ model Address {
 }
 
 model Ticket {
-  ticketId            Int         @id @default(autoincrement())
+  ticketId            Int          @id @default(autoincrement())
   name                String
-  totalTicketSupply   Int         @default(0)
-  currentTicketSupply Int         @default(0)
-  price               Float       @default(0)
-  ticketType          TicketType  @default(ON_SALE)
-  startDate           DateTime    @default(now())
-  endDate             DateTime    @default(now())
+  totalTicketSupply   Int          @default(0)
+  currentTicketSupply Int          @default(0)
+  price               Float        @default(0)
+  ticketType          TicketType   @default(ON_SALE)
+  startDate           DateTime     @default(now())
+  endDate             DateTime     @default(now())
   description         String?
-  event               Event       @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
+  event               Event        @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
   promotion           Promotion[]
   users               User[]
+  userTicket          UserTicket[]
+}
+
+model UserTicket {
+  userTicketId Int     @id @default(autoincrement())
+  userId       Int
+  ticketId     Int
+  checkIn      Boolean @default(false)
+
+  user   User   @relation(fields: [userId], references: [userId])
+  ticket Ticket @relation(fields: [ticketId], references: [ticketId])
+
+  @@unique([userId, ticketId])
 }
 
 enum TicketType {
@@ -168,30 +189,30 @@ model Promotion {
 
 enum CategoryType {
   AUTOCAR
-BOAT
-AIR
-PROFESSIONAL
-CULTURE
-FASHION
-BEAUTY
-POLITICS
-HOBBIES
-ARTS
-RELIGION
-SCHOOL
-SCIENCE
-TECHNOLOGY
-HOLIDAY
-FITNESS
-NFT
-TRAVEL
-HEALTH
-PHOTOGRAPHY
-LIFESTYLE
-ENTERTAINMENT
-ANIMALS
-EDUCATION
-FOOD
+  BOAT
+  AIR
+  PROFESSIONAL
+  CULTURE
+  FASHION
+  BEAUTY
+  POLITICS
+  HOBBIES
+  ARTS
+  RELIGION
+  SCHOOL
+  SCIENCE
+  TECHNOLOGY
+  HOLIDAY
+  FITNESS
+  NFT
+  TRAVEL
+  HEALTH
+  PHOTOGRAPHY
+  LIFESTYLE
+  ENTERTAINMENT
+  ANIMALS
+  EDUCATION
+  FOOD
 }
 
 enum VisibilityType {
@@ -218,9 +239,9 @@ enum PromotionType {
 model Collection {
   collectionId    Int             @id @default(autoincrement())
   collectionName  String          @unique
-  description     String?
+  description     String
   currency        Currency        @default(USD)
-  collectionState CollectionState @default(CREATED)
+  collectionState CollectionState @default(ON_SALE)
   merchandise     Merchandise[]
   fixedPrice      Float           @default(0)
   scAddress       String
@@ -228,10 +249,10 @@ model Collection {
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
   analyticsTimestamps CollectionAnalyticsTimestamp[]
+  premiumChannel  Channel?
 }
 
 enum CollectionState {
-  CREATED
   ON_SALE
   SOLD
   PAUSED
@@ -247,7 +268,8 @@ enum Currency {
 model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
-  image            String?
+  image            String
+  stripePriceId    String? //Optional To be removed
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
   currMerchSupply  Int        @default(0)

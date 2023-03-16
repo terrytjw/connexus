@@ -7,6 +7,7 @@ import FanCommunityPage from "../../components/CommunityPages/Fan/FanCommunityPa
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
+import { getCommunityAPI } from "../../lib/api-helpers/community-api";
 
 type CommunityPagePageProps = {
   communityData: CommunityWithCreatorAndChannelsAndMembers;
@@ -39,9 +40,7 @@ export default CommunityPage;
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const { id } = context.params;
 
-  const { data: communityData } = await axios.get(
-    `http://localhost:3000/api/community/${id}`
-  );
+  const communityData = await getCommunityAPI(id);
 
   if (communityData && Object.keys(communityData).length === 0) {
     return {

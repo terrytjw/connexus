@@ -1,13 +1,14 @@
 import React from "react";
 import CollectionGrid from "../../CollectionGrid";
+import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
 
 type MarketplaceTabProps = {
-  products: any; // TODO: type this
+  collections: CollectionWithMerchAndPremiumChannel[];
 };
-const MarketplaceTab = ({ products }: MarketplaceTabProps) => {
+const MarketplaceTab = ({ collections }: MarketplaceTabProps) => {
   return (
     <div>
-      <CollectionGrid data={products} />
+      <CollectionGrid data={collections} />
     </div>
   );
 };

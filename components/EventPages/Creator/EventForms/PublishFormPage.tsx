@@ -84,6 +84,14 @@ const PublishFormPage = ({
                     </p>
                   </div>
                 </div>
+                <Button
+                  variant="solid"
+                  size="md"
+                  className="max-w-xs"
+                  onClick={() => setIsPreview((prev) => !prev)}
+                >
+                  Preview Event
+                </Button>
               </div>
 
               {/* Radios */}

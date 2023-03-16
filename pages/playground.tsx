@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import Accordion from "../components/Accordion";
-import CollectionGrid from "../components/CollectionGrid";
 import Avatar from "../components/Avatar";
 import Banner from "../components/Banner";
 import Button from "../components/Button";
@@ -18,7 +17,7 @@ function classNames(...classes: string[]) {
 }
 
 import TabGroupBordered from "../components/TabGroupBordered";
-import { collections, communities, events, profile } from "../utils/dummyData";
+import { communities, events, profile } from "../utils/dummyData";
 import Table from "../components/Table";
 import TextArea from "../components/TextArea";
 import AvatarInput from "../components/AvatarInput";
@@ -162,18 +161,6 @@ const PlaygroundPage = () => {
               </TabGroupBordered>
             </div>
           </div>
-          <div className="divider" />
-
-          {/* Collection Grid */}
-          <section className="p-8">
-            <div className="flex justify-center">
-              <h1 className="mb-4 inline-block border-b-2 border-gray-300 py-1 text-xl font-bold">
-                Collection Grid
-              </h1>
-            </div>
-
-            <CollectionGrid data={collections} />
-          </section>
           <div className="divider" />
 
           {/* Events Grid */}

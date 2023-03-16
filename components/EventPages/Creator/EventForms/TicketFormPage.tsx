@@ -60,6 +60,28 @@ const TicketFormPage = ({
   return (
     <div>
       <section>
+        <div className="mt-8 flex w-full flex-col gap-2">
+          <Controller
+            control={control}
+            name={`tickets.0.name`} // todo: replace with promo code field
+            render={({ field: { value, onChange }, fieldState: { error } }) => (
+              <Input
+                type="text"
+                label="Promotion Code"
+                value={value}
+                onChange={onChange}
+                placeholder="Promo Code"
+                size="md"
+                variant="bordered"
+                errorMessage={error?.message}
+                className="max-w-3xl"
+              />
+            )}
+          />
+        </div>
+        <div className="divider"></div>
+      </section>
+      <section>
         {fields.map((ticket, index) => (
           <div
             id={`ticket-${index + 1}`}

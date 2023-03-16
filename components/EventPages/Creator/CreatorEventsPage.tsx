@@ -10,6 +10,10 @@ import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import { Event } from "@prisma/client";
+import { FiCalendar } from "react-icons/fi";
+import EventWordToggle from "../EventWordToggle";
+import { useRouter } from "next/router";
+import Input from "../../Input";
 
 const DELAY_TIME = 400;
 
@@ -18,6 +22,8 @@ type CreatorEventsPageProps = {
 };
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
+  const router = useRouter();
+  const [isCreated, setIsCreated] = useState<boolean>(true);
   const [selectedTopics, setSelectedTopics] = useState<
     string[] | CategoryType[]
   >([]);
@@ -26,6 +32,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithTicketsandAddress[]
   >([]);
+  const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] =
+    useState<boolean>(false);
+  const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
   console.log(events);
 
   // Initialize a variable to hold the timeout ID
@@ -103,66 +112,8 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        {/* Abstract Fitler modal */}
-        <Modal
-          isOpen={isFilterModalOpen}
-          setIsOpen={setIsFilterModalOpen}
-          className="min-w-fit"
-        >
-          <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
-            <Button
-              variant="outlined"
-              size="sm"
-              className="border-0"
-              onClick={() => setIsFilterModalOpen(false)}
-            >
-              Done
-            </Button>
-          </div>
-
-          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {Object.values(CategoryType).map((label, index) => {
-              return (
-                <Badge
-                  key={index}
-                  label={label}
-                  size="lg"
-                  selected={
-                    selectedTopics.length > 0 &&
-                    selectedTopics.indexOf(label) != -1
-                  }
-                  onClick={() => {
-                    if (selectedTopics.indexOf(label) == -1) {
-                      setSelectedTopics([...selectedTopics, label]);
-                      return;
-                    }
-                    setSelectedTopics(
-                      selectedTopics.filter((topic) => {
-                        return topic != label;
-                      })
-                    );
-                  }}
-                  className="h-8 w-full sm:w-48"
-                />
-              );
-            })}
-          </div>
-          <Button
-            variant="outlined"
-            size="sm"
-            className="mt-8 w-full text-red-500"
-            onClick={() => {
-              setSelectedTopics([]);
-            }}
-          >
-            Clear selected topics
-          </Button>
-        </Modal>
-
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
-        <h3 className="text-md mt-4 sm:text-lg">Set up a new event </h3>
 
         <div className="mt-6 flex flex-wrap justify-between">
           <h2 className="text-md mt-2 font-bold sm:text-xl">Created Events</h2>
@@ -171,6 +122,22 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
         {/* dekstop filter and search */}
         <div className="invisible mt-6 flex flex-wrap justify-between sm:visible">
           <div className="flex gap-4">
+            <EventWordToggle
+              leftWord="Created"
+              rightWord="Ended"
+              isChecked={isCreated}
+              setIsChecked={setIsCreated}
+            />
+            <Button
+              href="/events/create"
+              variant="solid"
+              size="md"
+              className="max-w-xs shadow-md"
+            >
+              <FiCalendar className="text-lg text-neutral-50" />
+            </Button>
+          </div>
+          <div className="flex basis-1/3 gap-4">
             <div className="relative w-full items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
@@ -179,7 +146,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="input-outlined input input-md block w-full rounded-md pl-10"
                 type="text"
                 value={searchString}
-                placeholder="Search Events"
+                placeholder="Search Events by Name"
                 onChange={(e) => {
                   setSearchString(e.target.value);
                 }}
@@ -191,18 +158,10 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               className="max-w-sm !bg-white !text-gray-700"
               onClick={() => setIsFilterModalOpen(true)}
             >
-              Filter by Category
+              Filter
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>
-          <Button
-            href="/events/create"
-            variant="solid"
-            size="md"
-            className="max-w-xs"
-          >
-            Create Event
-          </Button>
         </div>
         {/* mobile search and filter */}
         <div className="mt-8 flex w-full gap-2 sm:hidden">
@@ -264,13 +223,152 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             columns={[
               "Event Name",
               "Date",
-              "Attendees Number",
               "Location",
+              "Attendees Number",
+              "Tickets Sold",
+              "Revenue ($)",
               "Tags",
               "Status",
             ]}
+            setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
+            setEventIdToDelete={setEventIdToDelete}
           />
         </section>
+
+        {/* Abstract Fitler modal */}
+        <Modal
+          isOpen={isFilterModalOpen}
+          setIsOpen={setIsFilterModalOpen}
+          className="min-w-fit"
+        >
+          <div className="flex items-center justify-between">
+            <h3 className="text-xl font-semibold">Filter Events</h3>
+            <Button
+              variant="outlined"
+              size="sm"
+              className="border-0 text-red-500"
+              onClick={() => {
+                setSelectedTopics([]);
+              }}
+            >
+              Clear
+            </Button>
+          </div>
+
+          {/* Categories */}
+          <h3 className="mt-8 text-sm font-medium text-gray-500">CATEGORIES</h3>
+          <div className="mt-2 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {Object.values(CategoryType).map((label, index) => {
+              return (
+                <Badge
+                  key={index}
+                  label={label}
+                  size="md"
+                  selected={
+                    selectedTopics.length > 0 &&
+                    selectedTopics.indexOf(label) != -1
+                  }
+                  onClick={() => {
+                    if (selectedTopics.indexOf(label) == -1) {
+                      setSelectedTopics([...selectedTopics, label]);
+                      return;
+                    }
+                    setSelectedTopics(
+                      selectedTopics.filter((topic) => {
+                        return topic != label;
+                      })
+                    );
+                  }}
+                  className="h-8 w-full rounded-lg sm:w-32"
+                />
+              );
+            })}
+          </div>
+          <div className="divider"></div>
+          {/* Date Range */}
+          <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
+          <div className="mt-2 flex justify-between gap-8">
+            <Input
+              type="datetime-local"
+              label="From"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+            <Input
+              type="datetime-local"
+              label="To"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+          </div>
+
+          <div className="divider"></div>
+          {/* Liked */}
+          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
+          <Badge
+            label="Select Liked Events Only"
+            size="lg"
+            selected={false}
+            onClick={() => {}}
+            className="mt-2 h-8 min-w-fit rounded-lg"
+          />
+
+          <Button
+            variant="solid"
+            size="md"
+            className="mt-8"
+            onClick={() => setIsFilterModalOpen(false)}
+          >
+            Submit
+          </Button>
+        </Modal>
+
+        {/* Confirm Delete Modal */}
+        <Modal
+          isOpen={deleteConfirmationModalOpen}
+          setIsOpen={setDeleteConfirmationModalOpen}
+        >
+          <div className="flex flex-col gap-6 py-4">
+            <h3 className="text-xl font-semibold">Confirm Delete Event?</h3>
+            <h3 className="text-md font-normal text-gray-500">
+              Warning - This action is permanent
+            </h3>
+            <div className="flex justify-end gap-6">
+              <Button
+                variant="outlined"
+                size="md"
+                className="border-0 text-gray-500"
+                onClick={async () => {
+                  setDeleteConfirmationModalOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="solid"
+                size="md"
+                className="bg-red-600 hover:bg-red-500"
+                onClick={async () => {
+                  await axios.delete(
+                    `http://localhost:3000/api/events/${eventIdToDelete}`
+                  );
+                  router.reload();
+                  setDeleteConfirmationModalOpen(false);
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </div>
+        </Modal>
       </main>
     </div>
   );

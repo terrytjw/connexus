@@ -1,15 +1,22 @@
+import { GetServerSideProps } from "next";
 import Head from "next/head";
-import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import CreatorCollectionPage from "../../components/MerchandisePages/Creator/[id]";
 import FanCollectionPage from "../../components/MerchandisePages/Fan/[id]";
-import WordToggle from "../../components/Toggle/WordToggle";
-import { GetServerSideProps } from "next";
-import axios from "axios";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  getCollection,
+} from "../../lib/api-helpers/collection-api";
 
-const CollectionPage = ({ collectionData }: any) => {
-  const [isCreator, setIsCreator] = useState(false);
+type CollectionPageProps = {
+  collectionData: CollectionWithMerchAndPremiumChannel;
+};
+
+const CollectionPage = ({ collectionData }: CollectionPageProps) => {
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
 
   return (
     <ProtectedRoute>
@@ -19,15 +26,8 @@ const CollectionPage = ({ collectionData }: any) => {
             <title>Merchandise | Connexus</title>
           </Head>
 
-          <WordToggle
-            leftWord="Fan"
-            rightWord="Creator"
-            isChecked={isCreator}
-            setIsChecked={setIsCreator}
-          />
-
-          {isCreator ? (
-            <CreatorCollectionPage collection={collectionData} />
+          {collectionData.creatorId == userId ? (
+            <CreatorCollectionPage />
           ) : (
             <FanCollectionPage collection={collectionData} />
           )}
@@ -42,10 +42,7 @@ export default CollectionPage;
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const { id } = context.params;
 
-  const { data: collectionData } = await axios.get(
-    `http://localhost:3000/api/collections/${id}`
-  );
-
+  const collectionData = await getCollection(id);
   if (collectionData && Object.keys(collectionData).length === 0) {
     return {
       redirect: {

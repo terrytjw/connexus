@@ -9,8 +9,14 @@ import {
   Currency,
   CollectionState,
   TicketType,
+  Ticket,
 } from "@prisma/client";
 import { saveUser } from "../lib/prisma/user-prisma";
+import { retrieveEventInfo } from "../lib/prisma/event-prisma";
+import {
+  TicketWithUser,
+  saveUserTicket,
+} from "../lib/prisma/user-ticket-prisma";
 
 const prisma = new PrismaClient();
 
@@ -127,7 +133,6 @@ async function generateChannel() {
 async function generatePost() {
   const posts = [
     {
-      title: "New valorant map",
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/valorantnewmap-media.jpg",
@@ -146,7 +151,6 @@ async function generatePost() {
       date: new Date("2023-02-22"),
     },
     {
-      title: "Anime Fanart",
       content: "I just drew this, what do yall think?",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
@@ -165,7 +169,6 @@ async function generatePost() {
       date: new Date("2023-02-23"),
     },
     {
-      title: "Travelling",
       content: "Would love to experience living in a cabin during winter!",
       media: [
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/post/anime-media.jpg",
@@ -295,6 +298,44 @@ async function generateUser() {
       phoneNumber: "+6586582648",
       bio: "I film tiktok for a day and I also schedule livestreams to create a stronger connection with my audience.",
     },
+    {
+      email: "johndoe@gmail.com",
+      username: "JohnDoe81",
+      walletAddress: "0xAcC67Ff8C0f9aB75FfE1f1B54625cB8C80Df2Cf2",
+      displayName: "John Doe",
+      profilePic:
+        "https://lh3.googleusercontent.com/a/AGNmyxY7B4XC3FpA8d_swUELfrEvBg11sVLz6iUNIa86=s96-c",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
+      phoneNumber: "+14155552671",
+      bio: "I'm a freelance web developer and I love creating stunning websites for businesses and individuals alike.",
+    },
+
+    {
+      email: "janedoe@gmail.com",
+      username: "JaneDoe23",
+      walletAddress: "0x6aA81d37Bb04853E17eCbeD0709eA8242D4B0B4c",
+      displayName: "Jane Doe",
+      profilePic:
+        "https://lh3.googleusercontent.com/a/AGNmyxY7B4XC3FpA8d_swUELfrEvBg11sVLz6iUNIa86=s96-c",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
+      phoneNumber: "+12024567890",
+      bio: "I'm a fitness enthusiast and personal trainer. I love helping people achieve their health and fitness goals.",
+    },
+
+    {
+      email: "smithjones@gmail.com",
+      username: "SmithJones",
+      walletAddress: "0x8Dd6c67B6bCbc42B06cdd8eBcE794C5D0C812799",
+      displayName: "Smith Jones",
+      profilePic:
+        "https://lh3.googleusercontent.com/a/AGNmyxY7B4XC3FpA8d_swUELfrEvBg11sVLz6iUNIa86=s96-c",
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
+      phoneNumber: "+441234567890",
+      bio: "I'm a freelance writer and I love creating engaging content for businesses and individuals.",
+    },
   ];
 
   for (const user of users) {
@@ -390,6 +431,9 @@ async function generateCollection() {
 async function generateEvent() {
   const events = [
     {
+      creator: {
+        connect: { userId: 4 },
+      },
       eventName: "Live Valorant Session with Josh",
       category: CategoryType.ENTERTAINMENT,
       address: {
@@ -419,7 +463,7 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: { userId: 1 } },
+            users: { connect: [{ userId: 4 }, { userId: 5 }, { userId: 6 }] },
             currentTicketSupply: 1,
             ticketType: TicketType.ON_SALE,
           },
@@ -453,6 +497,9 @@ async function generateEvent() {
       scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
     },
     {
+      creator: {
+        connect: { userId: 4 },
+      },
       eventName: "Malanie Cosplaying with You",
       category: CategoryType.ENTERTAINMENT,
       address: {
@@ -516,6 +563,9 @@ async function generateEvent() {
       scAddress: "0xA4c5d3D268b749f0417f0767b4903545F02194b0",
     },
     {
+      creator: {
+        connect: { userId: 4 },
+      },
       eventName:
         "Planning to travel soon? Learn more about Travely that will help solve your itinerary planning troubles and find the best recommendations.",
       category: CategoryType.TRAVEL,
@@ -588,6 +638,13 @@ async function generateEvent() {
   }
 }
 
+async function generateUserWithTicket() {
+  const event = await retrieveEventInfo(1);
+  const tickets =
+    (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
+  await saveUserTicket(tickets);
+}
+
 async function main() {
   await generateUser();
   await generateCommunity();
@@ -596,6 +653,7 @@ async function main() {
   await generateComment();
   await generateEvent();
   await generateCollection();
+  await generateUserWithTicket();
 }
 main()
   .then(async () => {

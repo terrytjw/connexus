@@ -14,13 +14,6 @@ import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol"; /
 //for any public member to mint
 //building minting platform for users to create their tickets 
 
-/*
-Next steps: 
-1. ERC721URI storage for ipfs integration 
-2. Cancel listings and collections 
-3. Update event listing and ticket details
-*/
-
 contract SimpleEvent is  Ownable, ReentrancyGuard, ERC721URIStorage {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;

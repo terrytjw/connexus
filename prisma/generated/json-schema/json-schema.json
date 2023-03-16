@@ -113,6 +113,28 @@
           "items": {
             "$ref": "#/definitions/Merchandise"
           }
+        },
+        "likedEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
+        },
+        "userTicket": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserTicket"
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Event"
+          }
+        },
+        "walletBalance": {
+          "type": "number",
+          "default": 0
         }
       }
     },
@@ -121,9 +143,6 @@
       "properties": {
         "postId": {
           "type": "integer"
-        },
-        "title": {
-          "type": "string"
         },
         "content": {
           "type": "string"
@@ -172,10 +191,7 @@
           "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "profilePic": {
           "type": [
@@ -432,6 +448,15 @@
         },
         "scAddress": {
           "type": "string"
+        },
+        "userLikes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/User"
+          }
+        },
+        "creator": {
+          "$ref": "#/definitions/User"
         }
       }
     },
@@ -527,6 +552,30 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        },
+        "userTicket": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/UserTicket"
+          }
+        }
+      }
+    },
+    "UserTicket": {
+      "type": "object",
+      "properties": {
+        "userTicketId": {
+          "type": "integer"
+        },
+        "checkIn": {
+          "type": "boolean",
+          "default": false
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "ticket": {
+          "$ref": "#/definitions/Ticket"
         }
       }
     },
@@ -594,7 +643,7 @@
         },
         "collectionState": {
           "type": "string",
-          "default": "CREATED",
+          "default": "ON_SALE",
           "enum": [
             "CREATED",
             "ON_SALE",
@@ -636,6 +685,12 @@
           "type": "string"
         },
         "image": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "stripePriceId": {
           "type": [
             "string",
             "null"
@@ -690,6 +745,9 @@
     },
     "ticket": {
       "$ref": "#/definitions/Ticket"
+    },
+    "userTicket": {
+      "$ref": "#/definitions/UserTicket"
     },
     "promotion": {
       "$ref": "#/definitions/Promotion"

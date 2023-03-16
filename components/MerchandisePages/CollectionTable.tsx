@@ -1,24 +1,35 @@
+import { Merchandise } from "@prisma/client";
 import { useRouter } from "next/router";
-import React from "react";
+import { toast } from "react-hot-toast";
 import { FaEdit, FaPlayCircle, FaPauseCircle } from "react-icons/fa";
+import Badge from "../Badge";
 import {
+  CollectionWithMerchAndPremiumChannel,
   pauseCollectionMint,
   startCollectionMint,
 } from "../../lib/api-helpers/collection-api";
-import Badge from "../Badge";
 
 type CollectionTableProps = {
-  data: any[]; // TODO: change type any to data type
+  data: CollectionWithMerchAndPremiumChannel[];
   columns: string[];
   onEdit?: (index: number) => void;
+  mutateOnSaleCollections?: any;
+  mutatePausedCollections?: any;
 };
 
-const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
+const CollectionTable = ({
+  data,
+  columns,
+  onEdit,
+  mutateOnSaleCollections,
+  mutatePausedCollections,
+}: CollectionTableProps) => {
   const router = useRouter();
+  const textColour = onEdit ? "text-gray-700" : "text-gray-300";
 
   return (
-    <div className="w-full overflow-x-auto">
-      <table className="table w-full ">
+    <div className="relative w-full overflow-x-auto">
+      <table className="table w-full">
         {/* <!-- head --> */}
         <thead>
           <tr>
@@ -27,6 +38,7 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                 className="bg-blue-gray-200 !relative text-gray-700"
                 key={index}
               >
+                {" "}
                 {headerTitle}
               </th>
             ))}
@@ -45,26 +57,35 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
               }
               className="cursor-pointer"
             >
-              <td className="text-gray-700">{item.collectionId}</td>
-              <td className="text-gray-700">{item.collectionName}</td>
-              <td className="text-gray-700">{item.description}</td>
-              <td className="text-gray-700">
-                {item.merchandise.reduce(
-                  (total: number, m: any) => total + m.totalMerchSupply,
-                  0
-                )}
+              <td className={textColour}>{item.collectionId}</td>
+              <td className={textColour}>{item.collectionName}</td>
+              <td className={textColour}>{item.description}</td>
+              <td className={textColour}>
+                {
+                  onEdit
+                    ? item.merchandise.reduce(
+                        (total: number, m: Merchandise) =>
+                          total + m.totalMerchSupply - m.currMerchSupply,
+                        0
+                      ) // returns quantity left
+                    : item.merchandise.reduce(
+                        (total: number, m: Merchandise) =>
+                          total + m.totalMerchSupply,
+                        0
+                      ) // returns total quantity
+                }
               </td>
-              <td className="text-gray-700">{item.fixedPrice}</td>
-              <td className="text-gray-700">
+              <td className={textColour}>{item.fixedPrice}</td>
+              <td className={textColour}>
                 {item.premiumChannel ? (
                   <Badge size="sm" label={item.premiumChannel.name} />
                 ) : (
-                  <span className="ml-12">-</span>
+                  <span>-</span>
                 )}
               </td>
 
               {onEdit ? (
-                <th className=" text-gray-700">
+                <th className={textColour}>
                   {/* note: these buttons display depending on tab a user is on */}
                   <div className="flex flex-row">
                     <button
@@ -81,9 +102,15 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                       <button
                         className="btn-ghost btn-xs btn"
                         onClick={async (e) => {
+                          toast.dismiss();
                           e.stopPropagation();
-
                           await startCollectionMint(item.collectionId);
+
+                          mutateOnSaleCollections();
+                          mutatePausedCollections();
+                          toast(
+                            `Sale of ${item.collectionName} has been unpaused. The collection can be viewed in the ‘On Sale’ tab.`
+                          );
                         }}
                       >
                         <FaPlayCircle className="text-lg text-blue-600" />
@@ -92,9 +119,15 @@ const CollectionTable = ({ data, columns, onEdit }: CollectionTableProps) => {
                       <button
                         className="btn-ghost btn-xs btn"
                         onClick={async (e) => {
+                          toast.dismiss();
                           e.stopPropagation();
-
                           await pauseCollectionMint(item.collectionId);
+
+                          mutateOnSaleCollections();
+                          mutatePausedCollections();
+                          toast(
+                            `Sale of ${item.collectionName} has been paused. The collection can be viewed in the ‘Paused’ tab.`
+                          );
                         }}
                       >
                         <FaPauseCircle className="text-lg text-blue-600" />

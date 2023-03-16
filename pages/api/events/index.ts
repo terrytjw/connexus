@@ -6,6 +6,8 @@ import {
   Prisma,
   CategoryType,
   Ticket,
+  Address,
+  PublishType,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -15,15 +17,14 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import {
-  deleteEvent,
-  searchEvent,
-  updateEvent,
+  createEventWithTickets,
+  filterEvent,
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 
-const prisma = new PrismaClient();
-
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
+export type EventCreation = Prisma.EventGetPayload<{
+  include: { tickets: true; address: true };
+}>;
 
 /**
  * @swagger
@@ -57,9 +58,8 @@ type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
  */
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<Event[] | ErrorResponse>
+  res: NextApiResponse<Event[] | Event | ErrorResponse>
 ) {
-  const session = await getServerSession(req, res, authOptions);
   // console.log(session);
 
   // if (!session) {
@@ -68,19 +68,50 @@ export default async function handler(
 
   const { method, body, query } = req;
 
-  const keyword = query.keyword as string;
-  const cursor = parseInt(query.cursor as string);
-  const filter = query.filter as CategoryType[];
-
   switch (req.method) {
     case "GET":
-      if (keyword) {
-        await handleGETWithKeyword(keyword, cursor, filter);
-      } else {
-        await handleGET(cursor, filter);
-      }
+      const cursor = query.cursor
+        ? parseInt(query.cursor as string)
+        : undefined;
+
+      const eventIds = query.eventIds
+        ? (query.eventIds as string).split(",").map((id) => parseInt(id))
+        : undefined;
+
+      const tags = query.tags
+        ? ((query.tags as string).split(",") as CategoryType[])
+        : undefined;
+
+      const locationName = query.locationName;
+      const address1 = query.address1;
+      const address = { locationName, address1 } as Partial<Address>;
+
+      const startDate = query.startDate
+        ? new Date(query.startDate as string)
+        : undefined;
+
+      const endDate = query.endDate
+        ? new Date(query.endDate as string)
+        : undefined;
+
+      const maxAttendee = query.maxAttendee
+        ? parseInt(query.maxAttendee as string)
+        : undefined;
+      const status = query.status as PublishType;
+
+      await handleGET(
+        cursor,
+        eventIds,
+        tags,
+        address,
+        startDate,
+        endDate,
+        maxAttendee,
+        status
+      );
+      break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as EventWithTickets;
+      const event = JSON.parse(JSON.stringify(body)) as EventCreation;
       await handlePOST(event);
       break;
     default:
@@ -88,55 +119,27 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGET(cursor: number, filter?: CategoryType[]) {
-    try {
-      const events = await prisma.event.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId: cursor } : undefined,
-        orderBy: {
-          eventId: "asc",
-        },
-        where: {
-          category: filter
-            ? {
-                hasSome: filter,
-              }
-            : undefined,
-        },
-      });
-      res.status(200).json(events);
-    } catch (error) {
-      const errorResponse = handleError(error);
-      res.status(400).json(errorResponse);
-    }
-  }
-
-  async function handleGETWithKeyword(
-    keyword: string,
-    cursor: number,
-    filter?: CategoryType[]
+  async function handleGET(
+    cursor: number | undefined,
+    eventIds: number[] | undefined,
+    tags: CategoryType[] | undefined,
+    address: Partial<Address> | undefined,
+    startDate: Date | undefined,
+    endDate: Date | undefined,
+    maxAttendee: number | undefined,
+    status: PublishType | undefined
   ) {
     try {
-      const events = await prisma.event.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { eventId: cursor } : undefined,
-        orderBy: {
-          eventId: "asc",
-        },
-        where: {
-          eventName: {
-            contains: keyword,
-            mode: "insensitive",
-          },
-          category: filter
-            ? {
-                hasSome: filter,
-              }
-            : undefined,
-        },
-      });
+      const events = await filterEvent(
+        cursor,
+        eventIds,
+        tags,
+        address,
+        startDate,
+        endDate,
+        maxAttendee,
+        status
+      );
       res.status(200).json(events);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -144,9 +147,10 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(eventWithTickets: EventWithTickets) {
+  async function handlePOST(eventWithTickets: EventCreation) {
     try {
-      const { tickets, eventPic, bannerPic, ...eventInfo } = eventWithTickets;
+      const { tickets, eventPic, bannerPic, creatorId, ...eventInfo } =
+        eventWithTickets;
       const updatedTickets = tickets.map((ticket: Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
         return ticketInfo;
@@ -189,20 +193,20 @@ export default async function handler(
       }
 
       console.log(eventBannerPictureUrl, eventImageUrl);
-      const response = await prisma.event.create({
-        data: {
-          ...eventInfo,
-          eventId: undefined,
-          eventPic: eventImageUrl,
-          bannerPic: eventBannerPictureUrl,
-          tickets: { create: updatedTickets },
-          eventAnalyticsTimestamps: { create: { ticketsSold: 0, revenue: 0 } }
-        },
-        include: {
-          tickets: true,
-        },
-      });
-      res.status(200).json([response]);
+
+      const updatedEvent = {
+        ...eventInfo,
+        eventPic: eventImageUrl,
+        bannerPic: eventBannerPictureUrl,
+      } as EventCreation;
+
+      const response = await createEventWithTickets(
+        updatedEvent as EventCreation,
+        updatedTickets as Ticket[],
+        creatorId
+      );
+
+      res.status(200).json(response);
       // now create the contract
     } catch (error) {
       console.log(error);

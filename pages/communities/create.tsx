@@ -1,59 +1,86 @@
-import { CategoryType, Community } from "@prisma/client";
-import axios from "axios";
+import { CategoryType } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { toast, Toaster } from "react-hot-toast";
 import { FaChevronLeft } from "react-icons/fa";
-import { useSWRConfig } from "swr";
 import AvatarInput from "../../components/AvatarInput";
 import Badge from "../../components/Badge";
 import BannerInput from "../../components/BannerInput";
 import Button from "../../components/Button";
 import Input from "../../components/Input";
 import Layout from "../../components/Layout";
+import Loading from "../../components/Loading";
 import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TextArea from "../../components/TextArea";
+import {
+  createCommunityAPI,
+  updateCommunityAPI,
+  deleteCommunityAPI,
+} from "../../lib/api-helpers/community-api";
+import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
 
 type CreateCommunityPageProps = {
-  community: Community;
+  community: CommunityWithCreatorAndChannelsAndMembers;
+  mutateCommunity: any;
 };
 
-const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
-  const router = useRouter();
-  const { mutate } = useSWRConfig();
+const CreateCommunityPage = ({
+  community,
+  mutateCommunity,
+}: CreateCommunityPageProps) => {
   const { data: session } = useSession();
-  const userId = Number(session?.user.userId);
-
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [communityId, setCommunityId] = useState(
+    community ? community.communityId : (null as unknown as number)
+  );
 
-  type CreateCommunityForm = {
+  const content = [
+    {
+      title: "Community Created!",
+      description:
+        "Your community page can be viewed in the ‘Community’ tab in the navigation bar.",
+    },
+    {
+      title: "Community Updated!",
+      description: "Your community page has been successfully updated.",
+    },
+    {
+      title: "Community Deleted",
+      description: "Your community has been successfully deleted.",
+    },
+    {
+      title: "Community cannot be deleted",
+      description:
+        "This community cannot be deleted because it has one or more existing premium channels.",
+    },
+  ];
+
+  const [modalContent, setModalContent] = useState(content[0]);
+
+  type CommunityForm = {
+    communityId?: number;
     name: string;
     description: string;
     bannerPic: string;
     profilePic: string;
     maxMembers: number;
-    tags: string[];
-    userId: number;
+    tags: CategoryType[];
+    userId?: number;
   };
 
-  const { handleSubmit, setValue, control, watch } =
-    useForm<CreateCommunityForm>({
-      defaultValues: {
-        name: community ? community.name : "",
-        description: community ? (community.description as string) : "",
-        bannerPic: community ? (community.bannerPic as string) : "",
-        profilePic: community ? (community.profilePic as string) : "",
-        maxMembers: community
-          ? community.maxMembers
-          : ("" as unknown as number),
-        tags: community ? community.tags : ([] as string[]),
-        userId: community ? community.userId : userId,
-      },
-    });
+  const { handleSubmit, setValue, control, watch } = useForm<CommunityForm>({
+    defaultValues: {
+      name: community ? community.name : "",
+      description: community ? (community.description as string) : "",
+      profilePic: community ? (community.profilePic as string) : "",
+      bannerPic: community ? (community.bannerPic as string) : "",
+      tags: community ? community.tags : ([] as CategoryType[]),
+      maxMembers: community ? community.maxMembers : ("" as unknown as number),
+    },
+  });
 
   const [bannerPic, profilePic, tags] = watch([
     "bannerPic",
@@ -61,73 +88,54 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
     "tags",
   ]);
 
-  const onCreate = async (formData: CreateCommunityForm) => {
-    toast.loading("Creating new community...");
+  const onCreate = async (formData: CommunityForm) => {
+    setModalContent(content[0]);
+    setIsModalOpen(true);
     setIsLoading(true);
 
     const userId = Number(session?.user.userId);
-    const communityData = {
+    const createCommunityParams = {
       ...formData,
       maxMembers: Number(formData.maxMembers),
       userId: userId,
     };
+    const res = await createCommunityAPI(createCommunityParams);
 
-    console.log(communityData);
-    const res = await axios.post(
-      "http://localhost:3000/api/community",
-      communityData
-    );
-
-    toast.dismiss();
-    toast.success("Community successfully created!");
+    setCommunityId(res[0].communityId);
     setIsLoading(false);
-
-    const temp = res.data[0];
-    if (res.status === 200) {
-      router.push(`/communities/${temp.communityId}`);
-    }
   };
 
-  const onEdit = async (formData: CreateCommunityForm) => {
-    toast.loading("Updating community...");
+  const onEdit = async (formData: CommunityForm) => {
+    setModalContent(content[1]);
+    setIsModalOpen(true);
     setIsLoading(true);
 
-    const communityData = {
+    const updateCommunityParams = {
       ...formData,
       maxMembers: Number(formData.maxMembers),
+      communityId: community.communityId,
     };
-    const res = await axios.post(
-      `http://localhost:3000/api/community/${community.communityId}`,
-      communityData
-    );
+    await updateCommunityAPI(updateCommunityParams);
 
-    toast.dismiss();
-    toast.success("Community successfully updated!");
     setIsLoading(false);
-
-    const temp = res.data;
-
-    mutate(`http://localhost:3000/api/community/${temp.communityId}`);
-
-    if (res.status === 200) {
-      router.push(`/communities/${temp.communityId}`);
-    }
+    mutateCommunity();
   };
 
   const onDelete = async () => {
-    toast.loading("Deleting community...");
-    setIsLoading(true);
+    // community has existing prem channel, cannot be deleted
+    if (community.channels.length > 1) {
+      setIsDeleteModalOpen(false);
+      setModalContent(content[3]);
+      setIsModalOpen(true);
+    } else {
+      setIsDeleteModalOpen(false);
+      setModalContent(content[2]);
+      setIsModalOpen(true);
+      setIsLoading(true);
 
-    const res = await axios.delete(
-      `http://localhost:3000/api/community/${community.communityId}`
-    );
+      await deleteCommunityAPI(community.communityId);
 
-    toast.dismiss();
-    toast.success("Community successfully deleted!");
-    setIsLoading(false);
-
-    if (res.status === 200) {
-      router.push(`/communities/create`);
+      setIsLoading(false);
     }
   };
 
@@ -135,9 +143,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
     <ProtectedRoute>
       <Layout>
         <form onSubmit={handleSubmit(!community ? onCreate : onEdit)}>
-          <Toaster />
-
-          <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
+          <Modal isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen}>
             <div className="flex flex-col gap-6">
               <h3 className="text-xl font-semibold">Delete Community</h3>
 
@@ -147,7 +153,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
 
               <div className="flex gap-4">
                 <Button
-                  className="flex-grow"
+                  className="!bg-red-600"
                   variant="solid"
                   size="md"
                   onClick={() => onDelete()}
@@ -155,15 +161,51 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                   Confirm
                 </Button>
                 <Button
-                  className="flex-grow !text-red-500 sm:w-fit"
+                  className="border-0"
                   variant="outlined"
                   size="md"
-                  onClick={() => setIsModalOpen(false)}
+                  onClick={() => setIsDeleteModalOpen(false)}
                 >
                   Cancel
                 </Button>
               </div>
             </div>
+          </Modal>
+
+          <Modal isOpen={isModalOpen} setIsOpen={() => {}}>
+            {isLoading ? (
+              <Loading className="!h-full" />
+            ) : (
+              <div className="flex flex-col gap-6">
+                <h3 className="text-xl font-semibold">{modalContent.title}</h3>
+
+                <p>{modalContent.description}</p>
+
+                <div className="flex gap-4">
+                  {modalContent.title == content[3].title ? (
+                    <Button
+                      variant="solid"
+                      size="md"
+                      onClick={() => setIsModalOpen(false)}
+                    >
+                      Confirm
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="solid"
+                      size="md"
+                      href={
+                        modalContent.title == content[2].title
+                          ? `/communities/create`
+                          : `/communities/${communityId}`
+                      }
+                    >
+                      Confirm
+                    </Button>
+                  )}
+                </div>
+              </div>
+            )}
           </Modal>
 
           <main className="py-12 px-4 sm:px-12">
@@ -173,6 +215,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                   className="border-0"
                   variant="outlined"
                   size="md"
+                  type="button"
                   onClick={() => history.back()}
                 >
                   <FaChevronLeft />
@@ -364,7 +407,7 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                         variant="outlined"
                         size="md"
                         type="button"
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => setIsDeleteModalOpen(true)}
                         disabled={isLoading}
                       >
                         Delete Community

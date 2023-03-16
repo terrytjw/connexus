@@ -1,23 +1,26 @@
-import React, { useState } from "react";
+import { GetServerSideProps } from "next";
 import Head from "next/head";
+import { getSession } from "next-auth/react";
+import React, { useState } from "react";
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import WordToggle from "../../components/Toggle/WordToggle";
 import CreatorCollectionsPage from "../../components/MerchandisePages/Creator";
 import FanCollectionsPage from "../../components/MerchandisePages/Fan";
-import { getSession, useSession } from "next-auth/react";
-import { GetServerSideProps } from "next";
-import axios from "axios";
-import { Merchandise } from "@prisma/client";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  searchAllCollections,
+} from "../../lib/api-helpers/collection-api";
+import { searchCollectedMerchandise } from "../../lib/api-helpers/merchandise-api";
+import { MerchandiseWithCollectionName } from "../../utils/types";
 
 type CollectionsPageProps = {
-  userData: any;
-  updatedMerchandise: any;
-  collectionsData: any;
+  merchandiseData: MerchandiseWithCollectionName[];
+  collectionsData: CollectionWithMerchAndPremiumChannel[];
 };
+
 const CollectionsPage = ({
-  userData,
-  updatedMerchandise,
+  merchandiseData,
   collectionsData,
 }: CollectionsPageProps) => {
   const [isCreator, setIsCreator] = useState(false);
@@ -41,8 +44,8 @@ const CollectionsPage = ({
             <CreatorCollectionsPage />
           ) : (
             <FanCollectionsPage
-              merchandise={updatedMerchandise}
-              collections={collectionsData}
+              merchandiseData={merchandiseData}
+              collectionsData={collectionsData}
             />
           )}
         </div>
@@ -55,33 +58,16 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
   const userId = session?.user.userId;
 
-  // use axios GET method to fetch data
-  const { data: userData } = await axios.get(
-    `http://localhost:3000/api/users/${userId}`
-  );
-
-  const { data: collectionsData } = await axios.get(
-    `http://localhost:3000/api/collections`
-  );
-
-  const { merchandise } = userData;
-
-  const userMerchandise = merchandise as Merchandise[];
-  const updatedMerchandise = await Promise.all(
-    userMerchandise.map(async (item: Merchandise) => {
-      const { collectionName } = (
-        await axios.get(
-          `http://localhost:3000/api/collections/${item.collectionId}`
-        )
-      ).data;
-      return { ...item, collectionName: collectionName };
-    })
+  const collectionsData = await searchAllCollections(0, "");
+  const merchandiseData = await searchCollectedMerchandise(
+    parseInt(userId as string),
+    "",
+    0
   );
 
   return {
     props: {
-      userData,
-      updatedMerchandise,
+      merchandiseData,
       collectionsData,
     },
   };
