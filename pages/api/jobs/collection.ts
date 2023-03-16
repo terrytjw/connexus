@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
-import { PrismaClient,} from "@prisma/client";
+import { CollectionAnalyticsTimestamp, PrismaClient,} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<boolean | ErrorResponse>
+  res: NextApiResponse<CollectionAnalyticsTimestamp[] | ErrorResponse>
 ) {
   const { method } = req;
 
@@ -22,20 +22,22 @@ export default async function handler(
   async function handlePOST() {
     try {
       const collections = await prisma.collection.findMany({
-        include: { merchandise: true, collectionAnalyticsTimestamps: true }
+        include: { merchandise: true, analyticsTimestamps: true }
       });
+      const timestamps = [];
       for (let collection of collections) {
-        const prevAnalyticsTimestamp = collection.collectionAnalyticsTimestamps.at(-1);
+        const prevAnalyticsTimestamp = collection.analyticsTimestamps.at(-1);
         let merchSold = 0 - prevAnalyticsTimestamp!.merchSold;
         let revenue = 0
         for (let merch of collection.merchandise) {
           merchSold += merch.currMerchSupply
           revenue += merch.currMerchSupply * merch.price
         }
-        await prisma.collectionAnalyticsTimestamp.create({
+        let timestamp = await prisma.collectionAnalyticsTimestamp.create({
           data: {
             merchSold: merchSold,
             revenue: revenue,
+            clicks: collection.clicks,
             collection: {
               connect: {
                 collectionId: collection.collectionId
@@ -43,8 +45,9 @@ export default async function handler(
             }
           }
         });
+        timestamps.push(timestamp);
       }
-      res.status(200).json(true);
+      res.status(200).json(timestamps);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

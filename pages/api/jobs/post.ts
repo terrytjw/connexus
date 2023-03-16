@@ -1,12 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
-import { PrismaClient,} from "@prisma/client";
+import { PostAnalyticsTimestamp, PrismaClient,} from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<boolean | ErrorResponse>
+  res: NextApiResponse<PostAnalyticsTimestamp[] | ErrorResponse>
 ) {
   const { method } = req;
 
@@ -25,23 +26,31 @@ export default async function handler(
         include: {
           _count: {
             select: { likes: true, comments: true }
-          }
-        }
-      });
-      for (let post of posts) {
-        await prisma.postAnalyticsTimestamp.create({
-          data: {
-            likes: post._count.likes,
-            comments: post._count.comments,
-            post: {
-              connect: {
-                postId: post.postId
+          },
+          channel: {
+            include: {
+              _count: {
+                select: { members: true }
               }
             }
           }
-        });
+        }
+      });
+      const timestamps = [];
+      for (let post of posts) {
+        let timestamp = await prisma.postAnalyticsTimestamp.create({
+          data: {
+            likes: post._count.likes,
+            comments: post._count.comments,
+            engagement: ( post._count.likes + post._count.comments) / (post.channel._count.members), // doesnt account for duplicate comments yet
+            post: {
+              connect: { postId: post.postId }
+            }
+          }
+        })
+        timestamps.push(timestamp)
       }
-      res.status(200).json(true);
+      res.status(200).json(timestamps);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

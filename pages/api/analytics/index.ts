@@ -1,8 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma/prisma-helpers";
+import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, PostAnalyticsTimestamp } from "@prisma/client";
-import { getPostAnalyticsInRange } from "../../../../lib/prisma/analytics/post-analytics-prisma";
+import { getPostAnalyticsInRange } from "../../../lib/prisma/analytics/post-analytics-prisma";
+import { getCommunityAnalyticsInRange } from "../../../lib/prisma/analytics/community-analytics-prisma";
+import { getCollectionAnalyticsInRange } from "../../../lib/prisma/analytics/collection-analytics-prisma";
+import { getEventAnalyticsInRange } from "../../../lib/prisma/analytics/event-analytics-prisma";
 
 const prisma = new PrismaClient();
 
@@ -34,15 +37,17 @@ export default async function handler(
   res: NextApiResponse<PostAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method, query } = req;
+  const userId = parseInt(query.userId as string);
+  const model = query.model as string;
 
   switch (method) {
     case "GET":
-      if (query) {
+      if (query.lowerBound && query.upperBound) {
         const lowerBound = new Date(query.lowerBound as string);
         const upperBound = new Date(query.upperBound as string);
-        await handleGET(lowerBound, upperBound);
+        await handleGET(userId, model, lowerBound, upperBound);
       } else {
-        await handleGET();
+        await handleGET(userId, model);
       }
       break;
     default:
@@ -51,13 +56,32 @@ export default async function handler(
   }
 
   async function handleGET(
-    lowerBound: Date = new Date(), 
-    upperBound: Date = lastWeek()
+    userId: number,
+    model: string,
+    lowerBound: Date = lastWeek(), 
+    upperBound: Date = new Date()
   ) {
     try {
-      const response = await getPostAnalyticsInRange(lowerBound, upperBound);
+      let response;
+      switch(model) {
+        case "POST":
+          response = await getPostAnalyticsInRange(userId, lowerBound, upperBound);
+          break;
+        case "COMMUNITY":
+          response = await getCommunityAnalyticsInRange(userId, lowerBound, upperBound);
+          break;
+        case "COLLECTION":
+          response = await getCollectionAnalyticsInRange(userId, lowerBound, upperBound);
+          break;
+        case "EVENT":
+          response = await getEventAnalyticsInRange(userId, lowerBound, upperBound);
+          break;
+        default:
+          response = {};
+    }
       res.status(200).json(response);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }

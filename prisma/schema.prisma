@@ -69,7 +69,8 @@ model Community {
   userId      Int
   members     User[]         @relation(name: "joinedCommunities")
   channels    Channel[]
-  analyticsTimestamps CommunityAnaltyicsTimestamp[]
+  analyticsTimestamps CommunityAnalyticsTimestamp[]
+  clicks Int @default(0)
 }
 
 model Channel {
@@ -123,6 +124,7 @@ model Event {
   creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
   creatorId        Int
   analyticsTimestamps EventAnalyticsTimestamp[]
+  clicks Int @default(0)
 }
 
 enum PublishType {
@@ -250,6 +252,7 @@ model Collection {
   creatorId       Int
   analyticsTimestamps CollectionAnalyticsTimestamp[]
   premiumChannel  Channel?
+  clicks Int @default(0)
 }
 
 enum CollectionState {
@@ -278,9 +281,10 @@ model Merchandise {
   users            User[]
 }
 
-model CommunityAnaltyicsTimestamp {
+model CommunityAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   members Int
+  premiumMembers Int
   clicks Int
   date DateTime @default(now())
   community Community @relation(fields: [communityId], references: [communityId])
@@ -291,6 +295,7 @@ model PostAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   likes Int
   comments Int
+  engagement Float
   date DateTime @default(now())
   post Post @relation(fields: [postId], references: [postId])
   postId Int
@@ -301,6 +306,7 @@ model EventAnalyticsTimestamp {
   ticketsSold Int
   revenue Int
   clicks Int
+  likes Int 
   date DateTime @default(now())
   event Event @relation(fields: [eventId], references: [eventId])
   eventId Int

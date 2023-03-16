@@ -1,12 +1,12 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
-import { PrismaClient,} from "@prisma/client";
+import { ChannelType, CommunityAnalyticsTimestamp, PrismaClient,} from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<boolean | ErrorResponse>
+  res: NextApiResponse<CommunityAnalyticsTimestamp[] | ErrorResponse>
 ) {
   const { method } = req;
 
@@ -25,13 +25,25 @@ export default async function handler(
         include: {
           _count: {
             select: { members: true }
+          },
+          channels: {
+            include: {
+              _count: {
+                select: { members: true }
+              }
+            }
           }
         }
       });
+      const timestamps = [];
       for (let community of communities) {
-        await prisma.communityAnalyticsTimestamp.create({
+        let timestamp = await prisma.communityAnalyticsTimestamp.create({
           data: {
             members: community._count.members,
+            premiumMembers: community.channels
+              .filter(channel => channel.channelType == ChannelType.PREMIUM)
+              .reduce((a, b) => a + b._count.members, 0),
+            clicks: community.clicks,
             community: {
               connect: {
                 communityId: community.communityId
@@ -39,8 +51,9 @@ export default async function handler(
             }
           }
         })
+        timestamps.push(timestamp);
       }
-      res.status(200).json(true);
+      res.status(200).json(timestamps);
     } catch (error) {
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);

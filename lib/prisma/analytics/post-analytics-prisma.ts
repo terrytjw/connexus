@@ -2,28 +2,20 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getPostLikesInRange(lowerBound: Date, upperBound: Date) {
+export async function getPostAnalyticsInRange(userId: number, lowerBound: Date, upperBound: Date) {
   return prisma.postAnalyticsTimestamp.findMany({
     where: {
       date: {
         lte: upperBound,
         gte: lowerBound
+      },
+      post: {
+        creatorId: userId
       }
     },
-    select: { likes: true, date: true },
-    include: { post: true }
-  })
-}
-
-export async function getPostCommentsInRange(lowerBound: Date, upperBound: Date) {
-  return prisma.postAnalyticsTimestamp.findMany({
-    where: {
-      date: {
-        lte: upperBound,
-        gte: lowerBound
-      }
-    },
-    select: { comments: true, date: true },
-    include: { post: true }
+    include: { post: true },
+    orderBy: {
+      date: 'asc'
+    }
   })
 }

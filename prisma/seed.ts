@@ -21,6 +21,20 @@ import {
 const prisma = new PrismaClient();
 
 async function generateCommunity() {
+  let members = 5;
+  let premiumMembers = 1;
+  let clicks = 10;
+
+  const analyticsTimestamps = [];
+  for (let i = 6; i >= 0; i--) {
+    analyticsTimestamps.push({
+      members: members++,
+      premiumMembers: premiumMembers++,
+      clicks: clicks++,
+      date: todayMinus(i)
+    })
+  }
+
   const communities = [
     {
       name: "Valorant",
@@ -41,6 +55,9 @@ async function generateCommunity() {
           userId: 2,
         },
       },
+      analyticsTimestamps: {
+        create: analyticsTimestamps
+      }
     },
     {
       name: "Cosplay Kawaii",
@@ -131,6 +148,20 @@ async function generateChannel() {
 }
 
 async function generatePost() {
+  let likes = 10;
+  let comments = 1;
+  let engagement = 10
+
+  const analyticsTimestamps = [];
+  for (let i = 6; i >= 0; i--) {
+    analyticsTimestamps.push({
+      likes: likes++,
+      comments: comments++,
+      engagement: engagement++ / 100,
+      date: todayMinus(i)
+    })
+  }
+
   const posts = [
     {
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
@@ -149,6 +180,9 @@ async function generatePost() {
         },
       },
       date: new Date("2023-02-22"),
+      analyticsTimestamps: {
+        create: analyticsTimestamps
+      }
     },
     {
       content: "I just drew this, what do yall think?",
@@ -344,6 +378,19 @@ async function generateUser() {
 }
 
 async function generateCollection() {
+  let merchSold = 20;
+  let revenue = 100
+  let clicks = 10;
+
+  const analyticsTimestamps = [];
+  for (let i = 6; i >= 0; i--) {
+    analyticsTimestamps.push({
+      merchSold: merchSold++,
+      revenue: revenue++,
+      clicks: clicks++,
+      date: todayMinus(i)
+    })
+  }
   const collections = [
     {
       collectionName: "Valo Skin Collection",
@@ -369,6 +416,9 @@ async function generateCollection() {
         },
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
+      analyticsTimestamps: {
+        create: analyticsTimestamps
+      }
     },
     {
       collectionName: "Cosplay Collection",
@@ -392,6 +442,9 @@ async function generateCollection() {
         connect: {
           userId: 4,
         },
+      },
+      analyticsTimestamps: {
+        create: { merchSold: 0, revenue: 0, clicks: 0 }
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
@@ -418,6 +471,9 @@ async function generateCollection() {
           userId: 4,
         },
       },
+      analyticsTimestamps: {
+        create: { merchSold: 0, revenue: 0, clicks: 0 }
+      },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
   ];
@@ -429,10 +485,28 @@ async function generateCollection() {
   }
 }
 async function generateEvent() {
+  let ticketsSold = 50;
+  let revenue = 100;
+  let clicks = 20;
+  let likes = 5;
+
+  const analyticsTimestamps = [];
+  for (let i = 6; i >= 0; i--) {
+    analyticsTimestamps.push({
+      ticketsSold: ticketsSold++,
+      revenue: revenue++,
+      clicks: clicks++,
+      likes: likes++,
+      date: todayMinus(i)
+    })
+  }
   const events = [
     {
       creator: {
         connect: { userId: 4 },
+      },
+      analyticsTimestamps: {
+        create: analyticsTimestamps
       },
       eventName: "Live Valorant Session with Josh",
       category: CategoryType.ENTERTAINMENT,
@@ -500,6 +574,9 @@ async function generateEvent() {
       creator: {
         connect: { userId: 4 },
       },
+      analyticsTimestamps: {
+        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 }
+      },
       eventName: "Malanie Cosplaying with You",
       category: CategoryType.ENTERTAINMENT,
       address: {
@@ -565,6 +642,9 @@ async function generateEvent() {
     {
       creator: {
         connect: { userId: 4 },
+      },
+      analyticsTimestamps: {
+        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 }
       },
       eventName:
         "Planning to travel soon? Learn more about Travely that will help solve your itinerary planning troubles and find the best recommendations.",
@@ -643,6 +723,13 @@ async function generateUserWithTicket() {
   const tickets =
     (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
   await saveUserTicket(tickets);
+}
+
+function todayMinus(days: number) {
+  const today = new Date();
+  const newDate = new Date();
+  newDate.setDate(today.getDate() - days);
+  return newDate;
 }
 
 async function main() {

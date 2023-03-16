@@ -2,43 +2,24 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getEventClicksInRange(lowerBound: Date, upperBound: Date) {
+export async function getEventAnalyticsInRange(userId: number, lowerBound: Date, upperBound: Date) {
   return prisma.eventAnalyticsTimestamp.findMany({
     where: {
       date: {
         lte: upperBound,
         gte: lowerBound
+      },
+      event: {
+        creatorId: userId
       }
     },
-    select: { clicks: true, date: true },
-    include: { event: true }
-  })
-}
-
-export async function getEventRevenueInRange(lowerBound: Date, upperBound: Date) {
-  return prisma.eventAnalyticsTimestamp.findMany({
-    where: {
-      date: {
-        lte: upperBound,
-        gte: lowerBound
+    include: { 
+      event: {
+        select: { eventId: true, eventName: true }
       }
     },
-    select: { revenue: true, date: true },
-    include: { event: true }
+    orderBy: {
+      date: 'asc'
+    }
   })
 }
-
-export async function getEventTicketsSoldInRange(lowerBound: Date, upperBound: Date) {
-  return prisma.eventAnalyticsTimestamp.findMany({
-    where: {
-      date: {
-        lte: upperBound,
-        gte: lowerBound
-      }
-    },
-    select: { ticketsSold: true, date: true },
-    include: { event: true }
-  })
-}
-
-export async function getEventAttendanceInRange(lowerBound: Date, upperBound: Date) {}
