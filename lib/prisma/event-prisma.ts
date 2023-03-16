@@ -43,6 +43,7 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
+      eventAnalyticsTimestamps: { create: { ticketsSold: 0, revenue: 0 } }
     },
     include: { tickets: true },
   });
