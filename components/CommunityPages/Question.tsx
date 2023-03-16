@@ -60,12 +60,14 @@ const Question = ({
             })}
           </span>
         </div>
-        <p className="text-lg font-semibold text-gray-700">
+        <p className="break-words text-lg font-semibold text-gray-700">
           {question.question}
         </p>
 
         {question.answer ? (
-          <p className="border-l-2 pl-4 text-gray-700">{question.answer}</p>
+          <p className="break-words border-l-2 pl-4 text-gray-700">
+            {question.answer}
+          </p>
         ) : (
           <>
             {isCommunityCreator ? (
