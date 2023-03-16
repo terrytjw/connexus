@@ -51,7 +51,7 @@ model Post {
   channelId Int
   likes     User[]    @relation(name: "likedPosts")
   comments  Comment[]
-  analyticsTimestamps postAnalyticsTimestamp[]
+  analyticsTimestamps PostAnalyticsTimestamp[]
 }
 
 model Community {
@@ -66,7 +66,7 @@ model Community {
   userId      Int
   members     User[]         @relation(name: "joinedCommunities")
   channels    Channel[]
-  analyticsTimestamps CommunityAnalyticsTimestamp[]
+  analyticsTimestamps CommunityAnaltyicsTimestamp[]
 }
 
 model Channel {
