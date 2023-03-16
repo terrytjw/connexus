@@ -227,7 +227,7 @@ model Collection {
   merchURIs       String[]
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
-  analyticsTimestamps CollectionAnaltyicsTimestamp[]
+  analyticsTimestamps CollectionAnalyticsTimestamp[]
 }
 
 enum CollectionState {
@@ -259,6 +259,7 @@ model Merchandise {
 model CommunityAnaltyicsTimestamp {
   id Int @id @default(autoincrement())
   members Int
+  clicks Int
   date DateTime @default(now())
   community Community @relation(fields: [communityId], references: [communityId])
   communityId Int
@@ -277,6 +278,7 @@ model EventAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   ticketsSold Int
   revenue Int
+  clicks Int
   date DateTime @default(now())
   event Event @relation(fields: [eventId], references: [eventId])
   eventId Int
@@ -286,6 +288,7 @@ model CollectionAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   merchSold Int
   revenue Int
+  clicks Int
   date DateTime @default(now())
   collection Collection @relation(fields: [collectionId], references: [collectionId])
   collectionId Int

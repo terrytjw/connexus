@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, PostLikesTimestamp } from "@prisma/client";
+import { PrismaClient, PostAnalyticsTimestamp } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -30,7 +30,7 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PostLikesTimestamp[] | ErrorResponse | {}>
+  res: NextApiResponse<PostAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method } = req;
 
