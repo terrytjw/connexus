@@ -12,14 +12,19 @@ import {
 } from "react-hook-form";
 import Button from "./Button";
 import { CreateCollectionForm } from "../pages/merchandise/create";
+import { CreateChannelForm } from "../pages/communities/[id]/channels/create";
 
 type CollectibleInputProps = {
   control: Control<any, any>; // type error when using Control<CreateCollectionForm | CreateCollectionForm, any>
   watch: UseFormWatch<any>;
   trigger: UseFormTrigger<any>;
   setValue: UseFormSetValue<any>;
-  fields: FieldArrayWithId<CreateCollectionForm, "collectibles", "id">[]; // FieldArrayWithId<CreateCollectionForm | CreateChannelForm, "collectibles", "id">[]
-  errors: FieldErrors<CreateCollectionForm>; // FieldErrors<CreateCollectionForm | CreateChannelForm>
+  fields: FieldArrayWithId<
+    CreateCollectionForm | CreateChannelForm,
+    "collectibles",
+    "id"
+  >[];
+  errors: FieldErrors<CreateCollectionForm | CreateChannelForm>;
   addNewCollectible: () => void;
   remove: UseFieldArrayRemove;
 };

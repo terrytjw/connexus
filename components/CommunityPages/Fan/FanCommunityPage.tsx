@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,23 +12,33 @@ import Badge from "../../Badge";
 import Banner from "../../Banner";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
-import { collections } from "../../../utils/dummyData";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
-import { joinCommunityAPI, leaveCommunityAPI } from "../../../lib/api-helpers/community-api";
+import {
+  joinCommunityAPI,
+  leaveCommunityAPI,
+} from "../../../lib/api-helpers/community-api";
+import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
 
 type CommunityPagePageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
   setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
+  linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
 const FanCommunityPage = ({
   community,
   setCommunity,
+  linkedCollections,
 }: CommunityPagePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
+
+  const joinedChannels = community.channels.filter(
+    (channel) =>
+      channel.members.findIndex((member) => member.userId == userId) != -1
+  );
 
   const joinCommunity = async () => {
     const res = await joinCommunityAPI(community.communityId, userId);
@@ -73,6 +82,7 @@ const FanCommunityPage = ({
             <div className="mt-6 flex gap-2">
               {community.members.find((member) => member.userId == userId) ? (
                 <Button
+                  className="bg-blue-900"
                   variant="solid"
                   size="sm"
                   onClick={() => leaveCommunity()}
@@ -109,17 +119,9 @@ const FanCommunityPage = ({
                   },
                 }}
               />
-
-              <Button
-                variant="solid"
-                size="sm"
-                className="!bg-orange-400 hover:!bg-orange-500"
-              >
-                Submit Chat Request
-              </Button>
             </div>
           </div>
-          {/* <Link
+          <Link
             href="/merchandise"
             className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
           >
@@ -138,37 +140,29 @@ const FanCommunityPage = ({
               <span className="self-end">x100</span>
               Collection #1
             </div>
-          </Link> */}
+          </Link>
         </div>
 
         {community.members.find((member) => member.userId == userId) ? (
           <TabGroupBordered
-            tabs={
-              community.channels
-                .filter(
-                  (channel) =>
-                    channel.members.findIndex(
-                      (member) => member.userId == userId
-                    ) != -1
-                )
-                .map((channel) => channel.name)
-              // .concat(["+ Unlock Premium Channels"])
-            }
+            tabs={joinedChannels
+              .map((channel) => channel.name)
+              .concat(["+ Unlock Premium Channels"])}
             activeTab={activeTab}
             setActiveTab={(index: number) => {
               setActiveTab(index);
             }}
           >
-            {activeTab != community.channels.length && (
+            {activeTab != joinedChannels.length && (
               <ChannelTab
                 key={community.channels[activeTab].channelId}
                 channel={community.channels[activeTab]}
                 isCreator={false}
               />
             )}
-            {/* {activeTab == community.channels.length && (
-              <UnlockPremiumChannelTab products={collections} />
-            )} */}
+            {activeTab == joinedChannels.length && (
+              <UnlockPremiumChannelTab linkedCollections={linkedCollections} />
+            )}
           </TabGroupBordered>
         ) : (
           <div className="mt-8 flex items-center justify-center gap-2 text-xl">
