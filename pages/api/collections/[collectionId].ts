@@ -4,10 +4,15 @@ import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Collection, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import { getCollection, updateCollection } from "../../../lib/prisma/collection-prisma";
 
 const prisma = new PrismaClient();
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
+}>;
+
+type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
+  include: { merchandise: true; premiumChannel: true };
 }>;
 
 /**
@@ -85,7 +90,7 @@ export default async function handler(
     case "POST":
       const collection = JSON.parse(
         JSON.stringify(req.body)
-      ) as CollectionwithMerch;
+      ) as CollectionWithMerchAndPremiumChannel;
       await handlePOST(collectionId, collection);
       break;
     case "DELETE":
@@ -98,12 +103,7 @@ export default async function handler(
 
   async function handleGET(collectionId: number) {
     try {
-      const collection = await prisma.collection.findUnique({
-        where: {
-          collectionId: collectionId,
-        },
-        include: { merchandise: true },
-      });
+      const collection = await getCollection(collectionId);
 
       if (!collection) res.status(200).json({});
       else res.status(200).json(collection);
@@ -115,17 +115,10 @@ export default async function handler(
 
   async function handlePOST(
     collectionId: number,
-    collectionwithMerch: Collection
+    collection: CollectionWithMerchAndPremiumChannel
   ) {
     try {
-      console.log(collectionwithMerch);
-
-      const response = await prisma.collection.update({
-        where: {
-          collectionId: collectionId,
-        },
-        data: { ...collectionwithMerch, collectionId: undefined },
-      });
+      const response = await updateCollection(collectionId, collection);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

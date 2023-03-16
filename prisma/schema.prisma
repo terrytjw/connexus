@@ -40,6 +40,7 @@ model User {
   userTicket          UserTicket[]
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
+  questions           Question[]
 }
 
 model Post {
@@ -71,13 +72,16 @@ model Community {
 }
 
 model Channel {
-  channelId   Int         @id @default(autoincrement())
-  name        String
-  channelType ChannelType @default(PREMIUM)
-  members     User[]
-  community   Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId Int
-  posts       Post[]
+  channelId    Int         @id @default(autoincrement())
+  name         String
+  channelType  ChannelType @default(PREMIUM)
+  members      User[]
+  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId  Int
+  posts        Post[]
+  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int?        @unique
+  questions    Question[]
 
   @@unique([communityId, name])
 }
@@ -234,7 +238,7 @@ enum PromotionType {
 model Collection {
   collectionId    Int             @id @default(autoincrement())
   collectionName  String          @unique
-  description     String?
+  description     String
   currency        Currency        @default(USD)
   collectionState CollectionState @default(ON_SALE)
   merchandise     Merchandise[]
@@ -243,10 +247,10 @@ model Collection {
   merchURIs       String[]
   creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
   creatorId       Int
+  premiumChannel  Channel?
 }
 
 enum CollectionState {
-  CREATED
   ON_SALE
   SOLD
   PAUSED
@@ -262,7 +266,7 @@ enum Currency {
 model Merchandise {
   merchId          Int        @id @default(autoincrement())
   name             String
-  image            String?
+  image            String
   stripePriceId    String? //Optional To be removed
   price            Float      @default(0)
   totalMerchSupply Int        @default(0)
@@ -270,4 +274,15 @@ model Merchandise {
   collection       Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   collectionId     Int
   users            User[]
+}
+
+model Question {
+  questionId Int      @id @default(autoincrement())
+  question   String
+  answer     String   @default("")
+  date       DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [userId])
+  userId     Int
+  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channelId  Int
 }

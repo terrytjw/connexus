@@ -22,6 +22,38 @@ export async function searchMerchandise(searchType: MerchandisePartialType) {
   });
 }
 
+export async function searchMerchandiseByUser(
+  userId: number,
+  keyword: string,
+  cursor: number,
+  priceType?: MerchandisePriceType
+) {
+  const filterCondition =
+    priceType == MerchandisePriceType.FREE
+      ? { equals: 0 }
+      : priceType == MerchandisePriceType.PAID
+      ? { gt: 0 }
+      : undefined;
+  return prisma.merchandise.findMany({
+    take: 10,
+    skip: cursor ? 1 : undefined, // Skip cursor
+    cursor: cursor ? { merchId: cursor } : undefined,
+    where: {
+      users: {
+        some: { userId: userId },
+      },
+      name: {
+        contains: keyword,
+        mode: "insensitive",
+      },
+      price: filterCondition,
+    },
+    include: {
+      collection: { select: { collectionName: true } },
+    },
+  });
+}
+
 export function filterMerchandiseByPriceType(
   cursor: number,
   collectionId: number,
@@ -39,22 +71,6 @@ export function filterMerchandiseByPriceType(
     where: { collectionId: collectionId, price: filterCondition },
   });
 }
-
-// export async function filterByMerchandisePurchaseType(
-//   cursor: number = 1,
-//   collectionId: number,
-//   priceType: MerchandisePriceType
-// ) {
-//   const filterCondition =
-//     priceType === MerchandisePriceType.FREE ? { equals: 0 } : { gt: 0 };
-//   return prisma.merchandise.findMany({
-//     take: 10,
-//     skip: cursor ? 1 : undefined, // Skip cursor
-//     cursor: cursor ? { merchId: cursor } : undefined,
-//     where: {
-//       price: filterCondition,
-//     },
-//   });
 
 //   //this is what we should do
 

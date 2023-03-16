@@ -23,6 +23,7 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import { createProduct } from "../../../lib/stripe/api-helpers";
+import { searchCollections } from "../../../lib/prisma/collection-prisma";
 const prisma = new PrismaClient();
 
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
@@ -67,6 +68,7 @@ export const config = {
     },
   },
 };
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Collection[] | ErrorResponse>
@@ -80,13 +82,10 @@ export default async function handler(
 
   const { method, body, query } = req;
 
-  const userId = parseInt(query.userId as string);
-  const keyword = query.keyword as string;
-  const cursor = parseInt(query.cursor as string);
-
   switch (req.method) {
     case "GET":
-      await handleGETWithKeyword(userId, keyword, cursor);
+      const params = convertParams(query);
+      await handleGETWithParams(params);
       break;
     case "POST":
       const collection = JSON.parse(
@@ -99,27 +98,12 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handleGETWithKeyword(
-    userId: number,
-    keyword: string,
-    cursor: number
-  ) {
+  async function handleGETWithParams(params: CollectionsGETParams) {
     try {
-      const collections = await prisma.collection.findMany({
-        take: 10,
-        skip: cursor ? 1 : undefined, // Skip cursor
-        cursor: cursor ? { collectionId: cursor } : undefined,
-        orderBy: {
-          collectionId: "asc",
-        },
-        where: {
-          creatorId: userId ? userId : undefined,
-          collectionName: { contains: keyword, mode: "insensitive" },
-        },
-        include: { merchandise: true },
-      });
+      const collections = await searchCollections(params);
       res.status(200).json(collections);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
@@ -152,6 +136,8 @@ export default async function handler(
       const updatedMerchs = await Promise.all(
         merchandise.map(async (merch: Merchandise) => {
           const { merchId, collectionId, image, ...merchInfo } = merch;
+
+          merchInfo.price = collectionInfo.fixedPrice;
           let updatedMerchInfo = await updateMerchMedia(image, merchInfo);
 
           const stripePriceId = await createProduct(
@@ -186,4 +172,28 @@ export default async function handler(
       res.status(400).json(errorResponse);
     }
   }
+}
+
+export type CollectionsGETParams = {
+  userId?: number;
+  keyword?: string;
+  cursor?: number;
+  collectionState?: CollectionState;
+  isLinked?: boolean;
+  omitSold?: boolean;
+};
+
+function convertParams(query: any): CollectionsGETParams {
+  return {
+    userId: parseInt(query.userId as string),
+    keyword: query.keyword,
+    cursor: parseInt(query.cursor as string),
+    collectionState: query.collectionState as CollectionState,
+    isLinked: query.isLinked === "true"
+      ? true
+      : query.isLinked === undefined
+      ? undefined
+      : false,
+    omitSold: query.omitSold === "true"
+  };
 }

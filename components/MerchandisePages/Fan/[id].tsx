@@ -1,11 +1,22 @@
+import { Merchandise } from "@prisma/client";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import Badge from "../../Badge";
 import Button from "../../Button";
 import CollectibleGrid from "../../CollectibleGrid";
+import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
 
-const FanCollectionPage = ({ collection }: any) => {
+type FanCollectionPageProps = {
+  collection: CollectionWithMerchAndPremiumChannel;
+};
+
+const FanCollectionPage = ({ collection }: FanCollectionPageProps) => {
+  const maxQuantity = collection.merchandise.reduce(
+    (total: number, m: Merchandise) =>
+      total + m.totalMerchSupply - m.currMerchSupply,
+    0
+  );
   const [quantity, setQuantity] = useState(1);
 
   return (
@@ -19,28 +30,34 @@ const FanCollectionPage = ({ collection }: any) => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+        <div>
+          <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+          <p className="mt-4 text-red-500">
+            Note: Upon purchasing a collectible, it is randomised from the
+            collection.
+          </p>
+        </div>
       </div>
 
-      <div className="mt-6">
-        <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
+      <div className="mt-6 lg:ml-16">
+        <div className="card mb-4 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row">
             <div>
-              <h2 className="text-gray-700">{collection.description}</h2>
-              {/* <span className="text-sm text-gray-700">
+              <h2 className="mb-2 text-gray-700">{collection.description}</h2>
+              <span className="text-sm text-gray-700">
                 Created by{" "}
                 <Link
                   href="/user/profile/1"
                   className="font-semibold text-blue-600 underline"
                 >
-                  {collection.creator.username}
+                  creator
                 </Link>
-              </span> */}
+              </span>
             </div>
 
             {collection.premiumChannel ? (
               <Badge
-                className="h-min"
+                className="h-min !bg-blue-100 !text-blue-500"
                 size="lg"
                 label={`Unlocks ${collection.premiumChannel?.name}`}
               />
@@ -78,7 +95,7 @@ const FanCollectionPage = ({ collection }: any) => {
                   <input
                     type="number"
                     min={1}
-                    max={collection.quantity} // to be updated
+                    max={maxQuantity}
                     step={1}
                     value={quantity}
                     onKeyDown={(e) => {
@@ -95,18 +112,23 @@ const FanCollectionPage = ({ collection }: any) => {
                       e.preventDefault();
                     }}
                     onChange={(e) => {
-                      if (e.target.valueAsNumber > collection.quantity) {
-                        setQuantity(collection.quantity);
+                      if (e.target.valueAsNumber > maxQuantity) {
+                        setQuantity(maxQuantity);
                         return;
                       }
                       setQuantity(e.target.valueAsNumber);
+                    }}
+                    onBlur={(e) => {
+                      if (e.target.value == "") {
+                        setQuantity(1);
+                      }
                     }}
                     className="w-full appearance-none bg-gray-200 text-center outline-none"
                   ></input>
                   {/* increase button */}
                   <button
                     className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
-                    disabled={quantity == collection.quantity}
+                    disabled={quantity == maxQuantity}
                     onClick={() => {
                       if (quantity) {
                         setQuantity(quantity + 1);

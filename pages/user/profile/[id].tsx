@@ -103,7 +103,6 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
 
             <TabGroupBordered
               tabs={[
-                "Featured",
                 "Creations",
                 "Collections",
                 "Joined Communities",
@@ -114,15 +113,10 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 setActiveTab(index);
               }}
             >
-              {activeTab == 0 && (
-                <UserProfileFeatured products={userData.merchandise} />
-              )}
-              {activeTab == 1 && <UserProfileCreations />}
-              {activeTab == 2 && (
-                <UserProfileCollections products={collections} />
-              )}
+              {activeTab == 0 && <h1>Coming soon...</h1>}
+              {activeTab == 1 && <h1>Coming soon...</h1>}
+              {activeTab == 2 && <h1>Coming soon...</h1>}
               {activeTab == 3 && <h1>Coming soon...</h1>}
-              {activeTab == 4 && <h1>Coming soon...</h1>}
             </TabGroupBordered>
           </div>
           <Toaster
