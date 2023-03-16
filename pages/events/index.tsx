@@ -7,7 +7,7 @@ import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 
-import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
+import { Event, PrivacyType, VisibilityType } from "@prisma/client";
 import { EventWithTicketsandAddress } from "../../utils/types";
 
 type EventsPageProps = {
