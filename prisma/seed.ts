@@ -2,7 +2,6 @@ import {
   PrismaClient,
   CategoryType,
   PrivacyType,
-  PromotionType,
   VisibilityType,
   PublishType,
   ChannelType,
@@ -466,6 +465,14 @@ async function generateEvent() {
             users: { connect: [{ userId: 4 }, { userId: 5 }, { userId: 6 }] },
             currentTicketSupply: 1,
             ticketType: TicketType.ON_SALE,
+            promotion: {
+              create: [
+                {
+                  name: "EARLYBIRD",
+                  promotionValue: 10,
+                },
+              ],
+            },
           },
           {
             name: "VIP Pass",

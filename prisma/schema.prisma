@@ -175,14 +175,10 @@ enum TicketType {
 }
 
 model Promotion {
-  promotionId    Int           @id @default(autoincrement())
+  promotionId    Int    @id @default(autoincrement())
   name           String
-  promotionType  PromotionType
-  promotionValue Float         @default(0)
-  quantity       Int           @default(0)
-  startDate      DateTime      @default(now())
-  endDate        DateTime      @default(now())
-  ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
+  promotionValue Float  @default(0)
+  ticket         Ticket @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
   ticketId       Int
 }
 
@@ -228,11 +224,6 @@ enum ChannelType {
   REGULAR
   PREMIUM
   PRIVATE
-}
-
-enum PromotionType {
-  LIMITED
-  UNLIMITED
 }
 
 model Collection {
