@@ -10,6 +10,7 @@ export const COMMENT_ENDPOINT = "comment";
 export const COMMUNITY_ENDPOINT = "community";
 export const CHANNEL_ENDPOINT = "channel";
 export const QUESTION_ENDPOINT = "question";
+export const PROMOTION_ENDPOINT = "promotion";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";

@@ -5,7 +5,9 @@ export interface PromotionPartialType extends Partial<Promotion> {}
 
 export async function filterPromotion(
   cursor: number | undefined,
-  promotionId: number | undefined
+  promotionId: number | undefined,
+  ticketId: number | undefined,
+  promotionCode: string | undefined
 ) {
   return prisma.promotion.findMany({
     take: 10,
@@ -13,6 +15,11 @@ export async function filterPromotion(
     cursor: cursor ? { promotionId: cursor } : undefined,
     where: {
       promotionId: promotionId,
+      name: {
+        contains: promotionCode,
+        mode: "insensitive",
+      },
+      ticketId: ticketId,
     },
   });
 }

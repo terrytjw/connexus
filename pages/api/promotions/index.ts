@@ -55,7 +55,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Promotion[] | ErrorResponse>
 ) {
-  const { method, body } = req;
+  const { method, body, query } = req;
+
+  const promotionCode = query.promotionCode as string;
+  const ticketId = query.ticketId
+    ? parseInt(query.ticketId as string)
+    : undefined;
+
+  const promotionId = query.promotionId
+    ? parseInt(query.promotionId as string)
+    : undefined;
 
   switch (method) {
     case "GET":
@@ -72,7 +81,12 @@ export default async function handler(
 
   async function handleGET() {
     try {
-      const promotions = await filterPromotion(undefined, undefined);
+      const promotions = await filterPromotion(
+        undefined,
+        promotionId,
+        ticketId,
+        promotionCode
+      );
       res.status(200).json(promotions);
     } catch (error) {
       const errorResponse = handleError(error);
