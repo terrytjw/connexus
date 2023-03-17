@@ -422,8 +422,6 @@ const TicketFormPage = ({
                 name={`tickets.${index}.price`}
                 rules={{
                   required: "Price of ticket is required",
-                  validate: (value) =>
-                    value > 0 || "Minimum price must be more than 0",
                 }}
                 render={({
                   field: { onChange, value },
