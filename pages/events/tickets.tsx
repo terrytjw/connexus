@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TicketCard from "../../components/EventPages/TicketCard";
 
 import { Ticket } from "@prisma/client";
@@ -16,6 +16,7 @@ import SpinWheel from "../../components/EventPages/SpinWheel";
 import { getSession } from "next-auth/react";
 import { getEventInfo } from "../../lib/api-helpers/event-api";
 import { truncateString } from "../../utils/text-truncate";
+import { toast, Toaster } from "react-hot-toast";
 
 type TicketsPageProps = {
   tickets: (Ticket & Partial<Event>)[];
@@ -26,6 +27,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [qrValue, setQrValue] = useState<string>("");
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
+  const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const prizes = [
     "better luck next time",
     "won 70",
@@ -36,6 +38,10 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
     "better luck next time",
     "won a voucher",
   ];
+
+  useEffect(() => {
+    if (checkedIn) toast.success("Check in success!");
+  }, [checkedIn]);
 
   return (
     <ProtectedRoute>
@@ -48,12 +54,11 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             </Link>
             <h2 className="text-2xl font-bold sm:text-4xl">My Tickets</h2>
           </nav>
-
           <section>
             {tickets.map((ticket: Ticket & Partial<Event>) => (
               <div key={ticket.ticketId} className="mt-10">
                 <Link href={`/events/${ticket.eventId}`}>
-                  <h3 className="mb-4 text-xl font-bold text-blue-600">
+                  <h3 className="mb-4 text-xl font-semibold text-gray-500">
                     {ticket.eventName}
                   </h3>
                 </Link>
@@ -68,47 +73,62 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
               </div>
             ))}
           </section>
-
-          {/* QR Modal */}
+          {/* QR and Digital Badge Modal */}
           <Modal
             isOpen={isModalOpen}
             setIsOpen={setIsModalOpen}
             className="flex flex-col items-center"
           >
             <div className="flex flex-col items-center gap-2">
-              <h2 className="text-2xl font-bold sm:text-2xl">QR Code for</h2>
+              <h2 className="text-2xl font-bold sm:text-2xl">
+                {!checkedIn ? "QR Code" : "Digital Badge"} for
+              </h2>
               <p className="text-xl">
                 {truncateString(tickets[0].eventName, 40)}
               </p>
             </div>
             {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
-            <QRCode
-              className="mt-4 flex items-center"
-              size={128}
-              value={qrValue}
-            />
+            {!checkedIn ? (
+              <QRCode
+                className="mt-4 flex items-center"
+                size={128}
+                value={qrValue}
+              />
+            ) : (
+              <div>DIGITAL BADGE</div>
+            )}
+
             <div className="mt-4 flex justify-end">
               <Button
                 className="border-0"
                 variant="outlined"
                 size="md"
-                onClick={() => setIsModalOpen(false)}
+                onClick={() => setCheckedIn((prev) => !prev)}
               >
                 Done
               </Button>
             </div>
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  background: "#FFFFFF",
+                  color: "#34383F",
+                  textAlign: "center",
+                },
+              }}
+            />
           </Modal>
-
           {/* Prize Modal */}
           <Modal
             isOpen={isPrizeModalOpen}
             setIsOpen={setIsPrizeModalOpen}
-            className="flex min-w-fit flex-col items-center"
+            className="flex flex-col items-center sm:min-w-fit"
           >
             <h2 className="text-2xl font-bold sm:text-2xl">Spin the Wheel!</h2>
 
             <div className="flex justify-center align-middle">
-              <SpinWheel prizes={prizes} />
+              <SpinWheel prizes={prizes} size={200} />
             </div>
             <div className="mt-4 flex justify-end">
               <Button

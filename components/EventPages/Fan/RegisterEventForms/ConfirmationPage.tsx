@@ -7,16 +7,16 @@ import {
 import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
-import { UserWithSelectedTicket } from "../../../../pages/events/register/[id]";
+import { TicketsForm } from "../../../../pages/events/register/[id]";
 // @ts-ignore
 import { isEmail, isMobilePhone } from "validator";
 import useSWR from "swr";
 import { swrFetcher } from "../../../../lib/swrFetcher";
 
 type ConfirmationFormProps = {
-  watch: UseFormWatch<UserWithSelectedTicket>;
-  control: Control<UserWithSelectedTicket, any>;
-  trigger: UseFormTrigger<UserWithSelectedTicket>;
+  watch: UseFormWatch<TicketsForm>;
+  control: Control<TicketsForm, any>;
+  trigger: UseFormTrigger<TicketsForm>;
   setIsRegisterSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 

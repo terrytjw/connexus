@@ -11,7 +11,8 @@ import Layout from "../../../components/Layout";
 import ConfirmationPage from "../../../components/EventPages/Fan/RegisterEventForms/ConfirmationPage";
 import TicketSelectionFormPage from "../../../components/EventPages/Fan/RegisterEventForms/TicketSelectionFormPage";
 import ProtectedRoute from "../../../components/ProtectedRoute";
-import { User } from "@prisma/client";
+import { User, Ticket } from "@prisma/client";
+import { Toaster } from "react-hot-toast";
 
 import axios from "axios";
 import { GetServerSideProps } from "next";
@@ -28,12 +29,17 @@ import Button from "../../../components/Button";
 import Link from "next/link";
 
 export type SelectedTicket = {
+  ticketId: number | undefined;
   ticketName: string;
   qty: number;
   price: number;
 };
 
-export type UserWithSelectedTicket = User & { selectedTicket: SelectedTicket };
+export type TicketsForm = User & {
+  selectedTicket: SelectedTicket;
+  preDiscountedTickets: Ticket[];
+  discountedTickets: Ticket[];
+};
 
 type FanEventReigsterProps = {
   userData: User;
@@ -53,10 +59,17 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
 
   // use form for selected ticket state
   const { handleSubmit, setValue, reset, control, watch, trigger } =
-    useForm<UserWithSelectedTicket>({
+    useForm<TicketsForm>({
       defaultValues: {
         ...userData,
-        selectedTicket: { ticketName: "", qty: 0, price: 0 },
+        selectedTicket: {
+          ticketId: undefined,
+          ticketName: "",
+          qty: 0,
+          price: 0,
+        },
+        preDiscountedTickets: event.tickets,
+        discountedTickets: [],
       },
     });
 
@@ -314,6 +327,16 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   return (
     <ProtectedRoute>
       <Layout>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
         {/* Register success modal */}
         <Modal
           isOpen={isRegisterSuccessModalOpen}
@@ -371,7 +394,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((data: UserWithSelectedTicket) => {
+              onSubmit={handleSubmit((data: TicketsForm) => {
                 console.log("Submitting Ticket Data to mint", data);
                 // remove selectedTickets field from form data
                 const { selectedTicket, ...userWithNoSelectedTickets } =
@@ -389,7 +412,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketSelectionFormPage
                     reset={reset}
-                    event={event}
                     setValue={setValue}
                     watch={watch}
                     control={control}

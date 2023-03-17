@@ -4,11 +4,10 @@ import WheelComponent from "react-wheel-of-prizes";
 
 interface SpinWheelProps {
   prizes: string[];
+  size: number;
 }
 
-const SpinWheel = ({ prizes }: SpinWheelProps) => {
-  const [winner, setWinner] = useState("");
-
+const SpinWheel = ({ prizes, size }: SpinWheelProps) => {
   const segColors = [
     "#EE4040",
     "#F0CF50",
@@ -33,7 +32,7 @@ const SpinWheel = ({ prizes }: SpinWheelProps) => {
         contrastColor="white"
         buttonText="Spin"
         isOnlyOnce={true}
-        size={200}
+        size={size}
         upDuration={100}
         downDuration={1000}
         fontFamily="Arial"
