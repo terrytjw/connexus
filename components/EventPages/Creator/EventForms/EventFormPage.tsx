@@ -85,7 +85,6 @@ const EventFormPage = ({
 
   // scroll to center of venue inputs when location search is valid
   useEffect(() => {
-    // scroll to ticket
     document.getElementById(`venue-inputs`)?.scrollIntoView({
       behavior: "smooth",
       block: "center",
