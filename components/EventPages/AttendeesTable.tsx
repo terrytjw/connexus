@@ -35,7 +35,7 @@ const AttendeesTable = ({
         <tbody>
           {/* <!-- row 1 --> */}
           {data.map((data, index) => (
-            <tr key={index} className="hover: cursor-pointer">
+            <tr key={index}>
               <td className="text-gray-700">
                 <p className="flex items-center gap-x-1">
                   {data?.displayName}

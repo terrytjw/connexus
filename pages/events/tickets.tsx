@@ -13,6 +13,9 @@ import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
 import QRCode from "react-qr-code";
 import Button from "../../components/Button";
 import SpinWheel from "../../components/EventPages/SpinWheel";
+import { getSession } from "next-auth/react";
+import { getEventInfo } from "../../lib/api-helpers/event-api";
+import { truncateString } from "../../utils/text-truncate";
 
 type TicketsPageProps = {
   tickets: (Ticket & Partial<Event>)[];
@@ -45,24 +48,25 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             </Link>
             <h2 className="text-2xl font-bold sm:text-4xl">My Tickets</h2>
           </nav>
+
           <section>
-            <div className="pt-6">
-              {tickets.map((ticket: Ticket & Partial<Event>) => (
-                <div key={ticket.ticketId}>
-                  <h3 className="mb-4 text-xl font-bold text-gray-800">
+            {tickets.map((ticket: Ticket & Partial<Event>) => (
+              <div key={ticket.ticketId} className="mt-10">
+                <Link href={`/events/${ticket.eventId}`}>
+                  <h3 className="mb-4 text-xl font-bold text-blue-600">
                     {ticket.eventName}
                   </h3>
-                  <TicketCard
-                    key={ticket.ticketId}
-                    ticket={ticket}
-                    isOwnedTicket={true} // render buttons
-                    setIsModalOpen={setIsModalOpen}
-                    setQrValue={setQrValue}
-                    setIsPrizeModalOpen={setIsPrizeModalOpen}
-                  />
-                </div>
-              ))}
-            </div>
+                </Link>
+                <TicketCard
+                  key={ticket.ticketId}
+                  ticket={ticket}
+                  isOwnedTicket={true} // render buttons
+                  setIsModalOpen={setIsModalOpen}
+                  setQrValue={setQrValue}
+                  setIsPrizeModalOpen={setIsPrizeModalOpen}
+                />
+              </div>
+            ))}
           </section>
 
           {/* QR Modal */}
@@ -71,9 +75,12 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             setIsOpen={setIsModalOpen}
             className="flex flex-col items-center"
           >
-            <h2 className="text-2xl font-bold sm:text-2xl">
-              QR Code for {tickets[0].eventName}
-            </h2>
+            <div className="flex flex-col items-center gap-2">
+              <h2 className="text-2xl font-bold sm:text-2xl">QR Code for</h2>
+              <p className="text-xl">
+                {truncateString(tickets[0].eventName, 40)}
+              </p>
+            </div>
             {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
             <QRCode
               className="mt-4 flex items-center"
@@ -124,12 +131,22 @@ export default TicketsPage;
 
 // use axios GET method to fetch data
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
+  const session = await getSession(context);
+  const userId = session?.user?.userId;
   // build a ticket type with event name in it
-  const ownedTickets = await getTicketsOwned(4);
+  const ownedTickets = await getTicketsOwned(userId);
+
+  // fetch events using eventIds
+  const ownedTicketsWithEventName: Event[] = await Promise.all(
+    ownedTickets.map(async (ticket: Ticket) => {
+      const event = await getEventInfo(ticket.eventId);
+      return { ...ticket, eventName: event.eventName };
+    })
+  );
 
   return {
     props: {
-      tickets: ownedTickets,
+      tickets: ownedTicketsWithEventName,
     },
   };
 };

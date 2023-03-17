@@ -21,7 +21,6 @@ import { toast, Toaster } from "react-hot-toast";
 import { AttendeeListType } from "../../../utils/types";
 import { BiGift } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-import Dropdown from "../../../components/Dropdown";
 
 export enum CheckInStatus {
   INITIAL,
@@ -148,10 +147,37 @@ const AttendeesPage = () => {
     }
   };
 
+  const handleActivateRaffle = () => {
+    if (true) {
+      toast.success("Activated Raffle!");
+    } else {
+      toast.error("Failed to activate Raffle");
+    }
+  };
+
+  const handleVerify = () => {
+    if (true) {
+      toast.success("Verified!");
+    } else {
+      toast.error("Failed to verify prize claim");
+    }
+    setIsPrizeModalOpen(false);
+  };
+
   return (
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
           {/* Header */}
           <div className="mb-8 flex justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -173,7 +199,7 @@ const AttendeesPage = () => {
                 variant="outlined"
                 size="md"
                 className="max-w-xs"
-                onClick={() => {}}
+                onClick={handleActivateRaffle}
               >
                 Activate Digital Raffle
               </Button>
@@ -235,7 +261,7 @@ const AttendeesPage = () => {
                 className="w-full border-0 bg-teal-500 hover:bg-teal-600"
                 variant="solid"
                 size="md"
-                onClick={() => setIsQrModalOpen(false)}
+                onClick={handleVerify}
               >
                 Verify
               </Button>
@@ -279,7 +305,7 @@ const AttendeesPage = () => {
               </Button>
             </div>
 
-            {/* Success Toast OR Error Toast */}
+            {/* Success Toast OR Error Toast in Modal*/}
             {isValid ? (
               <Toaster
                 position="bottom-center"
