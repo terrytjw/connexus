@@ -30,7 +30,13 @@ export async function searchUser(searchType: UserPartialType) {
       },
       joinedChannels: true,
       tickets: true,
-      merchandise: true,
+      merchandise: {
+        include: {
+          collection: {
+            include: { premiumChannel: { select: { channelId: true } } },
+          },
+        },
+      },
     },
   });
 }

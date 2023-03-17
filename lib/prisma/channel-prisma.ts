@@ -1,4 +1,5 @@
-import { PrismaClient, Channel } from "@prisma/client";
+import { PrismaClient, Channel, Prisma } from "@prisma/client";
+import { getUserInfo } from "../api-helpers/user-api";
 
 const prisma = new PrismaClient();
 
@@ -90,4 +91,39 @@ export async function searchUsersInChannel(channelId: number, keyword: string) {
     user.username.includes(keyword)
   );
   return users;
+}
+
+type MerchandiseWithCollectionWithPremiumChannelId =
+  Prisma.MerchandiseGetPayload<{
+    include: {
+      collection: {
+        include: {
+          premiumChannel: { select: { channelId: true } };
+        };
+      };
+    };
+  }>;
+
+export async function getChannelsToJoin(userId: number) {
+  const user = await getUserInfo(userId);
+  const channelIDs = [] as number[];
+  user.merchandise.forEach(
+    (merchandise: MerchandiseWithCollectionWithPremiumChannelId) => {
+      if (merchandise.collection.premiumChannel) {
+        channelIDs.push(merchandise.collection.premiumChannel.channelId);
+      }
+    }
+  );
+  return channelIDs;
+}
+
+export async function getChannelsToLeave(communityId: number, userId: number) {
+  const user = await getUserInfo(userId);
+  const channelIDs = [] as number[];
+  user.joinedChannels.forEach((channel: Channel) => {
+    if (channel.communityId == communityId) {
+      channelIDs.push(channel.channelId);
+    }
+  });
+  return channelIDs;
 }
