@@ -14,7 +14,11 @@ export type CollectionwithMerch = Prisma.CollectionGetPayload<{
 }>;
 
 export type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
-  include: { merchandise: true; premiumChannel: true };
+  include: {
+    merchandise: true;
+    premiumChannel: true;
+    creator: { select: { username: true } };
+  };
 }>;
 
 /** Smart Contract information */

@@ -47,10 +47,10 @@ const FanCollectionPage = ({ collection }: FanCollectionPageProps) => {
               <span className="text-sm text-gray-700">
                 Created by{" "}
                 <Link
-                  href="/user/profile/1"
+                  href={`/user/profile/${collection.creatorId}`}
                   className="font-semibold text-blue-600 underline"
                 >
-                  creator
+                  {collection.creator.username}
                 </Link>
               </span>
             </div>
