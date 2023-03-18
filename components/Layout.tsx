@@ -17,7 +17,9 @@ import { useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import dynamic from "next/dynamic";
 import Loading from "./Loading";
-import { useSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
+import useSWR from "swr";
+import { getUserInfo } from "../lib/api-helpers/user-api";
 
 const SocialLoginDynamic = dynamic(
   () => import("../components/scw").then((res) => res.default),
@@ -31,7 +33,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const MobileNavbar = ({ children }: any) => {
+const MobileNavbar = ({ userData, children }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -56,7 +58,7 @@ const MobileNavbar = ({ children }: any) => {
       />
       <div id="scrollable" className="drawer-content">
         {/* <!-- Page content here --> */}
-        <div className="relative flex items-center bg-white p-4 shadow-sm lg:hidden">
+        <div className="relative flex items-center justify-between bg-white p-4 shadow-sm lg:hidden">
           <label
             htmlFor="my-drawer"
             className="cursor-pointer text-gray-700 transition-all hover:text-gray-500"
@@ -74,6 +76,30 @@ const MobileNavbar = ({ children }: any) => {
               height={35}
             />
           </Link>
+          {/* mobile profile dropdown */}
+
+          <div className="dropdown-end dropdown">
+            <label tabIndex={0} className="btn-ghost btn m-1 hover:bg-gray-100">
+              <Image
+                className="rounded-full"
+                src={userData.profilePic}
+                alt="profile photo"
+                width={40}
+                height={40}
+              />
+            </label>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
+            >
+              <li>
+                <a>Switch to creator view</a>
+              </li>
+              <li>
+                <a>Balance</a>
+              </li>
+            </ul>
+          </div>
         </div>
         {children}
       </div>
@@ -335,12 +361,54 @@ type LayoutProps = {
   children: React.ReactNode;
 };
 const Layout = ({ children }: LayoutProps) => {
+  const { data: session, status } = useSession();
+  const {
+    data: userData,
+    error,
+    isLoading,
+  } = useSWR(session?.user.userId, getUserInfo);
+
+  if (isLoading) return <Loading />;
+
   return (
-    <MobileNavbar>
+    <MobileNavbar userData={userData}>
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="debug-screens w-full lg:ml-64 lg:w-[calc(100%-16rem)]">
-          <div className="min-h-screen bg-sky-100">{children}</div>
+          <div className="min-h-screen bg-sky-100">
+            {/* desktop profile dropdown */}
+            <div className="hidden p-2 lg:flex lg:justify-end">
+              <div className="dropdown-end dropdown">
+                <label
+                  tabIndex={0}
+                  className="btn-ghost btn m-1 hover:bg-gray-100"
+                >
+                  <Image
+                    className="rounded-full"
+                    src={userData.profilePic}
+                    alt="profile photo"
+                    width={40}
+                    height={40}
+                  />
+                  <span className="ml-2 italic text-gray-500">
+                    @{userData.username}
+                  </span>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
+                >
+                  <li>
+                    <a>Switch to creator view</a>
+                  </li>
+                  <li>
+                    <a>Balance</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            {children}
+          </div>
           <Footer />
         </main>
       </div>
