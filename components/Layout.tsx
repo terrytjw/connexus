@@ -9,6 +9,7 @@ import {
   FaBell,
   FaGripVertical,
   FaSignOutAlt,
+  FaChevronDown,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
@@ -77,8 +78,8 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
               height={35}
             />
           </Link>
-          {/* mobile profile dropdown */}
 
+          {/* mobile profile dropdown */}
           <div className="dropdown-end dropdown">
             <label tabIndex={0} className="btn-ghost btn m-1 hover:bg-gray-100">
               <Image
@@ -398,7 +399,7 @@ const Layout = ({ children }: LayoutProps) => {
               <div className="dropdown-end dropdown">
                 <label
                   tabIndex={0}
-                  className="btn-ghost btn m-1 hover:bg-gray-100"
+                  className="group btn-ghost btn m-1 hover:bg-gray-100/0"
                 >
                   <Image
                     className="rounded-full"
@@ -407,9 +408,10 @@ const Layout = ({ children }: LayoutProps) => {
                     width={40}
                     height={40}
                   />
-                  <span className="ml-2 italic text-gray-500">
+                  <span className="ml-2 lowercase italic text-gray-500 transition-all  group-hover:text-gray-400">
                     @{userData.username}
                   </span>
+                  <FaChevronDown className="ml-2 text-gray-500 transition-all  group-hover:text-gray-400" />
                 </label>
                 <ul
                   tabIndex={0}

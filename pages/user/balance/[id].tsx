@@ -7,6 +7,8 @@ import { UserWithAllInfo } from "../../api/users/[userId]";
 import { Controller, useForm } from "react-hook-form";
 import Input from "../../../components/Input";
 import Image from "next/image";
+import ProtectedRoute from "../../../components/ProtectedRoute";
+import Layout from "../../../components/Layout";
 
 type WithdrawalTableProps = {
   data: any[]; // TODO: change type any to data type
@@ -84,119 +86,135 @@ const BalancePage = ({ userData }: BalancePageProps) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <h1>Account Balance</h1>
-      {/* account hero section */}
-      <section>
-        <h4>Your Balance</h4>
-        <div>
-          <h2>$12345</h2>
-          <Button variant="solid" size="md" type="submit">
-            Withdraw
-          </Button>
-        </div>
-      </section>
+    <ProtectedRoute>
+      <Layout>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <h1>Account Balance</h1>
+          {/* account hero section */}
+          <section>
+            <h4>Your Balance</h4>
+            <div>
+              <h2>$12345</h2>
+              <Button variant="solid" size="md" type="submit">
+                Withdraw
+              </Button>
+            </div>
+          </section>
 
-      {/* fill up bank details section */}
-      <section>
-        <h4>Bank details</h4>
-        <Controller
-          control={control}
-          name="bankName"
-          rules={{ required: "Bank name is required" }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Input
-              type="text"
-              label="Bank Name*"
-              value={value}
-              onChange={onChange}
-              placeholder=""
-              errorMessage={error?.message}
-              size="md"
-              variant="bordered"
+          {/* fill up bank details section */}
+          <section>
+            <h4>Bank details</h4>
+            <Controller
+              control={control}
+              name="bankName"
+              rules={{ required: "Bank name is required" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="text"
+                  label="Bank Name*"
+                  value={value}
+                  onChange={onChange}
+                  placeholder=""
+                  errorMessage={error?.message}
+                  size="md"
+                  variant="bordered"
+                />
+              )}
             />
-          )}
-        />
-        <Controller
-          control={control}
-          name="accountName"
-          rules={{ required: "Full account name is required" }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Input
-              type="text"
-              label="Full Account Name*"
-              value={value}
-              onChange={onChange}
-              placeholder=""
-              errorMessage={error?.message}
-              size="md"
-              variant="bordered"
+            <Controller
+              control={control}
+              name="accountName"
+              rules={{ required: "Full account name is required" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="text"
+                  label="Full Account Name*"
+                  value={value}
+                  onChange={onChange}
+                  placeholder=""
+                  errorMessage={error?.message}
+                  size="md"
+                  variant="bordered"
+                />
+              )}
             />
-          )}
-        />
-        <Controller
-          control={control}
-          name="bankAccountNum"
-          rules={{ required: "Bank name is required" }}
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Input
-              type="text"
-              label="Bank Account Number*"
-              value={value}
-              onChange={onChange}
-              placeholder=""
-              errorMessage={error?.message}
-              size="md"
-              variant="bordered"
+            <Controller
+              control={control}
+              name="bankAccountNum"
+              rules={{ required: "Bank name is required" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="text"
+                  label="Bank Account Number*"
+                  value={value}
+                  onChange={onChange}
+                  placeholder=""
+                  errorMessage={error?.message}
+                  size="md"
+                  variant="bordered"
+                />
+              )}
             />
-          )}
-        />
-        <Controller
-          control={control}
-          name="bankRoutingNum"
-          render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <Input
-              type="text"
-              label="Bank Routing Number*"
-              value={value}
-              onChange={onChange}
-              placeholder=""
-              errorMessage={error?.message}
-              size="md"
-              variant="bordered"
+            <Controller
+              control={control}
+              name="bankRoutingNum"
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="text"
+                  label="Bank Routing Number*"
+                  value={value}
+                  onChange={onChange}
+                  placeholder=""
+                  errorMessage={error?.message}
+                  size="md"
+                  variant="bordered"
+                />
+              )}
             />
-          )}
-        />
-      </section>
+          </section>
 
-      {/* withdrawal history section */}
-      <section>
-        <h2>Withdrawal History</h2>
-        <WithdrawalTable
-          data={[
-            {
-              id: "936284",
-              date: "17-03-2023",
-              amount: 69,
-              status: "pending",
-            },
-            {
-              id: "429438",
-              date: "12-03-2023",
-              amount: 100,
-              status: "Completed",
-            },
-            {
-              id: "892638",
-              date: "02-02-2023",
-              amount: 120,
-              status: "Completed",
-            },
-          ]}
-          columns={["Transaction ID", "Date", "Amount", "Status"]}
-        />
-      </section>
-    </form>
+          {/* withdrawal history section */}
+          <section>
+            <h2>Withdrawal History</h2>
+            <WithdrawalTable
+              data={[
+                {
+                  id: "936284",
+                  date: "17-03-2023",
+                  amount: 69,
+                  status: "pending",
+                },
+                {
+                  id: "429438",
+                  date: "12-03-2023",
+                  amount: 100,
+                  status: "Completed",
+                },
+                {
+                  id: "892638",
+                  date: "02-02-2023",
+                  amount: 120,
+                  status: "Completed",
+                },
+              ]}
+              columns={["Transaction ID", "Date", "Amount", "Status"]}
+            />
+          </section>
+        </form>
+      </Layout>
+    </ProtectedRoute>
   );
 };
 
