@@ -233,7 +233,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
 
         <Carousel images={post.media} />
 
-        <p>{post.content}</p>
+        <p className="break-words">{post.content}</p>
 
         <div className="flex w-full flex-row-reverse flex-wrap items-center justify-between gap-4">
           <span>
