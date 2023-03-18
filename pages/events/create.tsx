@@ -13,14 +13,7 @@ import Loading from "../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithAllDetails } from "../../utils/types";
-import {
-  PrivacyType,
-  Promotion,
-  PublishType,
-  Ticket,
-  TicketType,
-  VisibilityType,
-} from "@prisma/client";
+import { Promotion, Ticket, TicketType } from "@prisma/client";
 
 import axios from "axios";
 
@@ -31,6 +24,7 @@ import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
 import { useSession } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
@@ -39,7 +33,7 @@ const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const CreatorEventCreate = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user.userId;
   // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
   //   useForm<EventWithAllDetails>({
@@ -121,7 +115,7 @@ const CreatorEventCreate = () => {
     control,
     name: "tickets",
   });
-  const [tickets] = watch(["tickets"]);
+  const { tickets } = watch();
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Event Details", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Ticket Details", status: StepStatus.UPCOMING },
@@ -327,6 +321,17 @@ const CreatorEventCreate = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
+
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}

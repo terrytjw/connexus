@@ -24,6 +24,7 @@ import {
 
 import { CategoryType } from "@prisma/client";
 import { EventWithAllDetails } from "../../../../utils/types";
+import toast from "react-hot-toast";
 
 type EventFormPageProps = {
   isEdit: boolean;
@@ -521,6 +522,11 @@ const EventFormPage = ({
                 "address.lng",
                 "address.postalCode",
               ]);
+
+              if (!(eventPic || bannerPic)) {
+                toast.error("Images are required!");
+                return;
+              }
 
               if (isValidated) {
                 proceedStep();
