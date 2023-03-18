@@ -167,12 +167,3 @@ export async function leaveCommunity(communityId: number, userId: number) {
     },
   });
 }
-
-export async function checkIfMemberOfCommunity(communityId: number, userId: number) {
-  return prisma.community.findFirst({
-    where: {
-      communityId: communityId,
-      members: { some: { userId: userId } },
-    },
-  });
-}

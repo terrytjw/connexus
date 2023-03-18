@@ -1,7 +1,6 @@
 import { Channel, ChannelType } from "@prisma/client";
 import { API_URL, CHANNEL_ENDPOINT } from "../constant";
 import axios from "axios";
-import { checkIfMemberOfCommunity } from "../prisma/community-prisma";
 
 const baseUrl = `${API_URL}/${CHANNEL_ENDPOINT}`;
 
@@ -51,25 +50,14 @@ export async function deleteChannelAPI(channelId: number) {
   return response;
 }
 
-export async function joinChannelAPI(communityId: number, channelId: number, userId: number) {
-  const isMember = await checkIfMemberOfCommunity(communityId, userId);
-  if (isMember) {
-    const url = baseUrl + `/${channelId}/join`;
-    const response = (await axios.post(url, {}, {
-      params: {
-        userId: userId
-      }
-    })).data;
-    return response;
-  }
-
-  const url = baseUrl + `/${communityId}/join`;
-    const response = (await axios.post(url, {}, {
-      params: {
-        userId: userId
-      }
-    })).data;
-    return response;
+export async function joinChannelAPI(channelId: number, userId: number) {
+  const url = baseUrl + `/${channelId}/join`;
+  const response = (await axios.post(url, {}, {
+    params: {
+      userId: userId
+    }
+  })).data;
+  return response;
 }
 
 export async function leaveChannelAPI(channelId: number, userId: number) {
