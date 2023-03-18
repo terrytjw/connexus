@@ -41,6 +41,7 @@ model User {
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
   questions           Question[]
+  Raffles             Raffles[]
 }
 
 model Post {
@@ -122,6 +123,7 @@ model Event {
   userLikes        User[]         @relation("eventLikes")
   creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
   creatorId        Int
+  Raffles          Raffles[]
 }
 
 enum PublishType {
@@ -285,4 +287,20 @@ model Question {
   userId     Int
   channel    Channel  @relation(fields: [channelId], references: [channelId])
   channelId  Int
+}
+
+model Raffles {
+  raffleId         Int                    @id @default(autoincrement())
+  availlablePrizes String[]
+  prizeWon         String
+  collectedStatus  RaffleCollectionStatus @default(PENDING)
+  event            Event                  @relation(fields: [eventId], references: [eventId])
+  eventId          Int
+  user             User                   @relation(fields: [userId], references: [userId])
+  userId           Int
+}
+
+enum RaffleCollectionStatus {
+  COLLECTED
+  PENDING
 }
