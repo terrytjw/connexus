@@ -1,10 +1,4 @@
-import {
-  Control,
-  UseFormReset,
-  UseFormSetValue,
-  UseFormTrigger,
-  UseFormWatch,
-} from "react-hook-form";
+import { UseFormSetValue, UseFormWatch } from "react-hook-form";
 import Button from "../../../Button";
 import TicketCardInput from "../../TicketCardInput";
 import { Ticket } from "@prisma/client";
@@ -16,51 +10,53 @@ import { getPromotionCodeByName } from "../../../../lib/api-helpers/promotion-ap
 import { useRouter } from "next/router";
 
 type TicketSelectionFormPageProps = {
-  reset: UseFormReset<TicketsForm>;
   setValue: UseFormSetValue<TicketsForm>;
   watch: UseFormWatch<TicketsForm>;
-  control: Control<TicketsForm, any>;
-  trigger: UseFormTrigger<TicketsForm>;
-
   proceedStep: () => void;
+  isPromoApplied: boolean;
+  setIsPromoApplied: (value: boolean) => void;
 };
 
 const TicketSelectionFormPage = ({
   setValue,
   watch,
   proceedStep,
+  isPromoApplied,
+  setIsPromoApplied,
 }: TicketSelectionFormPageProps) => {
   const router = useRouter();
   const { id: eventId } = router.query;
   // this tickets array is used to render the ticket cards
   const {
     preDiscountedTickets: tickets,
-    selectedTicket: { ticketName, qty },
+    selectedTicket: { ticketName, price, qty },
   } = watch();
   const [promoInput, setPromoInput] = useState<string>("");
-  const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
-
-  // replace with this with actual promo code field
-  const promoCode = {
-    promoId: 1,
-    promoName: "PROMO10",
-    discount: 0.23,
-  };
 
   const getDiscountedPrice = (price: number, discount: number): number => {
-    return price * (discount / 100);
+    return price * ((100 - discount) / 100);
   };
 
   const applyPromoCode = async () => {
     // fetch promo code
-    console.log("promo Input ->", promoInput);
-    console.log("eventID ->", Number(eventId));
-
-    const promo = await getPromotionCodeByName(promoInput, Number(eventId));
+    // const promo = await getPromotionCodeByName(promoInput, Number(eventId));
+    const promo = [
+      {
+        promoId: 2,
+        name: "promo100",
+        promotionValue: 10,
+        stripePromotionId: "nNScdGJg",
+        isEnabled: true,
+      },
+    ];
     console.log("api res ->", promo);
     // checks for valid promo code from event object
 
-    if (promo.length !== 0) {
+    if (
+      promo.length !== 0 &&
+      promo[0].isEnabled &&
+      promo[0].name === promoInput
+    ) {
       // set tickets with new price
       setValue(
         "discountedTickets",
@@ -70,6 +66,14 @@ const TicketSelectionFormPage = ({
         }))
       );
 
+      // if there is an existing selected tickeet
+      if (ticketName && qty) {
+        !isPromoApplied &&
+          setValue(
+            "selectedTicket.price",
+            getDiscountedPrice(Number(price), promo[0].promotionValue)
+          );
+      }
       // change promo applied state
       setIsPromoApplied(true);
       // update state for stripe promo id

@@ -77,7 +77,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
 
   // watch user form data
   const formData = watch();
-
+  const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -87,14 +87,26 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     { id: "Step 2", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
 
+  // checks if payment succeeeded and call mint api
   useEffect(() => {
     const paymentSuccessExists = "paymentSuccess" in router.query;
     console.log("payment success exists? -> ", paymentSuccessExists);
     console.log("query param value -> ", router.query.paymentSuccess);
 
-    if (paymentSuccessExists && router.query.paymentSuccess === true) {
-      //mint
-      
+    if (paymentSuccessExists && router.query.paymentSuccess === "true") {
+      // fetch ticket from local storage
+      const savedFormData: any = localStorage.getItem("savedFormData")
+        ? JSON.parse(localStorage.getItem("savedFormData")!)
+        : null;
+      console.log("local storage data ->", savedFormData);
+
+      mintTicket(
+        savedFormData.updatedUser,
+        Number(savedFormData.updatedUser.userId),
+        event.eventId,
+        savedFormData.selectedTicket.ticketName
+      );
+      localStorage.removeItem("savedFormData");
     }
   }, [router.query]);
 
@@ -214,13 +226,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     eventId: number,
     ticketCategory: string
   ) => {
-    /*
-    Inputs: 
-    1. Event id 
-    2. Ticket category 
-    3. User id
-    */
     setIsLoading(true);
+    setIsRegisterSuccessModalOpen(true);
     let response = await axios.get(
       "http://localhost:3000/api/events/" + eventId.toString()
     );
@@ -274,9 +281,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         );
         user_tickets.push(tickets[j]);
 
-        // remove extra fields
-        // const { , ...cleansedUser} = userIn
-
         // destructure from user form data
         const { displayName, email, phoneNumber } = userFormData;
 
@@ -326,16 +330,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     console.log("Data uploaded for both event + user");
     setIsLoading(false);
   };
-
-  async function getTicket(ipfs_link: string) {
-    let response = await axios.get(ipfs_link, {
-      headers: {
-        Accept: "text/plain",
-      },
-    });
-    console.log(response);
-    return response;
-  }
 
   return (
     <ProtectedRoute>
@@ -409,18 +403,20 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <form
               onSubmit={handleSubmit(async (data: TicketsForm) => {
                 console.log("Submitting Ticket Data to mint", data);
-                // // remove selectedTickets field from form data
-                // const { selectedTicket, ...userWithNoSelectedTickets } =
-                //   userFormData;
-                // mintTicket(
-                //   userWithNoSelectedTickets,
-                //   Number(userId),
-                //   event.eventId,
-                //   data.selectedTicket.ticketName
-                // );
+                // remove form fields for api call
+                const {
+                  selectedTicket,
+                  preDiscountedTickets,
+                  discountedTickets,
+                  stripePromotionId,
+                  ...updatedUser
+                } = formData;
+                // save data to local storage
+                localStorage.setItem(
+                  "savedFormData",
+                  JSON.stringify({ selectedTicket, updatedUser })
+                );
 
-                // stripe stuff
-                // e.preventDefault();
                 setIsLoading(true);
                 // Create a Checkout Session.
                 const response = await fetchPostJSON("/api/checkout_sessions", {
@@ -454,12 +450,11 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
               {currentStep?.id === "Step 1" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketSelectionFormPage
-                    reset={reset}
                     setValue={setValue}
                     watch={watch}
-                    control={control}
-                    trigger={trigger}
                     proceedStep={proceedStep}
+                    isPromoApplied={isPromoApplied}
+                    setIsPromoApplied={setIsPromoApplied}
                   />
                 )}
               {/* Step 2 */}

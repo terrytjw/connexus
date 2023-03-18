@@ -177,7 +177,7 @@ const TicketCardInput = ({
                         ticketId: ticket.ticketId,
                         ticketName: ticket.name,
                         qty: 1,
-                        price: ticket.price,
+                        price: getTicketPrice(ticket.ticketId) ?? 0,
                       });
                     }
                   }}
