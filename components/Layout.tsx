@@ -20,6 +20,7 @@ import Loading from "./Loading";
 import { getSession, useSession } from "next-auth/react";
 import useSWR from "swr";
 import { getUserInfo } from "../lib/api-helpers/user-api";
+import { useUserRole } from "../utils/hooks";
 
 const SocialLoginDynamic = dynamic(
   () => import("../components/scw").then((res) => res.default),
@@ -33,7 +34,7 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const MobileNavbar = ({ userData, children }: any) => {
+const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const checkboxRef = useRef<HTMLInputElement>(null);
@@ -93,7 +94,9 @@ const MobileNavbar = ({ userData, children }: any) => {
               className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
             >
               <li>
-                <a>Switch to creator view</a>
+                <a onClick={() => switchRole()}>
+                  {isFan ? "Switch to Creator view" : "Switch to Fan view"}
+                </a>
               </li>
               <li>
                 <a>Balance</a>
@@ -367,11 +370,25 @@ const Layout = ({ children }: LayoutProps) => {
     error,
     isLoading,
   } = useSWR(session?.user.userId, getUserInfo);
+  const [isFan, setIsFan] = useUserRole();
+
+  const switchRole = () => {
+    if (
+      localStorage.getItem("role") === null ||
+      localStorage.getItem("role") === "fan"
+    ) {
+      localStorage.setItem("role", "creator");
+      setIsFan(false);
+    } else if (localStorage.getItem("role") === "creator") {
+      localStorage.setItem("role", "fan");
+      setIsFan(true);
+    }
+  };
 
   if (isLoading) return <Loading />;
 
   return (
-    <MobileNavbar userData={userData}>
+    <MobileNavbar userData={userData} isFan={isFan} switchRole={switchRole}>
       <div className="flex text-black">
         <DesktopSidebar />
         <main className="debug-screens w-full lg:ml-64 lg:w-[calc(100%-16rem)]">
@@ -399,7 +416,9 @@ const Layout = ({ children }: LayoutProps) => {
                   className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
                 >
                   <li>
-                    <a>Switch to creator view</a>
+                    <a onClick={() => switchRole()}>
+                      {isFan ? "Switch to Creator view" : "Switch to Fan view"}
+                    </a>
                   </li>
                   <li>
                     <a>Balance</a>
