@@ -77,7 +77,12 @@ export default async function handler(
 
   async function handleGET(promotionId: number) {
     try {
-      const posts = await filterPromotion(undefined, promotionId);
+      const posts = await filterPromotion(
+        undefined,
+        promotionId,
+        undefined,
+        undefined
+      );
       res.status(200).json(posts);
     } catch (error) {
       const errorResponse = handleError(error);

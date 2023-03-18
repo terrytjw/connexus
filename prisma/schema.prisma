@@ -155,6 +155,7 @@ model Ticket {
   eventId             Int
   users               User[]
   userTicket          UserTicket[]
+  stripePriceId       String? //To be removed
 }
 
 model UserTicket {

@@ -15,10 +15,11 @@ export async function filterPromotion(
     cursor: cursor ? { promotionId: cursor } : undefined,
     where: {
       promotionId: promotionId,
-      name: {
-        contains: promotionCode,
-        mode: "insensitive",
-      },
+      // name: {
+      //   contains: promotionCode,
+      //   mode: "insensitive",
+      // },
+      name: promotionCode,
       eventId: eventId,
     },
   });

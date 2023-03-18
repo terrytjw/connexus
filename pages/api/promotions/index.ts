@@ -58,9 +58,7 @@ export default async function handler(
   const { method, body, query } = req;
 
   const promotionCode = query.promotionCode as string;
-  const ticketId = query.ticketId
-    ? parseInt(query.ticketId as string)
-    : undefined;
+  const eventId = query.eventId ? parseInt(query.eventId as string) : undefined;
 
   const promotionId = query.promotionId
     ? parseInt(query.promotionId as string)
@@ -84,7 +82,7 @@ export default async function handler(
       const promotions = await filterPromotion(
         undefined,
         promotionId,
-        ticketId,
+        eventId,
         promotionCode
       );
       res.status(200).json(promotions);

@@ -37,11 +37,39 @@ const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
-console.log(signer);
 
 const CreatorEventCreate = () => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
+  // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
+  //   useForm<EventWithAllDetails>({
+  //     defaultValues: {
+  //       eventName: "test",
+  //       description: "desc",
+  //       eventPic: "",
+  //       bannerPic: "",
+  //       category: [],
+  //       tickets: [],
+  //       visibilityType: VisibilityType.PUBLISHED,
+  //       privacyType: PrivacyType.PUBLIC,
+  //       publishType: PublishType.NOW,
+  //       address: {
+  //         address1: "",
+  //         address2: "",
+  //         locationName: "",
+  //         postalCode: "",
+  //       },
+  //       promotion: [
+  //         {
+  //           name: "",
+  //           promotionValue: undefined,
+  //           eventId: undefined,
+  //           stripePromotionId: "",
+  //           isEnabled: false,
+  //         },
+  //       ],
+  //     },
+  //   });
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithAllDetails>({
       defaultValues: {
@@ -50,25 +78,41 @@ const CreatorEventCreate = () => {
         eventPic: "",
         bannerPic: "",
         category: [],
-        tickets: [],
-        visibilityType: VisibilityType.PUBLISHED,
-        privacyType: PrivacyType.PUBLIC,
-        publishType: PublishType.NOW,
+        tickets: [
+          {
+            ticketId: 1,
+            name: "tname",
+            description: "desc",
+            price: "1",
+            totalTicketSupply: "6",
+            startDate: "2023-03-20T23:57",
+            endDate: "2023-03-22T23:57",
+            eventId: 5e-324,
+            ticketType: "ON_SALE",
+          },
+        ],
+        visibilityType: "PUBLISHED",
+        privacyType: "PUBLIC",
+        publishType: "NOW",
         address: {
-          address1: "",
+          address1: "123 Bukit Merah Lane 1",
           address2: "",
-          locationName: "",
-          postalCode: "",
+          locationName: "123 Bukit Merah Lane 1",
+          postalCode: "150123",
+          lat: 1.2867152,
+          lng: 103.8037402,
         },
         promotion: [
           {
-            name: "",
-            promotionValue: undefined,
-            eventId: undefined,
+            name: "promo200",
+            promotionValue: "10",
             stripePromotionId: "",
-            isEnabled: false,
+            isEnabled: true,
           },
         ],
+        startDate: "2023-03-20T23:55",
+        endDate: "2023-03-31T23:55",
+        maxAttendee: "12",
       },
     });
 

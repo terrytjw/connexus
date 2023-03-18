@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StepStatus } from "../../../lib/enums";
 import StepsMobile from "../../../components/EventPages/StepsMobile";
@@ -11,7 +11,8 @@ import Layout from "../../../components/Layout";
 import ConfirmationPage from "../../../components/EventPages/Fan/RegisterEventForms/ConfirmationPage";
 import TicketSelectionFormPage from "../../../components/EventPages/Fan/RegisterEventForms/TicketSelectionFormPage";
 import ProtectedRoute from "../../../components/ProtectedRoute";
-import { User } from "@prisma/client";
+import { User, Ticket } from "@prisma/client";
+import { Toaster } from "react-hot-toast";
 
 import axios from "axios";
 import { GetServerSideProps } from "next";
@@ -23,14 +24,23 @@ import { smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Link from "next/link";
+import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
+import getStripe from "../../../lib/stripe";
+import { useRouter } from "next/router";
 
 export type SelectedTicket = {
+  ticketId: number | undefined;
   ticketName: string;
   qty: number;
   price: number;
 };
 
-export type UserWithSelectedTicket = User & { selectedTicket: SelectedTicket };
+export type TicketsForm = User & {
+  selectedTicket: SelectedTicket;
+  preDiscountedTickets: Ticket[];
+  discountedTickets: Ticket[];
+  stripePromotionId: string;
+};
 
 type FanEventReigsterProps = {
   userData: User;
@@ -40,25 +50,33 @@ type FanEventReigsterProps = {
 const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
+  const router = useRouter();
+
   const provider = new ethers.providers.JsonRpcProvider(
     "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
   );
   const abi = contract.abi;
   const bytecode = contract.bytecode;
   var signer = new ethers.Wallet(smartContract.privateKey, provider);
-  console.log(signer);
 
   // use form for selected ticket state
   const { handleSubmit, setValue, reset, control, watch, trigger } =
-    useForm<UserWithSelectedTicket>({
+    useForm<TicketsForm>({
       defaultValues: {
         ...userData,
-        selectedTicket: { ticketName: "", qty: 0, price: 0 },
+        selectedTicket: {
+          ticketId: undefined,
+          ticketName: "",
+          qty: 0,
+          price: 0,
+        },
+        preDiscountedTickets: event.tickets,
+        discountedTickets: [],
       },
     });
 
   // watch user form data
-  const userFormData = watch();
+  const formData = watch();
 
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
     useState(false);
@@ -68,6 +86,17 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     { id: "Step 1", name: "Select Tickets", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
+
+  useEffect(() => {
+    const paymentSuccessExists = "paymentSuccess" in router.query;
+    console.log("payment success exists? -> ", paymentSuccessExists);
+    console.log("query param value -> ", router.query.paymentSuccess);
+
+    if (paymentSuccessExists && router.query.paymentSuccess === true) {
+      //mint
+      
+    }
+  }, [router.query]);
 
   const getCurrentStep = (): Step | undefined => {
     return steps.find((step) => step.status === StepStatus.CURRENT);
@@ -311,6 +340,16 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   return (
     <ProtectedRoute>
       <Layout>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
         {/* Register success modal */}
         <Modal
           isOpen={isRegisterSuccessModalOpen}
@@ -368,17 +407,47 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((data: UserWithSelectedTicket) => {
+              onSubmit={handleSubmit(async (data: TicketsForm) => {
                 console.log("Submitting Ticket Data to mint", data);
-                // remove selectedTickets field from form data
-                const { selectedTicket, ...userWithNoSelectedTickets } =
-                  userFormData;
-                mintTicket(
-                  userWithNoSelectedTickets,
-                  Number(userId),
-                  event.eventId,
-                  data.selectedTicket.ticketName
-                );
+                // // remove selectedTickets field from form data
+                // const { selectedTicket, ...userWithNoSelectedTickets } =
+                //   userFormData;
+                // mintTicket(
+                //   userWithNoSelectedTickets,
+                //   Number(userId),
+                //   event.eventId,
+                //   data.selectedTicket.ticketName
+                // );
+
+                // stripe stuff
+                // e.preventDefault();
+                setIsLoading(true);
+                // Create a Checkout Session.
+                const response = await fetchPostJSON("/api/checkout_sessions", {
+                  priceId: "price_1Mn2EMCmKD4DhrYc7Nb12kp7",
+                  creatorId: event.creatorId,
+                  promoId: formData.stripePromotionId,
+                  paymentSuccessUrl: `events/register/${event.eventId}?paymentSuccess=true`,
+                });
+
+                if (response.statusCode === 500) {
+                  console.error(response.message);
+                  return;
+                }
+
+                // Redirect to Checkout.
+                const stripe = await getStripe();
+                const { error } = await stripe!.redirectToCheckout({
+                  // Make the id field from the Checkout Session creation API response
+                  // available to this file, so you can provide it as parameter here
+                  // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                  sessionId: response.id,
+                });
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `error.message`.
+                console.warn(error.message);
+                setIsLoading(false);
               })}
             >
               {/* Step 1 */}
@@ -386,7 +455,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketSelectionFormPage
                     reset={reset}
-                    event={event}
                     setValue={setValue}
                     watch={watch}
                     control={control}

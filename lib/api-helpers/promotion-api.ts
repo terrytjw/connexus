@@ -5,13 +5,13 @@ const baseUrl = `${API_URL}/${PROMOTION_ENDPOINT}`;
 
 export async function getPromotionCodeByName(
   promotionCode: string,
-  ticketId: number
+  eventId: number
 ) {
   const response = (
     await axios.get(baseUrl, {
       params: {
         promotionCode: promotionCode,
-        ticketId: ticketId,
+        eventId: eventId,
       },
     })
   ).data;

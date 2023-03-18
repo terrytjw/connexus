@@ -22,7 +22,7 @@ import {
   filterEvent,
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
-import { createPromo } from "../../../lib/stripe/api-helpers";
+import { createProduct, createPromo } from "../../../lib/stripe/api-helpers";
 
 export type EventCreation = Prisma.EventGetPayload<{
   include: { tickets: true; address: true; promotion: true };
@@ -159,8 +159,9 @@ export default async function handler(
         promotion,
         ...eventInfo
       } = eventWithTickets;
-      const updatedTickets = tickets.map((ticket: Ticket) => {
+      let updatedTickets = tickets.map((ticket: Ticket) => {
         const { ticketId, eventId, ...ticketInfo } = ticket;
+
         return ticketInfo;
       });
 
@@ -213,6 +214,30 @@ export default async function handler(
       }
 
       console.log(eventBannerPictureUrl, eventImageUrl);
+
+      // updatedTickets.forEach(async (ticket) => {
+      //   const stripePriceId = await createProduct(
+      //     ticket.name,
+      //     ticket.description ?? "",
+      //     eventImageUrl,
+      //     true,
+      //     ticket.price
+      //   );
+
+      //   ticket.stripePriceId = stripePriceId as string;
+      //   ticket;
+      // }, updatedTickets);
+
+      for (let i = 0; i < updatedTickets.length; i++) {
+        const stripePriceId = await createProduct(
+          updatedTickets[i].name,
+          updatedTickets[i].description ?? "",
+          eventImageUrl,
+          true,
+          updatedTickets[i].price
+        );
+        updatedTickets[i].stripePriceId = stripePriceId as string;
+      }
 
       const updatedEvent = {
         ...eventInfo,

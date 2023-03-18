@@ -36,7 +36,6 @@ const provider = new ethers.providers.JsonRpcProvider(
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 var signer = new ethers.Wallet(smartContract.privateKey, provider);
-console.log(signer);
 
 type CreatorEventPageProps = {
   event: EventWithAllDetails;

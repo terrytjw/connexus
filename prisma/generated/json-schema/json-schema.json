@@ -580,6 +580,12 @@
           "items": {
             "$ref": "#/definitions/UserTicket"
           }
+        },
+        "stripePriceId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
