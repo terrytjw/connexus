@@ -1,10 +1,4 @@
-import React from "react";
-import {
-  Prisma,
-  Merchandise,
-  CollectionState,
-  Collection,
-} from "@prisma/client";
+import { Prisma, CollectionState, Collection } from "@prisma/client";
 import axios from "axios";
 import { ethers } from "ethers";
 import {
@@ -206,7 +200,7 @@ export async function searchAllCollections(
 }
 
 export async function getLinkedCollections(userId: number) {
-  const params = { userId: userId };
+  const params = { userId: userId, isLinked: true };
   const response = await sendCollectionsGetReq(params);
 
   return response;

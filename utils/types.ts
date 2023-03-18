@@ -47,6 +47,12 @@ export type CommentWithCommenterAndLikes = Prisma.CommentGetPayload<{
   };
 }>;
 
+export type QuestionWithUser = Prisma.QuestionGetPayload<{
+  include: {
+    user: { select: { profilePic: true; username: true } };
+  };
+}>;
+
 export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
   include: { tickets: true; address: true; userLikes: true };
 }>;
