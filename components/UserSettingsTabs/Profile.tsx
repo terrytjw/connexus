@@ -21,6 +21,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
     username: string;
     bio: string;
     email: string;
+    phoneNumber: string;
     bannerPic: string;
     profilePic: string;
   };
@@ -30,6 +31,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
       username: userData.username ?? "",
       bio: userData.bio ?? "",
       email: userData.email,
+      phoneNumber: userData.phoneNumber ?? "",
       bannerPic: userData.bannerPic ?? "",
       profilePic: userData.profilePic ?? "",
     },
@@ -166,6 +168,27 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
                   value={value}
                   onChange={onChange}
                   placeholder="example"
+                  errorMessage={error?.message}
+                  size="md"
+                  variant="bordered"
+                />
+              )}
+            />
+
+            <Controller
+              control={control}
+              name="phoneNumber"
+              // rules={{ required: "Email is required" }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="text"
+                  label="Phone Number"
+                  value={value}
+                  onChange={onChange}
+                  placeholder="+6583678392"
                   errorMessage={error?.message}
                   size="md"
                   variant="bordered"
