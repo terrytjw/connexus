@@ -16,10 +16,7 @@ import { User } from "@prisma/client";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
-import {
-  EventWithTicketsandAddress,
-  UserWithTickets,
-} from "../../../utils/types";
+import { EventWithAllDetails, UserWithTickets } from "../../../utils/types";
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
 import { smartContract } from "../../../lib/constant";
@@ -37,7 +34,7 @@ export type UserWithSelectedTicket = User & { selectedTicket: SelectedTicket };
 
 type FanEventReigsterProps = {
   userData: User;
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
 };
 
 const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
@@ -141,7 +138,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   );
 
   const mintOnChain = async (
-    eventInfo: Partial<EventWithTicketsandAddress>,
+    eventInfo: Partial<EventWithAllDetails>,
     ticket_category: string // ticket name
   ) => {
     console.log(ticket_category);
@@ -198,7 +195,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     let response = await axios.get(
       "http://localhost:3000/api/events/" + eventId.toString()
     );
-    const eventInfo = response.data as EventWithTicketsandAddress;
+    const eventInfo = response.data as EventWithAllDetails;
     const { scAddress, ticketURIs, tickets } = eventInfo;
 
     let user_response = await axios.get(

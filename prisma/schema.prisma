@@ -122,6 +122,7 @@ model Event {
   userLikes        User[]         @relation("eventLikes")
   creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
   creatorId        Int
+  promotion        Promotion[]
 }
 
 enum PublishType {
@@ -152,7 +153,6 @@ model Ticket {
   description         String?
   event               Event        @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
-  promotion           Promotion[]
   users               User[]
   userTicket          UserTicket[]
 }
@@ -178,8 +178,9 @@ model Promotion {
   promotionId       Int     @id @default(autoincrement())
   name              String
   promotionValue    Float   @default(0)
-  ticket            Ticket  @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
-  ticketId          Int
+  event             Event   @relation(fields: [eventId], references: [eventId], onDelete: Cascade)
+  eventId           Int
+  isEnabled         Boolean @default(false)
   stripePromotionId String? //To be removed
 }
 

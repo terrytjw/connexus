@@ -465,14 +465,6 @@ async function generateEvent() {
             users: { connect: [{ userId: 4 }, { userId: 5 }, { userId: 6 }] },
             currentTicketSupply: 1,
             ticketType: TicketType.ON_SALE,
-            promotion: {
-              create: [
-                {
-                  name: "EARLYBIRD",
-                  promotionValue: 10,
-                },
-              ],
-            },
           },
           {
             name: "VIP Pass",
@@ -491,6 +483,14 @@ async function generateEvent() {
             endDate: new Date("2023-02-25"),
             description: "This is a VVIP Pass",
             ticketType: TicketType.ON_SALE,
+          },
+        ],
+      },
+      promotion: {
+        create: [
+          {
+            name: "EARLYBIRD",
+            promotionValue: 10,
           },
         ],
       },

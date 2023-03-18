@@ -53,8 +53,8 @@ export type QuestionWithUser = Prisma.QuestionGetPayload<{
   };
 }>;
 
-export type EventWithTicketsandAddress = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true; userLikes: true };
+export type EventWithAllDetails = Prisma.EventGetPayload<{
+  include: { tickets: true; address: true; userLikes: true; promotion: true };
 }>;
 
 export type UserWithTickets = Prisma.UserGetPayload<{

@@ -12,9 +12,10 @@ import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 import {
   PrivacyType,
+  Promotion,
   PublishType,
   Ticket,
   TicketType,
@@ -36,15 +37,16 @@ const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
+console.log(signer);
 
 const CreatorEventCreate = () => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
-    useForm<EventWithTicketsandAddress>({
+    useForm<EventWithAllDetails>({
       defaultValues: {
-        eventName: "",
-        description: "",
+        eventName: "test",
+        description: "desc",
         eventPic: "",
         bannerPic: "",
         category: [],
@@ -58,6 +60,15 @@ const CreatorEventCreate = () => {
           locationName: "",
           postalCode: "",
         },
+        promotion: [
+          {
+            name: "",
+            promotionValue: undefined,
+            eventId: undefined,
+            stripePromotionId: "",
+            isEnabled: false,
+          },
+        ],
       },
     });
 
@@ -130,10 +141,10 @@ const CreatorEventCreate = () => {
     setCreatedEventId(data.eventId); // used to route to event
   };
 
-  const parseAndCreate = (event: EventWithTicketsandAddress): void => {
+  const parseAndCreate = (event: EventWithAllDetails): void => {
     console.log("Submitting Form Data", event);
 
-    const { tickets, startDate, endDate, maxAttendee } = event;
+    const { tickets, startDate, endDate, maxAttendee, promotion } = event;
 
     console.log(tickets.map((ticket) => ({ ...ticket })));
     // parse to prisma type
@@ -159,6 +170,10 @@ const CreatorEventCreate = () => {
           endDate: new Date(endDate),
         })
       ),
+      promotion: promotion.map((promo: Promotion) => ({
+        ...promo,
+        promotionValue: Number(promo.promotionValue),
+      })),
       creatorId: userId,
     };
     createEvent(prismaEvent);
@@ -324,7 +339,7 @@ const CreatorEventCreate = () => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((event: EventWithTicketsandAddress) =>
+              onSubmit={handleSubmit((event: EventWithAllDetails) =>
                 parseAndCreate(event)
               )}
             >
@@ -346,6 +361,7 @@ const CreatorEventCreate = () => {
                   <TicketFormPage
                     isEdit={false} // tells the form page that user is not editing
                     watch={watch}
+                    setValue={setValue}
                     getFieldState={getFieldState}
                     control={control}
                     trigger={trigger}

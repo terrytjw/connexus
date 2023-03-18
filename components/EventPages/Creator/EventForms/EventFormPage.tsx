@@ -23,14 +23,14 @@ import {
 } from "@react-google-maps/api";
 
 import { CategoryType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
 
 type EventFormPageProps = {
   isEdit: boolean;
-  watch: UseFormWatch<EventWithTicketsandAddress>;
-  setValue: UseFormSetValue<EventWithTicketsandAddress>;
-  control: Control<EventWithTicketsandAddress, any>;
-  trigger: UseFormTrigger<EventWithTicketsandAddress>;
+  watch: UseFormWatch<EventWithAllDetails>;
+  setValue: UseFormSetValue<EventWithAllDetails>;
+  control: Control<EventWithAllDetails, any>;
+  trigger: UseFormTrigger<EventWithAllDetails>;
   proceedStep: () => void;
 };
 

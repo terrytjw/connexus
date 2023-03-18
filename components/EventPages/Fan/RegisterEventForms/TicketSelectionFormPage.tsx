@@ -9,7 +9,7 @@ import {
 import Button from "../../../Button";
 import TicketCardInput from "../../TicketCardInput";
 import { Ticket } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
 import {
   SelectedTicket,
   UserWithSelectedTicket,
@@ -17,7 +17,7 @@ import {
 import { useState } from "react";
 
 type TicketSelectionFormPageProps = {
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
   reset: UseFormReset<UserWithSelectedTicket>;
   setValue: UseFormSetValue<UserWithSelectedTicket>;
   watch: UseFormWatch<UserWithSelectedTicket>;

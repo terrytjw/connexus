@@ -479,6 +479,12 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "promotion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
         }
       }
     },
@@ -563,12 +569,6 @@
         "event": {
           "$ref": "#/definitions/Event"
         },
-        "promotion": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Promotion"
-          }
-        },
         "users": {
           "type": "array",
           "items": {
@@ -614,8 +614,18 @@
           "type": "number",
           "default": 0
         },
-        "ticket": {
-          "$ref": "#/definitions/Ticket"
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "stripePromotionId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
