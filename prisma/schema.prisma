@@ -175,11 +175,12 @@ enum TicketType {
 }
 
 model Promotion {
-  promotionId    Int    @id @default(autoincrement())
-  name           String
-  promotionValue Float  @default(0)
-  ticket         Ticket @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
-  ticketId       Int
+  promotionId       Int     @id @default(autoincrement())
+  name              String
+  promotionValue    Float   @default(0)
+  ticket            Ticket  @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
+  ticketId          Int
+  stripePromotionId String? //To be removed
 }
 
 enum CategoryType {

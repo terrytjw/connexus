@@ -34,6 +34,11 @@ export default async function handler(
             quantity: 1,
           },
         ],
+        // discounts: [
+        //   {
+        //     coupon: "ZGntXm9g",
+        //   },
+        // ],
         client_reference_id: creatorId, // the creator's Id for querying the DB later to add to his balance
         success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${req.headers.origin}`, // go back to the page where the user came from
