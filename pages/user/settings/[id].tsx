@@ -3,9 +3,8 @@ import React, { useState } from "react";
 import Layout from "../../../components/Layout";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import TabGroupBordered from "../../../components/TabGroupBordered";
-import EmailPreferenceSettings from "../../../components/UserSettingsTabs/EmailPreference";
+import PreferenceSettings from "../../../components/UserSettingsTabs/Preference";
 import ProfileSettings from "../../../components/UserSettingsTabs/Profile";
-import SMSPreferenceSettings from "../../../components/UserSettingsTabs/SMSPreference";
 import useSWR from "swr";
 import Loading from "../../../components/Loading";
 import { useSession } from "next-auth/react";
@@ -31,15 +30,14 @@ const UserSettingsPage = () => {
         <main className="p-10">
           <h1 className="text-2xl font-bold">Settings</h1>
           <TabGroupBordered
-            tabs={["Profile", "SMS Preferences", "Email Preferences"]}
+            tabs={["Profile", "Preferences"]}
             activeTab={activeTab}
             setActiveTab={(index: number) => {
               setActiveTab(index);
             }}
           >
             {activeTab == 0 && <ProfileSettings userData={userData} />}
-            {activeTab == 1 && <SMSPreferenceSettings />}
-            {activeTab == 2 && <EmailPreferenceSettings />}
+            {activeTab == 1 && <PreferenceSettings userData={userData} />}
           </TabGroupBordered>
         </main>
       </Layout>
