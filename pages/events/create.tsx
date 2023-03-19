@@ -123,14 +123,11 @@ const CreatorEventCreate = () => {
         ],
         raffles: [
           {
-            raffleId: undefined,
             eventId: undefined,
             isEnabled: true,
             rafflePrizes: [
               {
-                rafflePrizeId: 1,
                 name: "Raffle Prize 1",
-                rafflesId: 1,
               },
             ],
           },

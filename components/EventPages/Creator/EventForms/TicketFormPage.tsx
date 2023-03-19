@@ -83,24 +83,6 @@ const TicketFormPage = ({
     { prizeId: 2, prizeName: "prize 2" },
   ]);
 
-  //   "raffles": [
-  //     {
-  //         "raffleId": 1,
-  //         "eventId": 1,
-  //         "isEnabled": false,
-  //         "rafflePrizes": [
-  //             {
-  //                 "rafflePrizeId": 1,
-  //                 "name": "Raffle Prize 1",
-  //                 "rafflesRaffleId": 1
-  //             }
-  //         ]
-  //     }
-  // ]
-
-  const [raffleSelected, setRaffleSelected] = useState<boolean>(false);
-  const [promoSelected, setPromoSelected] = useState<boolean>(false);
-
   const checkIsEditAndDatePassed = (value: string | Date): boolean => {
     /**
      * Disable when
@@ -125,7 +107,8 @@ const TicketFormPage = ({
     }
     return promotion[0].isEnabled;
   };
-  console.log("promotion form value ->", promotion);
+  console.log("what is prizes fields ->", prizesFields);
+
   return (
     <div>
       {/* Promo Code */}
@@ -262,7 +245,9 @@ const TicketFormPage = ({
                   value={"yes"}
                   checked={isRaffleEnabled()}
                   className="radio checked:bg-blue-500"
-                  onChange={() => setValue("raffles.0.isEnabled", true)}
+                  onChange={() => {
+                    setValue("raffles.0.isEnabled", true);
+                  }}
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -286,8 +271,6 @@ const TicketFormPage = ({
                   className="radio checked:bg-blue-500"
                   onChange={() => {
                     setValue("raffles.0.isEnabled", false);
-                    // clear prizes array
-                    setPrizes([]);
                   }}
                 />
               </div>
@@ -308,10 +291,10 @@ const TicketFormPage = ({
         {isRaffleEnabled() && (
           <div>
             <div className="mt-8 flex w-full flex-col gap-2">
-              {raffles[0].rafflePrizes.map((prize, index) => (
+              {prizesFields.map((prize, index) => (
                 <div
                   id={`prize-${index + 1}`}
-                  key={prize.rafflePrizeId}
+                  key={prize.id}
                   className="flex justify-between gap-4"
                 >
                   <Controller
@@ -350,11 +333,11 @@ const TicketFormPage = ({
                 variant="outlined"
                 size="md"
                 className="max-w-3xl"
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
                   appendPrize({
-                    rafflePrizeId: undefined as unknown as number,
                     name: "",
-                    rafflesId: undefined as unknown as number,
+                    // rafflesId: undefined as unknown as number,
                   });
                 }}
               >

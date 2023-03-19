@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
 import TicketCard from "../../components/EventPages/TicketCard";
 
-import { Ticket } from "@prisma/client";
 import { FaChevronLeft } from "react-icons/fa";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
-import { Event } from "@prisma/client";
 import Modal from "../../components/Modal";
 import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
 import QRCode from "react-qr-code";
 import Button from "../../components/Button";
 import SpinWheel from "../../components/EventPages/SpinWheel";
 import { getSession } from "next-auth/react";
-import { getEventInfo } from "../../lib/api-helpers/event-api";
 import { truncateString } from "../../utils/text-truncate";
 import { toast, Toaster } from "react-hot-toast";
 import { TicketWithEvent } from "../../utils/types";
-import { saveRafflePrizeUser } from "../../lib/prisma/raffle-prisma";
-import { insertRafflePrize } from "../../lib/api-helpers/user-api";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
@@ -31,36 +26,24 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
   const [qrValue, setQrValue] = useState<string>("");
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
   const [checkedIn, setCheckedIn] = useState<boolean>(false);
-  const prizes = [
-    "better luck next time",
-    "won 70",
-    "won 10",
-    "better luck next time",
-    "won 2",
-    "won uber pass",
-    "better luck next time",
-    "won a voucher",
-  ];
+  const [rafflePrizes, setRafflePrizes] = useState<any[]>([]);
+  const [isPrizeWon, setIsPrizeWon] = useState<boolean>(false);
+  const [selectedTicket, setSelectedTicket] = useState<any>();
+
+  console.log("is prize won", isPrizeWon);
 
   useEffect(() => {
     if (checkedIn) toast.success("Check in success!");
   }, [checkedIn]);
 
+  useEffect(() => {
+    if (isPrizeWon) toast.success("Congrats, you won something!!!");
+  }, [isPrizeWon]);
+
   return (
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Button
-            className="border-0"
-            variant="outlined"
-            size="md"
-            onClick={async () => {
-              const res = await insertRafflePrize(1, 4);
-              console.log("res ->", res);
-            }}
-          >
-            Win Prize
-          </Button>
           {/* Header */}
           <nav className="flex items-center gap-6">
             <Link href="/events">
@@ -83,6 +66,8 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                   setIsModalOpen={setIsModalOpen}
                   setQrValue={setQrValue}
                   setIsPrizeModalOpen={setIsPrizeModalOpen}
+                  setRafflePrizes={setRafflePrizes}
+                  setSelectedTicket={setSelectedTicket}
                 />
               </div>
             ))}
@@ -98,8 +83,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 {!checkedIn ? "QR Code" : "Digital Badge"} for
               </h2>
               <p className="text-xl">
-                {/* {truncateString(tickets[0].eventName, 40)} */}
-                'event name'
+                {truncateString(selectedTicket?.event.eventName ?? "", 40)}
               </p>
             </div>
             {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
@@ -143,7 +127,11 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             <h2 className="text-2xl font-bold sm:text-2xl">Spin the Wheel!</h2>
 
             <div className="flex justify-center align-middle">
-              <SpinWheel prizes={prizes} size={200} />
+              <SpinWheel
+                prizes={rafflePrizes}
+                size={200}
+                setIsPrizeWon={setIsPrizeWon}
+              />
             </div>
             <div className="mt-4 flex justify-end">
               <Button
@@ -155,6 +143,16 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 Done
               </Button>
             </div>
+            <Toaster
+              position="bottom-center"
+              toastOptions={{
+                style: {
+                  background: "#FFFFFF",
+                  color: "#34383F",
+                  textAlign: "center",
+                },
+              }}
+            />
           </Modal>
         </main>
       </Layout>

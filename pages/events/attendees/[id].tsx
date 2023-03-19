@@ -23,6 +23,7 @@ import { AttendeeListType } from "../../../utils/types";
 import { BiGift } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
 import { updateRafflePrize } from "../../../lib/api-helpers/user-api";
+import { truncateString } from "../../../utils/text-truncate";
 
 export enum CheckInStatus {
   INITIAL,
@@ -30,6 +31,16 @@ export enum CheckInStatus {
   SUCCESS,
   ERROR,
 }
+
+export type prizeSelection = {
+  prizeName: string;
+  rafflePrizeUserData: {
+    rafflePrizeUserId: number;
+    rafflePrizeId: number;
+    isClaimed: boolean;
+    userId: number;
+  };
+};
 
 const AttendeesPage = () => {
   const router = useRouter();
@@ -39,6 +50,9 @@ const AttendeesPage = () => {
   );
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState(false);
+  const [currentPrizeSelection, setCurrentPrizeSelection] =
+    useState<prizeSelection | null>(null);
+
   const [isValid, setIsValid] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [attendees, setAttendees] = useState<AttendeeListType[]>([]);
@@ -92,12 +106,10 @@ const AttendeesPage = () => {
   // validation function
   const isValidQr = (str: string) => {
     const numCommas = (str.match(/,/g) || []).length;
-
     if (numCommas !== 2) {
       return false;
     }
     const numbers = str.split(",");
-
     for (const numStr of numbers) {
       const num = parseInt(numStr, 10);
       if (isNaN(num) || num.toString() !== numStr) {
@@ -161,14 +173,36 @@ const AttendeesPage = () => {
 
       // TODO: MUTATE attendees to change active raffle button state
       console.log("res ->", res);
+      // mutate((data: AttendeeListType[]) => {
+      //   data.map((attendee: any) =>
+      //     attendee.ticket.event.raffles[0].raffleId == res.raffleId
+      //       ? { ...attendee, ticket: {...attendee.ticket, event: {...attendee.ticket.event, raffles: [{...attendee.ticket.event.raffles[0], isActivated: true}]}}}
+      //       : attendee
+      //   );
+      // )
       toast.success("Activated Raffle!");
     } else {
       toast.error("Failed to activate Raffle");
     }
   };
 
-  const handleVerify = () => {
-    if (true) {
+  const handleVerify = async () => {
+    if (currentPrizeSelection?.rafflePrizeUserData) {
+      const res = await updateRafflePrize(1, {
+        rafflePrizeUserId: 1,
+        rafflePrizeId: 1,
+        isClaimed: true,
+        userId: 4,
+      });
+      console.log("res ->", res);
+      mutate((data: AttendeeListType[]) => {
+        data.map((attendee) =>
+          attendee.userId == res.userId
+            ? { ...attendee, checkIn: true }
+            : attendee
+        );
+      });
+
       toast.success("Verified!");
     } else {
       toast.error("Failed to verify prize claim");
@@ -176,9 +210,9 @@ const AttendeesPage = () => {
     setIsPrizeModalOpen(false);
   };
 
-  const isRaffleActivated = () => {
+  const isRaffleActivated = (): boolean | undefined => {
     if (attendees.length !== 0) {
-      return attendees[0].ticket.event.raffles[0].isActivated;
+      return attendees[0]?.ticket.event.raffles[0].isActivated;
     }
   };
 
@@ -207,7 +241,10 @@ const AttendeesPage = () => {
               >
                 <FaChevronLeft />
               </Button>
-              <h1 className="text-3xl font-bold">Attendees</h1>
+              <h1 className="text-3xl font-bold">
+                Attendees for{" "}
+                {truncateString(attendees[0]?.ticket.event.eventName ?? "", 30)}
+              </h1>
             </div>
           </div>
 
@@ -261,7 +298,9 @@ const AttendeesPage = () => {
                 columns={["Name", "Email Address", "Check-in Status"]}
                 setIsQrModalOpen={setIsQrModalOpen}
                 checkInStatus={checkInStatus}
+                isRaffleActivated={isRaffleActivated}
                 setIsPrizeModalOpen={setIsPrizeModalOpen}
+                setCurrentPrizeSelection={setCurrentPrizeSelection}
               />
             </div>
           </section>
@@ -272,8 +311,9 @@ const AttendeesPage = () => {
             setIsOpen={setIsPrizeModalOpen}
             className="inline-block text-center"
           >
-            <h2 className="font-bold sm:text-2xl">Prize Name</h2>
-            <p className="font-normal">description</p>
+            <h2 className="font-bold sm:text-2xl">
+              {currentPrizeSelection?.prizeName}
+            </h2>
             <div className="mt-4 flex justify-center">
               <BiGift className="text-blue-600" size={40} />
             </div>

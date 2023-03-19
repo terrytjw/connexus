@@ -12,6 +12,8 @@ type TicketCardProps = {
   setIsModalOpen?: (value: boolean) => void;
   setQrValue?: (value: string) => void;
   setIsPrizeModalOpen?: (value: boolean) => void;
+  setRafflePrizes?: (value: any) => void;
+  setSelectedTicket?: (value: any) => void;
 };
 
 const TicketCard = ({
@@ -20,6 +22,8 @@ const TicketCard = ({
   setIsModalOpen,
   setQrValue,
   setIsPrizeModalOpen,
+  setRafflePrizes,
+  setSelectedTicket,
 }: TicketCardProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
@@ -55,6 +59,19 @@ const TicketCard = ({
 
   const isRaffleActivated = (): boolean => {
     return ticket.event.raffles[0].isActivated;
+  };
+
+  const isPrizeClaimed = (ticket: any): boolean | undefined => {
+    return ticket?.event.raffles[0].rafflePrizes.find(
+      (prize: any) =>
+        prize.rafflePrizeUser.find(
+          (rafflePrizeUser: any) => rafflePrizeUser.userId === userId
+        )?.isClaimed
+    );
+  };
+
+  const getRafflePrizes = (ticket: any): any[] => {
+    return ticket?.event.raffles[0].rafflePrizes;
   };
 
   return (
@@ -94,13 +111,13 @@ const TicketCard = ({
             <span>
               <p className="text-md font-semibold text-blue-600">Ticket Type</p>
               <p className="text-md text-gray-700">
-                {ticket.price === 0 ? "Free " : "Premium"}
+                {Number(ticket.price) === 0 ? "Free " : "Premium"}
               </p>
             </span>
             <span>
               <p className="text-md font-semibold text-blue-600">Price</p>
               <p className="text-md font-medium text-gray-700">
-                ${ticket.price?.toFixed(2)}
+                ${Number(ticket.price)?.toFixed(2)}
               </p>
             </span>
             <span>
@@ -125,14 +142,16 @@ const TicketCard = ({
               <Button
                 variant="outlined"
                 size="md"
-                className="max-w-xs "
+                className={`max-w-xs ${isPrizeClaimed(ticket) && "border-0"}`}
                 onClick={() => {
-                  if (setIsPrizeModalOpen) {
+                  if (setIsPrizeModalOpen && setRafflePrizes) {
+                    setRafflePrizes(getRafflePrizes(ticket));
                     setIsPrizeModalOpen(true);
                   }
                 }}
+                disabled={isPrizeClaimed(ticket)}
               >
-                Spin the Wheel
+                {!isPrizeClaimed(ticket) ? "Spin the Wheel" : "Prize Claimed"}
               </Button>
             )}
             {isOwnedTicket && (
@@ -141,7 +160,8 @@ const TicketCard = ({
                 size="md"
                 className="max-w-xs "
                 onClick={() => {
-                  if (setIsModalOpen && setQrValue) {
+                  if (setIsModalOpen && setQrValue && setSelectedTicket) {
+                    setSelectedTicket(ticket);
                     setQrValue(getQrString());
                     setIsModalOpen(true);
                   }

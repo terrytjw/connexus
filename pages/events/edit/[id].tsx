@@ -62,6 +62,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     control,
     name: "tickets",
   });
+  // listen to raffles array
+  const {
+    fields: prizesFields,
+    append: appendPrize,
+    remove: removePrize,
+    update: updatePrize,
+  } = useFieldArray({
+    control,
+    name: "raffles.0.rafflePrizes",
+  });
   const [tickets] = watch(["tickets"]);
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Event Details", status: StepStatus.CURRENT },
@@ -600,6 +610,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
+                    prizesFields={prizesFields}
+                    appendPrize={appendPrize}
+                    removePrize={removePrize}
+                    updatePrize={updatePrize}
                     proceedStep={proceedStep}
                   />
                 )}

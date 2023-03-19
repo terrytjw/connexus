@@ -2,16 +2,19 @@ import React from "react";
 import { AttendeeListType } from "../../utils/types";
 import Button from "../Button";
 import { BiGift } from "react-icons/bi";
-import { CheckInStatus } from "../../pages/events/attendees/[id]";
-import { updateRafflePrizeUser } from "../../lib/prisma/raffle-prisma";
-import { updateRafflePrize } from "../../lib/api-helpers/user-api";
+import {
+  CheckInStatus,
+  prizeSelection,
+} from "../../pages/events/attendees/[id]";
 
 type AttendeesTableProps = {
   data: AttendeeListType[]; // replace this with prisma attendee user type
   columns: string[];
   setIsQrModalOpen: (value: boolean) => void;
   checkInStatus: CheckInStatus;
+  isRaffleActivated: () => boolean | undefined;
   setIsPrizeModalOpen: (value: boolean) => void;
+  setCurrentPrizeSelection: (value: prizeSelection) => void;
 };
 
 const AttendeesTable = ({
@@ -19,8 +22,36 @@ const AttendeesTable = ({
   columns,
   setIsQrModalOpen,
   checkInStatus,
+  isRaffleActivated,
   setIsPrizeModalOpen,
+  setCurrentPrizeSelection,
 }: AttendeesTableProps) => {
+  const getPrizeWinner = (attendee: any): any => {
+    if (!attendee) return;
+    return attendee.ticket.event.raffles[0].rafflePrizes.find((prize: any) =>
+      prize.rafflePrizeUser.find(
+        (rafflePrizeUser: any) => rafflePrizeUser.userId === attendee.userId
+      )
+    );
+  };
+
+  const getPrizeWon = (attendee: any, rafflePrizeId: number): any => {
+    if (!attendee) return;
+    return attendee.ticket.event.raffles[0].rafflePrizes.find(
+      (prize: any) => prize.rafflePrizeId === rafflePrizeId
+    );
+  };
+
+  const isPrizeClaimed = (attendee: any): boolean | undefined => {
+    if (!attendee) return;
+    return attendee.ticket.event.raffles[0].rafflePrizes.find(
+      (prize: any) =>
+        prize.rafflePrizeUser.find(
+          (rafflePrizeUser: any) => rafflePrizeUser.userId === attendee.userId
+        )?.isClaimed
+    );
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="table w-full ">
@@ -39,21 +70,51 @@ const AttendeesTable = ({
           {data.map((data, index) => (
             <tr key={index}>
               <td className="text-gray-700">
-                <p className="flex items-center gap-x-1">
+                <p className="flex items-center gap-x-2">
                   {data?.displayName}
-                  <div
-                    className="tooltip"
-                    data-tip="Click here to verify prize claim!"
-                  >
-                    <Button
-                      className="tooltip border-0"
-                      variant="outlined"
-                      size="sm"
-                      onClick={() => setIsPrizeModalOpen(true)}
+                  {isRaffleActivated() && getPrizeWinner(data) && (
+                    <div
+                      className="tooltip z-10"
+                      data-tip={
+                        !isPrizeClaimed(data)
+                          ? "Click here to verify prize claim!"
+                          : "Prize claimed"
+                      }
                     >
-                      <BiGift className="text-blue-600" size={20} />
-                    </Button>
-                  </div>
+                      <Button
+                        className="tooltip  border-0"
+                        variant="outlined"
+                        size="sm"
+                        onClick={() => {
+                          const winner = getPrizeWinner(data);
+                          console.log("winner ->", winner);
+                          // find prize won
+
+                          setCurrentPrizeSelection({
+                            prizeName: getPrizeWon(data, winner.rafflePrizeId)
+                              ?.name,
+                            rafflePrizeUserData: {
+                              rafflePrizeUserId: winner.rafflePrizeUserId,
+                              rafflePrizeId: winner.rafflePrizeId,
+                              isClaimed: true,
+                              userId: winner.userId,
+                            },
+                          });
+                          setIsPrizeModalOpen(true);
+                        }}
+                        disabled={isPrizeClaimed(data)}
+                      >
+                        <BiGift
+                          className={`${
+                            !isPrizeClaimed(data)
+                              ? "text-blue-600"
+                              : "text-gray-500"
+                          }`}
+                          size={20}
+                        />
+                      </Button>
+                    </div>
+                  )}
                 </p>
               </td>
               <td className="text-gray-700">{data?.email}</td>
@@ -75,24 +136,6 @@ const AttendeesTable = ({
                     Scan QR code
                   </Button>
                 )}
-
-                <Button
-                  className="border-0"
-                  variant="outlined"
-                  size="md"
-                  onClick={async () => {
-                    // const rafflePrizeUser = attendees.ticket.event.raffles[0].
-                    const res = await updateRafflePrize(1, {
-                      rafflePrizeUserId: 1,
-                      rafflePrizeId: 1,
-                      isClaimed: true,
-                      userId: 4,
-                    });
-                    console.log("res ->", res);
-                  }}
-                >
-                  Verify Prize
-                </Button>
               </th>
             </tr>
           ))}
