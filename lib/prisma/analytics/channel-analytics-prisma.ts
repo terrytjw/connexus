@@ -87,14 +87,16 @@ export async function getChannelAnalyticsByChannel(channelId: number, lowerBound
 export async function generateChannelAnalyticsTimestamps() {
   const channels = await getChannelsForAnalytics();
   const timestamps = [];
-
   for (let channel of channels) {
     const likes = channel.posts
       .reduce((a, b) => a + b._count.likes, 0);
     const comments = channel.posts 
-      .reduce((a, b) => a + b._count.comments, 0);      
-    const engagement = ((likes + comments) / channel._count.posts) / (channel._count.members);
-    
+      .reduce((a, b) => a + b._count.comments, 0);    
+    const engagement = 
+      channel.posts.length > 0
+        ? ((likes + comments) / channel._count.posts) / (channel._count.members)
+        : 0     
+
     const timestamp = await prisma.channelAnalyticsTimestamp.create({
       data: {
         likes: likes,
