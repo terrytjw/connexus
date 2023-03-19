@@ -15,11 +15,11 @@ import Banner from "../../../Banner";
 import Button from "../../../Button";
 import TicketCard from "../../TicketCard";
 import { UseFormWatch } from "react-hook-form";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
 import { formatDate } from "../../../../utils/date-util";
 
 type EventPreviewPageProps = {
-  watch: UseFormWatch<EventWithTicketsandAddress>;
+  watch: UseFormWatch<EventWithAllDetails>;
   setIsPreview: Dispatch<SetStateAction<boolean>>;
 };
 

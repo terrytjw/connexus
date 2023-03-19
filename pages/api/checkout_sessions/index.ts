@@ -18,9 +18,25 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  function checkPromo(promoId: string) {
+    if (promoId) {
+      return {
+        discounts: [
+          {
+            coupon: promoId,
+          },
+        ],
+      };
+    } else {
+      return {};
+    }
+  }
+
   if (req.method === "POST") {
     const priceId: string = req.body.priceId;
     const creatorId: string = req.body.creatorId;
+    const promoId: string = req.body.promoId;
+    const paymentSuccessUrl: string = req.body.paymentSuccessUrl;
 
     try {
       // Create Checkout Sessions from body params.
@@ -34,8 +50,15 @@ export default async function handler(
             quantity: 1,
           },
         ],
+        ...checkPromo(promoId),
+        // discounts: [
+        //   {
+        //     coupon: "ZGntXm9g",
+        //   },
+        // ],
         client_reference_id: creatorId, // the creator's Id for querying the DB later to add to his balance
-        success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        // success_url: `${req.headers.origin}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+        success_url: `${req.headers.origin}/${paymentSuccessUrl}`,
         cancel_url: `${req.headers.origin}`, // go back to the page where the user came from
       };
 

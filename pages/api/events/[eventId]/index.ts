@@ -4,7 +4,7 @@ import {
   handleError,
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { PrismaClient, Event, Prisma, Promotion } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
 import {
@@ -17,9 +17,12 @@ import {
   retrieveEventInfo,
   updateEvent,
 } from "../../../../lib/prisma/event-prisma";
+import { updatePromotion } from "../../../../lib/prisma/promotion-prisma";
 
 const prisma = new PrismaClient();
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
+type EventWithPromoCode = Prisma.EventGetPayload<{
+  include: { promotion: true };
+}>;
 
 /**
  * @swagger
@@ -96,7 +99,7 @@ export default async function handler(
       await handleGET(eventId);
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as Event;
+      const event = JSON.parse(JSON.stringify(req.body)) as EventWithPromoCode;
       await handlePOST(eventId, event);
       break;
     case "DELETE":
@@ -119,9 +122,12 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(eventId: number, eventWithTickets: Event) {
+  async function handlePOST(
+    eventId: number,
+    eventWithPromo: EventWithPromoCode
+  ) {
     try {
-      const { eventPic, bannerPic } = eventWithTickets;
+      const { eventPic, bannerPic, promotion, ...event } = eventWithPromo;
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
@@ -160,8 +166,17 @@ export default async function handler(
       }
 
       const updatedEventInfo = {
-        ...eventWithTickets,
+        bannerPic: eventBannerPictureUrl,
+        eventPic: eventImageUrl,
+        ...event,
       };
+
+      console.log(promotion);
+
+      promotion.forEach(async (promo: Promotion) => {
+        const { eventId, ...promoInfo } = promo;
+        updatePromotion(promo.promotionId, promoInfo);
+      });
 
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
       if (eventBannerPictureUrl)

@@ -7,13 +7,13 @@ import { formatDate } from "../../utils/date-util";
 import { truncateString } from "../../utils/text-truncate";
 import router from "next/router";
 import { CategoryType, Ticket } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
 type EventsTableProps = {
-  data: EventWithTicketsandAddress[]; // TODO: change type any to data type
+  data: EventWithAllDetails[]; // TODO: change type any to data type
   columns: string[];
   setDeleteConfirmationModalOpen: (value: boolean) => void;
   setEventIdToDelete: (value: number) => void;

@@ -495,6 +495,12 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "promotion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
         }
       }
     },
@@ -579,12 +585,6 @@
         "event": {
           "$ref": "#/definitions/Event"
         },
-        "promotion": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Promotion"
-          }
-        },
         "users": {
           "type": "array",
           "items": {
@@ -596,6 +596,12 @@
           "items": {
             "$ref": "#/definitions/UserTicket"
           }
+        },
+        "stripePriceId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -626,31 +632,22 @@
         "name": {
           "type": "string"
         },
-        "promotionType": {
-          "type": "string",
-          "enum": [
-            "LIMITED",
-            "UNLIMITED"
-          ]
-        },
         "promotionValue": {
           "type": "number",
           "default": 0
         },
-        "quantity": {
-          "type": "integer",
-          "default": 0
+        "event": {
+          "$ref": "#/definitions/Event"
         },
-        "startDate": {
-          "type": "string",
-          "format": "date-time"
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
         },
-        "endDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "ticket": {
-          "$ref": "#/definitions/Ticket"
+        "stripePromotionId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -807,7 +804,8 @@
           "default": "PENDING",
           "enum": [
             "PENDING",
-            "COMPLETED"
+            "COMPLETED",
+            "REJECTED"
           ]
         }
       }

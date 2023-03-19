@@ -5,12 +5,12 @@ import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
 import { PrivacyType, VisibilityType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
 import { formatDate } from "../../../../utils/date-util";
 
 type PublishFormPageProps = {
-  watch: UseFormWatch<EventWithTicketsandAddress>;
-  setValue: UseFormSetValue<EventWithTicketsandAddress>;
+  watch: UseFormWatch<EventWithAllDetails>;
+  setValue: UseFormSetValue<EventWithAllDetails>;
   setIsCreateSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean | undefined;
 };
