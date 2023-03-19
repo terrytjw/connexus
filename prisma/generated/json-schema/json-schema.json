@@ -142,11 +142,21 @@
             "$ref": "#/definitions/Question"
           }
         },
-        "Transaction": {
+        "transactions": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/Transaction"
           }
+        },
+        "bankAccount": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BankAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -791,6 +801,37 @@
         },
         "user": {
           "$ref": "#/definitions/User"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "COMPLETED"
+          ]
+        }
+      }
+    },
+    "BankAccount": {
+      "type": "object",
+      "properties": {
+        "bankAccountId": {
+          "type": "integer"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "routingNumber": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
         }
       }
     }
@@ -838,6 +879,9 @@
     },
     "transaction": {
       "$ref": "#/definitions/Transaction"
+    },
+    "bankAccount": {
+      "$ref": "#/definitions/BankAccount"
     }
   }
 }
