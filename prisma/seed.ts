@@ -61,7 +61,8 @@ async function generateCommunity() {
       },
       analyticsTimestamps: {
         create: analyticsTimestamps[0]
-      }
+      },
+      clicks: 200
     },
     {
       name: "Cosplay Kawaii",
@@ -79,7 +80,8 @@ async function generateCommunity() {
       },
       analyticsTimestamps: {
         create: analyticsTimestamps[1]
-      }
+      },
+      clicks: 200
     },
     {
       name: "Travley",
@@ -100,7 +102,8 @@ async function generateCommunity() {
       },
       analyticsTimestamps: {
         create: analyticsTimestamps[2]
-      }
+      },
+      clicks: 200
     },
   ];
 
@@ -440,7 +443,8 @@ async function generateCollection() {
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
       analyticsTimestamps: {
         create: analyticsTimestamps[0]
-      }
+      },
+      clicks: 100
     },
     {
       collectionName: "Cosplay Collection",
@@ -470,6 +474,7 @@ async function generateCollection() {
         create: analyticsTimestamps[1]
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
+      clicks: 100
     },
     {
       collectionName: "Travel Picture Collection",
@@ -499,6 +504,7 @@ async function generateCollection() {
         create: analyticsTimestamps[2]
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
+      clicks: 100
     },
   ];
 
@@ -605,6 +611,7 @@ async function generateEvent() {
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
       scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
+      clicks: 100
     },
     {
       creator: {
@@ -674,6 +681,7 @@ async function generateEvent() {
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
       scAddress: "0xA4c5d3D268b749f0417f0767b4903545F02194b0",
+      clicks: 100
     },
     {
       creator: {
@@ -744,6 +752,7 @@ async function generateEvent() {
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
       scAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
+      clicks: 100
     },
   ];
 
