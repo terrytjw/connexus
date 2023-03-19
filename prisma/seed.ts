@@ -2,7 +2,6 @@ import {
   PrismaClient,
   CategoryType,
   PrivacyType,
-  PromotionType,
   VisibilityType,
   PublishType,
   ChannelType,
@@ -587,6 +586,14 @@ async function generateEvent() {
             description: "This is a VVIP Pass",
             currentTicketSupply: 3,
             ticketType: TicketType.ON_SALE,
+          },
+        ],
+      },
+      promotion: {
+        create: [
+          {
+            name: "EARLYBIRD",
+            promotionValue: 10,
           },
         ],
       },

@@ -5,6 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Channel } from "@prisma/client";
+import { deleteChannel, getChannel, updateChannel } from "../../../../lib/prisma/channel-prisma";
 
 const prisma = new PrismaClient();
 
@@ -94,11 +95,7 @@ export default async function handler(
 
   async function handleGET(channelId: number) {
     try {
-      const channel = await prisma.channel.findUnique({
-        where: {
-          channelId: channelId,
-        },
-      });
+      const channel = await getChannel(channelId);
 
       if (!channel) res.status(200).json({});
       else res.status(200).json(channel);
@@ -110,12 +107,7 @@ export default async function handler(
 
   async function handlePOST(channelId: number, channel: Channel) {
     try {
-      const response = await prisma.channel.update({
-        where: {
-          channelId: channelId,
-        },
-        data: { ...channel },
-      });
+      const response = await updateChannel(channelId, channel);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);
@@ -125,11 +117,7 @@ export default async function handler(
 
   async function handleDELETE(channelId: number) {
     try {
-      const response = await prisma.channel.delete({
-        where: {
-          channelId: channelId,
-        },
-      });
+      const response = await deleteChannel(channelId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

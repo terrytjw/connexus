@@ -1,15 +1,16 @@
 import CollectionGrid from "../../CollectionGrid";
+import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
 
 type UnlockPremiumChannelTabProps = {
-  products: any; // TODO: type this
+  linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
 const UnlockPremiumChannelTab = ({
-  products,
+  linkedCollections,
 }: UnlockPremiumChannelTabProps) => {
   return (
     <main>
-      <CollectionGrid data={products} />
+      <CollectionGrid data={linkedCollections} />
     </main>
   );
 };

@@ -6,7 +6,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import Badge from "../../Badge";
 import Modal from "../../Modal";
 import EventsGrid from "../EventsGrid";
-import { EventWithTicketsandAddress } from "../../../utils/types";
+import { EventWithAllDetails } from "../../../utils/types";
 import Link from "next/link";
 import { CategoryType, Event } from "@prisma/client";
 import axios from "axios";
@@ -22,7 +22,7 @@ import Loading from "../../Loading";
 const DELAY_TIME = 400;
 
 type FanEventsPageProps = {
-  events: EventWithTicketsandAddress[];
+  events: EventWithAllDetails[];
 };
 
 const FanEventsPage = ({ events }: FanEventsPageProps) => {
@@ -33,7 +33,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchString, setSearchString] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
-    EventWithTicketsandAddress[]
+    EventWithAllDetails[]
   >([]);
 
   // fetch userId if from session
@@ -104,8 +104,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const ListedTabContent = () => {
     // client filter for listed events
     const listedEvents = searchAndFilterResults.filter(
-      (event: EventWithTicketsandAddress) =>
-        new Date(event.endDate) >= new Date()
+      (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
     );
 
     const {
@@ -119,8 +118,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     console.log(
       "search results -> ",
       searchAndFilterResults.filter(
-        (event: EventWithTicketsandAddress) =>
-          new Date(event.endDate) >= new Date()
+        (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
       )
     );
 

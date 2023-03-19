@@ -8,10 +8,10 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 
 type EventsPageProps = {
-  events: EventWithTicketsandAddress[];
+  events: EventWithAllDetails[];
 };
 
 const EventsPage = ({ events }: EventsPageProps) => {
@@ -21,8 +21,8 @@ const EventsPage = ({ events }: EventsPageProps) => {
 
   // temporary filter to see only public events TODO: filter on server side or make it into an api call
   const filterEvents = (
-    events: EventWithTicketsandAddress[]
-  ): EventWithTicketsandAddress[] => {
+    events: EventWithAllDetails[]
+  ): EventWithAllDetails[] => {
     if (!isCreator) {
       // see only public and published events
       return events?.filter(

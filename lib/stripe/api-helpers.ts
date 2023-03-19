@@ -1,6 +1,8 @@
 import getStripe from ".";
 import { formatAmountForStripe } from "./stripe-helpers";
 
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+
 export async function fetchGetJSON(url: string) {
   try {
     const data = await fetch(url).then((res) => res.json());
@@ -45,9 +47,6 @@ export async function createProduct(
   isOnSale: boolean,
   price: number
 ) {
-
-  const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
-
   const product = await stripe?.products.create({
     name, // merch name
     description, // merch description
@@ -60,4 +59,13 @@ export async function createProduct(
   });
 
   return product.default_price;
+}
+
+export async function createPromo(percentOff: number) {
+  const coupon = await stripe.coupons.create({
+    percent_off: percentOff,
+    duration: "forever",
+  });
+
+  return coupon.id;
 }

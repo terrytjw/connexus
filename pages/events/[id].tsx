@@ -18,12 +18,12 @@ import Layout from "../../components/Layout";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { Ticket, User, Address } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 import { formatDate } from "../../utils/date-util";
 import { getSession } from "next-auth/react";
 
 type EventPageProps = {
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
   userData: User & { tickets: Ticket[] };
 };
 

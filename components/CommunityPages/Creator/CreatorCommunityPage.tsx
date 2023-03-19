@@ -82,7 +82,7 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
                 variant="outlined"
                 size="sm"
                 className="max-w-xs border-0 !text-red-500 hover:!bg-gray-300"
-                onClick={() => {}}
+                href={`/communities/${community.communityId}/channels/create`}
               >
                 + <span className="hidden md:contents">Create New</span> Premium
                 Channel

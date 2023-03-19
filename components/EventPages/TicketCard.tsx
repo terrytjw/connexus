@@ -9,6 +9,7 @@ type TicketCardProps = {
   isOwnedTicket?: boolean;
   setIsModalOpen?: (value: boolean) => void;
   setQrValue?: (value: string) => void;
+  setIsPrizeModalOpen?: (value: boolean) => void;
 };
 
 const TicketCard = ({
@@ -16,6 +17,7 @@ const TicketCard = ({
   isOwnedTicket,
   setIsModalOpen,
   setQrValue,
+  setIsPrizeModalOpen,
 }: TicketCardProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
@@ -29,10 +31,11 @@ const TicketCard = ({
     <div>
       <div className="pb-2 sm:pb-4">
         <div
-          className={`center card flex items-start justify-between gap-6 border-2 border-gray-200 ${
+          className={`card flex flex-row justify-between gap-6 border-2 border-gray-200 ${
             ticket.ticketType === TicketType.ON_SALE ? "bg-white" : "bg-gray-50"
           } p-6 lg:card-side`}
         >
+          {/* Left column */}
           <div className="flex flex-col gap-y-5">
             <h1 className="flex gap-4 text-xl font-bold text-gray-700">
               {ticket.name}{" "}
@@ -69,8 +72,24 @@ const TicketCard = ({
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
           </div>
-          {isOwnedTicket && (
-            <div className="flex items-end">
+
+          {/* Right column */}
+          <div className="flex flex-col justify-end gap-4">
+            {isOwnedTicket && (
+              <Button
+                variant="outlined"
+                size="md"
+                className="max-w-xs "
+                onClick={() => {
+                  if (setIsPrizeModalOpen) {
+                    setIsPrizeModalOpen(true);
+                  }
+                }}
+              >
+                Spin the Wheel
+              </Button>
+            )}
+            {isOwnedTicket && (
               <Button
                 variant="solid"
                 size="md"
@@ -84,8 +103,8 @@ const TicketCard = ({
               >
                 Generate QR Code
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>

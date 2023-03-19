@@ -6,11 +6,12 @@ import {
   CategoryType,
   PublishType,
   Address,
+  Promotion,
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
 
-export interface EventPartialType extends Partial<Event> { }
+export interface EventPartialType extends Partial<Event> {}
 
 const prisma = new PrismaClient();
 
@@ -24,7 +25,8 @@ export async function retrieveEventInfo(eventId: number) {
         include: { users: true },
       },
       userLikes: true,
-      address: true
+      address: true,
+      promotion: true,
     },
   });
 }
@@ -32,7 +34,8 @@ export async function retrieveEventInfo(eventId: number) {
 export async function createEventWithTickets(
   event: EventCreation,
   tickets: Ticket[],
-  creatorId: number
+  creatorId: number,
+  promotion: Promotion[]
 ) {
   return prisma.event.create({
     data: {
@@ -43,9 +46,10 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
-      analyticsTimestamps: { create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 } }
+      analyticsTimestamps: { create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 } },
+      promotion: { create: promotion },
     },
-    include: { tickets: true },
+    include: { tickets: true, promotion: true },
   });
 }
 
@@ -70,14 +74,14 @@ export async function filterEvent(
     where: {
       category: tags
         ? {
-          hasSome: tags,
-        }
+            hasSome: tags,
+          }
         : undefined,
 
       eventId: eventIds
         ? {
-          in: eventIds,
-        }
+            in: eventIds,
+          }
         : undefined,
       address: {
         locationName: {
@@ -126,6 +130,10 @@ export async function updateEvent(
       eventId: eventId,
     },
     data: { ...updateType, eventId: undefined },
+    include: {
+      promotion: true,
+      address: true,
+    },
   });
 }
 
@@ -170,14 +178,14 @@ export async function filterAttendee(
     const displayName = userTicket.user.displayName;
     const email = userTicket.user.email;
     const checkInStatus = userTicket.checkIn;
-    const ticket = userTicket.ticket
+    const ticket = userTicket.ticket;
 
     response.push({
       userId: userId,
       displayName: displayName,
       email: email,
       checkIn: checkInStatus,
-      ticket: ticket
+      ticket: ticket,
     } as AttendeeListType);
   }
 

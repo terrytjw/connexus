@@ -12,9 +12,10 @@ import Layout from "../../components/Layout";
 import Loading from "../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 import {
   PrivacyType,
+  Promotion,
   PublishType,
   Ticket,
   TicketType,
@@ -30,6 +31,7 @@ import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
 import { useSession } from "next-auth/react";
+import { Toaster } from "react-hot-toast";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
@@ -38,13 +40,13 @@ const bytecode = contract.bytecode;
 const signer = new ethers.Wallet(smartContract.privateKey, provider);
 
 const CreatorEventCreate = () => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user.userId;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
-    useForm<EventWithTicketsandAddress>({
+    useForm<EventWithAllDetails>({
       defaultValues: {
-        eventName: "",
-        description: "",
+        eventName: "test",
+        description: "desc",
         eventPic: "",
         bannerPic: "",
         category: [],
@@ -58,15 +60,69 @@ const CreatorEventCreate = () => {
           locationName: "",
           postalCode: "",
         },
+        promotion: [
+          {
+            name: "",
+            promotionValue: undefined,
+            eventId: undefined,
+            stripePromotionId: "",
+            isEnabled: false,
+          },
+        ],
       },
     });
+  // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
+  //   useForm<EventWithAllDetails>({
+  //     defaultValues: {
+  //       eventName: "test",
+  //       description: "desc",
+  //       eventPic: "",
+  //       bannerPic: "",
+  //       category: [],
+  //       tickets: [
+  //         {
+  //           ticketId: 1,
+  //           name: "tname",
+  //           description: "desc",
+  //           price: "1",
+  //           totalTicketSupply: "6",
+  //           startDate: "2023-03-20T23:57",
+  //           endDate: "2023-03-22T23:57",
+  //           eventId: 5e-324,
+  //           ticketType: "ON_SALE",
+  //         },
+  //       ],
+  //       visibilityType: "PUBLISHED",
+  //       privacyType: "PUBLIC",
+  //       publishType: "NOW",
+  //       address: {
+  //         address1: "123 Bukit Merah Lane 1",
+  //         address2: "",
+  //         locationName: "123 Bukit Merah Lane 1",
+  //         postalCode: "150123",
+  //         lat: 1.2867152,
+  //         lng: 103.8037402,
+  //       },
+  //       promotion: [
+  //         {
+  //           name: "promo200",
+  //           promotionValue: "10",
+  //           stripePromotionId: "",
+  //           isEnabled: true,
+  //         },
+  //       ],
+  //       startDate: "2023-03-20T23:55",
+  //       endDate: "2023-03-31T23:55",
+  //       maxAttendee: "12",
+  //     },
+  //   });
 
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
   });
-  const [tickets] = watch(["tickets"]);
+  const { tickets } = watch();
   const [steps, setSteps] = useState<Step[]>([
     { id: "Step 1", name: "Event Details", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Ticket Details", status: StepStatus.UPCOMING },
@@ -130,10 +186,10 @@ const CreatorEventCreate = () => {
     setCreatedEventId(data.eventId); // used to route to event
   };
 
-  const parseAndCreate = (event: EventWithTicketsandAddress): void => {
+  const parseAndCreate = (event: EventWithAllDetails): void => {
     console.log("Submitting Form Data", event);
 
-    const { tickets, startDate, endDate, maxAttendee } = event;
+    const { tickets, startDate, endDate, maxAttendee, promotion } = event;
 
     console.log(tickets.map((ticket) => ({ ...ticket })));
     // parse to prisma type
@@ -159,6 +215,10 @@ const CreatorEventCreate = () => {
           endDate: new Date(endDate),
         })
       ),
+      promotion: promotion.map((promo: Promotion) => ({
+        ...promo,
+        promotionValue: Number(promo.promotionValue),
+      })),
       creatorId: userId,
     };
     createEvent(prismaEvent);
@@ -177,6 +237,7 @@ const CreatorEventCreate = () => {
       endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
       ticketType: TicketType.ON_SALE,
+      stripePriceId: "",
     });
   };
 
@@ -268,6 +329,17 @@ const CreatorEventCreate = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
+
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}
@@ -324,7 +396,7 @@ const CreatorEventCreate = () => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((event: EventWithTicketsandAddress) =>
+              onSubmit={handleSubmit((event: EventWithAllDetails) =>
                 parseAndCreate(event)
               )}
             >
@@ -346,6 +418,7 @@ const CreatorEventCreate = () => {
                   <TicketFormPage
                     isEdit={false} // tells the form page that user is not editing
                     watch={watch}
+                    setValue={setValue}
                     getFieldState={getFieldState}
                     control={control}
                     trigger={trigger}

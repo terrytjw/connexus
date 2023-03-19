@@ -1,4 +1,3 @@
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -8,12 +7,20 @@ import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
 import { getCommunityAPI } from "../../lib/api-helpers/community-api";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  getLinkedCollections,
+} from "../../lib/api-helpers/collection-api";
 
 type CommunityPagePageProps = {
   communityData: CommunityWithCreatorAndChannelsAndMembers;
+  linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
-const CommunityPage = ({ communityData }: CommunityPagePageProps) => {
+const CommunityPage = ({
+  communityData,
+  linkedCollections,
+}: CommunityPagePageProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
@@ -28,7 +35,11 @@ const CommunityPage = ({ communityData }: CommunityPagePageProps) => {
             setCommunity={setCommunity}
           />
         ) : (
-          <FanCommunityPage community={community} setCommunity={setCommunity} />
+          <FanCommunityPage
+            community={community}
+            setCommunity={setCommunity}
+            linkedCollections={linkedCollections}
+          />
         )}
       </Layout>
     </ProtectedRoute>
@@ -51,9 +62,14 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
     };
   }
 
+  const linkedCollections = await getLinkedCollections(
+    communityData.creator.userId
+  );
+
   return {
     props: {
       communityData,
+      linkedCollections,
     },
   };
 };
