@@ -46,12 +46,19 @@ const WithdrawalTable = ({ data, columns }: WithdrawalTableProps) => {
                 <span className="">{data.amount}</span>
               </td>
               <td>
-                <span className="badge border-yellow-500 bg-yellow-500 font-semibold text-white">
-                  {data.transactionStatus}
-                </span>
-                {/* <span className="badge border-green-500 bg-green-500 font-semibold text-white">
-                  {data.status}
-                </span> */}
+                {data.transactionStatus === "PENDING" ? (
+                  <span className="badge border-yellow-500 bg-yellow-500 font-semibold text-white">
+                    Pending
+                  </span>
+                ) : data.transactionStatus === "COMPLETED" ? (
+                  <span className="badge border-green-500 bg-green-500 font-semibold text-white">
+                    Completed
+                  </span>
+                ) : (
+                  <span className="badge border-red-500 bg-red-500 font-semibold text-white">
+                    Rejected
+                  </span>
+                )}
               </td>
             </tr>
           ))}
@@ -96,9 +103,9 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       const response = await withdraw(userId);
       setUpdatedUserData(response);
 
-      toast.success("Withdrawal successful");
+      toast.success("Withdrawal initiated");
     } catch (e) {
-      toast.error("Withdrawal failed");
+      toast.error("Withdrawal initiation failed");
     }
   };
 
@@ -225,7 +232,11 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
           {/* withdrawal history section */}
           <section>
-            <h2 className="mb-6 text-lg font-semibold">Withdrawal History</h2>
+            <h2 className="mb-2 text-lg font-semibold">Withdrawal History</h2>
+            <p className="mb-6 text-sm text-gray-500">
+              Withdrawals will take 5-7 business days to be credited into your
+              bank account.
+            </p>
             <WithdrawalTable
               data={updatedUserData.transactions}
               columns={["Transaction ID", "Date", "Amount (SGD)", "Status"]}

@@ -311,4 +311,5 @@ model BankAccount {
 enum TransactionStatusType {
   PENDING
   COMPLETED
+  REJECTED
 }
