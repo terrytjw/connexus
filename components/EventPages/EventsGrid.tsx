@@ -6,13 +6,13 @@ import "react-loading-skeleton/dist/skeleton.css";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { formatDate } from "../../utils/date-util";
 import { likeEvent, unlikeEvent } from "../../lib/api-helpers/event-api";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 
 type CollectionGridItemProps = {
-  item: EventWithTicketsandAddress;
+  item: EventWithAllDetails;
   mutateTrendingEvents?: any;
   setSearchAndFilterResults?: any;
 };
@@ -34,14 +34,14 @@ const CollectionGridItem = ({
     // mutate
     console.log("liking event -> ", res);
     if (mutateTrendingEvents) {
-      mutateTrendingEvents((data: EventWithTicketsandAddress[]) => {
+      mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
           .find((event) => event.eventId == res.event)
           ?.userLikes.push({ userId: Number(userId) } as User);
         return data;
       });
     } else if (setSearchAndFilterResults) {
-      setSearchAndFilterResults((prev: EventWithTicketsandAddress[]) =>
+      setSearchAndFilterResults((prev: EventWithAllDetails[]) =>
         prev.map((event) =>
           event.eventId === item.eventId
             ? {
@@ -66,7 +66,7 @@ const CollectionGridItem = ({
     // mutate events
     console.log("UNliking event");
     if (mutateTrendingEvents) {
-      mutateTrendingEvents((data: EventWithTicketsandAddress[]) => {
+      mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
           .find((event) => event.eventId === res.eventId)
           ?.userLikes.filter((like: User) => like.userId !== Number(userId));
@@ -74,7 +74,7 @@ const CollectionGridItem = ({
         return data;
       });
     } else if (setSearchAndFilterResults) {
-      setSearchAndFilterResults((prev: EventWithTicketsandAddress[]) =>
+      setSearchAndFilterResults((prev: EventWithAllDetails[]) =>
         prev.map((event) =>
           event.eventId === item.eventId
             ? {

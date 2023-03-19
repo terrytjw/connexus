@@ -7,6 +7,7 @@ import {
   PublishType,
   Address,
   Raffles,
+  Promotion,
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
@@ -31,6 +32,7 @@ export async function retrieveEventInfo(eventId: number) {
           rafflePrizes: true,
         },
       },
+      promotion: true,
     },
   });
 }
@@ -38,7 +40,8 @@ export async function retrieveEventInfo(eventId: number) {
 export async function createEventWithTickets(
   event: EventCreation,
   tickets: Ticket[],
-  creatorId: number
+  creatorId: number,
+  promotion: Promotion[]
 ) {
   return prisma.event.create({
     data: {
@@ -51,8 +54,9 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
+      promotion: { create: promotion },
     },
-    include: { tickets: true },
+    include: { tickets: true, promotion: true },
   });
 }
 
@@ -133,6 +137,10 @@ export async function updateEvent(
       eventId: eventId,
     },
     data: { ...updateType, eventId: undefined },
+    include: {
+      promotion: true,
+      address: true,
+    },
   });
 }
 

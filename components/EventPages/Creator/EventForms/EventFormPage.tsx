@@ -23,14 +23,15 @@ import {
 } from "@react-google-maps/api";
 
 import { CategoryType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
+import toast from "react-hot-toast";
 
 type EventFormPageProps = {
   isEdit: boolean;
-  watch: UseFormWatch<EventWithTicketsandAddress>;
-  setValue: UseFormSetValue<EventWithTicketsandAddress>;
-  control: Control<EventWithTicketsandAddress, any>;
-  trigger: UseFormTrigger<EventWithTicketsandAddress>;
+  watch: UseFormWatch<EventWithAllDetails>;
+  setValue: UseFormSetValue<EventWithAllDetails>;
+  control: Control<EventWithAllDetails, any>;
+  trigger: UseFormTrigger<EventWithAllDetails>;
   proceedStep: () => void;
 };
 
@@ -508,7 +509,8 @@ const EventFormPage = ({
             variant="solid"
             size="md"
             className="w-full max-w-3xl"
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
               const isValidated = await trigger([
                 "eventName",
                 "description",
@@ -520,6 +522,11 @@ const EventFormPage = ({
                 "address.lng",
                 "address.postalCode",
               ]);
+
+              if (!(eventPic || bannerPic)) {
+                toast.error("Images are required!");
+                return;
+              }
 
               if (isValidated) {
                 proceedStep();

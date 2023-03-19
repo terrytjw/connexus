@@ -57,7 +57,7 @@ const TicketCardInput = ({
     return ticket.ticketType === TicketType.PAUSED;
   };
 
-  const getTicketPrice = (ticketId: number): number => {
+  const getTicketPrice = (ticketId: number): number | undefined => {
     // render different prices based on whether promo is applied
     if (isPromoApplied) {
       return discountedTickets.find(
@@ -69,7 +69,7 @@ const TicketCardInput = ({
     )?.price;
   };
 
-  const getPreDiscountedPrice = (ticketId: number): number => {
+  const getPreDiscountedPrice = (ticketId: number): number | undefined => {
     return preDiscountedTickets.find(
       (ticket: Ticket) => Number(ticket.ticketId) === Number(ticketId)
     )?.price;
@@ -115,7 +115,7 @@ const TicketCardInput = ({
               <span className="flex items-center gap-2">
                 {/* final price */}
                 <p className="text-md font-medium text-gray-700">
-                  ${getTicketPrice(ticket.ticketId).toFixed(2)}
+                  ${getTicketPrice(ticket.ticketId)?.toFixed(2)}
                 </p>
                 {/* pre-discounted price, if any */}
                 {isPromoApplied && (
@@ -124,7 +124,7 @@ const TicketCardInput = ({
                       isPromoApplied && "!text-xs !text-gray-400 line-through"
                     }`}
                   >
-                    ${getPreDiscountedPrice(ticket.ticketId).toFixed(2)}
+                    ${getPreDiscountedPrice(ticket.ticketId)?.toFixed(2)}
                   </p>
                 )}
               </span>
@@ -177,7 +177,7 @@ const TicketCardInput = ({
                         ticketId: ticket.ticketId,
                         ticketName: ticket.name,
                         qty: 1,
-                        price: ticket.price,
+                        price: getTicketPrice(ticket.ticketId) ?? 0,
                       });
                     }
                   }}

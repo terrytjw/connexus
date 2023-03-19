@@ -124,12 +124,12 @@ const ConfirmationFormProps = ({
             <span className="text-sm font-normal ">
               {qty}x {ticketName}
             </span>
-            <span className="text-sm font-normal ">${price}</span>
+            <span className="text-sm font-normal ">${price?.toFixed(2)}</span>
           </div>
           <div className="flex flex-row justify-between">
             {/* only one selected ticket hence total price will be that */}
             <span className="text-md font-medium ">Total</span>
-            <span className="text-md font-medium ">${price}</span>
+            <span className="text-md font-medium ">${price?.toFixed(2)}</span>
           </div>
         </div>
 

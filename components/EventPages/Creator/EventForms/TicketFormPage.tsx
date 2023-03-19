@@ -5,6 +5,7 @@ import {
   FieldArrayWithId,
   UseFieldArrayUpdate,
   UseFormGetFieldState,
+  UseFormSetValue,
   UseFormTrigger,
   UseFormWatch,
 } from "react-hook-form";
@@ -12,18 +13,19 @@ import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
 import { FaDollarSign, FaTrash } from "react-icons/fa";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { EventWithAllDetails } from "../../../../utils/types";
 import { TicketType } from "@prisma/client";
 import { isValid } from "date-fns";
 
 type TicketFormPageProps = {
   isEdit: boolean;
-  watch: UseFormWatch<EventWithTicketsandAddress>;
-  getFieldState: UseFormGetFieldState<EventWithTicketsandAddress>;
-  control: Control<EventWithTicketsandAddress, any>;
-  trigger: UseFormTrigger<EventWithTicketsandAddress>;
-  fields: FieldArrayWithId<EventWithTicketsandAddress, "tickets", "id">[];
-  update: UseFieldArrayUpdate<EventWithTicketsandAddress, "tickets">;
+  watch: UseFormWatch<EventWithAllDetails>;
+  setValue: UseFormSetValue<EventWithAllDetails>;
+  getFieldState: UseFormGetFieldState<EventWithAllDetails>;
+  control: Control<EventWithAllDetails, any>;
+  trigger: UseFormTrigger<EventWithAllDetails>;
+  fields: FieldArrayWithId<EventWithAllDetails, "tickets", "id">[];
+  update: UseFieldArrayUpdate<EventWithAllDetails, "tickets">;
   addNewTicket: () => void;
   removeTicket: (index: number) => void;
   proceedStep: () => void;
@@ -32,6 +34,7 @@ type TicketFormPageProps = {
 const TicketFormPage = ({
   isEdit,
   watch,
+  setValue,
   getFieldState,
   control,
   trigger,
@@ -42,8 +45,7 @@ const TicketFormPage = ({
   proceedStep,
 }: TicketFormPageProps) => {
   // form values
-  const { endDate, tickets } = watch();
-  // console.log("form tickets -> ", tickets);
+  const { endDate, tickets, promotion } = watch();
 
   // replace with this with actual promo code field
   const promoCode = {
@@ -75,6 +77,13 @@ const TicketFormPage = ({
     );
   };
 
+  const isPromoEnabled = (): boolean | undefined => {
+    if (promotion.length === 0) {
+      return;
+    }
+    return promotion[0].isEnabled;
+  };
+  console.log("promotion form value ->", promotion);
   return (
     <div>
       {/* Promo Code */}
@@ -92,9 +101,9 @@ const TicketFormPage = ({
                   name="promoSelected"
                   type="radio"
                   value={"yes"}
-                  checked={promoSelected}
+                  checked={isPromoEnabled()}
                   className="radio checked:bg-blue-500"
-                  onChange={() => setPromoSelected(true)}
+                  onChange={() => setValue("promotion.0.isEnabled", true)}
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -116,12 +125,9 @@ const TicketFormPage = ({
                   name="promoSelected"
                   type="radio"
                   value={"no"}
-                  checked={!promoSelected}
+                  checked={!isPromoEnabled()}
                   className="radio checked:bg-blue-500"
-                  onChange={() => {
-                    setPromoSelected(false);
-                    // clear promo fields
-                  }}
+                  onChange={() => setValue("promotion.0.isEnabled", false)}
                 />
               </div>
               <div className="ml-3 text-sm">
@@ -137,11 +143,14 @@ const TicketFormPage = ({
           </div>
         </fieldset>
 
-        {promoSelected && (
+        {isPromoEnabled() && (
           <div className="mt-4 flex w-full flex-col gap-2">
             <Controller
               control={control}
-              name={`tickets.0.name`} // todo: replace with promo code field
+              name={`promotion.0.name`}
+              rules={{
+                required: "Promo Code is required",
+              }}
               render={({
                 field: { value, onChange },
                 fieldState: { error },
@@ -159,29 +168,36 @@ const TicketFormPage = ({
                 />
               )}
             />
-            {/* todo: replace with the actual promo code field, this will only appear when promo name exists */}
-            {promoCode.promoName && (
-              <Controller
-                control={control}
-                name={`tickets.0.name`} // todo: replace with promo code field
-                render={({
-                  field: { value, onChange },
-                  fieldState: { error },
-                }) => (
-                  <Input
-                    type="number"
-                    label="Discount Amount (%)"
-                    value={value}
-                    onChange={onChange}
-                    placeholder="Discount Amount"
-                    size="md"
-                    variant="bordered"
-                    errorMessage={error?.message}
-                    className="max-w-3xl"
-                  />
-                )}
-              />
-            )}
+            <Controller
+              control={control}
+              name={`promotion.0.promotionValue`}
+              rules={{
+                required: "Discount amount is required",
+                validate: {
+                  moreThanZero: (value) =>
+                    value > 0 || "Discount amount cannot be less than 0",
+                  lessThanHundred: (value) =>
+                    value <= 100 || "Discount amount cannot be more than 100",
+                },
+              }}
+              render={({
+                field: { value, onChange },
+                fieldState: { error },
+              }) => (
+                <Input
+                  type="number"
+                  label="Discount Amount (%)"
+                  value={value}
+                  onChange={onChange}
+                  placeholder="Discount Amount"
+                  size="md"
+                  variant="bordered"
+                  errorMessage={error?.message}
+                  className="max-w-3xl"
+                  disabled={isEdit}
+                />
+              )}
+            />
           </div>
         )}
         <div className="divider"></div>

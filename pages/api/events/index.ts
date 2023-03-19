@@ -10,6 +10,7 @@ import {
   Address,
   PublishType,
   Raffles,
+  Promotion,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -19,11 +20,12 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import {
-  createEventWithTickets,
+  createEventWithTickets as createEvent,
   filterEvent,
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
 import { saveRaffles } from "../../../lib/prisma/raffle-prisma";
+import { createProduct, createPromo } from "../../../lib/stripe/api-helpers";
 
 export type EventCreation = Prisma.EventGetPayload<{
   include: {
@@ -35,6 +37,7 @@ export type EventCreation = Prisma.EventGetPayload<{
     raffles: {
       include: { rafflePrizes: true };
     };
+    promotion: true;
   };
 }>;
 
@@ -172,12 +175,24 @@ export default async function handler(
         creatorId,
         userLikes,
         raffles,
+        promotion,
         ...eventInfo
       } = eventWithTickets;
       const updatedTickets = tickets.map((ticket: TicketWithUser) => {
         const { ticketId, eventId, users, ...ticketInfo } = ticket;
         return ticketInfo;
       });
+
+      const updatedPromo = await Promise.all(
+        promotion.map(async (promo: Promotion) => {
+          const { eventId, ...promoInfo } = promo;
+
+          const stripePromoId = await createPromo(promoInfo.promotionValue);
+          promoInfo.stripePromotionId = stripePromoId as string;
+
+          return promoInfo;
+        })
+      );
 
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
@@ -216,21 +231,48 @@ export default async function handler(
           );
       }
 
+      console.log(eventBannerPictureUrl, eventImageUrl);
+
+      // updatedTickets.forEach(async (ticket) => {
+      //   const stripePriceId = await createProduct(
+      //     ticket.name,
+      //     ticket.description ?? "",
+      //     eventImageUrl,
+      //     true,
+      //     ticket.price
+      //   );
+
+      //   ticket.stripePriceId = stripePriceId as string;
+      //   ticket;
+      // }, updatedTickets);
+
+      for (let i = 0; i < updatedTickets.length; i++) {
+        const stripePriceId = await createProduct(
+          updatedTickets[i].name,
+          updatedTickets[i].description ?? "",
+          eventImageUrl,
+          true,
+          updatedTickets[i].price
+        );
+        updatedTickets[i].stripePriceId = stripePriceId as string;
+      }
+
       const updatedEvent = {
         ...eventInfo,
         eventPic: eventImageUrl,
         bannerPic: eventBannerPictureUrl,
       } as EventCreation;
 
-      const response = await createEventWithTickets(
+      const response = await createEvent(
         updatedEvent as EventCreation,
         updatedTickets as Ticket[],
-        creatorId
+        creatorId,
+        updatedPromo as Promotion[]
       );
 
-      raffles.forEach(async (raffle) => {
-        await saveRaffles(response.eventId, raffle.rafflePrizes);
-      });
+      // raffles.forEach(async (raffle) => {
+      //   await saveRaffles(response.eventId, raffle.rafflePrizes);
+      // });
 
       res.status(200).json(response);
       // now create the contract

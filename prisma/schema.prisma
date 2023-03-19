@@ -126,6 +126,7 @@ model Event {
   creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
   creatorId        Int
   raffles          Raffles[]
+  promotion        Promotion[]
 }
 
 enum PublishType {
@@ -156,9 +157,9 @@ model Ticket {
   description         String?
   event               Event        @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
-  promotion           Promotion[]
   users               User[]
   userTicket          UserTicket[]
+  stripePriceId       String? //To be removed
 }
 
 model UserTicket {
@@ -179,15 +180,13 @@ enum TicketType {
 }
 
 model Promotion {
-  promotionId    Int           @id @default(autoincrement())
-  name           String
-  promotionType  PromotionType
-  promotionValue Float         @default(0)
-  quantity       Int           @default(0)
-  startDate      DateTime      @default(now())
-  endDate        DateTime      @default(now())
-  ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
-  ticketId       Int
+  promotionId       Int     @id @default(autoincrement())
+  name              String
+  promotionValue    Float   @default(0)
+  event             Event   @relation(fields: [eventId], references: [eventId], onDelete: Cascade)
+  eventId           Int
+  isEnabled         Boolean @default(false)
+  stripePromotionId String? //To be removed
 }
 
 enum CategoryType {
@@ -232,11 +231,6 @@ enum ChannelType {
   REGULAR
   PREMIUM
   PRIVATE
-}
-
-enum PromotionType {
-  LIMITED
-  UNLIMITED
 }
 
 model Collection {

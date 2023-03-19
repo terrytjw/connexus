@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { StepStatus } from "../../../lib/enums";
 import StepsMobile from "../../../components/EventPages/StepsMobile";
@@ -17,16 +17,17 @@ import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
-import {
-  EventWithTicketsandAddress,
-  UserWithTickets,
-} from "../../../utils/types";
+import { EventWithAllDetails, UserWithTickets } from "../../../utils/types";
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
 import { smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Link from "next/link";
+import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
+import getStripe from "../../../lib/stripe";
+import { useRouter } from "next/router";
+import { sendEmail } from "../../../lib/api-helpers/communication-api";
 
 export type SelectedTicket = {
   ticketId: number | undefined;
@@ -39,23 +40,25 @@ export type TicketsForm = User & {
   selectedTicket: SelectedTicket;
   preDiscountedTickets: Ticket[];
   discountedTickets: Ticket[];
+  stripePromotionId: string;
 };
 
 type FanEventReigsterProps = {
   userData: User;
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
 };
 
 const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
+  const router = useRouter();
+
   const provider = new ethers.providers.JsonRpcProvider(
     "https://polygon-mumbai.g.alchemy.com/v2/3oE8BGNsfXndWYJbZxEkLCsZZ6STLO2R"
   );
   const abi = contract.abi;
   const bytecode = contract.bytecode;
   var signer = new ethers.Wallet(smartContract.privateKey, provider);
-  console.log(signer);
 
   // use form for selected ticket state
   const { handleSubmit, setValue, reset, control, watch, trigger } =
@@ -74,8 +77,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     });
 
   // watch user form data
-  const userFormData = watch();
-
+  const formData = watch();
+  const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
     useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -84,6 +87,54 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     { id: "Step 1", name: "Select Tickets", status: StepStatus.CURRENT },
     { id: "Step 2", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
+
+  // checks if payment succeeeded and call mint api
+  useEffect(() => {
+    const paymentSuccessExists = "paymentSuccess" in router.query;
+    console.log("payment success exists? -> ", paymentSuccessExists);
+    console.log("query param value -> ", router.query.paymentSuccess);
+
+    // on payment success
+    if (paymentSuccessExists && router.query.paymentSuccess === "true") {
+      // fetch ticket from local storage
+      const savedFormData: any = localStorage.getItem("savedFormData")
+        ? JSON.parse(localStorage.getItem("savedFormData")!)
+        : null;
+      console.log("local storage data ->", savedFormData);
+      // show user previously selected ticket in order summary
+      setValue("selectedTicket", {
+        ticketId: savedFormData.selectedTicket.ticketId,
+        ticketName: savedFormData.selectedTicket.ticketName,
+        qty: savedFormData.selectedTicket.qty,
+        price: savedFormData.selectedTicket.price,
+      });
+
+      // bring users back to confirmation page
+      setSteps([
+        { id: "Step 1", name: "Select Tickets", status: StepStatus.COMPLETE },
+        {
+          id: "Step 2",
+          name: "Confirm Registration",
+          status: StepStatus.CURRENT,
+        },
+      ]);
+
+      mintTicket(
+        savedFormData.updatedUser,
+        Number(savedFormData.updatedUser.userId),
+        event.eventId,
+        savedFormData.selectedTicket.ticketName
+      );
+      localStorage.removeItem("savedFormData");
+
+      // send email
+      sendEmail(
+        userData.email,
+        `Reminder for ${event.eventName}`,
+        "Some reminder"
+      );
+    }
+  }, [router.query]);
 
   const getCurrentStep = (): Step | undefined => {
     return steps.find((step) => step.status === StepStatus.CURRENT);
@@ -154,7 +205,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   );
 
   const mintOnChain = async (
-    eventInfo: Partial<EventWithTicketsandAddress>,
+    eventInfo: Partial<EventWithAllDetails>,
     ticket_category: string // ticket name
   ) => {
     console.log(ticket_category);
@@ -201,17 +252,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     eventId: number,
     ticketCategory: string
   ) => {
-    /*
-    Inputs: 
-    1. Event id 
-    2. Ticket category 
-    3. User id
-    */
     setIsLoading(true);
+    setIsRegisterSuccessModalOpen(true);
     let response = await axios.get(
       "http://localhost:3000/api/events/" + eventId.toString()
     );
-    const eventInfo = response.data as EventWithTicketsandAddress;
+    const eventInfo = response.data as EventWithAllDetails;
     const { scAddress, ticketURIs, tickets } = eventInfo;
 
     let user_response = await axios.get(
@@ -261,9 +307,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         );
         user_tickets.push(tickets[j]);
 
-        // remove extra fields
-        // const { , ...cleansedUser} = userIn
-
         // destructure from user form data
         const { displayName, email, phoneNumber } = userFormData;
 
@@ -275,7 +318,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           phoneNumber,
           tickets: user_tickets,
         };
-        console.log("updating user in prisma", updated_user);
+        console.log("updating user in prisma, form data ->", updated_user);
         let user_update = await axios.post(
           "http://localhost:3000/api/users/" + userId.toString(),
           updated_user
@@ -287,6 +330,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     }
     ticketURIs.push(link);
 
+    // construct update event
     const updated_event = {
       eventName: eventInfo.eventName,
       addressId: eventInfo.addressId,
@@ -302,9 +346,10 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       publishStartDate: eventInfo.publishStartDate,
       ticketURIs: ticketURIs,
       publishType: eventInfo.publishType,
+      promotion: eventInfo.promotion,
     };
 
-    console.log(updated_event);
+    console.log("posting updated event ->", updated_event);
     let updated_response = await axios.post(
       "http://localhost:3000/api/events/" + eventId.toString(),
       updated_event
@@ -313,16 +358,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     console.log("Data uploaded for both event + user");
     setIsLoading(false);
   };
-
-  async function getTicket(ipfs_link: string) {
-    let response = await axios.get(ipfs_link, {
-      headers: {
-        Accept: "text/plain",
-      },
-    });
-    console.log(response);
-    return response;
-  }
 
   return (
     <ProtectedRoute>
@@ -348,8 +383,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <div className="flex flex-col gap-6 py-4">
               <h3 className="text-xl font-semibold">Purchase Completed!</h3>
               <h3 className="text-md font-normal text-gray-500">
-                You have successfully purchased Name of NFT from Prem CC2! See
-                the tabs in the community page you joined.
+                You have successfully purchased{" "}
+                {formData.selectedTicket.ticketName} for {event.eventName}!
               </h3>
 
               <Link href="/events/tickets">
@@ -394,29 +429,60 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((data: TicketsForm) => {
+              onSubmit={handleSubmit(async (data: TicketsForm) => {
                 console.log("Submitting Ticket Data to mint", data);
-                // remove selectedTickets field from form data
-                const { selectedTicket, ...userWithNoSelectedTickets } =
-                  userFormData;
-                mintTicket(
-                  userWithNoSelectedTickets,
-                  Number(userId),
-                  event.eventId,
-                  data.selectedTicket.ticketName
+                // remove form fields for api call
+                const {
+                  selectedTicket,
+                  preDiscountedTickets,
+                  discountedTickets,
+                  stripePromotionId,
+                  ...updatedUser
+                } = formData;
+                // save data to local storage
+                localStorage.setItem(
+                  "savedFormData",
+                  JSON.stringify({ selectedTicket, updatedUser })
                 );
+
+                setIsLoading(true);
+                // Create a Checkout Session.
+                const response = await fetchPostJSON("/api/checkout_sessions", {
+                  priceId: "price_1Mn2EMCmKD4DhrYc7Nb12kp7",
+                  creatorId: event.creatorId,
+                  promoId: formData.stripePromotionId,
+                  paymentSuccessUrl: `events/register/${event.eventId}?paymentSuccess=true`,
+                });
+
+                if (response.statusCode === 500) {
+                  console.error(response.message);
+                  return;
+                }
+
+                // Redirect to Checkout.
+                const stripe = await getStripe();
+                const { error } = await stripe!.redirectToCheckout({
+                  // Make the id field from the Checkout Session creation API response
+                  // available to this file, so you can provide it as parameter here
+                  // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                  sessionId: response.id,
+                });
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `error.message`.
+                console.warn(error.message);
+                setIsLoading(false);
               })}
             >
               {/* Step 1 */}
               {currentStep?.id === "Step 1" &&
                 currentStep?.status === StepStatus.CURRENT && (
                   <TicketSelectionFormPage
-                    reset={reset}
                     setValue={setValue}
                     watch={watch}
-                    control={control}
-                    trigger={trigger}
                     proceedStep={proceedStep}
+                    isPromoApplied={isPromoApplied}
+                    setIsPromoApplied={setIsPromoApplied}
                   />
                 )}
               {/* Step 2 */}
