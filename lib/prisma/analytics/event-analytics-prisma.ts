@@ -44,7 +44,7 @@ export async function groupCreatorEventAnalyticsByEvent(userId: number, lowerBou
   })
 }
 
-export async function filterCreatorEventAnalyticsByEvent(eventId: number, lowerBound: Date, upperBound: Date) {
+export async function getEventAnalyticsByEvent(eventId: number, lowerBound: Date, upperBound: Date) {
   return prisma.eventAnalyticsTimestamp.findMany({
     where: {
       date: {

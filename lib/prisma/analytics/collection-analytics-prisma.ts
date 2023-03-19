@@ -42,7 +42,7 @@ export async function groupCreatorCollectionAnalyticsByCollection(userId: number
   })
 }
 
-export async function filterCreatorCollectionAnalyticsByCollection(collectionId: number, lowerBound: Date, upperBound: Date) {
+export async function getCollectionAnalyticsByCollection(collectionId: number, lowerBound: Date, upperBound: Date) {
   return prisma.collectionAnalyticsTimestamp.findMany({
     where: {
       date: {

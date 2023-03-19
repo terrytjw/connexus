@@ -68,7 +68,7 @@ export async function groupCreatorChannelAnalyticsByChannel(userId: number, lowe
   })
 }
 
-export async function filterCreatorChannelAnalyticsByChannel(channelId: number, lowerBound: Date, upperBound: Date) {
+export async function getChannelAnalyticsByChannel(channelId: number, lowerBound: Date, upperBound: Date) {
   return prisma.channelAnalyticsTimestamp.findMany({
     where: {
       date: {
