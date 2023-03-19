@@ -39,16 +39,7 @@ const TicketSelectionFormPage = ({
 
   const applyPromoCode = async () => {
     // fetch promo code
-    // const promo = await getPromotionCodeByName(promoInput, Number(eventId));
-    const promo = [
-      {
-        promoId: 2,
-        name: "promo100",
-        promotionValue: 10,
-        stripePromotionId: "nNScdGJg",
-        isEnabled: true,
-      },
-    ];
+    const promo = await getPromotionCodeByName(promoInput, Number(eventId));
     console.log("api res ->", promo);
     // checks for valid promo code from event object
 
@@ -84,9 +75,6 @@ const TicketSelectionFormPage = ({
     }
   };
 
-  // tickets.map((ticket: Ticket) => ({
-  //   ...ticket,
-  //   price: getDiscountedPrice(ticket.price, promoCode.discount),
   return (
     <div>
       <section>

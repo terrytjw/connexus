@@ -99,6 +99,23 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         ? JSON.parse(localStorage.getItem("savedFormData")!)
         : null;
       console.log("local storage data ->", savedFormData);
+      // show user previously selected ticket in order summary
+      setValue("selectedTicket", {
+        ticketId: savedFormData.selectedTicket.ticketId,
+        ticketName: savedFormData.selectedTicket.ticketName,
+        qty: savedFormData.selectedTicket.qty,
+        price: savedFormData.selectedTicket.price,
+      });
+
+      // bring users back to confirmation page
+      setSteps([
+        { id: "Step 1", name: "Select Tickets", status: StepStatus.COMPLETE },
+        {
+          id: "Step 2",
+          name: "Confirm Registration",
+          status: StepStatus.CURRENT,
+        },
+      ]);
 
       mintTicket(
         savedFormData.updatedUser,
