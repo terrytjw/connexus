@@ -135,6 +135,28 @@
         "walletBalance": {
           "type": "number",
           "default": 0
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Transaction"
+          }
+        },
+        "bankAccount": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BankAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -734,6 +756,82 @@
           }
         }
       }
+    },
+    "Question": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "integer"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string",
+          "default": ""
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "integer"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "amount": {
+          "type": "number",
+          "default": 0
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "COMPLETED",
+            "REJECTED"
+          ]
+        }
+      }
+    },
+    "BankAccount": {
+      "type": "object",
+      "properties": {
+        "bankAccountId": {
+          "type": "integer"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "routingNumber": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
     }
   },
   "type": "object",
@@ -773,6 +871,15 @@
     },
     "merchandise": {
       "$ref": "#/definitions/Merchandise"
+    },
+    "question": {
+      "$ref": "#/definitions/Question"
+    },
+    "transaction": {
+      "$ref": "#/definitions/Transaction"
+    },
+    "bankAccount": {
+      "$ref": "#/definitions/BankAccount"
     }
   }
 }

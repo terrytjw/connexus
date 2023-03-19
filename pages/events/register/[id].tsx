@@ -27,6 +27,7 @@ import Link from "next/link";
 import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
 import getStripe from "../../../lib/stripe";
 import { useRouter } from "next/router";
+import { sendEmail } from "../../../lib/api-helpers/communication-api";
 
 export type SelectedTicket = {
   ticketId: number | undefined;
@@ -79,7 +80,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   const formData = watch();
   const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
-    useState(true);
+    useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const [steps, setSteps] = useState<Step[]>([
@@ -93,6 +94,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     console.log("payment success exists? -> ", paymentSuccessExists);
     console.log("query param value -> ", router.query.paymentSuccess);
 
+    // on payment success
     if (paymentSuccessExists && router.query.paymentSuccess === "true") {
       // fetch ticket from local storage
       const savedFormData: any = localStorage.getItem("savedFormData")
@@ -124,6 +126,13 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         savedFormData.selectedTicket.ticketName
       );
       localStorage.removeItem("savedFormData");
+
+      // send email
+      sendEmail(
+        userData.email,
+        `Reminder for ${event.eventName}`,
+        "Some reminder"
+      );
     }
   }, [router.query]);
 

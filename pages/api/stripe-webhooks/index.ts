@@ -95,8 +95,6 @@ export default async function handleWebhook(
     process.env.STRIPE_WEBHOOK_ENDPOINT_SECRET!
   );
 
-  console.log("WEBHOOK TRIGGERED", event.type);
-
   // Handle the event
   switch (event.type) {
     case "checkout.session.async_payment_succeeded":
