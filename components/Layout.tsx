@@ -92,7 +92,7 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
+              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
             >
               <li>
                 <a onClick={() => switchRole()}>
@@ -100,7 +100,9 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
                 </a>
               </li>
               <li>
-                <a>Balance</a>
+                <a href={`/user/balance/${session?.user.userId}`}>
+                  Account Balance
+                </a>
               </li>
             </ul>
           </div>
@@ -415,7 +417,7 @@ const Layout = ({ children }: LayoutProps) => {
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 shadow"
+                  className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
                 >
                   <li>
                     <a onClick={() => switchRole()}>
@@ -423,7 +425,9 @@ const Layout = ({ children }: LayoutProps) => {
                     </a>
                   </li>
                   <li>
-                    <a>Balance</a>
+                    <a href={`/user/balance/${session?.user.userId}`}>
+                      Account Balance
+                    </a>
                   </li>
                 </ul>
               </div>

@@ -147,6 +147,12 @@
           "items": {
             "$ref": "#/definitions/Transaction"
           }
+        },
+        "BankAccount": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/BankAccount"
+          }
         }
       }
     },
@@ -793,6 +799,29 @@
           "$ref": "#/definitions/User"
         }
       }
+    },
+    "BankAccount": {
+      "type": "object",
+      "properties": {
+        "bankAccountId": {
+          "type": "integer"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "routingNumber": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
     }
   },
   "type": "object",
@@ -838,6 +867,9 @@
     },
     "transaction": {
       "$ref": "#/definitions/Transaction"
+    },
+    "bankAccount": {
+      "$ref": "#/definitions/BankAccount"
     }
   }
 }
