@@ -30,14 +30,14 @@ export async function saveRaffles(
 }
 
 export async function saveRafflePrizeUser(
-  rafflePriceId: number,
+  rafflePrizeId: number,
   userId: number
 ) {
   return prisma.rafflePrizeUser.create({
     data: {
       prizeWon: {
         connect: {
-          rafflePrizeId: rafflePriceId,
+          rafflePrizeId: rafflePrizeId,
         },
       },
       user: {
@@ -60,5 +60,18 @@ export async function updateRafflePrizeUser(
     data: {
       ...rafflePrizeUser,
     },
+  });
+}
+
+export async function updateRaffle(raffleId: number, raffles: Raffles) {
+  return prisma.raffles.update({
+    where: {
+      raffleId: raffleId,
+    },
+    data: {
+      ...raffles,
+      raffleId: undefined,
+    },
+    include: { event: true },
   });
 }

@@ -863,6 +863,10 @@
         "isEnabled": {
           "type": "boolean",
           "default": false
+        },
+        "isActivated": {
+          "type": "boolean",
+          "default": false
         }
       }
     },
@@ -878,7 +882,7 @@
         "Raffles": {
           "$ref": "#/definitions/Raffles"
         },
-        "RafflePrizeUser": {
+        "rafflePrizeUser": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/RafflePrizeUser"

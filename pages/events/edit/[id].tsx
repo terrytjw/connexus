@@ -55,6 +55,8 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       },
     });
 
+  const formData = watch();
+  console.log("current form data->", formData);
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
     control,

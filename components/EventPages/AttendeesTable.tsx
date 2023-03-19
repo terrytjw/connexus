@@ -3,6 +3,8 @@ import { AttendeeListType } from "../../utils/types";
 import Button from "../Button";
 import { BiGift } from "react-icons/bi";
 import { CheckInStatus } from "../../pages/events/attendees/[id]";
+import { updateRafflePrizeUser } from "../../lib/prisma/raffle-prisma";
+import { updateRafflePrize } from "../../lib/api-helpers/user-api";
 
 type AttendeesTableProps = {
   data: AttendeeListType[]; // replace this with prisma attendee user type
@@ -73,6 +75,24 @@ const AttendeesTable = ({
                     Scan QR code
                   </Button>
                 )}
+
+                <Button
+                  className="border-0"
+                  variant="outlined"
+                  size="md"
+                  onClick={async () => {
+                    // const rafflePrizeUser = attendees.ticket.event.raffles[0].
+                    const res = await updateRafflePrize(1, {
+                      rafflePrizeUserId: 1,
+                      rafflePrizeId: 1,
+                      isClaimed: true,
+                      userId: 4,
+                    });
+                    console.log("res ->", res);
+                  }}
+                >
+                  Verify Prize
+                </Button>
               </th>
             </tr>
           ))}

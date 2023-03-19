@@ -24,17 +24,19 @@ export default async function handler(
 
   switch (req.method) {
     case "POST":
-      const { rafflePriceId, userId } = req.body;
-      await handlePOST(rafflePriceId, userId);
+      const { rafflePrizeId, userId } = req.body;
+
+      console.log("testtest ->", rafflePrizeId, userId);
+      await handlePOST(rafflePrizeId, userId);
       break;
     default:
       res.setHeader("Allow", ["POST"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(rafflePriceId: number, userId: number) {
+  async function handlePOST(rafflePrizeId: number, userId: number) {
     try {
-      const response = await saveRafflePrizeUser(rafflePriceId, userId);
+      const response = await saveRafflePrizeUser(rafflePrizeId, userId);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

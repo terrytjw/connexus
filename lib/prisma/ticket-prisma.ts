@@ -13,6 +13,25 @@ export async function filterTickets(userId: number | undefined) {
         },
       },
     },
+    include: {
+      event: {
+        include: {
+          raffles: {
+            include: {
+              rafflePrizes: {
+                include: {
+                  rafflePrizeUser: {
+                    include: {
+                      user: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
   });
 }
 

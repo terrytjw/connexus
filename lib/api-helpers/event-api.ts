@@ -5,7 +5,7 @@ import {
   USER_TICKET_ENDPOINT,
   smartContract,
 } from "./../constant";
-import { Collection, Event, User } from "@prisma/client";
+import { Collection, Event, Raffles, User } from "@prisma/client";
 import { API_URL, COLLECTION_ENDPOINT, USER_ENDPOINT } from "../constant";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -135,4 +135,15 @@ export function exportPDF(eventId: number) {
 export function exportCSV(eventId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/attendee/csv`;
   return url;
+}
+
+export async function updateRaffle(raffleId: number, raffles: Raffles) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/raffle`;
+  const response = (
+    await axios.post(url, {
+      raffleId,
+      raffles,
+    })
+  ).data;
+  return response;
 }

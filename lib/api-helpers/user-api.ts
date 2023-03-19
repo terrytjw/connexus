@@ -43,11 +43,11 @@ export async function upsertBankAccount(
   return response;
 }
 
-export async function insertRafflePrize(rafflePriceId: number, userId: number) {
+export async function insertRafflePrize(rafflePrizeId: number, userId: number) {
   const url = `${API_URL}/${RAFFLE_PRIZE_USER_ENDPOINT}`;
   const response = (
     await axios.post(url, {
-      rafflePriceId,
+      rafflePrizeId,
       userId,
     })
   ).data;

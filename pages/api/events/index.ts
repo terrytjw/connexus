@@ -178,6 +178,7 @@ export default async function handler(
         promotion,
         ...eventInfo
       } = eventWithTickets;
+
       const updatedTickets = tickets.map((ticket: TicketWithUser) => {
         const { ticketId, eventId, users, ...ticketInfo } = ticket;
         return ticketInfo;
@@ -246,11 +247,14 @@ export default async function handler(
       //   ticket;
       // }, updatedTickets);
 
+      console.log("TESTEST", eventImageUrl);
       for (let i = 0; i < updatedTickets.length; i++) {
+        const image = eventImageUrl.length > 0 ? eventImageUrl : eventPic;
+
         const stripePriceId = await createProduct(
           updatedTickets[i].name,
           updatedTickets[i].description ?? "",
-          eventImageUrl,
+          image as string,
           true,
           updatedTickets[i].price
         );
@@ -270,9 +274,9 @@ export default async function handler(
         updatedPromo as Promotion[]
       );
 
-      // raffles.forEach(async (raffle) => {
-      //   await saveRaffles(response.eventId, raffle.rafflePrizes);
-      // });
+      raffles.forEach(async (raffle) => {
+        await saveRaffles(response.eventId, raffle.rafflePrizes);
+      });
 
       res.status(200).json(response);
       // now create the contract

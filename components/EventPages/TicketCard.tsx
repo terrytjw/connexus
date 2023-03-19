@@ -4,9 +4,10 @@ import { formatDate } from "../../utils/date-util";
 import Button from "../Button";
 import { useSession } from "next-auth/react";
 import useInterval from "../../utils/useInterval";
+import { TicketWithEvent } from "../../utils/types";
 
 type TicketCardProps = {
-  ticket: Ticket;
+  ticket: TicketWithEvent;
   isOwnedTicket?: boolean; // conditionally render elements based on whether this is a generic or owned ticket
   setIsModalOpen?: (value: boolean) => void;
   setQrValue?: (value: string) => void;
@@ -50,6 +51,10 @@ const TicketCard = ({
 
   const isPaused = (): boolean => {
     return ticket.ticketType === TicketType.PAUSED;
+  };
+
+  const isRaffleActivated = (): boolean => {
+    return ticket.event.raffles[0].isActivated;
   };
 
   return (
@@ -116,7 +121,7 @@ const TicketCard = ({
 
           {/* Right column */}
           <div className="flex flex-col justify-end gap-4">
-            {isOwnedTicket && (
+            {isOwnedTicket && isRaffleActivated() && (
               <Button
                 variant="outlined"
                 size="md"

@@ -171,8 +171,6 @@ export default async function handler(
         ...event,
       };
 
-      console.log(promotion);
-
       promotion.forEach(async (promo: Promotion) => {
         const { eventId, ...promoInfo } = promo;
         updatePromotion(promo.promotionId, promoInfo);

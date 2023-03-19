@@ -316,6 +316,7 @@ model Raffles {
   eventId      Int
   rafflePrizes RafflePrize[]
   isEnabled    Boolean       @default(false)
+  isActivated  Boolean       @default(false)
 }
 
 model RafflePrize {
@@ -323,7 +324,7 @@ model RafflePrize {
   name            String
   Raffles         Raffles           @relation(fields: [rafflesId], references: [raffleId])
   rafflesId       Int
-  RafflePrizeUser RafflePrizeUser[]
+  rafflePrizeUser RafflePrizeUser[]
 }
 
 model RafflePrizeUser {
@@ -333,4 +334,6 @@ model RafflePrizeUser {
   isClaimed         Boolean     @default(false)
   user              User        @relation(fields: [userId], references: [userId])
   userId            Int
+
+  @@unique([userId, rafflePrizeId])
 }

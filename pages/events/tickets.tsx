@@ -17,9 +17,12 @@ import { getSession } from "next-auth/react";
 import { getEventInfo } from "../../lib/api-helpers/event-api";
 import { truncateString } from "../../utils/text-truncate";
 import { toast, Toaster } from "react-hot-toast";
+import { TicketWithEvent } from "../../utils/types";
+import { saveRafflePrizeUser } from "../../lib/prisma/raffle-prisma";
+import { insertRafflePrize } from "../../lib/api-helpers/user-api";
 
 type TicketsPageProps = {
-  tickets: (Ticket & Partial<Event>)[];
+  tickets: TicketWithEvent[];
 };
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
@@ -47,6 +50,17 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Button
+            className="border-0"
+            variant="outlined"
+            size="md"
+            onClick={async () => {
+              const res = await insertRafflePrize(1, 4);
+              console.log("res ->", res);
+            }}
+          >
+            Win Prize
+          </Button>
           {/* Header */}
           <nav className="flex items-center gap-6">
             <Link href="/events">
@@ -55,11 +69,11 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             <h2 className="text-2xl font-bold sm:text-4xl">My Tickets</h2>
           </nav>
           <section>
-            {tickets.map((ticket: Ticket & Partial<Event>) => (
+            {tickets.map((ticket: TicketWithEvent) => (
               <div key={ticket.ticketId} className="mt-10">
                 <Link href={`/events/${ticket.eventId}`}>
                   <h3 className="mb-4 text-xl font-semibold text-gray-500">
-                    {ticket.eventName}
+                    {ticket.event.eventName}
                   </h3>
                 </Link>
                 <TicketCard
@@ -84,7 +98,8 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 {!checkedIn ? "QR Code" : "Digital Badge"} for
               </h2>
               <p className="text-xl">
-                {truncateString(tickets[0].eventName, 40)}
+                {/* {truncateString(tickets[0].eventName, 40)} */}
+                'event name'
               </p>
             </div>
             {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
@@ -156,17 +171,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   // build a ticket type with event name in it
   const ownedTickets = await getTicketsOwned(userId);
 
-  // fetch events using eventIds
-  const ownedTicketsWithEventName: Event[] = await Promise.all(
-    ownedTickets.map(async (ticket: Ticket) => {
-      const event = await getEventInfo(ticket.eventId);
-      return { ...ticket, eventName: event.eventName };
-    })
-  );
-
   return {
     props: {
-      tickets: ownedTicketsWithEventName,
+      tickets: ownedTickets,
     },
   };
 };

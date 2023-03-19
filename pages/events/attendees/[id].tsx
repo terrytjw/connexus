@@ -12,6 +12,7 @@ import {
   checkIn,
   filterAttendeeList,
   exportPDF,
+  updateRaffle,
 } from "../../../lib/api-helpers/event-api";
 import useSWR from "swr";
 import { useRouter } from "next/router";
@@ -21,6 +22,7 @@ import { toast, Toaster } from "react-hot-toast";
 import { AttendeeListType } from "../../../utils/types";
 import { BiGift } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
+import { updateRafflePrize } from "../../../lib/api-helpers/user-api";
 
 export enum CheckInStatus {
   INITIAL,
@@ -47,6 +49,8 @@ const AttendeesPage = () => {
     isLoading,
     mutate: mutate,
   } = useSWR(eventId, async () => await viewAttendeeList(Number(eventId)));
+
+  console.log("fetchAttendees ->", fetchedAttendees);
 
   const searchAndFilterAttendees = async () => {
     const res = await filterAttendeeList(Number(eventId), 0, searchString);
@@ -147,8 +151,16 @@ const AttendeesPage = () => {
     }
   };
 
-  const handleActivateRaffle = () => {
-    if (true) {
+  const handleActivateRaffle = async () => {
+    const raffles = fetchedAttendees[0].ticket.event.raffles; // raffle object from db
+    // event has a raffle and raffle is enabled
+    if (raffles.length !== 0 && raffles[0].isEnabled) {
+      const updatedRaffle = { ...raffles[0], isActivated: true };
+      console.log("posting raffle object -> ", updatedRaffle);
+      const res = await updateRaffle(raffles[0].raffleId, updatedRaffle);
+
+      // TODO: MUTATE attendees to change active raffle button state
+      console.log("res ->", res);
       toast.success("Activated Raffle!");
     } else {
       toast.error("Failed to activate Raffle");
@@ -162,6 +174,12 @@ const AttendeesPage = () => {
       toast.error("Failed to verify prize claim");
     }
     setIsPrizeModalOpen(false);
+  };
+
+  const isRaffleActivated = () => {
+    if (attendees.length !== 0) {
+      return attendees[0].ticket.event.raffles[0].isActivated;
+    }
   };
 
   return (
@@ -200,8 +218,11 @@ const AttendeesPage = () => {
                 size="md"
                 className="max-w-xs"
                 onClick={handleActivateRaffle}
+                disabled={isRaffleActivated()}
               >
-                Activate Digital Raffle
+                {!isRaffleActivated()
+                  ? "Activate Digital Raffle"
+                  : "Raffle Activated"}
               </Button>
             </div>
             <div className="flex gap-4">
