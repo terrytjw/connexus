@@ -254,3 +254,15 @@ export async function retrieveTrendingEvents() {
     include: { userLikes: true, address: true },
   });
 }
+
+export async function getEventsForAnalytics() {
+  return prisma.event.findMany({
+    include: {
+      tickets: true,
+      analyticsTimestamps: true,
+      _count: { 
+        select: { userLikes: true }
+      }
+    }
+  });
+}

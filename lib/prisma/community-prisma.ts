@@ -167,3 +167,21 @@ export async function leaveCommunity(communityId: number, userId: number) {
     },
   });
 }
+
+export async function getCommunitiesForAnalytics() {
+  return await prisma.community.findMany({
+    include: {
+      _count: {
+        select: { members: true }
+      },
+      channels: {
+        include: {
+          _count: {
+            select: { members: true }
+          }
+        }
+      },
+      analyticsTimestamps: true
+    }
+  });
+}

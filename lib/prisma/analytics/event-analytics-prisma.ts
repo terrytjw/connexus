@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getEventsForAnalytics } from "../event-prisma";
 
 const prisma = new PrismaClient();
 
@@ -57,4 +58,34 @@ export async function getEventAnalyticsByEvent(eventId: number, lowerBound: Date
       date: 'asc'
     },
   })
+}
+
+export async function generateEventAnalyticsTimestamps() {
+  const events = await getEventsForAnalytics();
+  const timestamps = [];
+
+  for (let event of events) {
+    const prevAnalyticsTimestamp = event.analyticsTimestamps.at(-1);
+    let ticketsSold =  0 - prevAnalyticsTimestamp!.ticketsSold;
+    let revenue = 0
+
+    for (let ticket of event.tickets) {
+      ticketsSold += ticket.currentTicketSupply
+      revenue += ticket.currentTicketSupply * ticket.price // we shall pretend promotions do not exist xd
+    }
+    
+    let timestamp = await prisma.eventAnalyticsTimestamp.create({
+      data: {
+        ticketsSold: ticketsSold,
+        revenue: revenue,
+        clicks: event.clicks - prevAnalyticsTimestamp!.clicks,
+        likes: event._count.userLikes,
+        event: {
+          connect: { eventId: event.eventId }
+        }
+      }
+    });
+    timestamps.push(timestamp);
+  }
+  return timestamps;
 }

@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { getChannelsForAnalytics } from "../channel-prisma";
 
 const prisma = new PrismaClient();
 
@@ -81,4 +82,30 @@ export async function getChannelAnalyticsByChannel(channelId: number, lowerBound
       date: 'asc'
     },
   })
+}
+
+export async function generateChannelAnalyticsTimestamps() {
+  const channels = await getChannelsForAnalytics();
+  const timestamps = [];
+
+  for (let channel of channels) {
+    const likes = channel.posts
+      .reduce((a, b) => a + b._count.likes, 0);
+    const comments = channel.posts 
+      .reduce((a, b) => a + b._count.comments, 0);      
+    const engagement = ((likes + comments) / channel._count.posts) / (channel._count.members);
+    
+    const timestamp = await prisma.channelAnalyticsTimestamp.create({
+      data: {
+        likes: likes,
+        comments: comments,
+        engagement: engagement,
+        channel: {
+          connect: { channelId: channel.channelId }
+        }
+      }
+    })
+    timestamps.push(timestamp)
+  }
+  return timestamps;
 }
