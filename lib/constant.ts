@@ -9,6 +9,7 @@ export const POST_ENDPOINT = "post";
 export const COMMENT_ENDPOINT = "comment";
 export const COMMUNITY_ENDPOINT = "community";
 export const QUESTION_ENDPOINT = "question";
+export const ANALYTICS_ENDPOINT = "analytics";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";

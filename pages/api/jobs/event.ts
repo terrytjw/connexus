@@ -43,7 +43,7 @@ export default async function handler(
           data: {
             ticketsSold: ticketsSold,
             revenue: revenue,
-            clicks: event.clicks,
+            clicks: event.clicks - prevAnalyticsTimestamp!.clicks,
             likes: event._count.userLikes,
             event: {
               connect: { eventId: event.eventId }

@@ -10,6 +10,7 @@ import {
   CollectionState,
   TicketType,
   Ticket,
+  CommunityAnalyticsTimestamp,
 } from "@prisma/client";
 import { saveUser } from "../lib/prisma/user-prisma";
 import { retrieveEventInfo } from "../lib/prisma/event-prisma";
@@ -17,22 +18,26 @@ import {
   TicketWithUser,
   saveUserTicket,
 } from "../lib/prisma/user-ticket-prisma";
+import { todayMinus } from "../utils/date-util";
+import { getRandomInt } from "../utils/math-util";
 
 const prisma = new PrismaClient();
 
 async function generateCommunity() {
-  let members = 5;
-  let premiumMembers = 1;
-  let clicks = 10;
 
-  const analyticsTimestamps = [];
-  for (let i = 6; i >= 0; i--) {
-    analyticsTimestamps.push({
-      members: members++,
-      premiumMembers: premiumMembers++,
-      clicks: clicks++,
-      date: todayMinus(i)
-    })
+  const analyticsTimestamps: any[][] = [[],[],[]];
+  for (let arr of analyticsTimestamps) {
+    let members = 10;
+    let premiumMembers = 5;
+    let clicks = 20;
+    for (let i = 6; i >= 0; i--) {
+      arr.push({
+        members: getRandomInt(members, members += 10),
+        premiumMembers: getRandomInt(premiumMembers, premiumMembers += 5),
+        clicks: getRandomInt(0, clicks),
+        date: todayMinus(i),
+      })
+    }
   }
 
   const communities = [
@@ -56,7 +61,7 @@ async function generateCommunity() {
         },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps
+        create: analyticsTimestamps[0]
       }
     },
     {
@@ -73,6 +78,9 @@ async function generateCommunity() {
           userId: 2,
         },
       },
+      analyticsTimestamps: {
+        create: analyticsTimestamps[1]
+      }
     },
     {
       name: "Travley",
@@ -91,6 +99,9 @@ async function generateCommunity() {
       members: {
         connect: [{ userId: 1 }, { userId: 2 }],
       },
+      analyticsTimestamps: {
+        create: analyticsTimestamps[2]
+      }
     },
   ];
 
@@ -102,6 +113,23 @@ async function generateCommunity() {
 }
 
 async function generateChannel() {
+  
+  const analyticsTimestamps: any[][] = [[],[],[]];
+  for (let arr of analyticsTimestamps) {
+    let likes = 20;
+    let comments = 2;
+
+    for (let i = 6; i >= 0; i--) {
+      likes = getRandomInt(likes, likes += 10);
+      comments = getRandomInt(comments, comments += 5),
+      arr.push({
+        likes: likes,
+        comments: comments,
+        engagement: (likes + comments) / 500,
+        date: todayMinus(i)
+      })
+    }
+  }
   const channels = [
     {
       name: "Home",
@@ -116,6 +144,9 @@ async function generateChannel() {
         },
       },
       channelType: ChannelType.REGULAR,
+      analyticsTimestamps: {
+        create: analyticsTimestamps[0]
+      }
     },
     {
       name: "Home",
@@ -125,6 +156,9 @@ async function generateChannel() {
         },
       },
       channelType: ChannelType.REGULAR,
+      analyticsTimestamps: {
+        create: analyticsTimestamps[1]
+      }
     },
     {
       name: "Home",
@@ -137,6 +171,9 @@ async function generateChannel() {
       members: {
         connect: [{ userId: 1 }, { userId: 2 }],
       },
+      analyticsTimestamps: {
+        create: analyticsTimestamps[2]
+      }
     },
   ];
 
@@ -148,19 +185,6 @@ async function generateChannel() {
 }
 
 async function generatePost() {
-  let likes = 10;
-  let comments = 1;
-  let engagement = 10
-
-  const analyticsTimestamps = [];
-  for (let i = 6; i >= 0; i--) {
-    analyticsTimestamps.push({
-      likes: likes++,
-      comments: comments++,
-      engagement: engagement++ / 100,
-      date: todayMinus(i)
-    })
-  }
 
   const posts = [
     {
@@ -180,9 +204,6 @@ async function generatePost() {
         },
       },
       date: new Date("2023-02-22"),
-      analyticsTimestamps: {
-        create: analyticsTimestamps
-      }
     },
     {
       content: "I just drew this, what do yall think?",
@@ -378,18 +399,19 @@ async function generateUser() {
 }
 
 async function generateCollection() {
-  let merchSold = 20;
-  let revenue = 100
-  let clicks = 10;
 
-  const analyticsTimestamps = [];
-  for (let i = 6; i >= 0; i--) {
-    analyticsTimestamps.push({
-      merchSold: merchSold++,
-      revenue: revenue++,
-      clicks: clicks++,
-      date: todayMinus(i)
-    })
+  const analyticsTimestamps: any[][] = [[],[],[]];
+  for (let arr of analyticsTimestamps) {
+    for (let i = 6; i >= 0; i--) {
+      const merchSold = getRandomInt(0, 20)
+      const revenue = merchSold * 3
+      arr.push({
+        merchSold: merchSold,
+        revenue: revenue,
+        clicks: getRandomInt(0, 10),
+        date: todayMinus(i)
+      })
+    }
   }
   const collections = [
     {
@@ -404,6 +426,7 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/sovereign-collection-media.png",
           totalMerchSupply: 100,
+          currMerchSupply: 31,
           price: 20.0,
           users: {
             connect: { userId: 4 },
@@ -417,7 +440,7 @@ async function generateCollection() {
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
       analyticsTimestamps: {
-        create: analyticsTimestamps
+        create: analyticsTimestamps[0]
       }
     },
     {
@@ -432,6 +455,7 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-collection-media.jpg",
           totalMerchSupply: 100,
+          currMerchSupply: 54,
           price: 20.0,
           users: {
             connect: { userId: 4 },
@@ -444,7 +468,7 @@ async function generateCollection() {
         },
       },
       analyticsTimestamps: {
-        create: { merchSold: 0, revenue: 0, clicks: 0 }
+        create: analyticsTimestamps[1]
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
@@ -460,6 +484,7 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.jpg",
           totalMerchSupply: 100,
+          currMerchSupply: 12,
           price: 20.0,
           users: {
             connect: { userId: 4 },
@@ -472,7 +497,7 @@ async function generateCollection() {
         },
       },
       analyticsTimestamps: {
-        create: { merchSold: 0, revenue: 0, clicks: 0 }
+        create: analyticsTimestamps[2]
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
     },
@@ -485,20 +510,22 @@ async function generateCollection() {
   }
 }
 async function generateEvent() {
-  let ticketsSold = 50;
-  let revenue = 100;
-  let clicks = 20;
-  let likes = 5;
 
-  const analyticsTimestamps = [];
-  for (let i = 6; i >= 0; i--) {
-    analyticsTimestamps.push({
-      ticketsSold: ticketsSold++,
-      revenue: revenue++,
-      clicks: clicks++,
-      likes: likes++,
-      date: todayMinus(i)
-    })
+  const analyticsTimestamps: any[][] = [[],[],[]];
+  for (let arr of analyticsTimestamps) {
+    let likes = 10;
+    for (let i = 6; i >= 0; i--) {
+      const ticketsSold = getRandomInt(0, 20)
+      const revenue = ticketsSold * 5;
+      likes += 10;
+      arr.push({
+        ticketsSold: ticketsSold,
+        revenue: revenue,
+        clicks: getRandomInt(0, 10),
+        likes: getRandomInt(likes, likes += 10),
+        date: todayMinus(i)
+      })
+    }
   }
   const events = [
     {
@@ -506,7 +533,7 @@ async function generateEvent() {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps
+        create: analyticsTimestamps[0]
       },
       eventName: "Live Valorant Session with Josh",
       category: CategoryType.ENTERTAINMENT,
@@ -538,7 +565,7 @@ async function generateEvent() {
             endDate: new Date("2023-02-25"),
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 4 }, { userId: 5 }, { userId: 6 }] },
-            currentTicketSupply: 1,
+            currentTicketSupply: 20,
             ticketType: TicketType.ON_SALE,
           },
           {
@@ -548,6 +575,7 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VIP Pass",
+            currentTicketSupply: 5,
             ticketType: TicketType.ON_SALE,
           },
           {
@@ -557,6 +585,7 @@ async function generateEvent() {
             startDate: new Date("2023-02-22"),
             endDate: new Date("2023-02-25"),
             description: "This is a VVIP Pass",
+            currentTicketSupply: 3,
             ticketType: TicketType.ON_SALE,
           },
         ],
@@ -575,7 +604,7 @@ async function generateEvent() {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 }
+        create: analyticsTimestamps[1]
       },
       eventName: "Malanie Cosplaying with You",
       category: CategoryType.ENTERTAINMENT,
@@ -644,7 +673,7 @@ async function generateEvent() {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 }
+        create: analyticsTimestamps[2]
       },
       eventName:
         "Planning to travel soon? Learn more about Travely that will help solve your itinerary planning troubles and find the best recommendations.",
@@ -723,13 +752,6 @@ async function generateUserWithTicket() {
   const tickets =
     (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
   await saveUserTicket(tickets);
-}
-
-function todayMinus(days: number) {
-  const today = new Date();
-  const newDate = new Date();
-  newDate.setDate(today.getDate() - days);
-  return newDate;
 }
 
 async function main() {

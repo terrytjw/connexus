@@ -55,7 +55,6 @@ model Post {
   channelId Int
   likes     User[]    @relation(name: "likedPosts")
   comments  Comment[]
-  analyticsTimestamps PostAnalyticsTimestamp[]
 }
 
 model Community {
@@ -85,6 +84,7 @@ model Channel {
   collection   Collection? @relation(fields: [collectionId], references: [collectionId])
   collectionId Int?        @unique
   questions    Question[]
+  analyticsTimestamps ChannelAnalyticsTimestamp[]
 
   @@unique([communityId, name])
 }
@@ -293,14 +293,14 @@ model CommunityAnalyticsTimestamp {
   communityId Int
 }
 
-model PostAnalyticsTimestamp {
+model ChannelAnalyticsTimestamp {
   id Int @id @default(autoincrement())
   likes Int
   comments Int
   engagement Float
   date DateTime @default(now())
-  post Post @relation(fields: [postId], references: [postId])
-  postId Int
+  channel Channel @relation(fields: [channelId], references: [channelId])
+  channelId Int
 }
 
 model EventAnalyticsTimestamp {
@@ -323,6 +323,7 @@ model CollectionAnalyticsTimestamp {
   collection Collection @relation(fields: [collectionId], references: [collectionId])
   collectionId Int
 }
+
 model Question {
   questionId Int      @id @default(autoincrement())
   question   String

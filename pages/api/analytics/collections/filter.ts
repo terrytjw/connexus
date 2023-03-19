@@ -1,8 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, PostAnalyticsTimestamp } from "@prisma/client";
-import { getPostAnalyticsInRange } from "../../../../lib/prisma/analytics/post-analytics-prisma";
+import { PrismaClient, ChannelAnalyticsTimestamp } from "@prisma/client";
+import { ErrorResponse, handleError } from "../../../../lib/prisma/prisma-helpers";
+import { lastWeek } from "../../../../utils/date-util";
+import { filterCreatorCollectionAnalyticsByCollection } from "../../../../lib/prisma/analytics/collection-analytics-prisma";
 
 const prisma = new PrismaClient();
 
@@ -31,18 +32,19 @@ const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PostAnalyticsTimestamp[] | ErrorResponse | {}>
+  res: NextApiResponse<ChannelAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method, query } = req;
+  const collectionId = parseInt(query.collectionId as string);
 
   switch (method) {
     case "GET":
-      if (query) {
+      if (query.lowerBound && query.upperBound) {
         const lowerBound = new Date(query.lowerBound as string);
         const upperBound = new Date(query.upperBound as string);
-        await handleGET(lowerBound, upperBound);
+        await handleGET(collectionId, lowerBound, upperBound);
       } else {
-        await handleGET();
+        await handleGET(collectionId);
       }
       break;
     default:
@@ -51,22 +53,17 @@ export default async function handler(
   }
 
   async function handleGET(
-    lowerBound: Date = new Date(), 
-    upperBound: Date = lastWeek()
+    collectionId: number,
+    lowerBound: Date = lastWeek(), 
+    upperBound: Date = new Date()
   ) {
     try {
-      const response = await getPostAnalyticsInRange(lowerBound, upperBound);
+      const response = await filterCreatorCollectionAnalyticsByCollection(collectionId, lowerBound, upperBound);
       res.status(200).json(response);
     } catch (error) {
+      console.log(error);
       const errorResponse = handleError(error);
       res.status(400).json(errorResponse);
     }
-  }
-
-  function lastWeek() {
-    const today = new Date();
-    const lastWeek = new Date();
-    lastWeek.setDate(today.getDate() - 7);
-    return lastWeek;
   }
 }

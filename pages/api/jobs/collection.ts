@@ -37,7 +37,7 @@ export default async function handler(
           data: {
             merchSold: merchSold,
             revenue: revenue,
-            clicks: collection.clicks,
+            clicks: collection.clicks - prevAnalyticsTimestamp!.clicks,
             collection: {
               connect: {
                 collectionId: collection.collectionId

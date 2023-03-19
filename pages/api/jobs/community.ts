@@ -32,18 +32,20 @@ export default async function handler(
                 select: { members: true }
               }
             }
-          }
+          },
+          analyticsTimestamps: true
         }
       });
       const timestamps = [];
       for (let community of communities) {
-        let timestamp = await prisma.communityAnalyticsTimestamp.create({
+        const prevAnalyticsTimestamp = community.analyticsTimestamps.at(-1);
+        const timestamp = await prisma.communityAnalyticsTimestamp.create({
           data: {
             members: community._count.members,
             premiumMembers: community.channels
               .filter(channel => channel.channelType == ChannelType.PREMIUM)
               .reduce((a, b) => a + b._count.members, 0),
-            clicks: community.clicks,
+            clicks: community.clicks - prevAnalyticsTimestamp!.clicks,
             community: {
               connect: {
                 communityId: community.communityId

@@ -1,13 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
-import { PostAnalyticsTimestamp, PrismaClient,} from "@prisma/client";
+import { ChannelAnalyticsTimestamp, PrismaClient,} from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default async function handler(
   req: NextApiRequest,
-  res: NextApiResponse<PostAnalyticsTimestamp[] | ErrorResponse>
+  res: NextApiResponse<ChannelAnalyticsTimestamp[] | ErrorResponse>
 ) {
   const { method } = req;
 
@@ -22,29 +22,34 @@ export default async function handler(
 
   async function handlePOST() {
     try {
-      const posts = await prisma.post.findMany({
+      const channels = await prisma.channel.findMany({
         include: {
-          _count: {
-            select: { likes: true, comments: true }
-          },
-          channel: {
+          posts: {
             include: {
               _count: {
-                select: { members: true }
+                select: { likes: true, comments: true }
               }
             }
+          },
+          _count: {
+            select: { members: true }
           }
         }
       });
       const timestamps = [];
-      for (let post of posts) {
-        let timestamp = await prisma.postAnalyticsTimestamp.create({
+      for (let channel of channels) {
+        const likes = channel.posts
+          .reduce((a, b) => a + b._count.likes, 0);
+        const comments = channel.posts 
+          .reduce((a, b) => a + b._count.comments, 0);
+        const engagement = (likes + comments) / (channel._count.members);
+        const timestamp = await prisma.channelAnalyticsTimestamp.create({
           data: {
-            likes: post._count.likes,
-            comments: post._count.comments,
-            engagement: ( post._count.likes + post._count.comments) / (post.channel._count.members), // doesnt account for duplicate comments yet
-            post: {
-              connect: { postId: post.postId }
+            likes: likes,
+            comments: comments,
+            engagement: engagement,
+            channel: {
+              connect: { channelId: channel.channelId }
             }
           }
         })

@@ -2,24 +2,57 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getCollectionAnalyticsInRange(userId: number, lowerBound: Date, upperBound: Date) {
-  return prisma.collectionAnalyticsTimestamp.findMany({
+export async function groupCreatorCollectionAnalyticsByDate(userId: number, lowerBound: Date, upperBound: Date) {
+  return prisma.collectionAnalyticsTimestamp.groupBy({
+    by: ['date'],
     where: {
       date: {
         lte: upperBound,
         gte: lowerBound
       },
       collection: {
-        creatorId: userId
+        is: { creatorId: userId }
       }
     },
-    include: {
+    _sum: {
+      merchSold: true,
+      revenue: true,
+      clicks: true
+    },
+  })
+}
+
+export async function groupCreatorCollectionAnalyticsByCollection(userId: number, lowerBound: Date, upperBound: Date) {
+  return prisma.collectionAnalyticsTimestamp.groupBy({
+    by: ['collectionId'],
+    where: {
+      date: {
+        lte: upperBound,
+        gte: lowerBound
+      },
       collection: {
-        select: { collectionId: true, collectionName: true }
+        is: { creatorId: userId }
       }
+    },
+    _sum: {
+      merchSold: true,
+      revenue: true,
+      clicks: true
+    },
+  })
+}
+
+export async function filterCreatorCollectionAnalyticsByCollection(collectionId: number, lowerBound: Date, upperBound: Date) {
+  return prisma.collectionAnalyticsTimestamp.findMany({
+    where: {
+      date: {
+        lte: upperBound,
+        gte: lowerBound
+      },
+      collectionId: collectionId
     },
     orderBy: {
       date: 'asc'
-    }
+    },
   })
 }
