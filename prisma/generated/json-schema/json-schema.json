@@ -135,12 +135,6 @@
         "walletBalance": {
           "type": "number",
           "default": 0
-        },
-        "questions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Question"
-          }
         }
       }
     },
@@ -740,31 +734,6 @@
           }
         }
       }
-    },
-    "Question": {
-      "type": "object",
-      "properties": {
-        "questionId": {
-          "type": "integer"
-        },
-        "question": {
-          "type": "string"
-        },
-        "answer": {
-          "type": "string",
-          "default": ""
-        },
-        "date": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "user": {
-          "$ref": "#/definitions/User"
-        },
-        "channel": {
-          "$ref": "#/definitions/Channel"
-        }
-      }
     }
   },
   "type": "object",
@@ -804,9 +773,6 @@
     },
     "merchandise": {
       "$ref": "#/definitions/Merchandise"
-    },
-    "question": {
-      "$ref": "#/definitions/Question"
     }
   }
 }

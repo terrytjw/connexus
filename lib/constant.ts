@@ -8,9 +8,13 @@ export const USER_TICKET_ENDPOINT = "user-tickets";
 export const POST_ENDPOINT = "post";
 export const COMMENT_ENDPOINT = "comment";
 export const COMMUNITY_ENDPOINT = "community";
+export const EMAIL_ENDPOINT = "email";
+export const SMS_ENDPOINT = "sms";
 export const CHANNEL_ENDPOINT = "channel";
 export const QUESTION_ENDPOINT = "question";
 export const PROMOTION_ENDPOINT = "promotions";
+export const BANK_ACCOUNT_ENDPOINT = "bank-accounts";
+export const TRANSACTION_ENDPOINT = "transaction";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";
