@@ -35,7 +35,7 @@ export default async function handler(
   res: NextApiResponse<CommunityAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method, query } = req;
-  const userId = parseInt(query.userId as string);
+  const userId = parseInt(query.id as string);
 
   switch (method) {
     case "GET":

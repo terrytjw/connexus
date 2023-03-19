@@ -21,5 +21,10 @@ export function todayMinus(days: number) {
   const today = new Date();
   const newDate = new Date();
   newDate.setDate(today.getDate() - days);
-  return newDate;
+  return removeTime(newDate);
+}
+
+export function removeTime(date: Date) {
+  date.setHours(0, 0, 0, 0);
+  return date;
 }

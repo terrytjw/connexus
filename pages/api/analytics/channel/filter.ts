@@ -35,7 +35,7 @@ export default async function handler(
   res: NextApiResponse<ChannelAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method, query } = req;
-  const channelId = parseInt(query.channelId as string);
+  const channelId = parseInt(query.id as string);
 
   switch (method) {
     case "GET":

@@ -1,24 +1,23 @@
 import { Comment } from "@prisma/client";
 import { API_URL, ANALYTICS_ENDPOINT } from "../constant";
 import axios from "axios";
-import { lastWeek } from "../../utils/date-util";
+import { lastWeek, removeTime } from "../../utils/date-util";
 
 const baseUrl = `${API_URL}/${ANALYTICS_ENDPOINT}`;
+
+enum AnalyticsEntity {
+  CHANNEL,
+  COMMUNITY,
+  EVENT,
+  COLLECTION
+}
 
 export async function getChannelAnalyticsByCreatorAPI(
   userId: number,
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/channel'
-  const response = (await axios.get(url, {
-    params: {
-      userId: userId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(userId, AnalyticsEntity.CHANNEL, lowerBound, upperBound);
 }
 
 export async function getChannelAnalyticsByChannelAPI(
@@ -26,15 +25,7 @@ export async function getChannelAnalyticsByChannelAPI(
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/channel/filter'
-  const response = (await axios.get(url, {
-    params: {
-      channelId: channelId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(channelId, AnalyticsEntity.CHANNEL, lowerBound, upperBound, true);
 }
 
 export async function getCommunityAnalyticsByCreatorAPI(
@@ -42,15 +33,7 @@ export async function getCommunityAnalyticsByCreatorAPI(
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/community'
-  const response = (await axios.get(url, {
-    params: {
-      userId: userId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(userId, AnalyticsEntity.COMMUNITY, lowerBound, upperBound);
 }
 
 export async function getCollectionAnalyticsByCreatorAPI(
@@ -58,31 +41,15 @@ export async function getCollectionAnalyticsByCreatorAPI(
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/collections'
-  const response = (await axios.get(url, {
-    params: {
-      userId: userId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(userId, AnalyticsEntity.COMMUNITY, lowerBound, upperBound);
 }
 
 export async function getCollectionAnalyticsByCollectionAPI(
-  channelId: number,
+  collectionId: number,
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/collection/filter'
-  const response = (await axios.get(url, {
-    params: {
-      channelId: channelId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(collectionId, AnalyticsEntity.COMMUNITY, lowerBound, upperBound, true);
 }
 
 export async function getEventAnalyticsByCreatorAPI(
@@ -90,26 +57,34 @@ export async function getEventAnalyticsByCreatorAPI(
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/channel'
-  const response = (await axios.get(url, {
-    params: {
-      userId: userId,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return await getAnalytics(userId, AnalyticsEntity.EVENT, lowerBound, upperBound)
 }
 
 export async function getEventAnalyticsByEventAPI(
-  channelId: number,
+  eventId: number,
   lowerBound: Date = lastWeek(),
   upperBound: Date = new Date()
 ) {
-  const url = baseUrl + '/event/filter'
+  return await getAnalytics(eventId, AnalyticsEntity.EVENT, lowerBound, upperBound, true)
+}
+
+async function getAnalytics(
+  id: number, // either userId of the owner of the entities or id of entity itself
+  entity: AnalyticsEntity,
+  lowerBound: Date = lastWeek(),
+  upperBound: Date = new Date(),
+  filter: boolean = false
+) {
+  lowerBound = removeTime(lowerBound);
+  upperBound = removeTime(upperBound);
+  let url = baseUrl + `/${AnalyticsEntity[entity].toLowerCase()}`
+  if (filter) {
+    url += "/filter"
+  }
+
   const response = (await axios.get(url, {
     params: {
-      channelId: channelId,
+      id: id,
       lowerBound: lowerBound,
       upperBound: upperBound
     }
