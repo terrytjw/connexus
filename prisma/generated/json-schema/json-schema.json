@@ -157,6 +157,12 @@
               "type": "null"
             }
           ]
+        },
+        "rafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
         }
       }
     },
@@ -495,6 +501,12 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "raffles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Raffles"
+          }
         }
       }
     },
@@ -807,7 +819,8 @@
           "default": "PENDING",
           "enum": [
             "PENDING",
-            "COMPLETED"
+            "COMPLETED",
+            "REJECTED"
           ]
         }
       }
@@ -829,6 +842,65 @@
         },
         "routingNumber": {
           "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Raffles": {
+      "type": "object",
+      "properties": {
+        "raffleId": {
+          "type": "integer"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "rafflePrizes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrize"
+          }
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "RafflePrize": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "Raffles": {
+          "$ref": "#/definitions/Raffles"
+        },
+        "RafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
+        }
+      }
+    },
+    "RafflePrizeUser": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeUserId": {
+          "type": "integer"
+        },
+        "prizeWon": {
+          "$ref": "#/definitions/RafflePrize"
+        },
+        "isClaimed": {
+          "type": "boolean",
+          "default": false
         },
         "user": {
           "$ref": "#/definitions/User"
@@ -882,6 +954,15 @@
     },
     "bankAccount": {
       "$ref": "#/definitions/BankAccount"
+    },
+    "raffles": {
+      "$ref": "#/definitions/Raffles"
+    },
+    "rafflePrize": {
+      "$ref": "#/definitions/RafflePrize"
+    },
+    "rafflePrizeUser": {
+      "$ref": "#/definitions/RafflePrizeUser"
     }
   }
 }

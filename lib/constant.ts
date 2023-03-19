@@ -14,6 +14,7 @@ export const CHANNEL_ENDPOINT = "channel";
 export const QUESTION_ENDPOINT = "question";
 export const BANK_ACCOUNT_ENDPOINT = "bank-accounts";
 export const TRANSACTION_ENDPOINT = "transaction";
+export const RAFFLE_PRIZE_USER_ENDPOINT = "raffle-prize-user";
 
 export const USER_PROFILE_BUCKET = "user-profile";
 export const EVENT_PROFILE_BUCKET = "event-profile";

@@ -495,6 +495,20 @@ async function generateEvent() {
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
       scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
+      raffles: {
+        create: [
+          {
+            isEnabled: false,
+            rafflePrizes: {
+              create: [
+                {
+                  name: "Raffle Prize 1",
+                },
+              ],
+            },
+          },
+        ],
+      },
     },
     {
       creator: {

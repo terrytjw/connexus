@@ -1,8 +1,9 @@
-import { BankAccount, Collection, User } from "@prisma/client";
+import { BankAccount, Collection, RafflePrizeUser, User } from "@prisma/client";
 import {
   API_URL,
   BANK_ACCOUNT_ENDPOINT,
   COLLECTION_ENDPOINT,
+  RAFFLE_PRIZE_USER_ENDPOINT,
   USER_ENDPOINT,
 } from "../constant";
 import axios from "axios";
@@ -39,5 +40,25 @@ export async function upsertBankAccount(
       userId: userId,
     })
   ).data;
+  return response;
+}
+
+export async function insertRafflePrize(rafflePriceId: number, userId: number) {
+  const url = `${API_URL}/${RAFFLE_PRIZE_USER_ENDPOINT}`;
+  const response = (
+    await axios.post(url, {
+      rafflePriceId,
+      userId,
+    })
+  ).data;
+  return response;
+}
+
+export async function updateRafflePrize(
+  rafflePriceUserId: number,
+  rafflePrizeUser: RafflePrizeUser
+) {
+  const url = `${API_URL}/${RAFFLE_PRIZE_USER_ENDPOINT}/${rafflePriceUserId}`;
+  const response = (await axios.post(url, rafflePrizeUser)).data;
   return response;
 }

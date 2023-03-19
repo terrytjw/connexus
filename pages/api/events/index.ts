@@ -1,3 +1,4 @@
+import { TicketWithUser } from "./../../../lib/prisma/user-ticket-prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import {
@@ -8,6 +9,7 @@ import {
   Ticket,
   Address,
   PublishType,
+  Raffles,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -21,9 +23,23 @@ import {
   filterEvent,
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+import { saveRaffles } from "../../../lib/prisma/raffle-prisma";
 
 export type EventCreation = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true };
+  include: {
+    tickets: {
+      include: { users: true };
+    };
+    address: true;
+    userLikes: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+  };
+}>;
+
+type RaffleWithPrizes = Prisma.RafflesGetPayload<{
+  include: { rafflePrizes: true };
 }>;
 
 /**
@@ -149,12 +165,20 @@ export default async function handler(
 
   async function handlePOST(eventWithTickets: EventCreation) {
     try {
-      const { tickets, eventPic, bannerPic, creatorId, ...eventInfo } =
-        eventWithTickets;
-      const updatedTickets = tickets.map((ticket: Ticket) => {
-        const { ticketId, eventId, ...ticketInfo } = ticket;
+      const {
+        tickets,
+        eventPic,
+        bannerPic,
+        creatorId,
+        userLikes,
+        raffles,
+        ...eventInfo
+      } = eventWithTickets;
+      const updatedTickets = tickets.map((ticket: TicketWithUser) => {
+        const { ticketId, eventId, users, ...ticketInfo } = ticket;
         return ticketInfo;
       });
+
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
@@ -192,8 +216,6 @@ export default async function handler(
           );
       }
 
-      console.log(eventBannerPictureUrl, eventImageUrl);
-
       const updatedEvent = {
         ...eventInfo,
         eventPic: eventImageUrl,
@@ -205,6 +227,10 @@ export default async function handler(
         updatedTickets as Ticket[],
         creatorId
       );
+
+      raffles.forEach(async (raffle) => {
+        await saveRaffles(response.eventId, raffle.rafflePrizes);
+      });
 
       res.status(200).json(response);
       // now create the contract
