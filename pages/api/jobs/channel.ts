@@ -32,7 +32,7 @@ export default async function handler(
             }
           },
           _count: {
-            select: { members: true }
+            select: { members: true, posts: true }
           }
         }
       });
@@ -42,7 +42,7 @@ export default async function handler(
           .reduce((a, b) => a + b._count.likes, 0);
         const comments = channel.posts 
           .reduce((a, b) => a + b._count.comments, 0);
-        const engagement = (likes + comments) / (channel._count.members);
+        const engagement = ((likes + comments) / channel._count.posts) / (channel._count.members);
         const timestamp = await prisma.channelAnalyticsTimestamp.create({
           data: {
             likes: likes,
