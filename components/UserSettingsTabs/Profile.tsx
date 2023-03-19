@@ -199,7 +199,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
 
           <div className="mt-8">
             <Button type="submit" variant="solid" size="md">
-              <span>Save settings</span>
+              <span>Save Profile</span>
             </Button>
           </div>
         </div>

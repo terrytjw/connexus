@@ -47,7 +47,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 {/* mobile view profile name*/}
                 <div className="mt-6 min-w-0 flex-1 sm:hidden">
                   <h1 className="truncate text-2xl font-bold text-gray-900">
-                    {userData.displayName} - mobile
+                    {userData.displayName}
                   </h1>
                   <p className="mt-1 text-gray-500 sm:hidden">
                     {/* I'm fly, drippin' with dem peaches high ·{" "} */}
@@ -61,7 +61,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             {/* desktop view profile name*/}
             <div className="mt-6 hidden min-w-0 flex-1 sm:block">
               <h1 className="truncate text-2xl font-bold text-gray-900">
-                {userData.displayName} - desktop
+                {userData.displayName}
               </h1>
               <p className="mt-1 text-gray-500">
                 {/* I'm fly, drippin' with dem peaches high ·{" "} */}
@@ -78,8 +78,8 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 variant="solid"
                 size="md"
               >
-                <FaPen aria-hidden="true" />
-                <span className="hidden sm:inline-block">Edit Profile</span>
+                <FiSettings aria-hidden="true" />
+                <span className="hidden sm:inline-block">Settings</span>
               </Button>
               <Button
                 variant="solid"
