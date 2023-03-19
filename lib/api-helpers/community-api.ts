@@ -94,3 +94,21 @@ export async function leaveCommunityAPI(communityId: number, userId: number) {
 
 	return response;
 }
+
+export async function registerCommunityClick(communityId: number) {
+  const communityUrl = baseUrl + `/${communityId}`
+
+  const retrievedCommunityResponse = (await axios.get(communityUrl)).data;
+
+  const updatedCommunity: Partial<Event> = {
+    ...retrievedCommunityResponse,
+    clicks: retrievedCommunityResponse.clicks + 1
+  };
+
+  const updatedCommunityResponse = (
+    await axios.post(communityUrl, updatedCommunity)
+  ).data;
+
+  console.log("Start community response: ", updatedCommunityResponse);
+  return updatedCommunityResponse;
+}
