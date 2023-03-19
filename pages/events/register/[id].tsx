@@ -79,7 +79,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   const formData = watch();
   const [isPromoApplied, setIsPromoApplied] = useState<boolean>(false);
   const [isRegisterSuccessModalOpen, setIsRegisterSuccessModalOpen] =
-    useState(false);
+    useState(true);
   const [isLoading, setIsLoading] = useState(false);
 
   const [steps, setSteps] = useState<Step[]>([
@@ -309,7 +309,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           phoneNumber,
           tickets: user_tickets,
         };
-        console.log("updating user in prisma", updated_user);
+        console.log("updating user in prisma, form data ->", updated_user);
         let user_update = await axios.post(
           "http://localhost:3000/api/users/" + userId.toString(),
           updated_user
@@ -321,6 +321,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     }
     ticketURIs.push(link);
 
+    // construct update event
     const updated_event = {
       eventName: eventInfo.eventName,
       addressId: eventInfo.addressId,
@@ -336,9 +337,10 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       publishStartDate: eventInfo.publishStartDate,
       ticketURIs: ticketURIs,
       publishType: eventInfo.publishType,
+      promotion: eventInfo.promotion,
     };
 
-    console.log(updated_event);
+    console.log("posting updated event ->", updated_event);
     let updated_response = await axios.post(
       "http://localhost:3000/api/events/" + eventId.toString(),
       updated_event
@@ -372,8 +374,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <div className="flex flex-col gap-6 py-4">
               <h3 className="text-xl font-semibold">Purchase Completed!</h3>
               <h3 className="text-md font-normal text-gray-500">
-                You have successfully purchased Name of NFT from Prem CC2! See
-                the tabs in the community page you joined.
+                You have successfully purchased{" "}
+                {formData.selectedTicket.ticketName} for {event.eventName}!
               </h3>
 
               <Link href="/events/tickets">

@@ -510,7 +510,8 @@ const EventFormPage = ({
             variant="solid"
             size="md"
             className="w-full max-w-3xl"
-            onClick={async () => {
+            onClick={async (e) => {
+              e.preventDefault();
               const isValidated = await trigger([
                 "eventName",
                 "description",
