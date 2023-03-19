@@ -96,12 +96,14 @@ export async function generateChannelAnalyticsTimestamps() {
       channel.posts.length > 0
         ? ((likes + comments) / channel._count.posts) / (channel._count.members)
         : 0     
-
+    const date = new Date();
+    date.setHours(0, 0, 0, 0) // get rid of time so timestamps on the same day can all be grouped
     const timestamp = await prisma.channelAnalyticsTimestamp.create({
       data: {
         likes: likes,
         comments: comments,
         engagement: engagement,
+        date: date,
         channel: {
           connect: { channelId: channel.channelId }
         }
