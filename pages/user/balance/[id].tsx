@@ -1,13 +1,19 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import React from "react";
+import React, { useState } from "react";
 import Button from "../../../components/Button";
-import { getUserInfo } from "../../../lib/api-helpers/user-api";
+import {
+  getUserInfo,
+  upsertBankAccount,
+  withdraw,
+} from "../../../lib/api-helpers/user-api";
 import { UserWithAllInfo } from "../../api/users/[userId]";
 import { Controller, useForm } from "react-hook-form";
 import Input from "../../../components/Input";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
+import { BankAccount } from "@prisma/client";
+import toast, { Toaster } from "react-hot-toast";
 
 type WithdrawalTableProps = {
   data: any[]; // TODO: change type any to data type
@@ -33,15 +39,15 @@ const WithdrawalTable = ({ data, columns }: WithdrawalTableProps) => {
           {data.map((data, index) => (
             <tr className="text-center" key={index}>
               <td>
-                <div className="">{data.id}</div>
+                <div className="">{data.transactionId}</div>
               </td>
-              <td>{data.date}</td>
+              <td>{data.timestamp.split("T")[0]}</td>
               <td>
                 <span className="">{data.amount}</span>
               </td>
               <td>
-                <span className="badge  border-yellow-500 bg-yellow-500 font-semibold text-white">
-                  {data.status}
+                <span className="badge border-yellow-500 bg-yellow-500 font-semibold text-white">
+                  {data.transactionStatus}
                 </span>
                 {/* <span className="badge border-green-500 bg-green-500 font-semibold text-white">
                   {data.status}
@@ -66,24 +72,34 @@ const BalancePage = ({ userData }: BalancePageProps) => {
     bankRoutingNum: string;
   };
   const { handleSubmit, control } = useForm<BankDetailsForm>({
-    // defaultValues: {
-    //   bankName: userData.bankName ?? "",
-    //   accountName: userData.accountName ?? "",
-    //   bankAccountNum: userData.bankAccountNum ?? "",
-    //   bankRoutingNum: userData.bankRoutingNum ?? "",
-    // },
+    defaultValues: {
+      bankName: userData.bankAccount?.bankName ?? "",
+      accountName: userData.bankAccount?.accountName ?? "",
+      bankAccountNum: userData.bankAccount?.accountNumber ?? "",
+      bankRoutingNum: userData.bankAccount?.routingNumber ?? "",
+    },
   });
 
+  const [updatedUserData, setUpdatedUserData] = useState(userData);
+
   const onSubmit = async (formData: BankDetailsForm) => {
-    console.log("bank details form data -> ", formData);
+    try {
+      const userId = userData.userId;
+      const bankDetails = {
+        bankName: formData.bankName,
+        accountName: formData.accountName,
+        accountNumber: formData.bankAccountNum,
+        routingNumber: formData.bankRoutingNum ?? "",
+      } as BankAccount;
 
-    // const updatedUserData = {
-    //   ...userData, // this is the user data from the database
-    //   ...formData, // this is the user data fields from the form overwriting the database data
-    // };
+      await upsertBankAccount(userId, bankDetails);
+      const response = await withdraw(userId);
+      setUpdatedUserData(response);
 
-    // const response = await updateUserInfo(userData.userId, updatedUserData);
-    // router.push(`/user/profile/${userData.userId}`);
+      toast.success("Withdrawal successful");
+    } catch (e) {
+      toast.error("Withdrawal failed");
+    }
   };
 
   return (
@@ -101,7 +117,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
             </h4>
             <div className="flex justify-between py-2">
               <h2 className="text-3xl font-semibold text-blue-500 lg:text-4xl">
-                $12345
+                ${updatedUserData.walletBalance}
               </h2>
               <Button
                 className="lg:hidden"
@@ -116,6 +132,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
                 variant="solid"
                 size="md"
                 type="submit"
+                disabled={updatedUserData.walletBalance === 0}
               >
                 Withdraw
               </Button>
@@ -210,30 +227,12 @@ const BalancePage = ({ userData }: BalancePageProps) => {
           <section>
             <h2 className="mb-6 text-lg font-semibold">Withdrawal History</h2>
             <WithdrawalTable
-              data={[
-                {
-                  id: "936284",
-                  date: "17-03-2023",
-                  amount: 69,
-                  status: "Pending",
-                },
-                {
-                  id: "429438",
-                  date: "12-03-2023",
-                  amount: 100,
-                  status: "Completed",
-                },
-                {
-                  id: "892638",
-                  date: "02-02-2023",
-                  amount: 120,
-                  status: "Completed",
-                },
-              ]}
+              data={updatedUserData.transactions}
               columns={["Transaction ID", "Date", "Amount (SGD)", "Status"]}
             />
           </section>
         </form>
+        <Toaster />
       </Layout>
     </ProtectedRoute>
   );

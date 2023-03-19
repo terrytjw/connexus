@@ -178,10 +178,9 @@ export default async function handler(
         joinedCommunities,
         joinedChannels,
         bankAccount,
+        transactions,
         ...userInfo
       } = userWithAllInfo;
-
-      console.log(bankAccount);
 
       const ticketIdArray = tickets.map((ticket: Ticket) => {
         const { ticketId } = ticket;
@@ -219,9 +218,9 @@ export default async function handler(
           connect: [...merchIdArray],
         },
 
-        bankAccount: {
-          connect: bankAccount,
-        },
+        // bankAccount: {
+        //   connect: bankAccount,
+        // },
       };
 
       if (profilePictureUrl) updatedUserInfo.profilePic = profilePictureUrl;
