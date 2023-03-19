@@ -35,14 +35,14 @@ export async function generateCommunityAnalyticsTimestamps() {
   const timestamps = [];
   
   for (let community of communities) {
-    const prevAnalyticsTimestamp = community.analyticsTimestamps.at(-1);
     const timestamp = await prisma.communityAnalyticsTimestamp.create({
       data: {
         members: community._count.members,
         premiumMembers: community.channels
           .filter(channel => channel.channelType == ChannelType.PREMIUM)
           .reduce((a, b) => a + b._count.members, 0),
-        clicks: community.clicks - prevAnalyticsTimestamp!.clicks,
+        clicks: community.clicks - community.analyticsTimestamps
+          .reduce((a, b) => a + b.clicks, 0),
         community: {
           connect: {
             communityId: community.communityId

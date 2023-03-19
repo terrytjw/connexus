@@ -61,16 +61,16 @@ export async function getCollectionAnalyticsByCollection(collectionId: number, l
 export async function generateCollectionAnalyticsTimestamps() {
   const collections = await getCollectionsForAnalytics();
   const timestamps = [];
-  
+
   for (let collection of collections) {
     const prevAnalyticsTimestamp = collection.analyticsTimestamps.at(-1);
-    let merchSold = 0 - prevAnalyticsTimestamp!.merchSold;
-    let revenue = 0
+    let merchSold = 0 - collection.analyticsTimestamps
+      .reduce((a, b) => a + b.merchSold, 0);
 
     for (let merch of collection.merchandise) {
       merchSold += merch.currMerchSupply
-      revenue += merch.currMerchSupply * merch.price
     }
+    const revenue = merchSold * collection.fixedPrice;
 
     let timestamp = await prisma.collectionAnalyticsTimestamp.create({
       data: {

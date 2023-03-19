@@ -66,19 +66,21 @@ export async function generateEventAnalyticsTimestamps() {
 
   for (let event of events) {
     const prevAnalyticsTimestamp = event.analyticsTimestamps.at(-1);
-    let ticketsSold =  0 - prevAnalyticsTimestamp!.ticketsSold;
+    let ticketsSold =  0 - event.analyticsTimestamps
+      .reduce((a, b) => a + b.ticketsSold, 0);
     let revenue = 0
 
     for (let ticket of event.tickets) {
       ticketsSold += ticket.currentTicketSupply
-      revenue += ticket.currentTicketSupply * ticket.price // we shall pretend promotions do not exist xd
+      revenue += ticketsSold * ticket.price // we shall pretend promotions do not exist xd
     }
-    
+
     let timestamp = await prisma.eventAnalyticsTimestamp.create({
       data: {
         ticketsSold: ticketsSold,
         revenue: revenue,
-        clicks: event.clicks - prevAnalyticsTimestamp!.clicks,
+        clicks: event.clicks - event.analyticsTimestamps
+          .reduce((a, b) => a + b.clicks, 0),
         likes: event._count.userLikes,
         event: {
           connect: { eventId: event.eventId }
