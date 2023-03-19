@@ -41,8 +41,8 @@ model User {
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
   questions           Question[]
-  Transaction         Transaction[]
-  BankAccount         BankAccount[]
+  transactions        Transaction[]
+  bankAccount         BankAccount?
 }
 
 model Post {
@@ -290,11 +290,12 @@ model Question {
 }
 
 model Transaction {
-  transactionId Int      @id @default(autoincrement())
-  timestamp     DateTime @default(now())
-  amount        Float    @default(0)
-  user          User     @relation(fields: [userId], references: [userId])
-  userId        Int
+  transactionId     Int                   @id @default(autoincrement())
+  timestamp         DateTime              @default(now())
+  amount            Float                 @default(0)
+  user              User                  @relation(fields: [userId], references: [userId])
+  userId            Int
+  transactionStatus TransactionStatusType @default(PENDING)
 }
 
 model BankAccount {
@@ -304,5 +305,10 @@ model BankAccount {
   accountNumber String
   routingNumber String
   user          User   @relation(fields: [userId], references: [userId])
-  userId        Int
+  userId        Int    @unique
+}
+
+enum TransactionStatusType {
+  PENDING
+  COMPLETED
 }

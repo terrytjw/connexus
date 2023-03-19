@@ -31,6 +31,8 @@ export async function searchUser(searchType: UserPartialType) {
       joinedChannels: true,
       tickets: true,
       merchandise: true,
+      bankAccount: true,
+      transactions: true,
     },
   });
 }
@@ -65,6 +67,10 @@ export async function deleteUser(userId: number) {
 
 export async function updateUser(userId: number, updateType: UserPartialType) {
   return prisma.user.update({
+    include: {
+      bankAccount: true,
+      transactions: true,
+    },
     where: {
       userId: userId,
     },
