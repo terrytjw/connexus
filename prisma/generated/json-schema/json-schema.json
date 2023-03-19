@@ -135,6 +135,28 @@
         "walletBalance": {
           "type": "number",
           "default": 0
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Transaction"
+          }
+        },
+        "bankAccount": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BankAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -287,6 +309,22 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Post"
+          }
+        },
+        "collection": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Collection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
           }
         }
       }
@@ -626,10 +664,7 @@
           "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "currency": {
           "type": "string",
@@ -645,7 +680,6 @@
           "type": "string",
           "default": "ON_SALE",
           "enum": [
-            "CREATED",
             "ON_SALE",
             "SOLD",
             "PAUSED"
@@ -672,6 +706,16 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "premiumChannel": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Channel"
+            },
+            {
+              "type": "null"
+            }
+          ]
         }
       }
     },
@@ -685,10 +729,7 @@
           "type": "string"
         },
         "image": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "stripePriceId": {
           "type": [
@@ -716,6 +757,81 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        }
+      }
+    },
+    "Question": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "integer"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string",
+          "default": ""
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "integer"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "amount": {
+          "type": "number",
+          "default": 0
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "COMPLETED"
+          ]
+        }
+      }
+    },
+    "BankAccount": {
+      "type": "object",
+      "properties": {
+        "bankAccountId": {
+          "type": "integer"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "routingNumber": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
         }
       }
     }
@@ -757,6 +873,15 @@
     },
     "merchandise": {
       "$ref": "#/definitions/Merchandise"
+    },
+    "question": {
+      "$ref": "#/definitions/Question"
+    },
+    "transaction": {
+      "$ref": "#/definitions/Transaction"
+    },
+    "bankAccount": {
+      "$ref": "#/definitions/BankAccount"
     }
   }
 }

@@ -1,19 +1,22 @@
 import { Merchandise, Ticket } from "@prisma/client";
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
+import {
+  handleError,
+  ErrorResponse,
+} from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, User, Prisma } from "@prisma/client";
 import {
   deleteUser,
   searchUser,
   updateUser,
-} from "../../../lib/prisma/user-prisma";
-import { USER_PROFILE_BUCKET } from "../../../lib/constant";
+} from "../../../../lib/prisma/user-prisma";
+import { USER_PROFILE_BUCKET } from "../../../../lib/constant";
 import {
   uploadImage,
   retrieveImageUrl,
   checkIfStringIsBase64,
-} from "../../../lib/supabase";
+} from "../../../../lib/supabase";
 
 export type UserWithAllInfo = Prisma.UserGetPayload<{
   include: {
@@ -22,6 +25,8 @@ export type UserWithAllInfo = Prisma.UserGetPayload<{
     joinedChannels: true;
     joinedCommunities: true;
     createdCommunities: true;
+    bankAccount: true;
+    transactions: true;
   };
 }>;
 
@@ -172,6 +177,8 @@ export default async function handler(
         createdCommunities,
         joinedCommunities,
         joinedChannels,
+        bankAccount,
+        transactions,
         ...userInfo
       } = userWithAllInfo;
 
@@ -210,6 +217,10 @@ export default async function handler(
         merchandise: {
           connect: [...merchIdArray],
         },
+
+        // bankAccount: {
+        //   connect: bankAccount,
+        // },
       };
 
       if (profilePictureUrl) updatedUserInfo.profilePic = profilePictureUrl;

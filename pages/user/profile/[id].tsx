@@ -1,9 +1,8 @@
-import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import React, { useState } from "react";
-import { FaShareSquare, FaPen } from "react-icons/fa";
+import { FaFacebook, FaTwitter, FaTelegram } from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import Avatar from "../../../components/Avatar";
 import Banner from "../../../components/Banner";
@@ -20,12 +19,41 @@ import copy from "copy-to-clipboard";
 import { toast, Toaster } from "react-hot-toast";
 import { UserWithAllInfo } from "../../api/users/[userId]";
 import { getUserInfo } from "../../../lib/api-helpers/user-api";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 type UserProfilePageProps = {
   userData: UserWithAllInfo;
 };
 const UserProfilePage = ({ userData }: UserProfilePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
+  const router = useRouter();
+  const profileLink = "connexus.com" + router.asPath; // dummy URL
+
+  function getFacebookShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    return shareUrl;
+  }
+
+  function getTwitterShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const message = encodeURIComponent("Check out my profile on Connexus!");
+    const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${message}`;
+    return shareUrl;
+  }
+
+  function getInstagramShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.instagram.com/share?url=${url}`;
+    return shareUrl;
+  }
+
+  function getTelegramShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://t.me/share/url?url=${url}`;
+    return shareUrl;
+  }
 
   return (
     <ProtectedRoute>
@@ -47,7 +75,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 {/* mobile view profile name*/}
                 <div className="mt-6 min-w-0 flex-1 sm:hidden">
                   <h1 className="truncate text-2xl font-bold text-gray-900">
-                    {userData.displayName} - mobile
+                    {userData.displayName}
                   </h1>
                   <p className="mt-1 text-gray-500 sm:hidden">
                     {/* I'm fly, drippin' with dem peaches high ·{" "} */}
@@ -61,7 +89,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             {/* desktop view profile name*/}
             <div className="mt-6 hidden min-w-0 flex-1 sm:block">
               <h1 className="truncate text-2xl font-bold text-gray-900">
-                {userData.displayName} - desktop
+                {userData.displayName}
               </h1>
               <p className="mt-1 text-gray-500">
                 {/* I'm fly, drippin' with dem peaches high ·{" "} */}
@@ -72,33 +100,39 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             </div>
 
             {/* button group */}
-            <div className="mt-6 flex gap-2">
+            <div className="mt-6 flex items-center gap-2">
               <Button
                 href={`/user/settings/${userData.userId}`}
                 variant="solid"
                 size="md"
               >
-                <FaPen aria-hidden="true" />
-                <span className="hidden sm:inline-block">Edit Profile</span>
-              </Button>
-              <Button
-                variant="solid"
-                size="md"
-                onClick={() => {
-                  copy(location.href);
-                  toast("Community link copied successfully!");
-                }}
-              >
-                <FaShareSquare aria-hidden="true" />
-                <span className="hidden sm:inline-block">Share</span>
-              </Button>
-              {/* <Button
-                variant="solid"
-                size="md"
-              >
                 <FiSettings aria-hidden="true" />
                 <span className="hidden sm:inline-block">Settings</span>
-              </Button> */}
+              </Button>
+
+              <div className="ml-4 flex flex-wrap gap-4 py-4">
+                <Link
+                  href={getFacebookShareLink(profileLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaFacebook className="h-6 w-6" />
+                </Link>
+                <Link
+                  href={getTwitterShareLink(profileLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaTwitter className="h-6 w-6" />
+                </Link>
+                <Link
+                  href={getTelegramShareLink(profileLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaTelegram className="h-6 w-6" />
+                </Link>
+              </div>
             </div>
 
             <TabGroupBordered

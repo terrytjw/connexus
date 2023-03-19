@@ -1,4 +1,5 @@
 import { searchUser } from "../lib/prisma/user-prisma";
+import { camelCase } from "lodash";
 
 export function randomIntBetweenNumber(
   min: number = 1,
@@ -9,7 +10,7 @@ export function randomIntBetweenNumber(
 
 export async function generateUniqueUsername(username: string) {
   let randomNumber = randomIntBetweenNumber();
-  let uniqueName = `${username.toLowerCase()}#${randomNumber}`;
+  let uniqueName = `${camelCase(username)}#${randomNumber}`;
   while (true) {
     const response = await searchUser({
       username: uniqueName,

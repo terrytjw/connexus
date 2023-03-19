@@ -41,7 +41,8 @@ model User {
   events              Event[]       @relation("createdEvents")
   walletBalance       Float         @default(0)
   questions           Question[]
-  Raffles             Raffles[]
+  transactions        Transaction[]
+  bankAccount         BankAccount?
 }
 
 model Post {
@@ -296,11 +297,34 @@ model Raffles {
   collectedStatus  RaffleCollectionStatus @default(PENDING)
   event            Event                  @relation(fields: [eventId], references: [eventId])
   eventId          Int
-  user             User                   @relation(fields: [userId], references: [userId])
-  userId           Int
 }
 
 enum RaffleCollectionStatus {
   COLLECTED
   PENDING
+}
+
+model Transaction {
+  transactionId     Int                   @id @default(autoincrement())
+  timestamp         DateTime              @default(now())
+  amount            Float                 @default(0)
+  user              User                  @relation(fields: [userId], references: [userId])
+  userId            Int
+  transactionStatus TransactionStatusType @default(PENDING)
+}
+
+model BankAccount {
+  bankAccountId Int    @id @default(autoincrement())
+  bankName      String
+  accountName   String
+  accountNumber String
+  routingNumber String
+  user          User   @relation(fields: [userId], references: [userId])
+  userId        Int    @unique
+}
+
+enum TransactionStatusType {
+  PENDING
+  COMPLETED
+  REJECTED
 }
