@@ -13,7 +13,14 @@ import Loading from "../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithAllDetails } from "../../utils/types";
-import { Promotion, Ticket, TicketType } from "@prisma/client";
+import {
+  PrivacyType,
+  Promotion,
+  PublishType,
+  Ticket,
+  TicketType,
+  VisibilityType,
+} from "@prisma/client";
 
 import axios from "axios";
 
@@ -35,35 +42,6 @@ const signer = new ethers.Wallet(smartContract.privateKey, provider);
 const CreatorEventCreate = () => {
   const { data: session } = useSession();
   const userId = session?.user.userId;
-  // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
-  //   useForm<EventWithAllDetails>({
-  //     defaultValues: {
-  //       eventName: "test",
-  //       description: "desc",
-  //       eventPic: "",
-  //       bannerPic: "",
-  //       category: [],
-  //       tickets: [],
-  //       visibilityType: VisibilityType.PUBLISHED,
-  //       privacyType: PrivacyType.PUBLIC,
-  //       publishType: PublishType.NOW,
-  //       address: {
-  //         address1: "",
-  //         address2: "",
-  //         locationName: "",
-  //         postalCode: "",
-  //       },
-  //       promotion: [
-  //         {
-  //           name: "",
-  //           promotionValue: undefined,
-  //           eventId: undefined,
-  //           stripePromotionId: "",
-  //           isEnabled: false,
-  //         },
-  //       ],
-  //     },
-  //   });
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithAllDetails>({
       defaultValues: {
@@ -72,43 +50,72 @@ const CreatorEventCreate = () => {
         eventPic: "",
         bannerPic: "",
         category: [],
-        tickets: [
-          {
-            ticketId: 1,
-            name: "tname",
-            description: "desc",
-            price: "1",
-            totalTicketSupply: "6",
-            startDate: "2023-03-20T23:57",
-            endDate: "2023-03-22T23:57",
-            eventId: 5e-324,
-            ticketType: "ON_SALE",
-          },
-        ],
-        visibilityType: "PUBLISHED",
-        privacyType: "PUBLIC",
-        publishType: "NOW",
+        tickets: [],
+        visibilityType: VisibilityType.PUBLISHED,
+        privacyType: PrivacyType.PUBLIC,
+        publishType: PublishType.NOW,
         address: {
-          address1: "123 Bukit Merah Lane 1",
+          address1: "",
           address2: "",
-          locationName: "123 Bukit Merah Lane 1",
-          postalCode: "150123",
-          lat: 1.2867152,
-          lng: 103.8037402,
+          locationName: "",
+          postalCode: "",
         },
         promotion: [
           {
-            name: "promo200",
-            promotionValue: "10",
+            name: "",
+            promotionValue: undefined,
+            eventId: undefined,
             stripePromotionId: "",
-            isEnabled: true,
+            isEnabled: false,
           },
         ],
-        startDate: "2023-03-20T23:55",
-        endDate: "2023-03-31T23:55",
-        maxAttendee: "12",
       },
     });
+  // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
+  //   useForm<EventWithAllDetails>({
+  //     defaultValues: {
+  //       eventName: "test",
+  //       description: "desc",
+  //       eventPic: "",
+  //       bannerPic: "",
+  //       category: [],
+  //       tickets: [
+  //         {
+  //           ticketId: 1,
+  //           name: "tname",
+  //           description: "desc",
+  //           price: "1",
+  //           totalTicketSupply: "6",
+  //           startDate: "2023-03-20T23:57",
+  //           endDate: "2023-03-22T23:57",
+  //           eventId: 5e-324,
+  //           ticketType: "ON_SALE",
+  //         },
+  //       ],
+  //       visibilityType: "PUBLISHED",
+  //       privacyType: "PUBLIC",
+  //       publishType: "NOW",
+  //       address: {
+  //         address1: "123 Bukit Merah Lane 1",
+  //         address2: "",
+  //         locationName: "123 Bukit Merah Lane 1",
+  //         postalCode: "150123",
+  //         lat: 1.2867152,
+  //         lng: 103.8037402,
+  //       },
+  //       promotion: [
+  //         {
+  //           name: "promo200",
+  //           promotionValue: "10",
+  //           stripePromotionId: "",
+  //           isEnabled: true,
+  //         },
+  //       ],
+  //       startDate: "2023-03-20T23:55",
+  //       endDate: "2023-03-31T23:55",
+  //       maxAttendee: "12",
+  //     },
+  //   });
 
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
@@ -230,6 +237,7 @@ const CreatorEventCreate = () => {
       endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
       ticketType: TicketType.ON_SALE,
+      stripePriceId: "",
     });
   };
 

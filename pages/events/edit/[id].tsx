@@ -420,6 +420,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       startDate: undefined as unknown as Date,
       endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
+      stripePriceId: "",
     });
   };
 
