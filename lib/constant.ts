@@ -12,6 +12,7 @@ export const EMAIL_ENDPOINT = "email";
 export const SMS_ENDPOINT = "sms";
 export const CHANNEL_ENDPOINT = "channel";
 export const QUESTION_ENDPOINT = "question";
+export const ANALYTICS_ENDPOINT = "analytics";
 export const PROMOTION_ENDPOINT = "promotions";
 export const BANK_ACCOUNT_ENDPOINT = "bank-accounts";
 export const TRANSACTION_ENDPOINT = "transaction";
