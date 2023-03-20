@@ -170,20 +170,22 @@ const AttendeesPage = () => {
     if (raffles.length !== 0 && raffles[0].isEnabled) {
       const updatedRaffle = { ...raffles[0], isActivated: true };
       console.log("posting raffle object -> ", updatedRaffle);
-      const res = await updateRaffle(raffles[0].raffleId, updatedRaffle);
+      await updateRaffle(raffles[0].raffleId, updatedRaffle);
 
-      // TODO: MUTATE attendees to change active raffle button state
-      console.log("res ->", res);
-      // mutate((data: AttendeeListType[]) => {
-      //   data.map((attendee: any) =>
-      //     attendee.ticket.event.raffles[0].raffleId == res.raffleId
-      //       ? { ...attendee, ticket: {...attendee.ticket, event: {...attendee.ticket.event, raffles: [{...attendee.ticket.event.raffles[0], isActivated: true}]}}}
-      //       : attendee
-      //   );
-      // )
-      toast.success("Activated Raffle!");
+      mutate((data: AttendeeListType[]) =>
+        data.map(
+          (attendee: any, index) =>
+            index === 0 && attendee.ticket.event.raffles[0]?.isActivated
+        )
+      );
+      toast.success("Raffle activated!");
     } else {
-      toast.error("Failed to activate Raffle");
+      // show different error messages
+      if (!isRaffleEnabled()) {
+        toast.error("Please enable raffle first");
+      } else {
+        toast.error("Failed to activate Raffle...");
+      }
     }
   };
 
@@ -213,7 +215,13 @@ const AttendeesPage = () => {
 
   const isRaffleActivated = (): boolean | undefined => {
     if (attendees.length !== 0) {
-      return attendees[0]?.ticket.event.raffles[0].isActivated;
+      return attendees[0]?.ticket?.event?.raffles[0]?.isActivated;
+    }
+  };
+
+  const isRaffleEnabled = (): boolean | undefined => {
+    if (attendees.length !== 0) {
+      return attendees[0]?.ticket?.event?.raffles[0]?.isEnabled;
     }
   };
 
@@ -244,7 +252,10 @@ const AttendeesPage = () => {
               </Button>
               <h1 className="text-3xl font-bold">
                 Attendees for{" "}
-                {truncateString(attendees[0]?.ticket.event.eventName ?? "", 30)}
+                {truncateString(
+                  attendees[0]?.ticket?.event?.eventName ?? "",
+                  30
+                )}
               </h1>
             </div>
           </div>
@@ -254,7 +265,7 @@ const AttendeesPage = () => {
               <Button
                 variant="outlined"
                 size="md"
-                className="max-w-xs"
+                className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
                 onClick={handleActivateRaffle}
                 disabled={isRaffleActivated()}
               >

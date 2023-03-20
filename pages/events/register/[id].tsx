@@ -34,6 +34,7 @@ export type SelectedTicket = {
   ticketName: string;
   qty: number;
   price: number;
+  stripePriceId: string;
 };
 
 export type TicketsForm = User & {
@@ -70,6 +71,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           ticketName: "",
           qty: 0,
           price: 0,
+          stripePriceId: "",
         },
         preDiscountedTickets: event.tickets,
         discountedTickets: [],
@@ -107,6 +109,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         ticketName: savedFormData.selectedTicket.ticketName,
         qty: savedFormData.selectedTicket.qty,
         price: savedFormData.selectedTicket.price,
+        stripePriceId: savedFormData.stripePriceId,
       });
 
       // bring users back to confirmation page
@@ -448,7 +451,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
                 setIsLoading(true);
                 // Create a Checkout Session.
                 const response = await fetchPostJSON("/api/checkout_sessions", {
-                  priceId: "price_1Mn2EMCmKD4DhrYc7Nb12kp7",
+                  priceId: selectedTicket.stripePriceId,
                   creatorId: event.creatorId,
                   promoId: formData.stripePromotionId,
                   paymentSuccessUrl: `events/register/${event.eventId}?paymentSuccess=true`,

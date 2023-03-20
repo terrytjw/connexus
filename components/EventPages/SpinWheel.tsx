@@ -25,11 +25,7 @@ const SpinWheel = ({ prizes, size, setIsPrizeWon }: SpinWheelProps) => {
     "#FF9000",
   ];
 
-  const emptyPrizeValues = [
-    "better luck next time",
-    "better luck next time",
-    "better luck next time",
-  ];
+  const emptyPrizeValues = ["No prize :(", "No prize :("];
 
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {

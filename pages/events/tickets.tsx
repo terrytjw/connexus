@@ -15,6 +15,7 @@ import { getSession } from "next-auth/react";
 import { truncateString } from "../../utils/text-truncate";
 import { toast, Toaster } from "react-hot-toast";
 import { TicketWithEvent } from "../../utils/types";
+import Confetti from "react-confetti";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
@@ -29,7 +30,6 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
   const [rafflePrizes, setRafflePrizes] = useState<any[]>([]);
   const [isPrizeWon, setIsPrizeWon] = useState<boolean>(false);
   const [selectedTicket, setSelectedTicket] = useState<any>();
-
   console.log("is prize won", isPrizeWon);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             className="flex flex-col items-center sm:min-w-fit"
           >
             <h2 className="text-2xl font-bold sm:text-2xl">Spin the Wheel!</h2>
-
+            {isPrizeWon && <Confetti />}
             <div className="flex justify-center align-middle">
               <SpinWheel
                 prizes={rafflePrizes}

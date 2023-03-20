@@ -337,7 +337,8 @@ const TicketFormPage = ({
                   e.preventDefault();
                   appendPrize({
                     name: "",
-                    // rafflesId: undefined as unknown as number,
+                    rafflesId: undefined as unknown as number,
+                    rafflePrizeId: undefined as unknown as number,
                   });
                 }}
               >

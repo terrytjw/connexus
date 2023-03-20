@@ -28,7 +28,7 @@ const AttendeesTable = ({
 }: AttendeesTableProps) => {
   const getPrizeWinner = (attendee: any): any => {
     if (!attendee) return;
-    return attendee.ticket.event.raffles[0].rafflePrizes.find((prize: any) =>
+    return attendee.ticket.event.raffles[0]?.rafflePrizes.find((prize: any) =>
       prize.rafflePrizeUser.find(
         (rafflePrizeUser: any) => rafflePrizeUser.userId === attendee.userId
       )
@@ -37,14 +37,14 @@ const AttendeesTable = ({
 
   const getPrizeWon = (attendee: any, rafflePrizeId: number): any => {
     if (!attendee) return;
-    return attendee.ticket.event.raffles[0].rafflePrizes.find(
+    return attendee.ticket.event.raffles[0]?.rafflePrizes.find(
       (prize: any) => prize.rafflePrizeId === rafflePrizeId
     );
   };
 
   const isPrizeClaimed = (attendee: any): boolean | undefined => {
     if (!attendee) return;
-    return attendee.ticket.event.raffles[0].rafflePrizes.find(
+    return attendee.ticket.event.raffles[0]?.rafflePrizes.find(
       (prize: any) =>
         prize.rafflePrizeUser.find(
           (rafflePrizeUser: any) => rafflePrizeUser.userId === attendee.userId

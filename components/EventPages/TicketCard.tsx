@@ -80,7 +80,7 @@ const TicketCard = ({
         <div
           className={`card flex flex-col justify-between gap-6 border-2 border-gray-200 sm:flex-row ${
             isOwnedTicket || ticket.ticketType === TicketType.ON_SALE
-              ? "bg-white"
+              ? "bg-white shadow-md"
               : "bg-gray-50"
           } p-6 lg:card-side`}
         >
