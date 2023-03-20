@@ -57,3 +57,15 @@ export async function generateCommunityAnalyticsTimestamps() {
   }
   return timestamps;
 }
+
+export async function getCommunityAnalyticsForCSVPDF(userId: number, lowerBound: Date, upperBound: Date) {
+  const analytics = await groupCreatorCommunityAnalyticsByDate(userId, lowerBound, upperBound)
+  return analytics.map((x: any) => {
+    return {
+      date: x.date.toDateString(),
+      members: x._sum.members,
+      premiumMembers: x._sum.premiumMembers,
+      clicks: x._sum.clicks
+    }
+  });
+}

@@ -110,3 +110,15 @@ export async function generateChannelAnalyticsTimestamps() {
   }
   return timestamps;
 }
+
+export async function getChannelAnalyticsForCSVPDF(userId: number, lowerBound: Date, upperBound: Date) {
+  const analytics = await groupCreatorChannelAnalyticsByDate(userId, lowerBound, upperBound)
+  return analytics.map((x: any) => {
+    return {
+      date: x.date.toDateString(),
+      likes: x._sum.likes,
+      comments: x._sum.comments,
+      engagement: x._avg.engagement
+    }
+  });
+}
