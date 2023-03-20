@@ -29,7 +29,7 @@ async function generateCommunity() {
     let members = 10;
     let premiumMembers = 5;
     let clicks = 20;
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 7; i > 0; i--) {
       arr.push({
         members: getRandomInt(members, members += 10),
         premiumMembers: getRandomInt(premiumMembers, premiumMembers += 5),
@@ -121,7 +121,7 @@ async function generateChannel() {
     let likes = 20;
     let comments = 2;
 
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 7; i > 0; i--) {
       likes = getRandomInt(likes, likes += 10);
       comments = getRandomInt(comments, comments += 5),
       arr.push({
@@ -404,7 +404,7 @@ async function generateCollection() {
 
   const analyticsTimestamps: any[][] = [[],[],[]];
   for (let arr of analyticsTimestamps) {
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 7; i > 0; i--) {
       const merchSold = getRandomInt(0, 20)
       const revenue = merchSold * 3
       arr.push({
@@ -519,7 +519,7 @@ async function generateEvent() {
   const analyticsTimestamps: any[][] = [[],[],[]];
   for (let arr of analyticsTimestamps) {
     let likes = 10;
-    for (let i = 6; i >= 0; i--) {
+    for (let i = 7; i > 0; i--) {
       const ticketsSold = getRandomInt(0, 20)
       const revenue = ticketsSold * 5;
       likes += 10;

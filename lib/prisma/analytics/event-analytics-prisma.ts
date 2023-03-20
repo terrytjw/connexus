@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { yesterday } from "../../../utils/date-util";
 import { getEventsForAnalytics } from "../event-prisma";
 
 const prisma = new PrismaClient();
@@ -74,9 +75,7 @@ export async function generateEventAnalyticsTimestamps() {
       ticketsSold += ticket.currentTicketSupply
       revenue += ticketsSold * ticket.price // we shall pretend promotions do not exist xd
     }
-
-    const date = new Date();
-    date.setHours(0, 0, 0, 0) // get rid of time so timestamps on the same day can all be grouped
+    
     let timestamp = await prisma.eventAnalyticsTimestamp.create({
       data: {
         ticketsSold: ticketsSold,
@@ -84,7 +83,7 @@ export async function generateEventAnalyticsTimestamps() {
         clicks: event.clicks - event.analyticsTimestamps
           .reduce((a, b) => a + b.clicks, 0),
         likes: event._count.userLikes,
-        date: date,
+        date: yesterday(),
         event: {
           connect: { eventId: event.eventId }
         }

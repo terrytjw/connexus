@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { yesterday } from "../../../utils/date-util";
 import { getChannelsForAnalytics } from "../channel-prisma";
 
 const prisma = new PrismaClient();
@@ -15,9 +16,7 @@ export async function groupCreatorChannelAnalyticsByDate(userId: number, lowerBo
         is: {
           community: {
             is: {
-              creator: {
-                is: { userId: userId }
-              }
+              creator: { userId: userId }
             }
           }
         }
@@ -96,14 +95,12 @@ export async function generateChannelAnalyticsTimestamps() {
       channel.posts.length > 0
         ? ((likes + comments) / channel._count.posts) / (channel._count.members)
         : 0     
-    const date = new Date();
-    date.setHours(0, 0, 0, 0) // get rid of time so timestamps on the same day can all be grouped
     const timestamp = await prisma.channelAnalyticsTimestamp.create({
       data: {
         likes: likes,
         comments: comments,
         engagement: engagement,
-        date: date,
+        date: yesterday(),
         channel: {
           connect: { channelId: channel.channelId }
         }

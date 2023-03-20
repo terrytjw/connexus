@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, CommunityAnalyticsTimestamp } from "@prisma/client";
 import { groupCreatorCommunityAnalyticsByDate } from "../../../../lib/prisma/analytics/community-analytics-prisma";
-import { lastWeek } from "../../../../utils/date-util";
+import { lastWeek, yesterday } from "../../../../utils/date-util";
 
 const prisma = new PrismaClient();
 
@@ -55,7 +55,7 @@ export default async function handler(
   async function handleGET(
     userId: number,
     lowerBound: Date = lastWeek(), 
-    upperBound: Date = new Date()
+    upperBound: Date = yesterday()
   ) {
     try {
       const response = await groupCreatorCommunityAnalyticsByDate(userId, lowerBound, upperBound);

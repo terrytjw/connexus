@@ -1,4 +1,4 @@
-import { format, isValid } from "date-fns"
+import { format, isValid, set, sub } from "date-fns"
 
 export const formatDate = (date: Date): string | undefined => {
     return isValid(date)
@@ -12,19 +12,20 @@ export const formatDateForInput = (date: Date): string | undefined => {
 
 export function lastWeek() {
   const today = new Date();
-  const lastWeek = new Date();
-  lastWeek.setDate(today.getDate() - 7);
-  return lastWeek;
+  const lastWeek = sub(today, { days: 7 })
+  return setTo2359(lastWeek)
 }
 
 export function todayMinus(days: number) {
   const today = new Date();
-  const newDate = new Date();
-  newDate.setDate(today.getDate() - days);
-  return removeTime(newDate);
+  const newDate = sub(today, { days: days })
+  return setTo2359(newDate);
 }
 
-export function removeTime(date: Date) {
-  date.setHours(0, 0, 0, 0);
-  return date;
+export function yesterday() {
+  return todayMinus(1)
+}
+
+export function setTo2359(date: Date) {
+  return set(date, { hours: 23, minutes: 59, seconds: 59, milliseconds: 0 })
 }

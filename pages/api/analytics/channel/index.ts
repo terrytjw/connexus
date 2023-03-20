@@ -2,7 +2,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 import { PrismaClient, ChannelAnalyticsTimestamp } from "@prisma/client";
 import { ErrorResponse, handleError } from "../../../../lib/prisma/prisma-helpers";
-import { lastWeek } from "../../../../utils/date-util";
+import { lastWeek, yesterday } from "../../../../utils/date-util";
 import { groupCreatorChannelAnalyticsByDate } from "../../../../lib/prisma/analytics/channel-analytics-prisma";
 
 const prisma = new PrismaClient();
@@ -55,7 +55,7 @@ export default async function handler(
   async function handleGET(
     userId: number,
     lowerBound: Date = lastWeek(), 
-    upperBound: Date = new Date()
+    upperBound: Date = yesterday()
   ) {
     try {
       const response = await groupCreatorChannelAnalyticsByDate(userId, lowerBound, upperBound);

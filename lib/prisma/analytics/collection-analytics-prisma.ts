@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { yesterday } from "../../../utils/date-util";
 import { getCollectionsForAnalytics } from "../collection-prisma";
 
 const prisma = new PrismaClient();
@@ -72,14 +73,12 @@ export async function generateCollectionAnalyticsTimestamps() {
     }
     const revenue = merchSold * collection.fixedPrice;
 
-    const date = new Date();
-    date.setHours(0, 0, 0, 0) // get rid of time so timestamps on the same day can all be grouped
     let timestamp = await prisma.collectionAnalyticsTimestamp.create({
       data: {
         merchSold: merchSold,
         revenue: revenue,
         clicks: collection.clicks - prevAnalyticsTimestamp!.clicks,
-        date: date,
+        date: yesterday(),
         collection: {
           connect: {
             collectionId: collection.collectionId

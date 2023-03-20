@@ -1,4 +1,5 @@
 import { ChannelType, PrismaClient } from "@prisma/client";
+import { yesterday } from "../../../utils/date-util";
 import { getCommunitiesForAnalytics } from "../community-prisma";
 
 const prisma = new PrismaClient();
@@ -35,8 +36,6 @@ export async function generateCommunityAnalyticsTimestamps() {
   const timestamps = [];
   
   for (let community of communities) {
-    const date = new Date();
-    date.setHours(0, 0, 0, 0) // get rid of time so timestamps on the same day can all be grouped
 
     const timestamp = await prisma.communityAnalyticsTimestamp.create({
       data: {
@@ -46,7 +45,7 @@ export async function generateCommunityAnalyticsTimestamps() {
           .reduce((a, b) => a + b._count.members, 0),
         clicks: community.clicks - community.analyticsTimestamps
           .reduce((a, b) => a + b.clicks, 0),
-        date: date,
+        date: yesterday(),
         community: {
           connect: {
             communityId: community.communityId
