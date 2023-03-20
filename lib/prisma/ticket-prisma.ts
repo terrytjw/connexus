@@ -14,6 +14,7 @@ export async function filterTickets(userId: number | undefined) {
       },
     },
     include: {
+      userTicket: true,
       event: {
         include: {
           raffles: {

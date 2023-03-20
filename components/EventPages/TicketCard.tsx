@@ -58,11 +58,11 @@ const TicketCard = ({
   };
 
   const isRaffleActivated = (): boolean => {
-    return ticket.event.raffles[0].isActivated;
+    return ticket.event.raffles[0]?.isActivated;
   };
 
   const isPrizeClaimed = (ticket: any): boolean | undefined => {
-    return ticket?.event.raffles[0].rafflePrizes.find(
+    return ticket?.event.raffles[0]?.rafflePrizes.find(
       (prize: any) =>
         prize.rafflePrizeUser.find(
           (rafflePrizeUser: any) => rafflePrizeUser.userId === userId
@@ -71,7 +71,7 @@ const TicketCard = ({
   };
 
   const getRafflePrizes = (ticket: any): any[] => {
-    return ticket?.event.raffles[0].rafflePrizes;
+    return ticket?.event.raffles[0]?.rafflePrizes;
   };
 
   return (

@@ -1,12 +1,24 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
-import { PrismaClient, Comment, Raffles } from "@prisma/client";
+import { PrismaClient, Comment, Raffles, Prisma } from "@prisma/client";
 import { likeEvent } from "../../../lib/prisma/event-prisma";
-import { updateRaffle } from "../../../lib/prisma/raffle-prisma";
+import {
+  updateRaffle,
+  updateRafflePrizes,
+} from "../../../lib/prisma/raffle-prisma";
+import { updateRafflePrize } from "../../../lib/api-helpers/user-api";
 
 const prisma = new PrismaClient();
 
+type RaffleWithAllInfo = Prisma.RafflesGetPayload<{
+  include: {
+    rafflePrizes: {
+      include: { rafflePrizeUser: true };
+    };
+    rafflePrizeUser: true;
+  };
+}>;
 /**
  * @swagger
  * /api/events/{EventId}/raffle
@@ -50,9 +62,14 @@ export default async function handler(
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 
-  async function handlePOST(raffleId: number, raffles: Raffles) {
+  async function handlePOST(raffleId: number, raffles: RaffleWithAllInfo) {
     try {
-      const response = await updateRaffle(raffleId, raffles);
+      const { rafflePrizes, ...updatedRaffles } = raffles;
+
+      rafflePrizes.forEach(async (rafflePrize) => {
+        await updateRafflePrizes(rafflePrize.rafflePrizeId, rafflePrize);
+      });
+      const response = await updateRaffle(raffleId, updatedRaffles);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

@@ -20,8 +20,8 @@ import {
 import { updatePromotion } from "../../../../lib/prisma/promotion-prisma";
 
 const prisma = new PrismaClient();
-type EventWithPromoCode = Prisma.EventGetPayload<{
-  include: { promotion: true };
+type EventUpdate = Prisma.EventGetPayload<{
+  include: { promotion: true; raffles: true };
 }>;
 
 /**
@@ -99,7 +99,7 @@ export default async function handler(
       await handleGET(eventId);
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as EventWithPromoCode;
+      const event = JSON.parse(JSON.stringify(req.body)) as EventUpdate;
       await handlePOST(eventId, event);
       break;
     case "DELETE":
@@ -122,12 +122,10 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(
-    eventId: number,
-    eventWithPromo: EventWithPromoCode
-  ) {
+  async function handlePOST(eventId: number, eventWithPromo: EventUpdate) {
     try {
-      const { eventPic, bannerPic, promotion, ...event } = eventWithPromo;
+      const { eventPic, bannerPic, promotion, raffles, ...event } =
+        eventWithPromo;
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
@@ -176,9 +174,21 @@ export default async function handler(
         updatePromotion(promo.promotionId, promoInfo);
       });
 
+      //To do
+      // raffles.forEach(async (raffle) => {
+      //   const { eventId, ...raffleInfo } = raffle;
+      //   await prisma.raffle.update({
+      //     where: {
+      //       raffleId: raffle.raffleId,
+      //     },
+      //     data: raffleInfo,
+      //   });
+      // })
+
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
       if (eventBannerPictureUrl)
         updatedEventInfo.bannerPic = eventBannerPictureUrl;
+
       const response = await updateEvent(eventId, updatedEventInfo);
 
       res.status(200).json(response);

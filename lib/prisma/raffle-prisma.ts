@@ -1,4 +1,5 @@
 import {
+  Prisma,
   PrismaClient,
   RafflePrize,
   RafflePrizeUser,
@@ -6,6 +7,7 @@ import {
 } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
 
 export async function saveRaffles(
   eventId: number,
@@ -59,6 +61,21 @@ export async function updateRafflePrizeUser(
     },
     data: {
       ...rafflePrizeUser,
+    },
+  });
+}
+
+export async function updateRafflePrizes(
+  rafflePrizeId: number,
+  rafflePrize: RafflePrize
+) {
+  return prisma.rafflePrize.update({
+    where: {
+      rafflePrizeId: rafflePrizeId,
+    },
+    data: {
+      ...rafflePrize,
+      rafflePrizeId: undefined,
     },
   });
 }
