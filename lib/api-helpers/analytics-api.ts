@@ -92,10 +92,10 @@ async function getAnalytics(
   return response;
 }
 
-export async function getTopNSellingCollections(
+export async function getTopNSellingCollectionsAPI(
   lowerBound: Date = lastWeek(),
   upperBound: Date = yesterday(),
-  n: number = 5,
+  n: number = 3,
   id? : number
 ) {
   lowerBound = setTo2359(lowerBound);

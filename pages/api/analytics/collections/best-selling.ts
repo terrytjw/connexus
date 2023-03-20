@@ -35,8 +35,8 @@ export default async function handler(
   res: NextApiResponse<CollectionAnalyticsTimestamp[] | ErrorResponse | {}>
 ) {
   const { method, query } = req;
-  const userId = parseInt(query.id as string) ?? -1;
-  const n = parseInt(query.n as string)
+  const userId = query.id == undefined ? undefined : parseInt(query.id as string);
+  const n = query.n == undefined ? undefined : parseInt(query.n as string);
 
   switch (method) {
     case "GET":
@@ -54,8 +54,8 @@ export default async function handler(
   }
 
   async function handleGET(
-    n: number,
-    userId: number = -1,
+    n: number = 3,
+    userId: number= -1,
     lowerBound: Date = lastWeek(), 
     upperBound: Date = yesterday(),
   ) {
