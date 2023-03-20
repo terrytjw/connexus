@@ -65,6 +65,7 @@ const AttendeesPage = () => {
   } = useSWR(eventId, async () => await viewAttendeeList(Number(eventId)));
 
   console.log("fetchAttendees ->", fetchedAttendees);
+  console.log("filteredAttendees ->", attendees);
 
   const searchAndFilterAttendees = async () => {
     const res = await filterAttendeeList(Number(eventId), 0, searchString);
@@ -263,7 +264,7 @@ const AttendeesPage = () => {
               </Button>
             </div>
             <div className="flex gap-4">
-              <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+              <div className="relative hidden w-full items-center justify-center rounded-md shadow-sm lg:flex">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                   <FaSearch className="text-gray-500" />
                 </div>
@@ -288,6 +289,24 @@ const AttendeesPage = () => {
                 <option value="csv">Export as CSV</option>
                 <option value="pdf">Export as PDF</option>
               </select>
+            </div>
+          </div>
+
+          {/* mobile search */}
+          <div className="mt-4 flex w-full gap-2 lg:hidden">
+            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <FaSearch className="text-gray-500" />
+              </div>
+              <input
+                className="input-outlined input input-md block w-full rounded-md pl-10"
+                type="text"
+                value={searchString}
+                placeholder="Search Attendees"
+                onChange={(e) => {
+                  setSearchString(e.target.value);
+                }}
+              />
             </div>
           </div>
 
