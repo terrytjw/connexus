@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { CollectionState, PrismaClient } from "@prisma/client";
 import { yesterday } from "../../../utils/date-util";
 import { getCollectionsForAnalytics } from "../collection-prisma";
 
@@ -41,7 +41,7 @@ export async function getTopNSellingCollections(userId: number, lowerBound: Date
       collection: 
         userId > 0
           ? { is: { creatorId: userId } }
-          : undefined,
+          : { is: { collectionState: CollectionState.ON_SALE }}
     },
     _sum: {
       merchSold: true,
