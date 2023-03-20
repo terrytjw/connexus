@@ -91,3 +91,23 @@ async function getAnalytics(
   })).data;
   return response;
 }
+
+export async function getTopNSellingCollections(
+  lowerBound: Date = lastWeek(),
+  upperBound: Date = yesterday(),
+  n: number = 5,
+  id? : number
+) {
+  lowerBound = setTo2359(lowerBound);
+  upperBound = setTo2359(upperBound);
+  const url = baseUrl + `/collections/best-selling`
+  const response = (await axios.get(url, {
+    params: {
+      id: id,
+      lowerBound: lowerBound,
+      upperBound: upperBound,
+      n: n
+    }
+  })).data;
+  return response
+}

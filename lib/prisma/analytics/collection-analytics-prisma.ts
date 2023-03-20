@@ -24,6 +24,33 @@ export async function groupCreatorCollectionAnalyticsByDate(userId: number, lowe
   })
 }
 
+export async function getTopNSellingCollections(userId: number, lowerBound: Date, upperBound: Date, n: number) {
+  return prisma.collectionAnalyticsTimestamp.groupBy({
+    take: n,
+    orderBy: {
+      _sum: {
+        revenue: 'desc'
+      }
+    },
+    by: ['collectionId'],
+    where: {
+      date: {
+        lte: upperBound,
+        gte: lowerBound
+      },
+      collection: 
+        userId > 0
+          ? { is: { creatorId: userId } }
+          : undefined,
+    },
+    _sum: {
+      merchSold: true,
+      revenue: true,
+      clicks: true
+    },
+  })
+}
+
 export async function groupCreatorCollectionAnalyticsByCollection(userId: number, lowerBound: Date, upperBound: Date) {
   return prisma.collectionAnalyticsTimestamp.groupBy({
     by: ['collectionId'],
