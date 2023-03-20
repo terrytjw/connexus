@@ -138,19 +138,7 @@ export function exportCSV(eventId: number) {
 }
 
 export async function registerEventClick(eventId: number) {
-  const eventUrl = `${API_URL}/${EVENT_ENDPOINT}/${eventId}`
-
-  const retrievedEventResponse = (await axios.get(eventUrl)).data;
-
-  const updatedEvent: Partial<Event> = {
-    ...retrievedEventResponse,
-    clicks: retrievedEventResponse.clicks + 1
-  };
-
-  const updatedEventResponse = (
-    await axios.post(eventUrl, updatedEvent)
-  ).data;
-
-  console.log("Start event response: ", updatedEventResponse);
-  return updatedEventResponse;
+  const url= `${API_URL}/${EVENT_ENDPOINT}/${eventId}/click`
+  const response = (await axios.post(url)).data;
+  return response;
 }

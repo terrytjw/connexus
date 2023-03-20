@@ -60,32 +60,32 @@ model Post {
 }
 
 model Community {
-  communityId Int            @id @default(autoincrement())
-  name        String
-  description String
-  profilePic  String?
-  bannerPic   String?
-  tags        CategoryType[]
-  maxMembers  Int            @default(100)
-  creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
-  userId      Int
-  members     User[]         @relation(name: "joinedCommunities")
-  channels    Channel[]
+  communityId         Int                           @id @default(autoincrement())
+  name                String
+  description         String
+  profilePic          String?
+  bannerPic           String?
+  tags                CategoryType[]
+  maxMembers          Int                           @default(100)
+  creator             User                          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId              Int
+  members             User[]                        @relation(name: "joinedCommunities")
+  channels            Channel[]
   analyticsTimestamps CommunityAnalyticsTimestamp[]
-  clicks Int @default(0)
+  clicks              Int                           @default(0)
 }
 
 model Channel {
-  channelId    Int         @id @default(autoincrement())
-  name         String
-  channelType  ChannelType @default(PREMIUM)
-  members      User[]
-  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId  Int
-  posts        Post[]
-  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
-  collectionId Int?        @unique
-  questions    Question[]
+  channelId           Int                         @id @default(autoincrement())
+  name                String
+  channelType         ChannelType                 @default(PREMIUM)
+  members             User[]
+  community           Community                   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId         Int
+  posts               Post[]
+  collection          Collection?                 @relation(fields: [collectionId], references: [collectionId])
+  collectionId        Int?                        @unique
+  questions           Question[]
   analyticsTimestamps ChannelAnalyticsTimestamp[]
 
   @@unique([communityId, name])
@@ -105,31 +105,31 @@ model Comment {
 }
 
 model Event {
-  eventId          Int            @id @default(autoincrement())
-  eventName        String
-  category         CategoryType[]
-  address          Address        @relation(fields: [addressId], references: [addressId])
-  addressId        Int
-  startDate        DateTime       @default(now())
-  endDate          DateTime       @default(now())
-  summary          String?
-  description      String?
-  visibilityType   VisibilityType
-  privacyType      PrivacyType
-  eventPic         String?
-  bannerPic        String?
-  maxAttendee      Int            @default(0)
-  publishType      PublishType
-  publishStartDate DateTime       @default(now())
-  tickets          Ticket[]
-  ticketURIs       String[]
-  scAddress        String
-  userLikes        User[]         @relation("eventLikes")
-  creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
-  creatorId        Int
+  eventId             Int                       @id @default(autoincrement())
+  eventName           String
+  category            CategoryType[]
+  address             Address                   @relation(fields: [addressId], references: [addressId])
+  addressId           Int
+  startDate           DateTime                  @default(now())
+  endDate             DateTime                  @default(now())
+  summary             String?
+  description         String?
+  visibilityType      VisibilityType
+  privacyType         PrivacyType
+  eventPic            String?
+  bannerPic           String?
+  maxAttendee         Int                       @default(0)
+  publishType         PublishType
+  publishStartDate    DateTime                  @default(now())
+  tickets             Ticket[]
+  ticketURIs          String[]
+  scAddress           String
+  userLikes           User[]                    @relation("eventLikes")
+  creator             User                      @relation(fields: [creatorId], references: [userId], name: "createdEvents")
+  creatorId           Int
   analyticsTimestamps EventAnalyticsTimestamp[]
-  clicks Int @default(0)
-  promotion        Promotion[]
+  clicks              Int                       @default(0)
+  promotion           Promotion[]
 }
 
 enum PublishType {
@@ -237,20 +237,20 @@ enum ChannelType {
 }
 
 model Collection {
-  collectionId    Int             @id @default(autoincrement())
-  collectionName  String          @unique
-  description     String
-  currency        Currency        @default(USD)
-  collectionState CollectionState @default(ON_SALE)
-  merchandise     Merchandise[]
-  fixedPrice      Float           @default(0)
-  scAddress       String
-  merchURIs       String[]
-  creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
-  creatorId       Int
+  collectionId        Int                            @id @default(autoincrement())
+  collectionName      String                         @unique
+  description         String
+  currency            Currency                       @default(USD)
+  collectionState     CollectionState                @default(ON_SALE)
+  merchandise         Merchandise[]
+  fixedPrice          Float                          @default(0)
+  scAddress           String
+  merchURIs           String[]
+  creator             User                           @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId           Int
   analyticsTimestamps CollectionAnalyticsTimestamp[]
-  premiumChannel  Channel?
-  clicks Int @default(0)
+  premiumChannel      Channel?
+  clicks              Int                            @default(0)
 }
 
 enum CollectionState {
@@ -280,43 +280,43 @@ model Merchandise {
 }
 
 model CommunityAnalyticsTimestamp {
-  id Int @id @default(autoincrement())
-  members Int
+  id             Int       @id @default(autoincrement())
+  members        Int
   premiumMembers Int
-  clicks Int
-  date DateTime @default(now())
-  community Community @relation(fields: [communityId], references: [communityId])
-  communityId Int
+  clicks         Int
+  date           DateTime  @default(now())
+  community      Community @relation(fields: [communityId], references: [communityId])
+  communityId    Int
 }
 
 model ChannelAnalyticsTimestamp {
-  id Int @id @default(autoincrement())
-  likes Int
-  comments Int
+  id         Int      @id @default(autoincrement())
+  likes      Int
+  comments   Int
   engagement Float
-  date DateTime @default(now())
-  channel Channel @relation(fields: [channelId], references: [channelId])
-  channelId Int
+  date       DateTime @default(now())
+  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channelId  Int
 }
 
 model EventAnalyticsTimestamp {
-  id Int @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   ticketsSold Int
-  revenue Int
-  clicks Int
-  likes Int 
-  date DateTime @default(now())
-  event Event @relation(fields: [eventId], references: [eventId])
-  eventId Int
+  revenue     Int
+  clicks      Int
+  likes       Int
+  date        DateTime @default(now())
+  event       Event    @relation(fields: [eventId], references: [eventId])
+  eventId     Int
 }
 
 model CollectionAnalyticsTimestamp {
-  id Int @id @default(autoincrement())
-  merchSold Int
-  revenue Int
-  clicks Int
-  date DateTime @default(now())
-  collection Collection @relation(fields: [collectionId], references: [collectionId])
+  id           Int        @id @default(autoincrement())
+  merchSold    Int
+  revenue      Int
+  clicks       Int
+  date         DateTime   @default(now())
+  collection   Collection @relation(fields: [collectionId], references: [collectionId])
   collectionId Int
 }
 
