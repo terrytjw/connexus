@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import Toggle from "../../components/Toggle";
 import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEventsPage";
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
@@ -9,13 +8,17 @@ import Layout from "../../components/Layout";
 
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
+import { useUserRole } from "../../utils/hooks";
 
 type EventsPageProps = {
   events: EventWithAllDetails[];
 };
 
 const EventsPage = ({ events }: EventsPageProps) => {
-  const [isCreator, setIsCreator] = useState<boolean>(false);
+  const [isFan, setIsFan] = useUserRole();
+  console.log("is fan ->", isFan);
+
+  useEffect(() => console.log(isFan), [isFan]);
 
   console.log(events);
 
@@ -23,7 +26,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
   const filterEvents = (
     events: EventWithAllDetails[]
   ): EventWithAllDetails[] => {
-    if (!isCreator) {
+    if (isFan) {
       // see only public and published events
       return events?.filter(
         (event) =>
@@ -37,11 +40,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
   return (
     <ProtectedRoute>
       <Layout>
-        <div className="flex justify-start p-8">
-          {isCreator ? "Creator" : "Fan"}
-          <Toggle isChecked={isCreator} setIsChecked={setIsCreator} />
-        </div>
-        {isCreator ? (
+        {!isFan ? (
           <CreatorEventsPage events={filterEvents(events)} />
         ) : (
           <FanEventsPage events={filterEvents(events)} />

@@ -37,6 +37,24 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
   console.log(events);
 
+  useEffect(() => {
+    // ended events
+    if (!isCreated) {
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
+        )
+      );
+    } else {
+      // created events
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) <= new Date()
+        )
+      );
+    }
+  }, [isCreated]);
+
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
 
