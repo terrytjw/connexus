@@ -5,6 +5,7 @@ import { getChannelAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/chan
 import { getCollectionAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/collection-analytics-prisma";
 import { getCommunityAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/community-analytics-prisma";
 import { getEventAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/event-analytics-prisma";
+import { getOverviewAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/overview-analytics-prisma";
 import { ErrorResponse, handleError } from "../../../lib/prisma/prisma-helpers";
 import { lastWeek, yesterday } from "../../../utils/date-util";
 
@@ -80,6 +81,8 @@ export default async function handler(
         case "COMMUNITY":
           response = await getCommunityAnalyticsForCSVPDF(userId, lowerBound, upperBound);
           break;
+        case "OVERVIEW":
+          response = await getOverviewAnalyticsForCSVPDF(userId, lowerBound, upperBound);
       }
 
       const doc = new PDFDocument();
