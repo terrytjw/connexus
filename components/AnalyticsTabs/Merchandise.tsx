@@ -26,6 +26,9 @@ import Loading from "../Loading";
 import Modal from "../../components/Modal";
 import Select from "../Select";
 import {
+  AnalyticsEntity,
+  exportAnalyticsToCSV,
+  exportAnalyticsToPDF,
   getCollectionAnalyticsByCollectionAPI,
   getCollectionAnalyticsByCreatorAPI,
   getTopNSellingCollectionsAPI,
@@ -47,6 +50,7 @@ const MerchandiseTab = ({
   setOptionSelected,
   collections,
 }: MerchandiseTabProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
@@ -316,6 +320,19 @@ const MerchandiseTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (collectionAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToPDF(
+                            userId,
+                            AnalyticsEntity.COLLECTIONS,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as PDF
                     </Button>
@@ -325,6 +342,19 @@ const MerchandiseTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (collectionAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToCSV(
+                            userId,
+                            AnalyticsEntity.COLLECTIONS,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as CSV
                     </Button>

@@ -1,4 +1,5 @@
 import { Channel } from "@prisma/client";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
 // @ts-ignore
@@ -23,6 +24,9 @@ import Loading from "../Loading";
 import Modal from "../../components/Modal";
 import Select from "../Select";
 import {
+  AnalyticsEntity,
+  exportAnalyticsToCSV,
+  exportAnalyticsToPDF,
   getChannelAnalyticsByChannelAPI,
   getChannelAnalyticsByCreatorAPI,
 } from "../../lib/api-helpers/analytics-api";
@@ -42,6 +46,7 @@ const ChannelTab = ({
   setOptionSelected,
   channels,
 }: ChannelTabProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
@@ -206,6 +211,19 @@ const ChannelTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (channelAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToPDF(
+                            userId,
+                            AnalyticsEntity.COMMUNITY,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as PDF
                     </Button>
@@ -215,6 +233,19 @@ const ChannelTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (channelAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToCSV(
+                            userId,
+                            AnalyticsEntity.COMMUNITY,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as CSV
                     </Button>

@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction } from "react";
 import {
   BarChart,
@@ -13,6 +15,11 @@ import {
 import Button from "../Button";
 import Select from "../Select";
 import { SelectOption } from "../../pages/analytics";
+import {
+  AnalyticsEntity,
+  exportAnalyticsToCSV,
+  exportAnalyticsToPDF,
+} from "../../lib/api-helpers/analytics-api";
 
 type AnalyticsPageProps = {
   channelAnalyticsData: any[];
@@ -33,6 +40,10 @@ const OverviewTab = ({
   optionSelected,
   setOptionSelected,
 }: AnalyticsPageProps) => {
+  const router = useRouter();
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
   return (
     <>
       <div className="mt-8 flex w-full items-center justify-between">
@@ -69,6 +80,22 @@ const OverviewTab = ({
                   size="md"
                   variant="solid"
                   className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                  onClick={() => {
+                    if (
+                      channelAnalyticsData.length > 0 ||
+                      communityAnalyticsData.length > 0 ||
+                      collectionAnalyticsData.length > 0 ||
+                      eventAnalyticsData.length > 0
+                    ) {
+                      const url = exportAnalyticsToPDF(
+                        userId,
+                        AnalyticsEntity.OVERVIEW
+                      );
+
+                      router.push(url);
+                      setTimeout(() => router.reload(), 3000);
+                    }
+                  }}
                 >
                   Export and download as PDF
                 </Button>
@@ -78,6 +105,22 @@ const OverviewTab = ({
                   size="md"
                   variant="solid"
                   className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                  onClick={() => {
+                    if (
+                      channelAnalyticsData.length > 0 ||
+                      communityAnalyticsData.length > 0 ||
+                      collectionAnalyticsData.length > 0 ||
+                      eventAnalyticsData.length > 0
+                    ) {
+                      const url = exportAnalyticsToCSV(
+                        userId,
+                        AnalyticsEntity.OVERVIEW
+                      );
+
+                      router.push(url);
+                      setTimeout(() => router.reload(), 3000);
+                    }
+                  }}
                 >
                   Export and download as CSV
                 </Button>

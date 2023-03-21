@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
 // @ts-ignore
@@ -20,7 +21,12 @@ import Button from "../../components/Button";
 import Loading from "../Loading";
 import Modal from "../../components/Modal";
 import Select from "../Select";
-import { getCommunityAnalyticsByCreatorAPI } from "../../lib/api-helpers/analytics-api";
+import {
+  AnalyticsEntity,
+  exportAnalyticsToCSV,
+  exportAnalyticsToPDF,
+  getCommunityAnalyticsByCreatorAPI,
+} from "../../lib/api-helpers/analytics-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
 import { SelectOption } from "../../pages/analytics";
@@ -38,6 +44,7 @@ const CommunityTab = ({
   setOptionSelected,
   community,
 }: CommunityTabProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
@@ -158,6 +165,19 @@ const CommunityTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (communityAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToPDF(
+                            userId,
+                            AnalyticsEntity.COMMUNITY,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as PDF
                     </Button>
@@ -167,6 +187,19 @@ const CommunityTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        if (communityAnalyticsByCreator.length > 0) {
+                          const url = exportAnalyticsToCSV(
+                            userId,
+                            AnalyticsEntity.COMMUNITY,
+                            dateRange[0].startDate,
+                            dateRange[0].endDate
+                          );
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }
+                      }}
                     >
                       Export and download as CSV
                     </Button>

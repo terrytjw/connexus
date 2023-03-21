@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
 // @ts-ignore
@@ -22,6 +23,9 @@ import Loading from "../Loading";
 import Modal from "../../components/Modal";
 import Select from "../Select";
 import {
+  AnalyticsEntity,
+  exportAnalyticsToCSV,
+  exportAnalyticsToPDF,
   getEventAnalyticsByCreatorAPI,
   getEventAnalyticsByEventAPI,
 } from "../../lib/api-helpers/analytics-api";
@@ -42,6 +46,7 @@ const EventTab = ({
   setOptionSelected,
   events,
 }: EventTabProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
@@ -203,6 +208,17 @@ const EventTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        const url = exportAnalyticsToPDF(
+                          userId,
+                          AnalyticsEntity.EVENT,
+                          dateRange[0].startDate,
+                          dateRange[0].endDate
+                        );
+
+                        router.push(url);
+                        setTimeout(() => router.reload(), 3000);
+                      }}
                     >
                       Export and download as PDF
                     </Button>
@@ -212,6 +228,17 @@ const EventTab = ({
                       size="md"
                       variant="solid"
                       className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        const url = exportAnalyticsToCSV(
+                          userId,
+                          AnalyticsEntity.EVENT,
+                          dateRange[0].startDate,
+                          dateRange[0].endDate
+                        );
+
+                        router.push(url);
+                        setTimeout(() => router.reload(), 3000);
+                      }}
                     >
                       Export and download as CSV
                     </Button>
