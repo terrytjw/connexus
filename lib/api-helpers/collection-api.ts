@@ -194,6 +194,7 @@ export async function searchAllCollections(
     cursor: cursor,
     keyword: keyword,
     isLinked: isLinked,
+    collectionState: CollectionState.ON_SALE,
   };
   const response = await sendCollectionsGetReq(params);
   return response;
