@@ -117,3 +117,15 @@ export async function generateCollectionAnalyticsTimestamps() {
   }
   return timestamps;
 }
+
+export async function getCollectionAnalyticsForCSVPDF(userId: number, lowerBound: Date, upperBound: Date) {
+  const analytics = await groupCreatorCollectionAnalyticsByDate(userId, lowerBound, upperBound)
+  return analytics.map((x: any) => {
+    return {
+      date: x.date.toDateString(),
+      merchSold: x._sum.merchSold,
+      revenue: x._sum.revenue,
+      clicks: x._sum.clicks,
+    }
+  });
+}

@@ -93,3 +93,16 @@ export async function generateEventAnalyticsTimestamps() {
   }
   return timestamps;
 }
+
+export async function getEventAnalyticsForCSVPDF(userId: number, lowerBound: Date, upperBound: Date) {
+  const analytics = await groupCreatorEventAnalyticsByDate(userId, lowerBound, upperBound)
+  return analytics.map((x: any) => {
+    return {
+      date: x.date.toDateString(),
+      ticketsSold: x._sum.ticketsSold,
+      revenue: x._sum.revenue,
+      clicks: x._sum.clicks,
+      likes: x._sum.likes,
+    }
+  });
+}
