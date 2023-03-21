@@ -168,32 +168,6 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
           </li>
           <li className="mb-4">
             <Link
-              href="/chats"
-              className={classNames(
-                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/chats" ? "bg-blue-600 text-white" : ""
-              )}
-            >
-              <FaComment className="ml-2" />
-              Chats
-            </Link>
-          </li>
-          <li className="mb-4">
-            <Link
-              href="/notifications"
-              className={classNames(
-                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/notifications"
-                  ? "bg-blue-600 text-white"
-                  : ""
-              )}
-            >
-              <FaBell className="ml-2" />
-              Notifications
-            </Link>
-          </li>
-          <li className="mb-4">
-            <Link
               href={`/user/profile/${session?.user?.userId}`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
@@ -204,20 +178,6 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
             >
               <FaUser className="ml-2" />
               Profile
-            </Link>
-          </li>
-          <li className="mb-4">
-            <Link
-              href="/playground"
-              className={classNames(
-                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white",
-                router.pathname === "/playground"
-                  ? "bg-green-600 text-white"
-                  : ""
-              )}
-            >
-              <FaGripVertical className="ml-2" />
-              Playground
             </Link>
           </li>
           <li className="mb-4">
@@ -296,32 +256,6 @@ const DesktopSidebar = () => {
         </li>
         <li className="mb-4">
           <Link
-            href="/chats"
-            className={classNames(
-              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/chats" ? "bg-blue-600 text-white" : ""
-            )}
-          >
-            <FaComment className="ml-2" />
-            Chats
-          </Link>
-        </li>
-        <li className="mb-4">
-          <Link
-            href="/notifications"
-            className={classNames(
-              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/notifications"
-                ? "bg-blue-600 text-white"
-                : ""
-            )}
-          >
-            <FaBell className="ml-2" />
-            Notifications
-          </Link>
-        </li>
-        <li className="mb-4">
-          <Link
             href={`/user/profile/${session?.user?.userId}`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
@@ -332,18 +266,6 @@ const DesktopSidebar = () => {
           >
             <FaUser className="ml-2" />
             Profile
-          </Link>
-        </li>
-        <li className="mb-4">
-          <Link
-            href="/playground"
-            className={classNames(
-              "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-green-600 hover:text-white",
-              router.pathname === "/playground" ? "bg-green-600 text-white" : ""
-            )}
-          >
-            <FaGripVertical className="ml-2" />
-            Playground
           </Link>
         </li>
         <li className="mb-4">
