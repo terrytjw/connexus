@@ -1,11 +1,10 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import PDFDocument from "pdfkit-table";
-import { AnalyticsEntity } from "../../../lib/api-helpers/analytics-api";
-import { getChannelAnalyticsForCSVPDF, groupCreatorChannelAnalyticsByDate } from "../../../lib/prisma/analytics/channel-analytics-prisma";
-import { getCollectionAnalyticsForCSVPDF, groupCreatorCollectionAnalyticsByDate } from "../../../lib/prisma/analytics/collection-analytics-prisma";
-import { getCommunityAnalyticsForCSVPDF, groupCreatorCommunityAnalyticsByDate } from "../../../lib/prisma/analytics/community-analytics-prisma";
-import { getEventAnalyticsForCSVPDF, groupCreatorEventAnalyticsByDate } from "../../../lib/prisma/analytics/event-analytics-prisma";
+import { getChannelAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/channel-analytics-prisma";
+import { getCollectionAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/collection-analytics-prisma";
+import { getCommunityAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/community-analytics-prisma";
+import { getEventAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/event-analytics-prisma";
 import { ErrorResponse, handleError } from "../../../lib/prisma/prisma-helpers";
 import { lastWeek, yesterday } from "../../../utils/date-util";
 
@@ -55,7 +54,7 @@ export default async function handler(
           label: x.toUpperCase(),
           property: x,
           width: 100,
-          renderer: null
+          renderer: undefined
       }
     })
   }
@@ -91,18 +90,15 @@ export default async function handler(
       const table = {
         title: `Event Data for ${lowerBound.toDateString()} to ${upperBound.toDateString()}`,
         headers: mapToHeaders(response[0]),
-        // complex data
         datas: response
       };
-      // the magic
       doc.pipe(res);
+       
       doc.table(table, {
         prepareHeader: () => doc.font("Helvetica-Bold").fontSize(8),
-        prepareRow: () => {
-          doc.font("Helvetica").fontSize(8);
-        },
+        prepareRow: () => doc.font("Helvetica").fontSize(8)
       });
-      // done!
+      
       doc.end();
     } catch (error) {
       console.log(error)

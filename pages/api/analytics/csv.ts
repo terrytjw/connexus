@@ -6,12 +6,11 @@ import { createReadStream } from "fs";
 import { promisify } from "util";
 import fs from "fs";
 import { ErrorResponse, handleError } from "../../../lib/prisma/prisma-helpers";
-import { getEventAnalyticsForCSVPDF, groupCreatorEventAnalyticsByDate } from "../../../lib/prisma/analytics/event-analytics-prisma";
+import { getEventAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/event-analytics-prisma";
 import { lastWeek, yesterday } from "../../../utils/date-util";
-import { AnalyticsEntity } from "../../../lib/api-helpers/analytics-api";
-import { getCollectionAnalyticsForCSVPDF, groupCreatorCollectionAnalyticsByDate } from "../../../lib/prisma/analytics/collection-analytics-prisma";
-import { getChannelAnalyticsForCSVPDF, groupCreatorChannelAnalyticsByDate } from "../../../lib/prisma/analytics/channel-analytics-prisma";
-import { getCommunityAnalyticsForCSVPDF, groupCreatorCommunityAnalyticsByDate } from "../../../lib/prisma/analytics/community-analytics-prisma";
+import { getCollectionAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/collection-analytics-prisma";
+import { getChannelAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/channel-analytics-prisma";
+import { getCommunityAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/community-analytics-prisma";
 
 const unlink = promisify(fs.unlink);
 
