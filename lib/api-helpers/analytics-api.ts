@@ -9,7 +9,8 @@ export enum AnalyticsEntity {
   CHANNEL,
   COMMUNITY,
   EVENT,
-  COLLECTIONS
+  COLLECTIONS,
+  OVERVIEW
 }
 
 export async function getChannelAnalyticsByCreatorAPI(

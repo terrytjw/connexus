@@ -12,6 +12,7 @@ import { getCollectionAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/c
 import { getChannelAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/channel-analytics-prisma";
 import { getCommunityAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/community-analytics-prisma";
 import { AnalyticsEntity } from "../../../lib/api-helpers/analytics-api";
+import { getOverviewAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/overview-analytics-prisma";
 
 const unlink = promisify(fs.unlink);
 
@@ -88,6 +89,8 @@ export default async function handler(
         case "COMMUNITY":
           response = await getCommunityAnalyticsForCSVPDF(userId, lowerBound, upperBound);
           break;
+        case "OVERVIEW":
+          response = await getOverviewAnalyticsForCSVPDF(userId, lowerBound, upperBound);
       }
 
       const csvWriter = createObjectCsvWriter({
