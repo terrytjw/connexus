@@ -4,6 +4,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { BiFilter } from "react-icons/bi";
 import {
   BarChart,
   Bar,
@@ -19,23 +20,32 @@ import Badge from "../../components/Badge";
 import Button from "../../components/Button";
 import Loading from "../Loading";
 import Modal from "../../components/Modal";
+import Select from "../Select";
 import {
   getEventAnalyticsByCreatorAPI,
   getEventAnalyticsByEventAPI,
 } from "../../lib/api-helpers/analytics-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
 import { EventWithAllDetails } from "../../utils/types";
+import { SelectOption } from "../../pages/analytics";
 
 type EventTabProps = {
-  isModalOpen: boolean;
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+  options: SelectOption[];
+  optionSelected: SelectOption;
+  setOptionSelected: Dispatch<SetStateAction<SelectOption>>;
   events: EventWithAllDetails[];
 };
 
-const EventTab = ({ isModalOpen, setIsModalOpen, events }: EventTabProps) => {
+const EventTab = ({
+  options,
+  optionSelected,
+  setOptionSelected,
+  events,
+}: EventTabProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [eventIdSelected, setEventIdSelected] = useState(
     null as unknown as number
   );
@@ -158,7 +168,73 @@ const EventTab = ({ isModalOpen, setIsModalOpen, events }: EventTabProps) => {
               Submit
             </Button>
           </Modal>
-          <div className="grid gap-4 md:grid-cols-2">
+
+          <div className="mt-8 flex w-full items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Select
+                data={options}
+                selected={optionSelected}
+                setSelected={setOptionSelected}
+                className="w-40 flex-grow-0 sm:w-64"
+              />
+              <div className="tooltip" data-tip={optionSelected.tooltip}>
+                <Button
+                  variant="solid"
+                  size="sm"
+                  className="!bg-blue-100 !text-blue-500"
+                >
+                  i
+                </Button>
+              </div>
+            </div>
+            <div className="flex items-center gap-4">
+              <div className="dropdown-end dropdown">
+                <label tabIndex={0}>
+                  <Button variant="solid" size="md">
+                    Export <span className="hidden sm:contents">Data</span>
+                  </Button>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu rounded-box w-64 bg-base-100 p-2 shadow"
+                >
+                  <li>
+                    <Button
+                      size="md"
+                      variant="solid"
+                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                    >
+                      Export and download as PDF
+                    </Button>
+                  </li>
+                  <li>
+                    <Button
+                      size="md"
+                      variant="solid"
+                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                    >
+                      Export and download as CSV
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+              <Button
+                variant="solid"
+                size="md"
+                className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
+                onClick={() => setIsModalOpen(true)}
+              >
+                Filter
+                <BiFilter className="h-8 w-8" />
+              </Button>
+              <BiFilter
+                className="h-12 w-10 sm:hidden"
+                onClick={() => setIsModalOpen(true)}
+              />
+            </div>
+          </div>
+
+          <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
               <h3 className="mb-8 ml-4 text-xl font-semibold">
                 Revenue Per Day

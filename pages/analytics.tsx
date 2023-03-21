@@ -1,22 +1,25 @@
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
-import { BiFilter } from "react-icons/bi";
 import ChannelTab from "../components/AnalyticsTabs/Channel";
 import CommunityTab from "../components/AnalyticsTabs/Community";
 import EventTab from "../components/AnalyticsTabs/Event";
 import MerchandiseTab from "../components/AnalyticsTabs/Merchandise";
 import OverviewTab from "../components/AnalyticsTabs/Overview";
-import Button from "../components/Button";
 import Layout from "../components/Layout";
 import ProtectedRoute from "../components/ProtectedRoute";
-import Select from "../components/Select";
 import {
   getChannelAnalyticsByCreatorAPI,
   getCollectionAnalyticsByCreatorAPI,
   getCommunityAnalyticsByCreatorAPI,
   getEventAnalyticsByCreatorAPI,
 } from "../lib/api-helpers/analytics-api";
+
+export type SelectOption = {
+  id: number;
+  name: string;
+  tooltip: string;
+};
 
 type AnalyticsPageProps = {
   channelAnalyticsData: any[];
@@ -31,12 +34,7 @@ const AnalyticsPage = ({
   collectionAnalyticsData,
   eventAnalyticsData,
 }: AnalyticsPageProps) => {
-  console.log("channelAnalyticsData", channelAnalyticsData);
-  console.log("communityAnalyticsData", communityAnalyticsData);
-  console.log("collectionAnalyticsData", collectionAnalyticsData);
-  console.log("eventAnalyticsData", eventAnalyticsData);
-
-  const filters = [
+  const options = [
     {
       id: 0,
       name: "Overview",
@@ -63,8 +61,7 @@ const AnalyticsPage = ({
       tooltip: "Channel analytics for all channels in your community",
     },
   ];
-  const [filterSelected, setFilterSelected] = useState(filters[0]);
-  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [optionSelected, setOptionSelected] = useState(options[0]);
 
   return (
     <ProtectedRoute>
@@ -75,109 +72,47 @@ const AnalyticsPage = ({
             Have an in-depth look at all the metrics of your fans' engagement
           </h3>
 
-          <div className="mt-8 flex w-full items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Select
-                data={filters}
-                selected={filterSelected}
-                setSelected={setFilterSelected}
-                className="w-40 flex-grow-0 sm:w-64"
-              />
-              <div className="tooltip" data-tip={filterSelected.tooltip}>
-                <Button
-                  variant="solid"
-                  size="sm"
-                  className="!bg-blue-100 !text-blue-500"
-                >
-                  i
-                </Button>
-              </div>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="dropdown-end dropdown">
-                <label tabIndex={0}>
-                  <Button variant="solid" size="md">
-                    Export <span className="hidden sm:contents">Data</span>
-                  </Button>
-                </label>
-                <ul
-                  tabIndex={0}
-                  className="dropdown-content menu rounded-box w-64 bg-base-100 p-2 shadow"
-                >
-                  <li>
-                    <Button
-                      size="md"
-                      variant="solid"
-                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                    >
-                      Export and download as PDF
-                    </Button>
-                  </li>
-                  <li>
-                    <Button
-                      size="md"
-                      variant="solid"
-                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                    >
-                      Export and download as CSV
-                    </Button>
-                  </li>
-                </ul>
-              </div>
-              {filterSelected.id !== 0 ? (
-                <>
-                  <Button
-                    variant="solid"
-                    size="md"
-                    className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
-                    onClick={() => setIsFilterModalOpen(true)}
-                  >
-                    Filter
-                    <BiFilter className="h-8 w-8" />
-                  </Button>
-                  <BiFilter
-                    className="h-12 w-10 sm:hidden"
-                    onClick={() => setIsFilterModalOpen(true)}
-                  />
-                </>
-              ) : null}
-            </div>
-          </div>
-
           <div className="mt-8 w-full">
-            {filterSelected.id == 0 && (
+            {optionSelected.id == 0 && (
               <OverviewTab
                 channelAnalyticsData={channelAnalyticsData}
                 communityAnalyticsData={communityAnalyticsData}
                 collectionAnalyticsData={collectionAnalyticsData}
                 eventAnalyticsData={eventAnalyticsData}
+                options={options}
+                optionSelected={optionSelected}
+                setOptionSelected={setOptionSelected}
               />
             )}
-            {filterSelected.id == 1 && (
+            {optionSelected.id == 1 && (
               <MerchandiseTab
-                isModalOpen={isFilterModalOpen}
-                setIsModalOpen={setIsFilterModalOpen}
+                options={options}
+                optionSelected={optionSelected}
+                setOptionSelected={setOptionSelected}
                 collections={[]}
               />
             )}
-            {filterSelected.id == 2 && (
+            {optionSelected.id == 2 && (
               <EventTab
-                isModalOpen={isFilterModalOpen}
-                setIsModalOpen={setIsFilterModalOpen}
+                options={options}
+                optionSelected={optionSelected}
+                setOptionSelected={setOptionSelected}
                 events={[]}
               />
             )}
-            {filterSelected.id == 3 && (
+            {optionSelected.id == 3 && (
               <CommunityTab
-                isModalOpen={isFilterModalOpen}
-                setIsModalOpen={setIsFilterModalOpen}
+                options={options}
+                optionSelected={optionSelected}
+                setOptionSelected={setOptionSelected}
                 community={null}
               />
             )}
-            {filterSelected.id == 4 && (
+            {optionSelected.id == 4 && (
               <ChannelTab
-                isModalOpen={isFilterModalOpen}
-                setIsModalOpen={setIsFilterModalOpen}
+                options={options}
+                optionSelected={optionSelected}
+                setOptionSelected={setOptionSelected}
                 channels={[]}
               />
             )}
