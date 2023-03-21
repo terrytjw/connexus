@@ -1,6 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import PDFDocument from "pdfkit-table";
+import { AnalyticsEntity } from "../../../lib/api-helpers/analytics-api";
 import { getChannelAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/channel-analytics-prisma";
 import { getCollectionAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/collection-analytics-prisma";
 import { getCommunityAnalyticsForCSVPDF } from "../../../lib/prisma/analytics/community-analytics-prisma";
@@ -30,8 +31,8 @@ export default async function handler(
   res: NextApiResponse<String | ErrorResponse>
 ) {
   const { method, query } = req;
-  const userId = parseInt(query.id as string);
-  const entity = query.entity as string;
+  const userId = parseInt(query.userId as string);
+  const entity = parseInt(query.entity as string);
 
   switch (method) {
     case "GET":
@@ -61,13 +62,13 @@ export default async function handler(
 
   async function handleGET(
     userId: number, 
-    entity: string,
+    entity: number,
     lowerBound: Date = lastWeek(),
     upperBound: Date = yesterday()
   ) {
     try {
       let response: any[] = [];
-      switch (entity) {
+      switch (AnalyticsEntity[entity]) {
         case "EVENT":
           response = await getEventAnalyticsForCSVPDF(userId, lowerBound, upperBound);
           break;

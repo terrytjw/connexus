@@ -112,7 +112,7 @@ export async function getTopNSellingCollectionsAPI(
   return response
 }
 
-export async function exportAnalyticsToPDF(
+export function exportAnalyticsToPDF(
   userId: number,
   entity: AnalyticsEntity,
   lowerBound: Date = lastWeek(),
@@ -121,7 +121,7 @@ export async function exportAnalyticsToPDF(
   return exportAnalytics(userId, entity, true, lowerBound, upperBound)
 }
 
-export async function exportAnalyticsToCSV(
+export function exportAnalyticsToCSV(
   userId: number,
   entity: AnalyticsEntity,
   lowerBound: Date = lastWeek(),
@@ -130,7 +130,7 @@ export async function exportAnalyticsToCSV(
   return exportAnalytics(userId, entity, false, lowerBound, upperBound)
 }
 
-async function exportAnalytics(
+function exportAnalytics(
   userId: number,
   entity: AnalyticsEntity,
   pdf: boolean,
@@ -146,14 +146,8 @@ async function exportAnalytics(
   } else {
     url = baseUrl + `/csv`
   }
+
+  url = url + `?userId=${userId}&entity=${entity}&lowerBound=${lowerBound}&upperBound=${upperBound}`;
   
-  const response = (await axios.get(url, {
-    params: {
-      userId: userId,
-      entity: entity,
-      lowerBound: lowerBound,
-      upperBound: upperBound
-    }
-  })).data;
-  return response;
+  return url;
 }
