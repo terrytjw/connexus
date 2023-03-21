@@ -46,12 +46,20 @@ const SpinWheel = ({ prizes, size, setIsPrizeWon }: SpinWheelProps) => {
       ?.rafflePrizeId;
   };
 
-  const onFinished = async (winner: any) => {
-    console.log(winner);
-    if (winner != "better luck next time") {
-      const res = await insertRafflePrize(getWonPrizeId(winner) ?? 0, userId);
-      setIsPrizeWon(true);
-      console.log("res ->", res);
+  const onFinished = async (wonPrize: any) => {
+    console.log(wonPrize);
+    if (wonPrize != "No prize :(") {
+      if (getWonPrizeId(wonPrize)) {
+        console.log(
+          "calling user Ticket api with won prize id -> ",
+          getWonPrizeId(wonPrize)
+        );
+        const res = await insertRafflePrize(getWonPrizeId(wonPrize), userId);
+        setIsPrizeWon(true);
+        console.log("res ->", res);
+      } else {
+        console.log("error with getting won prize id");
+      }
     }
   };
 
@@ -60,7 +68,7 @@ const SpinWheel = ({ prizes, size, setIsPrizeWon }: SpinWheelProps) => {
       <WheelComponent
         segments={getSpinWheelPrizes()}
         segColors={segColors}
-        onFinished={(winner: any) => onFinished(winner)}
+        onFinished={(wonPrize: any) => onFinished(wonPrize)}
         primaryColor="black"
         contrastColor="white"
         buttonText="Spin"

@@ -66,10 +66,10 @@ export default async function handler(
     try {
       const { rafflePrizes, ...updatedRaffles } = raffles;
 
-      rafflePrizes.forEach(async (rafflePrize) => {
-        await updateRafflePrizes(rafflePrize.rafflePrizeId, rafflePrize);
-      });
-      const response = await updateRaffle(raffleId, updatedRaffles);
+      // rafflePrizes.forEach(async (rafflePrize) => {
+      //   await updateRafflePrizes(rafflePrize.rafflePrizeId, rafflePrize);
+      // });
+      const response = await updateRaffle(raffleId, raffles);
       res.status(200).json(response);
     } catch (error) {
       const errorResponse = handleError(error);

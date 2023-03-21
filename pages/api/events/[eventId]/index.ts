@@ -18,10 +18,16 @@ import {
   updateEvent,
 } from "../../../../lib/prisma/event-prisma";
 import { updatePromotion } from "../../../../lib/prisma/promotion-prisma";
+import { updateRaffle } from "../../../../lib/prisma/raffle-prisma";
 
 const prisma = new PrismaClient();
 type EventUpdate = Prisma.EventGetPayload<{
-  include: { promotion: true; raffles: true };
+  include: {
+    promotion: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+  };
 }>;
 
 /**
@@ -126,8 +132,8 @@ export default async function handler(
     try {
       const { eventPic, bannerPic, promotion, raffles, ...event } =
         eventWithPromo;
-      let eventImageUrl = "";
-      let eventBannerPictureUrl = "";
+      let eventImageUrl = eventPic;
+      let eventBannerPictureUrl = bannerPic;
 
       if (eventPic && checkIfStringIsBase64(eventPic)) {
         const { data, error } = await uploadImage(
@@ -169,21 +175,19 @@ export default async function handler(
         ...event,
       };
 
+      console.log("promotion ->", promotion);
+
       promotion.forEach(async (promo: Promotion) => {
         const { eventId, ...promoInfo } = promo;
         updatePromotion(promo.promotionId, promoInfo);
       });
 
-      //To do
-      // raffles.forEach(async (raffle) => {
-      //   const { eventId, ...raffleInfo } = raffle;
-      //   await prisma.raffle.update({
-      //     where: {
-      //       raffleId: raffle.raffleId,
-      //     },
-      //     data: raffleInfo,
-      //   });
-      // })
+      console.log("raffles->", raffles);
+
+      raffles.forEach(async (raffle) => {
+        console.log("LOGGING,", raffle);
+        await updateRaffle(raffle.raffleId, raffle);
+      });
 
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
       if (eventBannerPictureUrl)

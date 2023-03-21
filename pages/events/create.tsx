@@ -168,11 +168,6 @@ const CreatorEventCreate = () => {
 
   // create contract and db entry
   const createEvent = async (event: any) => {
-    /*
-    Inputs: 
-    1. Event Info
-    2. Ticket Info
-    */
     //  render spinner
     setIsLoading(true);
     // create smart contract

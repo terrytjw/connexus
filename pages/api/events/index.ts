@@ -275,7 +275,7 @@ export default async function handler(
       );
 
       raffles.forEach(async (raffle) => {
-        await saveRaffles(response.eventId, raffle.rafflePrizes);
+        await saveRaffles(response.eventId, raffle);
       });
 
       res.status(200).json(response);

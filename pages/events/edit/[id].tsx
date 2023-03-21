@@ -15,7 +15,13 @@ import Loading from "../../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithAllDetails } from "../../../utils/types";
-import { Ticket, Address, TicketType, Promotion } from "@prisma/client";
+import {
+  Ticket,
+  Address,
+  TicketType,
+  Promotion,
+  Raffles,
+} from "@prisma/client";
 
 import axios from "axios";
 
@@ -28,6 +34,9 @@ import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import raffle from "../../api/events/raffle";
+import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -49,6 +58,13 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     useForm<EventWithAllDetails>({
       defaultValues: {
         ...event,
+        // raffles: [
+        //   event.raffles.map((raffle: RafflesWithPrizes) => ({
+
+        //     ...raffle,
+        //     rafflePrizes: sortByProperty(raffle.rafflePrizes, "rafflePrizeId"),
+        //   })),
+        // ],
         address: {
           ...address,
         },
@@ -349,7 +365,12 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     } else {
       // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
-      // remove tickets since its updated separately before
+
+      /**
+       * 1. updating address separately
+       * 2. updated tickets separately
+       * 3. userLikes not needed and will crash post api call
+       * */
       const {
         address,
         tickets: { tempTickets },
@@ -362,9 +383,9 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
         address
       );
-
       console.log("updated address ->", addressRes.data);
 
+      // final form object before calling post api
       const updated_event_WITHOUT_uri: Partial<EventWithAllDetails> = {
         ...newEventWOTicketsNAddress,
       }; //redo again to add the new URI arr
@@ -418,6 +439,21 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     };
     updateEvent(prismaEvent);
   };
+
+  const sortByProperty = (arr: any[], property: string) => {
+    return arr.sort((a, b) => {
+      if (a[property] < b[property]) {
+        return -1;
+      }
+      if (a[property] > b[property]) {
+        return 1;
+      }
+      return 0;
+    });
+  };
+
+  console.log("before sort ->", prizesFields);
+  console.log("after sort-> ", sortByProperty(prizesFields, "rafflePrizeId"));
 
   // a null/ undefined state is needed for form validation
   const addNewTicket = (): void => {
@@ -524,6 +560,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}
@@ -610,7 +656,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
-                    prizesFields={prizesFields}
+                    prizesFields={sortByProperty(prizesFields, "rafflePrizeId")} // asc sort by raffle prize id
                     appendPrize={appendPrize}
                     removePrize={removePrize}
                     updatePrize={updatePrize}

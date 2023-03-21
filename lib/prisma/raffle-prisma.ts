@@ -8,12 +8,14 @@ import {
 
 const prisma = new PrismaClient();
 
+export type RafflesWithPrizes = Prisma.RafflesGetPayload<{
+  include: { rafflePrizes: true };
+}>;
 
-export async function saveRaffles(
-  eventId: number,
-  rafflesPrizes: RafflePrize[]
-) {
-  const rafflePrizeData = rafflesPrizes.map((prize) => ({ name: prize.name }));
+export async function saveRaffles(eventId: number, raffles: RafflesWithPrizes) {
+  const rafflePrizeData = raffles.rafflePrizes.map((prize) => ({
+    name: prize.name,
+  }));
 
   return prisma.raffles.create({
     data: {
@@ -22,6 +24,9 @@ export async function saveRaffles(
           eventId: eventId,
         },
       },
+      ...raffles,
+      raffleId: undefined,
+      eventId: undefined,
       rafflePrizes: {
         createMany: {
           data: rafflePrizeData,
@@ -65,6 +70,15 @@ export async function updateRafflePrizeUser(
   });
 }
 
+export async function createafflePrizes(rafflePrize: RafflePrize) {
+  return prisma.rafflePrize.create({
+    data: {
+      ...rafflePrize,
+      rafflePrizeId: undefined,
+    },
+  });
+}
+
 export async function updateRafflePrizes(
   rafflePrizeId: number,
   rafflePrize: RafflePrize
@@ -80,15 +94,49 @@ export async function updateRafflePrizes(
   });
 }
 
-export async function updateRaffle(raffleId: number, raffles: Raffles) {
+export async function updateRaffle(
+  raffleId: number,
+  raffles: RafflesWithPrizes
+) {
+  // raffles.rafflePrizes.forEach(async (prize) => {
+  //   if (prize.rafflePrizeId) {
+  //     await updateRafflePrizes(prize.rafflePrizeId, prize);
+  //   } else {
+  //     await createafflePrizes(prize);
+  //   }
+  // });
+
+  const { rafflePrizes, ...updatedRaffles } = raffles;
+
+  await prisma.rafflePrize.deleteMany({
+    where: {
+      rafflesId: raffleId,
+    },
+  });
+
   return prisma.raffles.update({
     where: {
       raffleId: raffleId,
     },
     data: {
-      ...raffles,
+      ...updatedRaffles,
       raffleId: undefined,
+      rafflePrizes: {
+        createMany: {
+          data: rafflePrizes.map((prize) => ({ name: prize.name })),
+        },
+      },
     },
-    include: { event: true },
+    include: {
+      event: true,
+      rafflePrizes: {
+        select: {
+          rafflePrizeId: true,
+        },
+        orderBy: {
+          rafflePrizeId: "asc",
+        },
+      },
+    },
   });
 }

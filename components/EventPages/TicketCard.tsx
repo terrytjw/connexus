@@ -26,23 +26,22 @@ const TicketCard = ({
   setSelectedTicket,
 }: TicketCardProps) => {
   const { data: session, status } = useSession();
-  const userId = session?.user.userId;
-  const [isCheckedIn, setIsCheckedIn] = useState<boolean>();
+  const userId = Number(session?.user.userId);
 
-  // custom hook to call a function every 3s with proper memory cleanup
-  useInterval(() => {
-    getCheckInStatus();
-  }, 3000);
+  // // custom hook to call a function every 3s with proper memory cleanup
+  // useInterval(() => {
+  //   getCheckInStatus();
+  // }, 3000);
 
-  const getCheckInStatus = async () => {
-    try {
-      // todo: replace with actual user Ticket info
-      const checkInStatus = false;
-      setIsCheckedIn(checkInStatus);
-    } catch (error) {
-      console.error("Error fetching state:", error);
-    }
-  };
+  // const getCheckInStatus = async () => {
+  //   try {
+  //     // todo: replace with actual user Ticket info
+  //     const checkInStatus = false;
+  //     setIsCheckedIn(checkInStatus);
+  //   } catch (error) {
+  //     console.error("Error fetching state:", error);
+  //   }
+  // };
 
   const getQrString = (): string => {
     const qrString = ticket.eventId + "," + ticket.ticketId + "," + userId;
@@ -73,6 +72,14 @@ const TicketCard = ({
   const getRafflePrizes = (ticket: any): any[] => {
     return ticket?.event.raffles[0]?.rafflePrizes;
   };
+
+  const isCheckedIn = (ticket: any): boolean | undefined => {
+    return ticket.userTicket.find(
+      (userTicket: any) => userTicket.userId === userId
+    )?.checkIn;
+  };
+
+  console.log(`is user ${userId} checked in for ticket ->`, ticket);
 
   return (
     <div>
