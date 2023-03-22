@@ -54,7 +54,15 @@ export type QuestionWithUser = Prisma.QuestionGetPayload<{
 }>;
 
 export type EventWithAllDetails = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true; userLikes: true; promotion: true };
+  include: {
+    tickets: true;
+    address: true;
+    userLikes: true;
+    promotion: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+  };
 }>;
 
 export type UserWithTickets = Prisma.UserGetPayload<{
@@ -67,10 +75,18 @@ export type MerchandiseWithCollectionName = Prisma.MerchandiseGetPayload<{
   };
 }>;
 
+export type TicketWithEvent = Prisma.TicketGetPayload<{
+  include: {
+    event: {
+      include: { raffles: true };
+    };
+  };
+}>;
+
 export type AttendeeListType = {
   userId: number;
   displayName: string;
   email: string;
   checkIn: boolean;
-  ticket: Ticket;
+  ticket: TicketWithEvent;
 };

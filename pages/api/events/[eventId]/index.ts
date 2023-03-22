@@ -18,10 +18,16 @@ import {
   updateEvent,
 } from "../../../../lib/prisma/event-prisma";
 import { updatePromotion } from "../../../../lib/prisma/promotion-prisma";
+import { updateRaffle } from "../../../../lib/prisma/raffle-prisma";
 
 const prisma = new PrismaClient();
-type EventWithPromoCode = Prisma.EventGetPayload<{
-  include: { promotion: true };
+type EventUpdate = Prisma.EventGetPayload<{
+  include: {
+    promotion: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+  };
 }>;
 
 /**
@@ -99,7 +105,7 @@ export default async function handler(
       await handleGET(eventId);
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as EventWithPromoCode;
+      const event = JSON.parse(JSON.stringify(req.body)) as EventUpdate;
       await handlePOST(eventId, event);
       break;
     case "DELETE":
@@ -122,14 +128,12 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(
-    eventId: number,
-    eventWithPromo: EventWithPromoCode
-  ) {
+  async function handlePOST(eventId: number, eventWithPromo: EventUpdate) {
     try {
-      const { eventPic, bannerPic, promotion, ...event } = eventWithPromo;
-      let eventImageUrl = "";
-      let eventBannerPictureUrl = "";
+      const { eventPic, bannerPic, promotion, raffles, ...event } =
+        eventWithPromo;
+      let eventImageUrl = eventPic;
+      let eventBannerPictureUrl = bannerPic;
 
       if (eventPic && checkIfStringIsBase64(eventPic)) {
         const { data, error } = await uploadImage(
@@ -171,16 +175,24 @@ export default async function handler(
         ...event,
       };
 
-      console.log(promotion);
+      console.log("promotion ->", promotion);
 
       promotion.forEach(async (promo: Promotion) => {
         const { eventId, ...promoInfo } = promo;
         updatePromotion(promo.promotionId, promoInfo);
       });
 
+      console.log("raffles->", raffles);
+
+      raffles.forEach(async (raffle) => {
+        console.log("LOGGING,", raffle);
+        await updateRaffle(raffle.raffleId, raffle);
+      });
+
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
       if (eventBannerPictureUrl)
         updatedEventInfo.bannerPic = eventBannerPictureUrl;
+
       const response = await updateEvent(eventId, updatedEventInfo);
 
       res.status(200).json(response);

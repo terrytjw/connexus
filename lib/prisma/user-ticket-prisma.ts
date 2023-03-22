@@ -8,7 +8,7 @@ export type TicketWithUser = Prisma.TicketGetPayload<{
   include: { users: true };
 }>;
 
-export async function saveUserTicket(tickets: TicketWithUser[]) {
+export async function saveUserTickets(tickets: TicketWithUser[]) {
   tickets.forEach(async (ticket) => {
     ticket.users.forEach(async (user) => {
       await prisma.userTicket.create({
@@ -26,6 +26,26 @@ export async function saveUserTicket(tickets: TicketWithUser[]) {
         },
       });
     });
+  });
+}
+
+export async function saveUserTicket(
+  ticketId: number | undefined,
+  userId: number | undefined
+) {
+  return prisma.userTicket.create({
+    data: {
+      ticket: {
+        connect: {
+          ticketId: ticketId,
+        },
+      },
+      user: {
+        connect: {
+          userId: userId,
+        },
+      },
+    },
   });
 }
 
