@@ -152,6 +152,7 @@ const TicketCardInput = ({
                         ticketName: "",
                         qty: 0,
                         price: 0,
+                        stripePriceId: "",
                       });
                     }
                   }}
@@ -178,6 +179,7 @@ const TicketCardInput = ({
                         ticketName: ticket.name,
                         qty: 1,
                         price: getTicketPrice(ticket.ticketId) ?? 0,
+                        stripePriceId: ticket.stripePriceId ?? "",
                       });
                     }
                   }}

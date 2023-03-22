@@ -98,7 +98,7 @@ const ConfirmationFormProps = ({
             },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <InputGroup
+            <Input
               type="text"
               label="Mobile Number *"
               value={value ?? ""}
@@ -109,9 +109,7 @@ const ConfirmationFormProps = ({
               errorMessage={error?.message}
               className="max-w-3xl"
               disabled={!!userData?.phoneNumber}
-            >
-              <span className="text-xs text-gray-400">+65</span>
-            </InputGroup>
+            />
           )}
         />
 

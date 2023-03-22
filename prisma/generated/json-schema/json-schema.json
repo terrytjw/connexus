@@ -157,6 +157,12 @@
               "type": "null"
             }
           ]
+        },
+        "rafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
         }
       }
     },
@@ -275,6 +281,16 @@
           "items": {
             "$ref": "#/definitions/Channel"
           }
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CommunityAnalyticsTimestamp"
+          }
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
         }
       }
     },
@@ -325,6 +341,12 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Question"
+          }
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChannelAnalyticsTimestamp"
           }
         }
       }
@@ -495,6 +517,22 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventAnalyticsTimestamp"
+          }
+        },
+        "raffles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Raffles"
+          }
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
         },
         "promotion": {
           "type": "array",
@@ -704,6 +742,12 @@
         "creator": {
           "$ref": "#/definitions/User"
         },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionAnalyticsTimestamp"
+          }
+        },
         "premiumChannel": {
           "anyOf": [
             {
@@ -713,6 +757,10 @@
               "type": "null"
             }
           ]
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
         }
       }
     },
@@ -754,6 +802,105 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        }
+      }
+    },
+    "CommunityAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "members": {
+          "type": "integer"
+        },
+        "premiumMembers": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "community": {
+          "$ref": "#/definitions/Community"
+        }
+      }
+    },
+    "ChannelAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "integer"
+        },
+        "engagement": {
+          "type": "number"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "EventAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "ticketsSold": {
+          "type": "integer"
+        },
+        "revenue": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        }
+      }
+    },
+    "CollectionAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "merchSold": {
+          "type": "integer"
+        },
+        "revenue": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "collection": {
+          "$ref": "#/definitions/Collection"
         }
       }
     },
@@ -832,6 +979,69 @@
           "$ref": "#/definitions/User"
         }
       }
+    },
+    "Raffles": {
+      "type": "object",
+      "properties": {
+        "raffleId": {
+          "type": "integer"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "rafflePrizes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrize"
+          }
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "isActivated": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "RafflePrize": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "Raffles": {
+          "$ref": "#/definitions/Raffles"
+        },
+        "rafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
+        }
+      }
+    },
+    "RafflePrizeUser": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeUserId": {
+          "type": "integer"
+        },
+        "prizeWon": {
+          "$ref": "#/definitions/RafflePrize"
+        },
+        "isClaimed": {
+          "type": "boolean",
+          "default": false
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
     }
   },
   "type": "object",
@@ -872,6 +1082,18 @@
     "merchandise": {
       "$ref": "#/definitions/Merchandise"
     },
+    "communityAnalyticsTimestamp": {
+      "$ref": "#/definitions/CommunityAnalyticsTimestamp"
+    },
+    "channelAnalyticsTimestamp": {
+      "$ref": "#/definitions/ChannelAnalyticsTimestamp"
+    },
+    "eventAnalyticsTimestamp": {
+      "$ref": "#/definitions/EventAnalyticsTimestamp"
+    },
+    "collectionAnalyticsTimestamp": {
+      "$ref": "#/definitions/CollectionAnalyticsTimestamp"
+    },
     "question": {
       "$ref": "#/definitions/Question"
     },
@@ -880,6 +1102,15 @@
     },
     "bankAccount": {
       "$ref": "#/definitions/BankAccount"
+    },
+    "raffles": {
+      "$ref": "#/definitions/Raffles"
+    },
+    "rafflePrize": {
+      "$ref": "#/definitions/RafflePrize"
+    },
+    "rafflePrizeUser": {
+      "$ref": "#/definitions/RafflePrizeUser"
     }
   }
 }
