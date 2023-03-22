@@ -191,12 +191,25 @@ const AttendeesPage = () => {
 
   const handleVerify = async () => {
     if (currentPrizeSelection?.rafflePrizeUserData) {
-      const res = await updateRafflePrize(1, {
-        rafflePrizeUserId: 1,
-        rafflePrizeId: 1,
+      console.log("passing this obj -> ", {
+        rafflePrizeUserId:
+          currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+        rafflePrizeId:
+          currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
         isClaimed: true,
-        userId: 4,
+        userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
       });
+      const res = await updateRafflePrize(
+        currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+        {
+          rafflePrizeUserId:
+            currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+          rafflePrizeId:
+            currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
+          isClaimed: true,
+          userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
+        }
+      );
       console.log("res ->", res);
       mutate((data: AttendeeListType[]) => {
         data.map((attendee) =>

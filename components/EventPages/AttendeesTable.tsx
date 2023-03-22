@@ -6,6 +6,7 @@ import {
   CheckInStatus,
   prizeSelection,
 } from "../../pages/events/attendees/[id]";
+import { RafflePrize, RafflePrizeUser } from "@prisma/client";
 
 type AttendeesTableProps = {
   data: AttendeeListType[]; // replace this with prisma attendee user type
@@ -32,6 +33,17 @@ const AttendeesTable = ({
       prize.rafflePrizeUser.find(
         (rafflePrizeUser: any) => rafflePrizeUser.userId === attendee.userId
       )
+    );
+  };
+
+  const getRafflePrizeUserFromRafflePrize = (
+    rafflePrize: RafflePrize & { rafflePrizeUser: RafflePrizeUser[] },
+    attendee: any
+  ): RafflePrizeUser | undefined => {
+    if (!rafflePrize) return;
+    return rafflePrize.rafflePrizeUser.find(
+      (rafflePrizeUser: RafflePrizeUser) =>
+        rafflePrizeUser.userId === attendee.userId
     );
   };
 
@@ -89,17 +101,28 @@ const AttendeesTable = ({
                           const winner = getPrizeWinner(data);
                           console.log("winner ->", winner);
                           // find prize won
+                          const rafflePrizeUser =
+                            getRafflePrizeUserFromRafflePrize(winner, data);
 
-                          setCurrentPrizeSelection({
-                            prizeName: getPrizeWon(data, winner.rafflePrizeId)
-                              ?.name,
-                            rafflePrizeUserData: {
-                              rafflePrizeUserId: winner.rafflePrizeUserId,
-                              rafflePrizeId: winner.rafflePrizeId,
-                              isClaimed: true,
-                              userId: winner.userId,
-                            },
-                          });
+                          console.log(
+                            "current Raffle Prize User ->",
+                            rafflePrizeUser
+                          );
+
+                          if (rafflePrizeUser?.rafflePrizeId && rafflePrizeUser?.rafflePrizeUserId && rafflePrizeUser?.userId) {
+                            setCurrentPrizeSelection({
+                              prizeName: getPrizeWon(data, winner.rafflePrizeId)
+                                ?.name,
+                              rafflePrizeUserData: {
+                                rafflePrizeUserId:
+                                  rafflePrizeUser?.rafflePrizeUserId,
+                                rafflePrizeId: rafflePrizeUser?.rafflePrizeId,
+                                isClaimed: true,
+                                userId: rafflePrizeUser?.userId,
+                              },
+                            });
+                          }
+        
                           setIsPrizeModalOpen(true);
                         }}
                         disabled={isPrizeClaimed(data)}
