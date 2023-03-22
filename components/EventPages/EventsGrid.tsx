@@ -5,7 +5,11 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { formatDate } from "../../utils/date-util";
-import { likeEvent, unlikeEvent } from "../../lib/api-helpers/event-api";
+import {
+  likeEvent,
+  registerEventClick,
+  unlikeEvent,
+} from "../../lib/api-helpers/event-api";
 import { EventWithAllDetails } from "../../utils/types";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -90,7 +94,13 @@ const CollectionGridItem = ({
   };
 
   return (
-    <Link href={`/events/${item.eventId}`} className="group text-sm">
+    <Link
+      href={`/events/${item.eventId}`}
+      className="group text-sm"
+      onClick={async () => {
+        await registerEventClick(item.eventId);
+      }}
+    >
       <div>
         <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
           <Image

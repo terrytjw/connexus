@@ -248,3 +248,23 @@ export async function getCollection(collectionId: number) {
   const response = (await axios.get(url)).data;
   return response;
 }
+
+export async function registerCollectionClick(collectionId: number) {
+  const collectionUrl = baseUrl + `/${collectionId}`;
+  const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
+
+  const { merchandise, ...collectionInfo } =
+    retrievedCollectionResponse as CollectionwithMerch;
+
+  const updatedCollection: Partial<Collection> = {
+    ...collectionInfo,
+    clicks: retrievedCollectionResponse.clicks + 1
+  };
+
+  const updatedCollectionResponse = (
+    await axios.post(collectionUrl, updatedCollection)
+  ).data;
+
+  console.log("Start collection response: ", updatedCollectionResponse);
+  return updatedCollectionResponse;
+}
