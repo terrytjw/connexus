@@ -5,11 +5,12 @@ import { lastWeek, setTo2359, yesterday } from "../../utils/date-util";
 
 const baseUrl = `${API_URL}/${ANALYTICS_ENDPOINT}`;
 
-enum AnalyticsEntity {
+export enum AnalyticsEntity {
   CHANNEL,
   COMMUNITY,
   EVENT,
-  COLLECTIONS
+  COLLECTIONS,
+  OVERVIEW
 }
 
 export async function getChannelAnalyticsByCreatorAPI(
@@ -110,4 +111,44 @@ export async function getTopNSellingCollectionsAPI(
     }
   })).data;
   return response
+}
+
+export function exportAnalyticsToPDF(
+  userId: number,
+  entity: AnalyticsEntity,
+  lowerBound: Date = lastWeek(),
+  upperBound: Date = yesterday(),
+) {
+  return exportAnalytics(userId, entity, true, lowerBound, upperBound)
+}
+
+export function exportAnalyticsToCSV(
+  userId: number,
+  entity: AnalyticsEntity,
+  lowerBound: Date = lastWeek(),
+  upperBound: Date = yesterday(),
+) {
+  return exportAnalytics(userId, entity, false, lowerBound, upperBound)
+}
+
+function exportAnalytics(
+  userId: number,
+  entity: AnalyticsEntity,
+  pdf: boolean,
+  lowerBound: Date = lastWeek(),
+  upperBound: Date = yesterday(),
+) {
+  lowerBound = setTo2359(lowerBound);
+  upperBound = setTo2359(upperBound);
+
+  let url = baseUrl;
+  if (pdf) {
+    url = baseUrl + `/pdf`;
+  } else {
+    url = baseUrl + `/csv`
+  }
+
+  url = url + `?userId=${userId}&entity=${entity}&lowerBound=${lowerBound}&upperBound=${upperBound}`;
+  
+  return url;
 }

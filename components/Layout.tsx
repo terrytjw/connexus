@@ -4,12 +4,10 @@ import {
   FaHome,
   FaPhotoVideo,
   FaCalendarAlt,
-  FaComment,
   FaUser,
-  FaBell,
-  FaGripVertical,
   FaSignOutAlt,
   FaChevronDown,
+  FaChartBar,
 } from "react-icons/fa";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
@@ -166,6 +164,22 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
               Events
             </Link>
           </li>
+          {isFan ? null : (
+            <li className="mb-4">
+              <Link
+                href="/analytics"
+                className={classNames(
+                  "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                  router.pathname === "/analytics"
+                    ? "bg-blue-600 text-white"
+                    : ""
+                )}
+              >
+                <FaChartBar className="ml-2" />
+                Analytics
+              </Link>
+            </li>
+          )}
           <li className="mb-4">
             <Link
               href={`/user/profile/${session?.user?.userId}`}
@@ -198,7 +212,7 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
   );
 };
 
-const DesktopSidebar = () => {
+const DesktopSidebar = ({ isFan }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -254,6 +268,20 @@ const DesktopSidebar = () => {
             Events
           </Link>
         </li>
+        {isFan ? null : (
+          <li className="mb-4">
+            <Link
+              href="/analytics"
+              className={classNames(
+                "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
+                router.pathname === "/analytics" ? "bg-blue-600 text-white" : ""
+              )}
+            >
+              <FaChartBar className="ml-2" />
+              Analytics
+            </Link>
+          </li>
+        )}
         <li className="mb-4">
           <Link
             href={`/user/profile/${session?.user?.userId}`}
@@ -315,7 +343,7 @@ const Layout = ({ children }: LayoutProps) => {
   return (
     <MobileNavbar userData={userData} isFan={isFan} switchRole={switchRole}>
       <div className="flex text-black">
-        <DesktopSidebar />
+        <DesktopSidebar isFan={isFan} />
         <main className="debug-screens w-full lg:ml-64 lg:w-[calc(100%-16rem)]">
           <div className="min-h-screen bg-sky-100">
             {/* desktop profile dropdown */}
