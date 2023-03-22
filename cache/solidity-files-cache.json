@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/Users/colin/Desktop/creator-economy/contracts/Collection.sol": {
-      "lastModificationDate": 1677474414301,
-      "contentHash": "b552da68cea2f63569cb7b50a7c39589",
+      "lastModificationDate": 1679450273557,
+      "contentHash": "986e737c954d4f89b1d4a01f9d0cfb56",
       "sourceName": "contracts/Collection.sol",
       "solcConfig": {
         "version": "0.8.9",
@@ -596,8 +596,8 @@
       ]
     },
     "/Users/colin/Desktop/creator-economy/contracts/SimpleEvent.sol": {
-      "lastModificationDate": 1678435317291,
-      "contentHash": "59f5de5309d9ca8917858d1213a37a00",
+      "lastModificationDate": 1679450067464,
+      "contentHash": "05602e499722238d2caa23081a0ab19a",
       "sourceName": "contracts/SimpleEvent.sol",
       "solcConfig": {
         "version": "0.8.9",

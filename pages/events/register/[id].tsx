@@ -28,12 +28,14 @@ import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
 import getStripe from "../../../lib/stripe";
 import { useRouter } from "next/router";
 import { sendEmail } from "../../../lib/api-helpers/communication-api";
+import { saveUserTicket } from "../../../lib/api-helpers/ticket-api";
 
 export type SelectedTicket = {
   ticketId: number | undefined;
   ticketName: string;
   qty: number;
   price: number;
+  stripePriceId: string;
 };
 
 export type TicketsForm = User & {
@@ -70,6 +72,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           ticketName: "",
           qty: 0,
           price: 0,
+          stripePriceId: "",
         },
         preDiscountedTickets: event.tickets,
         discountedTickets: [],
@@ -107,6 +110,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         ticketName: savedFormData.selectedTicket.ticketName,
         qty: savedFormData.selectedTicket.qty,
         price: savedFormData.selectedTicket.price,
+        stripePriceId: savedFormData.stripePriceId,
       });
 
       // bring users back to confirmation page
@@ -123,9 +127,10 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         savedFormData.updatedUser,
         Number(savedFormData.updatedUser.userId),
         event.eventId,
-        savedFormData.selectedTicket.ticketName
+        savedFormData.selectedTicket.ticketName,
+        savedFormData.selectedTicket.ticketId
       );
-      localStorage.removeItem("savedFormData");
+      // localStorage.removeItem("savedFormData");
 
       // send email
       sendEmail(
@@ -250,7 +255,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     userFormData: User,
     userId: number,
     eventId: number,
-    ticketCategory: string
+    ticketCategory: string,
+    selectedTicketId: number
   ) => {
     setIsLoading(true);
     setIsRegisterSuccessModalOpen(true);
@@ -330,23 +336,18 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     }
     ticketURIs.push(link);
 
+    // remove certain fields for api to work
+    const {
+      address,
+      tickets: tempTickets,
+      userLikes,
+      ...eventWOSomeFields
+    } = eventInfo;
+
     // construct update event
     const updated_event = {
-      eventName: eventInfo.eventName,
-      addressId: eventInfo.addressId,
-      category: eventInfo.category,
-      startDate: eventInfo.startDate,
-      endDate: eventInfo.endDate,
-      eventPic: eventInfo.eventPic,
-      bannerPic: eventInfo.bannerPic,
-      summary: eventInfo.summary,
-      description: eventInfo.description,
-      visibilityType: eventInfo.visibilityType,
-      privacyType: eventInfo.privacyType,
-      publishStartDate: eventInfo.publishStartDate,
+      ...eventWOSomeFields,
       ticketURIs: ticketURIs,
-      publishType: eventInfo.publishType,
-      promotion: eventInfo.promotion,
     };
 
     console.log("posting updated event ->", updated_event);
@@ -355,6 +356,11 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       updated_event
     );
     let updated_data = updated_response.data;
+
+    // add userTicket record to db (attendee)
+    console.log("selected ticket id ->", selectedTicketId);
+    console.log("userId ->", userId);
+    const res = await saveUserTicket(selectedTicketId, userId);
     console.log("Data uploaded for both event + user");
     setIsLoading(false);
   };
@@ -448,7 +454,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
                 setIsLoading(true);
                 // Create a Checkout Session.
                 const response = await fetchPostJSON("/api/checkout_sessions", {
-                  priceId: "price_1Mn2EMCmKD4DhrYc7Nb12kp7",
+                  priceId: selectedTicket.stripePriceId,
                   creatorId: event.creatorId,
                   promoId: formData.stripePromotionId,
                   paymentSuccessUrl: `events/register/${event.eventId}?paymentSuccess=true`,

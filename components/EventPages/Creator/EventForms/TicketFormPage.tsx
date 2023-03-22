@@ -3,6 +3,8 @@ import {
   Control,
   Controller,
   FieldArrayWithId,
+  UseFieldArrayAppend,
+  UseFieldArrayRemove,
   UseFieldArrayUpdate,
   UseFormGetFieldState,
   UseFormSetValue,
@@ -16,6 +18,7 @@ import { FaDollarSign, FaTrash } from "react-icons/fa";
 import { EventWithAllDetails } from "../../../../utils/types";
 import { TicketType } from "@prisma/client";
 import { isValid } from "date-fns";
+import { remove } from "lodash";
 
 type TicketFormPageProps = {
   isEdit: boolean;
@@ -28,6 +31,16 @@ type TicketFormPageProps = {
   update: UseFieldArrayUpdate<EventWithAllDetails, "tickets">;
   addNewTicket: () => void;
   removeTicket: (index: number) => void;
+  prizesFields: FieldArrayWithId<
+    EventWithAllDetails,
+    "raffles.0.rafflePrizes",
+    "id"
+  >[];
+  appendPrize: UseFieldArrayAppend<
+    EventWithAllDetails,
+    "raffles.0.rafflePrizes"
+  >;
+  removePrize: UseFieldArrayRemove;
   proceedStep: () => void;
 };
 
@@ -42,20 +55,13 @@ const TicketFormPage = ({
   update,
   addNewTicket,
   removeTicket,
+  prizesFields,
+  appendPrize,
+  removePrize,
   proceedStep,
 }: TicketFormPageProps) => {
   // form values
-  const { endDate, tickets, promotion } = watch();
-
-  // replace with this with actual promo code field
-  const [prizes, setPrizes] = useState<
-    { prizeId: number; prizeName: string }[]
-  >([
-    { prizeId: 1, prizeName: "prize 1" },
-    { prizeId: 2, prizeName: "prize 2" },
-  ]);
-
-  const [raffleSelected, setRaffleSelected] = useState<boolean>(false);
+  const { endDate, tickets, promotion, raffles } = watch();
 
   const checkIsEditAndDatePassed = (value: string | Date): boolean => {
     /**
@@ -69,13 +75,27 @@ const TicketFormPage = ({
     );
   };
 
+  const isRaffleEnabled = (): boolean | undefined => {
+    if (raffles.length === 0) {
+      return;
+    }
+    return raffles[0]?.isEnabled;
+  };
+
+  const isRaffleActivated = (): boolean | undefined => {
+    if (raffles.length === 0) {
+      return;
+    }
+    return raffles[0]?.isActivated;
+  };
+
   const isPromoEnabled = (): boolean | undefined => {
     if (promotion.length === 0) {
       return;
     }
-    return promotion[0].isEnabled;
+    return promotion[0]?.isEnabled;
   };
-  console.log("promotion form value ->", promotion);
+
   return (
     <div>
       {/* Promo Code */}
@@ -103,7 +123,7 @@ const TicketFormPage = ({
                   htmlFor="promoSelected]"
                   className="font-medium text-gray-800"
                 >
-                  Enable Promo Code
+                  Include Promo Code
                 </label>
                 <p className="text-gray-500">
                   Promo Code applies to ALL tickets
@@ -127,7 +147,7 @@ const TicketFormPage = ({
                   htmlFor="prizeSelected"
                   className="font-medium text-gray-800"
                 >
-                  Disable Promo Code
+                  Exclude Promo Code
                 </label>
                 <p className="text-gray-500">No thanks, skip promo code</p>
               </div>
@@ -201,72 +221,74 @@ const TicketFormPage = ({
         </div>
 
         {/* Radios */}
-        <fieldset className="mt-8">
-          <div className="space-y-5">
-            {/* want raffle */}
-            <div className="relative flex items-start">
-              <div className="flex h-5 items-center">
-                <input
-                  name="prizeSelected"
-                  type="radio"
-                  value={"yes"}
-                  checked={raffleSelected}
-                  className="radio checked:bg-blue-500"
-                  onChange={() => setRaffleSelected(true)}
-                />
+        {!isRaffleActivated() && (
+          <fieldset className="mt-8">
+            <div className="space-y-5">
+              {/* want raffle */}
+              <div className="relative flex items-start">
+                <div className="flex h-5 items-center">
+                  <input
+                    name="prizeSelected"
+                    type="radio"
+                    value={"yes"}
+                    checked={isRaffleEnabled()}
+                    className="radio checked:bg-blue-500"
+                    onChange={() => {
+                      setValue("raffles.0.isEnabled", true);
+                    }}
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label
+                    htmlFor="prizeSelected"
+                    className="font-medium text-gray-800"
+                  >
+                    Include Raffle
+                  </label>
+                  <p className="text-gray-500">Raffle applies to ALL tickets</p>
+                </div>
               </div>
-              <div className="ml-3 text-sm">
-                <label
-                  htmlFor="prizeSelected"
-                  className="font-medium text-gray-800"
-                >
-                  Enable Raffle
-                </label>
-                <p className="text-gray-500">Raffle applies to ALL tickets</p>
+              {/* dont want raffle */}
+              <div className="relative flex items-start">
+                <div className="flex h-5 items-center">
+                  <input
+                    name="prizeSelected"
+                    type="radio"
+                    value={"no"}
+                    checked={!isRaffleEnabled()}
+                    className="radio checked:bg-blue-500"
+                    onChange={() => {
+                      setValue("raffles.0.isEnabled", false);
+                    }}
+                  />
+                </div>
+                <div className="ml-3 text-sm">
+                  <label
+                    htmlFor="prizeSelected"
+                    className="font-medium text-gray-800"
+                  >
+                    Exclude Raffle
+                  </label>
+                  <p className="text-gray-500">No thanks, skip Raffle</p>
+                </div>
               </div>
             </div>
-            {/* dont want raffle */}
-            <div className="relative flex items-start">
-              <div className="flex h-5 items-center">
-                <input
-                  name="prizeSelected"
-                  type="radio"
-                  value={"no"}
-                  checked={!raffleSelected}
-                  className="radio checked:bg-blue-500"
-                  onChange={() => {
-                    setRaffleSelected(false);
-                    // clear prizes array
-                    setPrizes([]);
-                  }}
-                />
-              </div>
-              <div className="ml-3 text-sm">
-                <label
-                  htmlFor="prizeSelected"
-                  className="font-medium text-gray-800"
-                >
-                  Disable Raffle
-                </label>
-                <p className="text-gray-500">No thanks, skip Raffle</p>
-              </div>
-            </div>
-          </div>
-        </fieldset>
+          </fieldset>
+        )}
 
         {/* Prize Inputs */}
-        {raffleSelected && (
+        {isRaffleEnabled() && (
           <div>
             <div className="mt-8 flex w-full flex-col gap-2">
-              {prizes.map((prize, index) => (
+              {prizesFields.map((prize, index) => (
                 <div
                   id={`prize-${index + 1}`}
-                  key={prize.prizeId}
+                  key={prize.id}
                   className="flex justify-between gap-4"
                 >
                   <Controller
                     control={control}
-                    name={`tickets.0.name`} // todo: replace with prize name field
+                    name={`raffles.0.rafflePrizes.${index}.name`}
                     render={({
                       field: { value, onChange },
                       fieldState: { error },
@@ -281,40 +303,40 @@ const TicketFormPage = ({
                         variant="bordered"
                         errorMessage={error?.message}
                         className="max-w-3xl"
+                        disabled={isRaffleActivated()}
                       />
                     )}
                   />
-                  {index > 0 && (
+                  {index > 0 && !isRaffleActivated() && (
                     <FaTrash
                       onClick={() => {
-                        setPrizes((prev) =>
-                          prev.filter((p) => p.prizeId !== prize.prizeId)
-                        );
-                      }} // replace with removePrize function from RHF
+                        removePrize(index);
+                      }}
                       className="relative top-12 text-lg text-red-400 hover:cursor-pointer"
                     />
                   )}
                 </div>
               ))}
             </div>
-            <div className="flex justify-end py-2">
-              <Button
-                variant="outlined"
-                size="md"
-                className="max-w-3xl"
-                onClick={async () => {
-                  setPrizes((prev) => [
-                    ...prev,
-                    {
-                      prizeId: prev[prev.length - 1].prizeId + 1,
-                      prizeName: "prize 2",
-                    },
-                  ]);
-                }}
-              >
-                Add a new prize
-              </Button>
-            </div>
+            {!isRaffleActivated() && (
+              <div className="flex justify-end py-2">
+                <Button
+                  variant="outlined"
+                  size="md"
+                  className="max-w-3xl"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    appendPrize({
+                      name: "",
+                      rafflesId: raffles[0]?.raffleId, // undefined when creating, have id when updating
+                      rafflePrizeId: undefined as unknown as number,
+                    });
+                  }}
+                >
+                  Add a new prize
+                </Button>
+              </div>
+            )}
           </div>
         )}
         <div className="divider"></div>
@@ -400,11 +422,6 @@ const TicketFormPage = ({
                   validate: {
                     moreThanOne: (value) =>
                       value > 0 || "Minimum quantity is 1",
-                    // lessThanCurrentSupply: (value) =>
-                    //   isEdit
-                    //     ? value >= tickets[index].currentTicketSupply ??
-                    //       (0 || "Available Qty cannot be less than Issued Qty")
-                    //     : true,
                   },
                 }}
                 render={({
@@ -430,8 +447,6 @@ const TicketFormPage = ({
                 name={`tickets.${index}.price`}
                 rules={{
                   required: "Price of ticket is required",
-                  validate: (value) =>
-                    value > 0 || "Minimum price must be more than 0",
                 }}
                 render={({
                   field: { onChange, value },

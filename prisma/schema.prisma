@@ -15,34 +15,35 @@ generator jsonSchema {
 }
 
 model User {
-  userId              Int           @id @default(autoincrement())
-  walletAddress       String        @unique
+  userId              Int               @id @default(autoincrement())
+  walletAddress       String            @unique
   phoneNumber         String?
   profilePic          String?
   bannerPic           String?
   displayName         String?
-  username            String        @unique
-  email               String        @unique
+  username            String            @unique
+  email               String            @unique
   bio                 String?
-  notificationBySMS   Boolean       @default(true)
-  notificationByEmail Boolean       @default(true)
-  createdCollections  Collection[]  @relation(name: "createdCollections")
-  createdCommunities  Community[]   @relation(name: "createdCommunities")
-  joinedCommunities   Community[]   @relation(name: "joinedCommunities")
+  notificationBySMS   Boolean           @default(true)
+  notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
+  createdCommunities  Community[]       @relation(name: "createdCommunities")
+  joinedCommunities   Community[]       @relation(name: "joinedCommunities")
   joinedChannels      Channel[]
-  posts               Post[]        @relation(name: "creator")
-  likedPosts          Post[]        @relation(name: "likedPosts")
-  comments            Comment[]     @relation(name: "commenter")
-  likedComments       Comment[]     @relation(name: "likedComments")
+  posts               Post[]            @relation(name: "creator")
+  likedPosts          Post[]            @relation(name: "likedPosts")
+  comments            Comment[]         @relation(name: "commenter")
+  likedComments       Comment[]         @relation(name: "likedComments")
   tickets             Ticket[]
   merchandise         Merchandise[]
-  likedEvents         Event[]       @relation("eventLikes")
+  likedEvents         Event[]           @relation("eventLikes")
   userTicket          UserTicket[]
-  events              Event[]       @relation("createdEvents")
-  walletBalance       Float         @default(0)
+  events              Event[]           @relation("createdEvents")
+  walletBalance       Float             @default(0)
   questions           Question[]
   transactions        Transaction[]
   bankAccount         BankAccount?
+  rafflePrizeUser     RafflePrizeUser[]
 }
 
 model Post {
@@ -128,6 +129,7 @@ model Event {
   creator             User                      @relation(fields: [creatorId], references: [userId], name: "createdEvents")
   creatorId           Int
   analyticsTimestamps EventAnalyticsTimestamp[]
+  raffles             Raffles[]
   clicks              Int                       @default(0)
   promotion           Promotion[]
 }
@@ -354,4 +356,32 @@ enum TransactionStatusType {
   PENDING
   COMPLETED
   REJECTED
+}
+
+model Raffles {
+  raffleId     Int           @id @default(autoincrement())
+  event        Event         @relation(fields: [eventId], references: [eventId])
+  eventId      Int
+  rafflePrizes RafflePrize[]
+  isEnabled    Boolean       @default(false)
+  isActivated  Boolean       @default(false)
+}
+
+model RafflePrize {
+  rafflePrizeId   Int               @id @default(autoincrement())
+  name            String
+  Raffles         Raffles           @relation(fields: [rafflesId], references: [raffleId])
+  rafflesId       Int
+  rafflePrizeUser RafflePrizeUser[]
+}
+
+model RafflePrizeUser {
+  rafflePrizeUserId Int         @id @default(autoincrement())
+  prizeWon          RafflePrize @relation(fields: [rafflePrizeId], references: [rafflePrizeId])
+  rafflePrizeId     Int
+  isClaimed         Boolean     @default(false)
+  user              User        @relation(fields: [userId], references: [userId])
+  userId            Int
+
+  @@unique([userId, rafflePrizeId])
 }

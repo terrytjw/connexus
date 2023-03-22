@@ -123,6 +123,7 @@ contract SimpleEvent is  Ownable, ReentrancyGuard, ERC721URIStorage {
             Category memory new_category_details = Category(
             new_categories[i], new_categoryPrices[i], new_categoryLimits[i], existingSupply );
             idToCategoryDetails[categories[i]] = new_category_details;
+            delete idToCategoryDetails[categories[i]];
             ticketSupply += categoryLimits[i];
         }
     }
@@ -137,30 +138,30 @@ contract SimpleEvent is  Ownable, ReentrancyGuard, ERC721URIStorage {
     }
 
 
-    function mint(string memory category, string memory tokenURI) public virtual payable returns(uint256){
-        emit userMints(msg.sender); //event emitted
+    function mint(address _to, string memory category, string memory tokenURI) public virtual payable returns(uint256){
+        emit userMints(_to); //event emitted
         //script should capture the event 
 
-        require(ticketsPerOwner[msg.sender] < maxTicketsPerAddress, "Exceeded Max Minting");    
+        require(ticketsPerOwner[_to] < maxTicketsPerAddress, "Exceeded Max Minting");    
         require(idToCategoryDetails[category].currentSupply < idToCategoryDetails[category].maxNumber, "Exceeded Category minting");
         require(msg.value >= (idToCategoryDetails[category].price * (1 + (commission/100))), "Not enough ETH");
         //if all conditions met, create the ticket, update category numbers
         idToCategoryDetails[category].currentSupply = idToCategoryDetails[category].currentSupply + 1; 
         ticketSupply += 1; 
         Ticket memory newTicket = Ticket( 
-            organizer, msg.sender, idToCategoryDetails[category],idToCategoryDetails[category].price, ticketStatus.CREATED, false, false
+            organizer, _to, idToCategoryDetails[category],idToCategoryDetails[category].price, ticketStatus.CREATED, false, false
         ); 
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _safeMint(msg.sender, newItemId);
+        _safeMint(_to, newItemId);
         _setTokenURI(newItemId, tokenURI); 
 
 
-        ticketsPerOwner[msg.sender] += 1;
+        ticketsPerOwner[_to] += 1;
         ticketIDs[newItemId] = newTicket;
         currentTicketSupply += 1;
-        emit ticketMinted(newItemId, msg.sender);
+        emit ticketMinted(newItemId, _to);
 
         return newItemId;  //get the newItemId
     }

@@ -6,6 +6,7 @@ import {
   CategoryType,
   PublishType,
   Address,
+  Raffles,
   Promotion,
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
@@ -26,6 +27,11 @@ export async function retrieveEventInfo(eventId: number) {
       },
       userLikes: true,
       address: true,
+      raffles: {
+        include: {
+          rafflePrizes: true,
+        },
+      },
       promotion: true,
     },
   });
@@ -43,13 +49,21 @@ export async function createEventWithTickets(
       eventId: undefined,
       addressId: undefined,
       creatorId: undefined,
+      userLikes: undefined,
+      raffles: undefined,
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
       analyticsTimestamps: { create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 } },
       promotion: { create: promotion },
     },
-    include: { tickets: true, promotion: true },
+    include: {
+      tickets: true,
+      promotion: true,
+      raffles: {
+        include: { rafflePrizes: true },
+      },
+    },
   });
 }
 
@@ -64,7 +78,7 @@ export async function filterEvent(
   status: PublishType | undefined
 ) {
   return prisma.event.findMany({
-    include: { userLikes: true, address: true },
+    include: { userLikes: true, address: true, tickets: true },
     take: 10,
     skip: cursor ? 1 : undefined, // Skip cursor
     cursor: cursor ? { eventId: cursor } : undefined,
@@ -147,7 +161,23 @@ export async function filterAttendee(
       user: true,
       ticket: {
         include: {
-          event: true,
+          event: {
+            include: {
+              raffles: {
+                include: {
+                  rafflePrizes: {
+                    include: {
+                      rafflePrizeUser: {
+                        include: {
+                          user: true,
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
         },
       },
     },

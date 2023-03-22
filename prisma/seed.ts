@@ -15,7 +15,7 @@ import { saveUser } from "../lib/prisma/user-prisma";
 import { retrieveEventInfo } from "../lib/prisma/event-prisma";
 import {
   TicketWithUser,
-  saveUserTicket,
+  saveUserTickets,
 } from "../lib/prisma/user-ticket-prisma";
 import { todayMinus } from "../utils/date-util";
 import { getRandomInt } from "../utils/math-util";
@@ -611,6 +611,20 @@ async function generateEvent() {
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
       scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
+      raffles: {
+        create: [
+          {
+            isEnabled: false,
+            rafflePrizes: {
+              create: [
+                {
+                  name: "Raffle Prize 1",
+                },
+              ],
+            },
+          },
+        ],
+      },
       clicks: 100
     },
     {
@@ -767,7 +781,7 @@ async function generateUserWithTicket() {
   const event = await retrieveEventInfo(1);
   const tickets =
     (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
-  await saveUserTicket(tickets);
+  await saveUserTickets(tickets);
 }
 
 async function main() {

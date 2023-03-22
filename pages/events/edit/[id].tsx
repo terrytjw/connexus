@@ -15,7 +15,13 @@ import Loading from "../../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
 import { EventWithAllDetails } from "../../../utils/types";
-import { Ticket, Address, TicketType, Promotion } from "@prisma/client";
+import {
+  Ticket,
+  Address,
+  TicketType,
+  Promotion,
+  Raffles,
+} from "@prisma/client";
 
 import axios from "axios";
 
@@ -28,6 +34,9 @@ import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import raffle from "../../api/events/raffle";
+import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -55,10 +64,22 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       },
     });
 
+  const formData = watch();
+  console.log("current form data->", formData);
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
+  });
+  // listen to raffles array
+  const {
+    fields: prizesFields,
+    append: appendPrize,
+    remove: removePrize,
+    update: updatePrize,
+  } = useFieldArray({
+    control,
+    name: "raffles.0.rafflePrizes",
   });
   const [tickets] = watch(["tickets"]);
   const [steps, setSteps] = useState<Step[]>([
@@ -337,7 +358,12 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     } else {
       // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
-      // remove tickets since its updated separately before
+
+      /**
+       * 1. updating address separately
+       * 2. updated tickets separately
+       * 3. userLikes not needed and will crash post api call
+       * */
       const {
         address,
         tickets: { tempTickets },
@@ -350,9 +376,9 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
         address
       );
-
       console.log("updated address ->", addressRes.data);
 
+      // final form object before calling post api
       const updated_event_WITHOUT_uri: Partial<EventWithAllDetails> = {
         ...newEventWOTicketsNAddress,
       }; //redo again to add the new URI arr
@@ -512,6 +538,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}
@@ -598,6 +634,9 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
+                    prizesFields={prizesFields}
+                    appendPrize={appendPrize}
+                    removePrize={removePrize}
                     proceedStep={proceedStep}
                   />
                 )}

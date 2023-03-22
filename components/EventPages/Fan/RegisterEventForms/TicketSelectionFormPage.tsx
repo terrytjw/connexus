@@ -6,8 +6,8 @@ import { TicketsForm } from "../../../../pages/events/register/[id]";
 import { useState } from "react";
 import Input from "../../../Input";
 import { toast } from "react-hot-toast";
-import { getPromotionCodeByName } from "../../../../lib/api-helpers/promotion-api";
 import { useRouter } from "next/router";
+import { getPromotionCodeByName } from "../../../../lib/api-helpers/promotion-api";
 
 type TicketSelectionFormPageProps = {
   setValue: UseFormSetValue<TicketsForm>;
@@ -75,6 +75,16 @@ const TicketSelectionFormPage = ({
     }
   };
 
+  // replace with this with actual promo code field
+  const promoCode = {
+    promoId: 1,
+    promoName: "PROMO10",
+    discount: 0.23,
+  };
+
+  // tickets.map((ticket: Ticket) => ({
+  //   ...ticket,
+  //   price: getDiscountedPrice(ticket.price, promoCode.discount),
   return (
     <div>
       <section>
