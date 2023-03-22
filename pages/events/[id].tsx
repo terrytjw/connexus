@@ -48,6 +48,12 @@ const EventPage = ({ event, userData }: EventPageProps) => {
     );
   };
 
+  const allTicketsSoldOut = (): boolean => {
+    return event.tickets.every(
+      (ticket) => ticket.currentTicketSupply === ticket.totalTicketSupply
+    );
+  };
+
   // will replace urls once its not localhost..
   function getFacebookShareLink(eventImageUrl: string | null) {
     // const url = encodeURIComponent(window.location.href);
@@ -97,7 +103,8 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                   </h1>
                   <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-                {!isRegistered() ? (
+                {/* Not registered and not sold out */}
+                {!isRegistered() && !allTicketsSoldOut() ? (
                   <Link
                     href={`/events/register/${eventId}`}
                     className="mt-8 sm:mt-0"
@@ -106,7 +113,8 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                       Register for event
                     </Button>
                   </Link>
-                ) : (
+                ) : isRegistered() ? (
+                  // Registered (show this even if sold out)
                   <Button
                     disabled
                     variant="solid"
@@ -114,6 +122,16 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                     className="max-w-xs"
                   >
                     Registered
+                  </Button>
+                ) : (
+                  // Sold Out
+                  <Button
+                    disabled
+                    variant="solid"
+                    size="md"
+                    className="max-w-xs"
+                  >
+                    Tickets Sold Out
                   </Button>
                 )}
               </div>

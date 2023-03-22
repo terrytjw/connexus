@@ -14,6 +14,7 @@ import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
 import Input from "../../Input";
+import { Toaster } from "react-hot-toast";
 
 const DELAY_TIME = 400;
 
@@ -129,6 +130,16 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
 

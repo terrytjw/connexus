@@ -8,9 +8,7 @@ import { truncateString } from "../../utils/text-truncate";
 import router from "next/router";
 import { CategoryType, Ticket } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { toast } from "react-hot-toast";
 
 type EventsTableProps = {
   data: EventWithAllDetails[]; // TODO: change type any to data type
@@ -134,6 +132,13 @@ const EventsTable = ({
                     onClick={async (e) => {
                       // prevent row on click
                       e.stopPropagation();
+                      if (data.ticketURIs.length !== 0) {
+                        toast.error(
+                          "Cannot delete - event has at least 1 Attendee."
+                        );
+                        return;
+                      }
+
                       setEventIdToDelete(data.eventId);
                       setDeleteConfirmationModalOpen(true);
                     }}
