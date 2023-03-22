@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEventsPage";
@@ -8,17 +8,14 @@ import Layout from "../../components/Layout";
 
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
-import { useUserRole } from "../../utils/hooks";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 
 type EventsPageProps = {
   events: EventWithAllDetails[];
 };
 
 const EventsPage = ({ events }: EventsPageProps) => {
-  const [isFan, setIsFan] = useUserRole();
-  console.log("is fan ->", isFan);
-
-  useEffect(() => console.log(isFan), [isFan]);
+  const { isFan } = useContext(UserRoleContext);
 
   console.log(events);
 

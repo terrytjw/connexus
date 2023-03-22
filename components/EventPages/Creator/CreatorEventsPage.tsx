@@ -340,14 +340,23 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
           <div className="divider"></div>
           {/* Liked */}
-          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
-          <Badge
-            label="Select Liked Events Only"
-            size="lg"
-            selected={false}
-            onClick={() => {}}
-            className="mt-2 h-8 min-w-fit rounded-lg"
-          />
+          <h3 className="text-sm font-medium text-gray-500">PUBLISH STATUS</h3>
+          <div className="flex gap-2">
+            <Badge
+              label="Draft"
+              size="lg"
+              selected={false}
+              onClick={() => {}}
+              className="mt-2 h-8 min-w-fit rounded-lg"
+            />
+            <Badge
+              label="Published"
+              size="lg"
+              selected={false}
+              onClick={() => {}}
+              className="mt-2 h-8 min-w-fit rounded-lg"
+            />
+          </div>
 
           <Button
             variant="solid"
