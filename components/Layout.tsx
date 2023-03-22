@@ -131,7 +131,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                 isFan
                   ? `/communities`
                   : userData.createdCommunities.length > 0
-                  ? `/communities/${userData.createdCommunities.communityId}`
+                  ? `/communities/${userData.createdCommunities[0].communityId}`
                   : `/communities/create`
               }
               className={classNames(
@@ -246,7 +246,7 @@ const DesktopSidebar = ({ userData }: any) => {
               isFan
                 ? `/communities`
                 : userData.createdCommunities.length > 0
-                ? `/communities/${userData.createdCommunities.communityId}`
+                ? `/communities/${userData.createdCommunities[0].communityId}`
                 : `/communities/create`
             }
             className={classNames(
