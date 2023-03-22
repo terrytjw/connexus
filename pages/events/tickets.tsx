@@ -191,7 +191,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
   const userId = session?.user?.userId;
   // build a ticket type with event name in it
-  const ownedTickets = await getTicketsOwned(userId);
+  const ownedTickets = await getTicketsOwned(parseInt(userId ?? "0"));
 
   return {
     props: {

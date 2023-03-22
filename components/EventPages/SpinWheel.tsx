@@ -51,12 +51,13 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   const onFinished = async (wonPrize: any) => {
     console.log(wonPrize);
     if (wonPrize != "No prize :(") {
-      if (getWonPrizeId(wonPrize)) {
+      let prizeId = getWonPrizeId(wonPrize);
+      if (prizeId) {
         console.log(
           "calling user Ticket api with won prize id -> ",
           getWonPrizeId(wonPrize)
         );
-        const res = await insertRafflePrize(getWonPrizeId(wonPrize), userId);
+        const res = await insertRafflePrize(prizeId, userId);
         setCurrentTicket((prev: CurrentTicket) => ({
           ...prev,
           rafflePrizeWinner: {}, // pass in an truthy object
