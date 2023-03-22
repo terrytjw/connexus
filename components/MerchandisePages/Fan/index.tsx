@@ -2,10 +2,12 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import useSWR from "swr";
 import CollectedTab from "./CollectedTab";
 import MarketplaceTab from "./MarketplaceTab";
 import Badge from "../../Badge";
 import Button from "../../Button";
+import Loading from "../../Loading";
 import Modal from "../../Modal";
 import TabGroupBordered from "../../TabGroupBordered";
 import { MerchandisePriceType } from "../../../pages/api/merch";
@@ -15,6 +17,7 @@ import {
 } from "../../../lib/api-helpers/collection-api";
 import { searchCollectedMerchandise } from "../../../lib/api-helpers/merchandise-api";
 import { MerchandiseWithCollectionName } from "../../../utils/types";
+import { getTopNSellingCollectionsAPI } from "../../../lib/api-helpers/analytics-api";
 
 type FanCollectionsPageProps = {
   merchandiseData: MerchandiseWithCollectionName[];
@@ -32,57 +35,89 @@ const FanCollectionsPage = ({
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const [merchandise, setMerchandise] = useState(merchandiseData);
-  const [collections, setCollections] = useState(collectionsData);
+  const [trendingCollections, setTrendingCollections] = useState(
+    [] as CollectionWithMerchAndPremiumChannel[]
+  );
 
   const [collectedTabfilterSelected, setCollectedTabfilterSelected] =
     useState("");
   const [marketplaceTabfilterSelected, setMarketplaceTabfilterSelected] =
     useState("");
 
-  const searchCollected = async () => {
-    if (collectedTabfilterSelected === "Free-of-Charge") {
-      const res = await searchCollectedMerchandise(
+  const {
+    data: collectedMerchandise,
+    isLoading: isCollectedMerchandiseLoading,
+    mutate: mutateCollectedMerchandise,
+  } = useSWR(
+    "searchCollectedMerchandise",
+    async () =>
+      await searchCollectedMerchandise(
         userId,
         searchString,
         0,
-        MerchandisePriceType.FREE
-      );
-      setMerchandise(res);
-    } else if (collectedTabfilterSelected === "Purchased") {
-      const res = await searchCollectedMerchandise(
-        userId,
-        searchString,
-        0,
-        MerchandisePriceType.PAID
-      );
-      setMerchandise(res);
-    } else {
-      const res = await searchCollectedMerchandise(userId, searchString, 0);
-      setMerchandise(res);
-    }
-  };
+        collectedTabfilterSelected === "Free-of-Charge"
+          ? MerchandisePriceType.FREE
+          : collectedTabfilterSelected === "Purchased"
+          ? MerchandisePriceType.PAID
+          : undefined
+      )
+  );
 
-  const searchCollections = async () => {
-    if (marketplaceTabfilterSelected === "Linked to Premium Channel") {
-      const res = await searchAllCollections(0, searchString, true);
-      setCollections(res);
-    } else if (marketplaceTabfilterSelected === "Not Linked") {
-      const res = await searchAllCollections(0, searchString, false);
-      setCollections(res);
-    } else {
-      const res = await searchAllCollections(0, searchString);
-      setCollections(res);
+  const {
+    data: allCollections,
+    isLoading: isAllCollectionsLoading,
+    mutate: mutateAllCollections,
+  } = useSWR(
+    "searchAllCollections",
+    async () =>
+      await searchAllCollections(
+        0,
+        searchString,
+        marketplaceTabfilterSelected === "Linked to Premium Channel"
+          ? true
+          : marketplaceTabfilterSelected === "Not Linked"
+          ? false
+          : undefined
+      )
+  );
+
+  const {
+    data: trendingCollectionIds,
+    isLoading: isTrendingCollectionsLoading,
+  } = useSWR(
+    "getTrendingCollections",
+    async () => await getTopNSellingCollectionsAPI(),
+    {
+      onSuccess: () =>
+        setTrendingCollections(
+          collectionsData.filter(
+            (collection: CollectionWithMerchAndPremiumChannel) => {
+              return trendingCollectionIds.some((trendingcollection: any) => {
+                return (
+                  collection.collectionId == trendingcollection.collectionId
+                );
+              });
+            }
+          )
+        ),
     }
-  };
+  );
 
   useEffect(() => {
-    searchCollected();
+    mutateCollectedMerchandise();
   }, [searchString, collectedTabfilterSelected]);
 
   useEffect(() => {
-    searchCollections();
+    mutateAllCollections();
   }, [searchString, marketplaceTabfilterSelected]);
+
+  if (
+    isCollectedMerchandiseLoading ||
+    isAllCollectionsLoading ||
+    isTrendingCollectionsLoading
+  ) {
+    return <Loading />;
+  }
 
   return (
     <main className="py-12 px-4 sm:px-12">
@@ -221,7 +256,7 @@ const FanCollectionsPage = ({
                   />
                 </Button>
               ) : null}
-              <CollectedTab collectedMerchandise={merchandise} />
+              <CollectedTab collectedMerchandise={collectedMerchandise} />
             </>
           )}
           {activeTab == 1 && (
@@ -241,7 +276,10 @@ const FanCollectionsPage = ({
                   />
                 </Button>
               ) : null}
-              <MarketplaceTab collections={collections} />
+              <MarketplaceTab
+                collections={allCollections}
+                trendingCollections={trendingCollections}
+              />
             </>
           )}
         </TabGroupBordered>
@@ -268,7 +306,7 @@ const FanCollectionsPage = ({
             className="max-w-sm !bg-white !text-gray-700"
             onClick={() => setIsModalOpen(true)}
           >
-            Filter by
+            Filter
             <BiFilter className="h-8 w-8" />
           </Button>
         </div>

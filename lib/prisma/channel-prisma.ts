@@ -91,3 +91,20 @@ export async function searchUsersInChannel(channelId: number, keyword: string) {
   );
   return users;
 }
+
+export async function getChannelsForAnalytics() {
+  return await prisma.channel.findMany({
+    include: {
+      posts: {
+        include: {
+          _count: {
+            select: { likes: true, comments: true }
+          }
+        }
+      },
+      _count: {
+        select: { members: true, posts: true }
+      }
+    }
+  });
+}

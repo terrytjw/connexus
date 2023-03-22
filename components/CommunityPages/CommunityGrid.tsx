@@ -5,6 +5,7 @@ import React from "react";
 import { FaUserFriends } from "react-icons/fa";
 import Button from "../Button";
 import { CommunityWithMemberIds } from "../../utils/types";
+import { registerCommunityClick } from "../../lib/api-helpers/community-api";
 
 type CommunityGridProps = {
   communities: CommunityWithMemberIds[];
@@ -22,6 +23,9 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
           key={community.communityId}
           href={`/communities/${community.communityId}`}
           className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+          onClick={async () => {
+            await registerCommunityClick(community.communityId);
+          }}
         >
           <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100">
             <Image

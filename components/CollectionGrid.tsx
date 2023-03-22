@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import { CollectionWithMerchAndPremiumChannel } from "../lib/api-helpers/collection-api";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  registerCollectionClick,
+} from "../lib/api-helpers/collection-api";
 
 type CollectionGridItemProps = {
   item: CollectionWithMerchAndPremiumChannel;
@@ -14,6 +17,9 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
     <Link
       href={`/merchandise/${item.collectionId}`}
       className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+      onClick={async () => {
+        await registerCollectionClick(item.collectionId);
+      }}
     >
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all">
         <Image

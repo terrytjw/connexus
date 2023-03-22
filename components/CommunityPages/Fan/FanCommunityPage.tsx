@@ -52,6 +52,7 @@ const FanCommunityPage = ({
 
   return (
     <main>
+      <Toaster />
       <div className="relative">
         <Banner coverImageUrl={community.bannerPic ?? ""} />
         <div className="absolute top-0 right-0 flex flex-wrap gap-2 p-4">
@@ -109,16 +110,6 @@ const FanCommunityPage = ({
               >
                 <FaShareSquare />
               </Button>
-              <Toaster
-                position="bottom-center"
-                toastOptions={{
-                  style: {
-                    background: "#1A7DFF",
-                    color: "#fff",
-                    textAlign: "center",
-                  },
-                }}
-              />
             </div>
           </div>
           <Link

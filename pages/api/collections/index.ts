@@ -160,6 +160,7 @@ export default async function handler(
           ...collectionInfo,
           collectionId: undefined,
           merchandise: { create: updatedMerchs as Merchandise[] },
+          analyticsTimestamps: { create: { merchSold: 0, revenue: 0, clicks: 0 } }
         },
         include: {
           merchandise: true,
