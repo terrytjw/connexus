@@ -24,7 +24,7 @@ type CreatorEventsPageProps = {
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const router = useRouter();
-  const [isCreated, setIsCreated] = useState<boolean>(true);
+  const [isCreated, setIsCreated] = useState<boolean>(false);
   const [selectedTopics, setSelectedTopics] = useState<
     string[] | CategoryType[]
   >([]);
@@ -39,8 +39,10 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   console.log(events);
 
   useEffect(() => {
+    console.log("in use effect");
     // ended events
     if (!isCreated) {
+      console.log("in !created");
       setSearchAndFilterResults(
         events.filter(
           (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
@@ -48,6 +50,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       );
     } else {
       // created events
+      console.log("in created");
       setSearchAndFilterResults(
         events.filter(
           (event: EventWithAllDetails) => new Date(event.endDate) <= new Date()
@@ -117,9 +120,12 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       // console.log("search api called");
       debounceSearchApiCall(searchString);
     } else {
-      // using this state to display events on initial page load
-      // console.log("search api NOT called ");
-      setSearchAndFilterResults(events);
+      // using this to display events on initial page load
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
+        )
+      );
     }
 
     return () => {
