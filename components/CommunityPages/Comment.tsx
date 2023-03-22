@@ -5,7 +5,12 @@ import { FaHeart, FaRegHeart, FaTrashAlt } from "react-icons/fa";
 import Button from "../Button";
 import CustomLink from "../CustomLink";
 import { CommentWithCommenterAndLikes } from "../../utils/types";
-import { likeCommentAPI, unlikeCommentAPI, deleteCommentAPI } from "../../lib/api-helpers/comment-api";
+import {
+  likeCommentAPI,
+  unlikeCommentAPI,
+  deleteCommentAPI,
+} from "../../lib/api-helpers/comment-api";
+import { toast } from "react-hot-toast";
 
 type CommentProps = {
   comment: CommentWithCommenterAndLikes;
@@ -44,6 +49,7 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
       return data.filter((comment) => comment.commentId != res.commentId);
     });
+    toast("Comment deleted!");
   };
 
   return (

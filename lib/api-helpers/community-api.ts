@@ -94,3 +94,9 @@ export async function leaveCommunityAPI(communityId: number, userId: number) {
 
 	return response;
 }
+
+export async function registerCommunityClick(communityId: number) {
+  const url= `${API_URL}/${COMMUNITY_ENDPOINT}/${communityId}/click`
+  const response = (await axios.post(url)).data;
+  return response;
+}

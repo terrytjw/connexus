@@ -145,5 +145,10 @@ export async function updateRaffle(raffleId: number, raffles: Raffles) {
       raffles,
     })
   ).data;
+}
+
+export async function registerEventClick(eventId: number) {
+  const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/click`;
+  const response = (await axios.post(url)).data;
   return response;
 }

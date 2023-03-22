@@ -70,3 +70,9 @@ export async function updateCollection(
     },
   });
 }
+
+export async function getCollectionsForAnalytics() {
+  return await prisma.collection.findMany({
+    include: { merchandise: true, analyticsTimestamps: true }
+  });
+}

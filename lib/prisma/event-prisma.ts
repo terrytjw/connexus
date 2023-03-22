@@ -54,6 +54,7 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
+      analyticsTimestamps: { create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 } },
       promotion: { create: promotion },
     },
     include: {
@@ -281,5 +282,17 @@ export async function retrieveTrendingEvents() {
     },
     take: 1,
     include: { userLikes: true, address: true },
+  });
+}
+
+export async function getEventsForAnalytics() {
+  return prisma.event.findMany({
+    include: {
+      tickets: true,
+      analyticsTimestamps: true,
+      _count: { 
+        select: { userLikes: true }
+      }
+    }
   });
 }
