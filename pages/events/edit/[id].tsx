@@ -58,13 +58,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     useForm<EventWithAllDetails>({
       defaultValues: {
         ...event,
-        // raffles: [
-        //   event.raffles.map((raffle: RafflesWithPrizes) => ({
-
-        //     ...raffle,
-        //     rafflePrizes: sortByProperty(raffle.rafflePrizes, "rafflePrizeId"),
-        //   })),
-        // ],
         address: {
           ...address,
         },
@@ -440,21 +433,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     updateEvent(prismaEvent);
   };
 
-  const sortByProperty = (arr: any[], property: string) => {
-    return arr.sort((a, b) => {
-      if (a[property] < b[property]) {
-        return -1;
-      }
-      if (a[property] > b[property]) {
-        return 1;
-      }
-      return 0;
-    });
-  };
-
-  console.log("before sort ->", prizesFields);
-  console.log("after sort-> ", sortByProperty(prizesFields, "rafflePrizeId"));
-
   // a null/ undefined state is needed for form validation
   const addNewTicket = (): void => {
     append({
@@ -656,10 +634,9 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
-                    prizesFields={sortByProperty(prizesFields, "rafflePrizeId")} // asc sort by raffle prize id
+                    prizesFields={prizesFields}
                     appendPrize={appendPrize}
                     removePrize={removePrize}
-                    updatePrize={updatePrize}
                     proceedStep={proceedStep}
                   />
                 )}

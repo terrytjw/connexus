@@ -16,9 +16,18 @@ import { truncateString } from "../../utils/text-truncate";
 import { toast, Toaster } from "react-hot-toast";
 import { TicketWithEvent } from "../../utils/types";
 import Confetti from "react-confetti";
+import { Ticket } from "@prisma/client";
+import { BiGift } from "react-icons/bi";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
+};
+
+export type CurrentTicket = Partial<Ticket> & {
+  eventName: string;
+  rafflePrizeWinner: any;
+  rafflePrizeName: string;
+  isCheckedIn: boolean;
 };
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
@@ -26,19 +35,22 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [qrValue, setQrValue] = useState<string>("");
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
-  const [checkedIn, setCheckedIn] = useState<boolean>(false);
   const [rafflePrizes, setRafflePrizes] = useState<any[]>([]);
-  const [isPrizeWon, setIsPrizeWon] = useState<boolean>(false);
-  const [selectedTicket, setSelectedTicket] = useState<any>();
-  console.log("is prize won", isPrizeWon);
+  const [currentTicket, setCurrentTicket] = useState<CurrentTicket>({
+    eventName: "",
+    rafflePrizeWinner: undefined,
+    rafflePrizeName: "",
+    isCheckedIn: false,
+  });
 
   useEffect(() => {
-    if (checkedIn) toast.success("Check in success!");
-  }, [checkedIn]);
+    if (currentTicket.rafflePrizeWinner)
+      toast.success("Congrats, you won something!!!");
+  }, [currentTicket.rafflePrizeWinner]);
 
-  useEffect(() => {
-    if (isPrizeWon) toast.success("Congrats, you won something!!!");
-  }, [isPrizeWon]);
+  function isEmpty(obj: any) {
+    return Object.keys(obj).length === 0;
+  }
 
   return (
     <ProtectedRoute>
@@ -67,7 +79,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                   setQrValue={setQrValue}
                   setIsPrizeModalOpen={setIsPrizeModalOpen}
                   setRafflePrizes={setRafflePrizes}
-                  setSelectedTicket={setSelectedTicket}
+                  setCurrentTicket={setCurrentTicket}
                 />
               </div>
             ))}
@@ -80,14 +92,14 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
           >
             <div className="flex flex-col items-center gap-2">
               <h2 className="text-2xl font-bold sm:text-2xl">
-                {!checkedIn ? "QR Code" : "Digital Badge"} for
+                {!currentTicket.isCheckedIn ? "QR Code" : "Digital Badge"} for
               </h2>
               <p className="text-xl">
-                {truncateString(selectedTicket?.event.eventName ?? "", 40)}
+                {truncateString(currentTicket?.eventName ?? "", 40)}
               </p>
             </div>
             {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
-            {!checkedIn ? (
+            {!currentTicket.isCheckedIn ? (
               <QRCode
                 className="mt-4 flex items-center"
                 size={128}
@@ -102,7 +114,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 className="border-0"
                 variant="outlined"
                 size="md"
-                onClick={() => setCheckedIn((prev) => !prev)}
+                onClick={() => setIsModalOpen(false)}
               >
                 Done
               </Button>
@@ -124,14 +136,26 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             setIsOpen={setIsPrizeModalOpen}
             className="flex flex-col items-center sm:min-w-fit"
           >
-            <h2 className="text-2xl font-bold sm:text-2xl">Spin the Wheel!</h2>
-            {isPrizeWon && <Confetti />}
+            <h2 className="text-2xl font-bold sm:text-2xl">
+              {!isEmpty(currentTicket.rafflePrizeWinner ?? {})
+                ? "You Won"
+                : "Spin the Wheel!"}
+            </h2>
+            {!isEmpty(currentTicket.rafflePrizeWinner ?? {}) && (
+              <p className="text-xl">{currentTicket.rafflePrizeName}</p>
+            )}
+            {currentTicket.rafflePrizeWinner && <Confetti />}
             <div className="flex justify-center align-middle">
-              <SpinWheel
-                prizes={rafflePrizes}
-                size={200}
-                setIsPrizeWon={setIsPrizeWon}
-              />
+              {/* check if rafflePrizeWinner is an empty object */}
+              {!isEmpty(currentTicket.rafflePrizeWinner ?? {}) ? (
+                <BiGift className="mt-12 text-blue-600" size={120} />
+              ) : (
+                <SpinWheel
+                  prizes={rafflePrizes}
+                  size={200}
+                  setCurrentTicket={setCurrentTicket}
+                />
+              )}
             </div>
             <div className="mt-4 flex justify-end">
               <Button

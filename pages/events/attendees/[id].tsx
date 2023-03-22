@@ -345,7 +345,7 @@ const AttendeesPage = () => {
               {currentPrizeSelection?.prizeName}
             </h2>
             <div className="mt-4 flex justify-center">
-              <BiGift className="text-blue-600" size={40} />
+              <BiGift className="text-blue-600" size={120} />
             </div>
             <div className="mt-4 justify-end">
               <Button

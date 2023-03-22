@@ -1,17 +1,19 @@
+import { previousDay } from "date-fns";
 import { useSession } from "next-auth/react";
 import React, { useState } from "react";
 import WheelComponent from "react-wheel-of-prizes";
 import { insertRafflePrize } from "../../lib/api-helpers/user-api";
+import { CurrentTicket } from "../../pages/events/tickets";
 import Button from "../Button";
 // import 'react-wheel-of-prizes/dist/index.css'
 
 interface SpinWheelProps {
   prizes: any[];
   size: number;
-  setIsPrizeWon: (value: boolean) => void;
+  setCurrentTicket: React.Dispatch<React.SetStateAction<CurrentTicket>>;
 }
 
-const SpinWheel = ({ prizes, size, setIsPrizeWon }: SpinWheelProps) => {
+const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
   const segColors = [
@@ -55,7 +57,11 @@ const SpinWheel = ({ prizes, size, setIsPrizeWon }: SpinWheelProps) => {
           getWonPrizeId(wonPrize)
         );
         const res = await insertRafflePrize(getWonPrizeId(wonPrize), userId);
-        setIsPrizeWon(true);
+        setCurrentTicket((prev: CurrentTicket) => ({
+          ...prev,
+          rafflePrizeWinner: {}, // pass in an truthy object
+          rafflePrizeName: wonPrize,
+        }));
         console.log("res ->", res);
       } else {
         console.log("error with getting won prize id");

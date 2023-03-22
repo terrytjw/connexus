@@ -41,10 +41,6 @@ type TicketFormPageProps = {
     "raffles.0.rafflePrizes"
   >;
   removePrize: UseFieldArrayRemove;
-  updatePrize: UseFieldArrayUpdate<
-    EventWithAllDetails,
-    "raffles.0.rafflePrizes"
-  >;
   proceedStep: () => void;
 };
 
@@ -62,7 +58,6 @@ const TicketFormPage = ({
   prizesFields,
   appendPrize,
   removePrize,
-  updatePrize,
   proceedStep,
 }: TicketFormPageProps) => {
   // form values

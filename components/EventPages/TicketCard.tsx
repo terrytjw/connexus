@@ -1,19 +1,19 @@
-import React, { useState } from "react";
-import { Ticket, TicketType } from "@prisma/client";
+import React, { useEffect, useState } from "react";
+import { TicketType } from "@prisma/client";
 import { formatDate } from "../../utils/date-util";
 import Button from "../Button";
 import { useSession } from "next-auth/react";
-import useInterval from "../../utils/useInterval";
 import { TicketWithEvent } from "../../utils/types";
+import { CurrentTicket } from "../../pages/events/tickets";
 
 type TicketCardProps = {
-  ticket: TicketWithEvent;
+  ticket: TicketWithEvent | any;
   isOwnedTicket?: boolean; // conditionally render elements based on whether this is a generic or owned ticket
   setIsModalOpen?: (value: boolean) => void;
   setQrValue?: (value: string) => void;
   setIsPrizeModalOpen?: (value: boolean) => void;
   setRafflePrizes?: (value: any) => void;
-  setSelectedTicket?: (value: any) => void;
+  setCurrentTicket?: React.Dispatch<React.SetStateAction<CurrentTicket>>;
 };
 
 const TicketCard = ({
@@ -23,25 +23,10 @@ const TicketCard = ({
   setQrValue,
   setIsPrizeModalOpen,
   setRafflePrizes,
-  setSelectedTicket,
+  setCurrentTicket,
 }: TicketCardProps) => {
   const { data: session, status } = useSession();
   const userId = Number(session?.user.userId);
-
-  // // custom hook to call a function every 3s with proper memory cleanup
-  // useInterval(() => {
-  //   getCheckInStatus();
-  // }, 3000);
-
-  // const getCheckInStatus = async () => {
-  //   try {
-  //     // todo: replace with actual user Ticket info
-  //     const checkInStatus = false;
-  //     setIsCheckedIn(checkInStatus);
-  //   } catch (error) {
-  //     console.error("Error fetching state:", error);
-  //   }
-  // };
 
   const getQrString = (): string => {
     const qrString = ticket.eventId + "," + ticket.ticketId + "," + userId;
@@ -60,6 +45,20 @@ const TicketCard = ({
     return ticket.event.raffles[0]?.isActivated;
   };
 
+  const getPrizeWinner = (ticket: any): any => {
+    return ticket?.event.raffles[0]?.rafflePrizes.find((prize: any) =>
+      prize.rafflePrizeUser.find(
+        (rafflePrizeUser: any) => rafflePrizeUser.userId === userId
+      )
+    );
+  };
+
+  const getPrizeNameByRafflePrizeId = (rId: number): any => {
+    return ticket?.event.raffles[0]?.rafflePrizes.find(
+      (prize: any) => prize.rafflePrizeId === rId
+    );
+  };
+
   const isPrizeClaimed = (ticket: any): boolean | undefined => {
     return ticket?.event.raffles[0]?.rafflePrizes.find(
       (prize: any) =>
@@ -74,12 +73,11 @@ const TicketCard = ({
   };
 
   const isCheckedIn = (ticket: any): boolean | undefined => {
+    // returns undefined if user has not been registered, true/false if reg-ed but not checked-in
     return ticket.userTicket.find(
       (userTicket: any) => userTicket.userId === userId
     )?.checkIn;
   };
-
-  console.log(`is user ${userId} checked in for ticket ->`, ticket);
 
   return (
     <div>
@@ -95,7 +93,7 @@ const TicketCard = ({
           <div className="flex flex-col gap-y-5">
             <h1 className="flex gap-4 text-xl font-bold text-gray-700">
               {ticket.name}
-              {isOwnedTicket && isCheckedIn && (
+              {isOwnedTicket && isCheckedIn(ticket) && (
                 <span className="flex items-center rounded-full border-2 border-green-100 bg-green-100 px-2 text-sm font-medium text-green-400">
                   Checked In
                 </span>
@@ -151,14 +149,41 @@ const TicketCard = ({
                 size="md"
                 className={`max-w-xs ${isPrizeClaimed(ticket) && "border-0"}`}
                 onClick={() => {
-                  if (setIsPrizeModalOpen && setRafflePrizes) {
+                  if (
+                    setIsPrizeModalOpen &&
+                    setRafflePrizes &&
+                    setCurrentTicket
+                  ) {
+                    setCurrentTicket({
+                      eventName: ticket.event.eventName,
+                      isCheckedIn: isCheckedIn(ticket) ?? false,
+                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
+                      rafflePrizeName:
+                        getPrizeNameByRafflePrizeId(
+                          getPrizeWinner(ticket)?.rafflePrizeId
+                        )?.name || "",
+                    });
+
+                    console.log("setting current ticket ->", {
+                      eventName: ticket.event.eventName,
+                      isCheckedIn: isCheckedIn(ticket) ?? false,
+                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
+                      rafflePrizeName:
+                        getPrizeNameByRafflePrizeId(
+                          getPrizeWinner(ticket)?.rafflePrizeId
+                        )?.name || "",
+                    });
                     setRafflePrizes(getRafflePrizes(ticket));
                     setIsPrizeModalOpen(true);
                   }
                 }}
                 disabled={isPrizeClaimed(ticket)}
               >
-                {!isPrizeClaimed(ticket) ? "Spin the Wheel" : "Prize Claimed"}
+                {isPrizeClaimed(ticket)
+                  ? "Prize Claimed"
+                  : getPrizeWinner(ticket)
+                  ? "View Prize Won"
+                  : "Spin the Wheel"}
               </Button>
             )}
             {isOwnedTicket && (
@@ -167,14 +192,34 @@ const TicketCard = ({
                 size="md"
                 className="max-w-xs "
                 onClick={() => {
-                  if (setIsModalOpen && setQrValue && setSelectedTicket) {
-                    setSelectedTicket(ticket);
+                  if (setIsModalOpen && setQrValue && setCurrentTicket) {
+                    setCurrentTicket({
+                      eventName: ticket.event.eventName,
+                      isCheckedIn: isCheckedIn(ticket) ?? false,
+                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
+                      rafflePrizeName:
+                        getPrizeNameByRafflePrizeId(
+                          getPrizeWinner(ticket)?.rafflePrizeId
+                        )?.name || "",
+                    });
+
+                    console.log("setting current ticket ->", {
+                      eventName: ticket.event.eventName,
+                      isCheckedIn: isCheckedIn(ticket) ?? false,
+                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
+                      rafflePrizeName:
+                        getPrizeNameByRafflePrizeId(
+                          getPrizeWinner(ticket)?.rafflePrizeId
+                        )?.name || "",
+                    });
                     setQrValue(getQrString());
                     setIsModalOpen(true);
                   }
                 }}
               >
-                Generate QR Code
+                {!isCheckedIn(ticket)
+                  ? "Generate QR Code"
+                  : "View Digital Badge"}
               </Button>
             )}
           </div>
