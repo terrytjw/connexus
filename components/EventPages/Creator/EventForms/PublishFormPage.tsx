@@ -36,7 +36,7 @@ const PublishFormPage = ({
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   const checkAttendeesExists = (): boolean | undefined => {
-    return tickets.some((ticket: any) => ticket.users.length !== 0);
+    return tickets.some((ticket: any) => ticket.users?.length !== 0);
   };
 
   return (
