@@ -264,7 +264,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       "http://localhost:3000/api/events/" + eventId.toString()
     );
     const eventInfo = response.data as EventWithAllDetails;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const { eventScAddress, ticketURIs, tickets } = eventInfo;
 
     let user_response = await axios.get(
       "http://localhost:3000/api/users/" + userId.toString()
@@ -280,8 +280,8 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     if (ipfsHash == "") return;
     const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
     console.log("IPFS Hash Link  : ", link);
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
-    console.log("smart contract address ->", scAddress);
+    const event_contract = new ethers.Contract(eventScAddress, abi, signer);
+    console.log("smart contract address ->", eventScAddress);
     const category_info = await event_contract.getCategoryInformation(
       ticketCategory
     );

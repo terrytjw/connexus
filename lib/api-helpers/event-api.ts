@@ -88,7 +88,7 @@ export async function checkIn(
 ) {
   const eventResponse = (await getEventInfo(eventId)) as Event;
   const eventContract = new ethers.Contract(
-    eventResponse.scAddress,
+    eventResponse.eventScAddress,
     abi,
     signer
   );

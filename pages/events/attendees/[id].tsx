@@ -13,6 +13,8 @@ import {
   filterAttendeeList,
   exportPDF,
   updateRaffle,
+  getEventInfo,
+  updateEventInfo,
 } from "../../../lib/api-helpers/event-api";
 import useSWR from "swr";
 import { useRouter } from "next/router";
@@ -22,8 +24,20 @@ import { toast, Toaster } from "react-hot-toast";
 import { AttendeeListType } from "../../../utils/types";
 import { BiGift } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-import { updateRafflePrize } from "../../../lib/api-helpers/user-api";
+import {
+  getUserInfo,
+  updateRafflePrize,
+} from "../../../lib/api-helpers/user-api";
 import { truncateString } from "../../../utils/text-truncate";
+import {
+  deployDigitalBadge,
+  mintDigitalBadge,
+} from "../../../lib/api-helpers/digital-badge-api";
+import {
+  getTicketInfo,
+  getUserTicketInfo,
+  updateUserTicket,
+} from "../../../lib/api-helpers/ticket-api";
 
 export enum CheckInStatus {
   INITIAL,
@@ -91,6 +105,70 @@ const AttendeesPage = () => {
   // custom function to show toast max once every X time period
   let lastToastTime: number | null = null;
 
+  const handleDigitalBadge = async () => {
+    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
+      Number(eventId)
+    );
+    const categories: any[] = [];
+    console.log(eventInfo);
+
+    tickets.map((event: any) => {
+      categories.push(event.name);
+    });
+    console.log("categories ->", categories);
+
+    const contractAddress = await deployDigitalBadge(
+      categories,
+      eventInfo.eventName,
+      eventInfo.eventName
+    );
+
+    const updatedEventInfo = {
+      ...eventInfo,
+      digitalBadgeScAddress: contractAddress,
+    };
+
+    const updatedEventResponse = await updateEventInfo(
+      Number(eventId),
+      updatedEventInfo
+    );
+    console.log("updated event response ->", updatedEventResponse);
+
+    // const eventInfo = await getEventInfo(Number(eventId));
+    const ticketInfo = await getTicketInfo(Number(10));
+    const ticketCategory = ticketInfo.name;
+    console.log("ticketInfo ..", ticketInfo);
+    const userInfo = await getUserInfo(Number(4));
+    const userWallet = userInfo.walletAddress;
+    console.log("userWallet ->", userWallet);
+    const digitalBadgeUri = await mintDigitalBadge(
+      eventInfo,
+      ticketCategory,
+      userWallet
+    );
+    console.log("minted digital badge uri ->", digitalBadgeUri);
+
+    const userTicketInfo = await getUserTicketInfo(
+      ticketInfo.ticketId,
+      userInfo.userId
+    );
+
+    console.log("user ticket info ->", userTicketInfo);
+
+    const updatedUserTicketInfo = {
+      ...userTicketInfo,
+      badgeUrl: digitalBadgeUri,
+    };
+
+    const updatedUserTicketResponse = await updateUserTicket(
+      ticketInfo.ticketId,
+      userInfo.userId,
+      updatedUserTicketInfo
+    );
+
+    console.log("updated user ticket response ->", updatedUserTicketResponse);
+  };
+
   const showToastWithLimit = (
     message: string,
     options: { duration: number },
@@ -126,12 +204,14 @@ const AttendeesPage = () => {
       console.log("scan result ->", scanResult);
       const idList = scanResult.split(",");
       const [eventId, ticketId, userId] = idList;
+
       const res = await checkIn(
         Number(eventId),
         Number(ticketId),
         Number(userId)
       );
       setIsValid(true);
+
       toast.success("Check-in Success!", { duration: 1000 });
       setTimeout(() => {
         mutate((data: AttendeeListType[]) => {
@@ -285,6 +365,10 @@ const AttendeesPage = () => {
                 {!isRaffleActivated()
                   ? "Activate Digital Raffle"
                   : "Raffle Activated"}
+              </Button>
+
+              <Button variant="outlined" size="md" onClick={handleDigitalBadge}>
+                Digital Badge
               </Button>
             </div>
             <div className="flex gap-4">

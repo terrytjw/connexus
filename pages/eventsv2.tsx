@@ -135,7 +135,7 @@ const EventsPage = (props: any) => {
       visibilityType: VisibilityType.DRAFT,
       privacyType: PrivacyType.PUBLIC,
       publishStartDate: new Date(),
-      scAddress: event_contract.address,
+      eventScAddress: event_contract.address,
       ticketURIs: [],
       publishType: "NOW",
       tickets: ticket_categories,
@@ -209,7 +209,7 @@ const EventsPage = (props: any) => {
       "http://localhost:3000/api/events/" + eventId.toString()
     );
     const eventInfo = response.data as EventWithTickets;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const { eventScAddress, ticketURIs, tickets } = eventInfo;
 
     //stop minting if paused
     for (let j = 0; j < tickets.length; j++) {
