@@ -331,6 +331,7 @@ model Question {
   userId     Int
   channel    Channel  @relation(fields: [channelId], references: [channelId])
   channelId  Int
+  isAnon     Boolean
 }
 
 model Transaction {
