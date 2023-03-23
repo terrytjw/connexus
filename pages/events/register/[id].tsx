@@ -288,10 +288,16 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     const price_needed = category_info._price._hex;
     console.log(price_needed);
     console.log("output : ", parseInt(price_needed, 16));
-    const mint_ticket = await event_contract.mint(ticketCategory, link, {
-      gasLimit: 2100000,
-      value: price_needed,
-    });
+    const mint_ticket = await event_contract.mint(
+      userInfo.walletAddress,
+      ticketCategory,
+      link,
+      {
+        gasLimit: 2100000,
+        value: price_needed,
+      }
+    );
+    console.log("minted ticket user wallet address ->", userInfo.walletAddress);
     console.log("returned ticket hash -> ", mint_ticket.hash);
 
     for (let j = 0; j < tickets.length; j++) {
