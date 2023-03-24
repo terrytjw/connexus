@@ -18,6 +18,7 @@ import {
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import Loading from "../../Loading";
+import Input from "../../Input";
 
 const DELAY_TIME = 400;
 
@@ -243,6 +244,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        {/* Fitler modal */}
         <Modal
           isOpen={isFilterModalOpen}
           setIsOpen={setIsFilterModalOpen}
@@ -262,6 +264,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             </Button>
           </div>
 
+          {/* Categories */}
           <h3 className="mt-8 text-sm font-medium text-gray-500">CATEGORIES</h3>
           <div className="mt-2 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {Object.values(CategoryType).map((label, index) => {
@@ -290,6 +293,43 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               );
             })}
           </div>
+          <div className="divider"></div>
+          {/* Date Range */}
+          <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
+          <div className="mt-2 flex justify-between gap-8">
+            <Input
+              type="datetime-local"
+              label="From"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+            <Input
+              type="datetime-local"
+              label="To"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+          </div>
+
+          <div className="divider"></div>
+          {/* Liked */}
+          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
+          <Badge
+            label="Select Liked Events Only"
+            size="lg"
+            selected={false}
+            onClick={() => {}}
+            className="mt-2 h-8 min-w-fit rounded-lg"
+          />
+
           <Button
             variant="solid"
             size="md"
