@@ -93,17 +93,17 @@ export default async function handler(
         ? parseInt(query.cursor as string)
         : undefined;
 
+      const keyword = query.keyword as string;
+
       const eventIds = query.eventIds
         ? (query.eventIds as string).split(",").map((id) => parseInt(id))
         : undefined;
 
+      // const likedEvents = query.likedEvents;
+
       const tags = query.tags
         ? ((query.tags as string).split(",") as CategoryType[])
         : undefined;
-
-      const locationName = query.locationName;
-      const address1 = query.address1;
-      const address = { locationName, address1 } as Partial<Address>;
 
       const startDate = query.startDate
         ? new Date(query.startDate as string)
@@ -113,21 +113,7 @@ export default async function handler(
         ? new Date(query.endDate as string)
         : undefined;
 
-      const maxAttendee = query.maxAttendee
-        ? parseInt(query.maxAttendee as string)
-        : undefined;
-      const status = query.status as PublishType;
-
-      await handleGET(
-        cursor,
-        eventIds,
-        tags,
-        address,
-        startDate,
-        endDate,
-        maxAttendee,
-        status
-      );
+      await handleGET(cursor, keyword, eventIds, tags, startDate, endDate);
       break;
     case "POST":
       const event = JSON.parse(JSON.stringify(body)) as EventCreation;
@@ -140,24 +126,20 @@ export default async function handler(
 
   async function handleGET(
     cursor: number | undefined,
+    keyword: string | undefined,
     eventIds: number[] | undefined,
     tags: CategoryType[] | undefined,
-    address: Partial<Address> | undefined,
     startDate: Date | undefined,
-    endDate: Date | undefined,
-    maxAttendee: number | undefined,
-    status: PublishType | undefined
+    endDate: Date | undefined
   ) {
     try {
       const events = await filterEvent(
         cursor,
+        keyword,
         eventIds,
         tags,
-        address,
         startDate,
-        endDate,
-        maxAttendee,
-        status
+        endDate
       );
       res.status(200).json(events);
     } catch (error) {

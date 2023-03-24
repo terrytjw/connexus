@@ -54,7 +54,9 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
-      analyticsTimestamps: { create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 } },
+      analyticsTimestamps: {
+        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 },
+      },
       promotion: { create: promotion },
     },
     include: {
@@ -69,14 +71,21 @@ export async function createEventWithTickets(
 
 export async function filterEvent(
   cursor: number | undefined,
+  keyword: string | undefined,
   eventIds: number[] | undefined,
   tags: CategoryType[] | undefined,
-  address: Partial<Address> | undefined,
   startDate: Date | undefined,
-  endDate: Date | undefined,
-  maxAttendee: number | undefined,
-  status: PublishType | undefined
+  endDate: Date | undefined
 ) {
+  console.log(
+    "filterEvent",
+    cursor,
+    keyword,
+    eventIds,
+    tags,
+    startDate,
+    endDate
+  );
   return prisma.event.findMany({
     include: { userLikes: true, address: true, tickets: true },
     take: 10,
@@ -86,6 +95,10 @@ export async function filterEvent(
       eventId: "asc",
     },
     where: {
+      eventName: {
+        contains: keyword,
+        mode: "insensitive",
+      },
       category: tags
         ? {
             hasSome: tags,
@@ -97,16 +110,6 @@ export async function filterEvent(
             in: eventIds,
           }
         : undefined,
-      address: {
-        locationName: {
-          contains: address?.locationName,
-          mode: "insensitive",
-        },
-        address1: {
-          contains: address?.address1,
-          mode: "insensitive",
-        },
-      },
       AND: [
         {
           startDate: {
@@ -119,10 +122,6 @@ export async function filterEvent(
           },
         },
       ],
-      maxAttendee: {
-        lte: maxAttendee,
-      },
-      publishType: status,
     },
   });
 }
@@ -290,9 +289,9 @@ export async function getEventsForAnalytics() {
     include: {
       tickets: true,
       analyticsTimestamps: true,
-      _count: { 
-        select: { userLikes: true }
-      }
-    }
+      _count: {
+        select: { userLikes: true },
+      },
+    },
   });
 }
