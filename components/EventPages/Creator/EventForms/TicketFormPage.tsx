@@ -306,7 +306,7 @@ const TicketFormPage = ({
                       />
                     )}
                   />
-                  {index > 0 && !isRaffleActivated() && (
+                  {prizesFields.length > 1 && !isRaffleActivated() && (
                     <FaTrash
                       onClick={() => {
                         removePrize(index);

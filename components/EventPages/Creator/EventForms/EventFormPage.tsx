@@ -523,7 +523,7 @@ const EventFormPage = ({
                 "address.postalCode",
               ]);
 
-              if (!(eventPic || bannerPic)) {
+              if (!eventPic || !bannerPic) {
                 toast.error("Images are required!");
                 return;
               }
