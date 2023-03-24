@@ -105,70 +105,6 @@ const AttendeesPage = () => {
   // custom function to show toast max once every X time period
   let lastToastTime: number | null = null;
 
-  const handleDigitalBadge = async () => {
-    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
-      Number(eventId)
-    );
-    const categories: any[] = [];
-    console.log(eventInfo);
-
-    tickets.map((event: any) => {
-      categories.push(event.name);
-    });
-    console.log("categories ->", categories);
-
-    const contractAddress = await deployDigitalBadge(
-      categories,
-      eventInfo.eventName,
-      eventInfo.eventName
-    );
-
-    const updatedEventInfo = {
-      ...eventInfo,
-      digitalBadgeScAddress: contractAddress,
-    };
-
-    const updatedEventResponse = await updateEventInfo(
-      Number(eventId),
-      updatedEventInfo
-    );
-    console.log("updated event response ->", updatedEventResponse);
-
-    // const eventInfo = await getEventInfo(Number(eventId));
-    const ticketInfo = await getTicketInfo(Number(10));
-    const ticketCategory = ticketInfo.name;
-    console.log("ticketInfo ..", ticketInfo);
-    const userInfo = await getUserInfo(Number(4));
-    const userWallet = userInfo.walletAddress;
-    console.log("userWallet ->", userWallet);
-    const digitalBadgeUri = await mintDigitalBadge(
-      eventInfo,
-      ticketCategory,
-      userWallet
-    );
-    console.log("minted digital badge uri ->", digitalBadgeUri);
-
-    const userTicketInfo = await getUserTicketInfo(
-      ticketInfo.ticketId,
-      userInfo.userId
-    );
-
-    console.log("user ticket info ->", userTicketInfo);
-
-    const updatedUserTicketInfo = {
-      ...userTicketInfo,
-      badgeUrl: digitalBadgeUri,
-    };
-
-    const updatedUserTicketResponse = await updateUserTicket(
-      ticketInfo.ticketId,
-      userInfo.userId,
-      updatedUserTicketInfo
-    );
-
-    console.log("updated user ticket response ->", updatedUserTicketResponse);
-  };
-
   const showToastWithLimit = (
     message: string,
     options: { duration: number },
@@ -205,12 +141,16 @@ const AttendeesPage = () => {
       const idList = scanResult.split(",");
       const [eventId, ticketId, userId] = idList;
 
+      // update userTicket check in status in db
       const res = await checkIn(
         Number(eventId),
         Number(ticketId),
         Number(userId)
       );
       setIsValid(true);
+
+      // mint badge to user
+      await mintBadge(Number(eventId), Number(ticketId), Number(userId));
 
       toast.success("Check-in Success!", { duration: 1000 });
       setTimeout(() => {
@@ -244,6 +184,78 @@ const AttendeesPage = () => {
     }
   };
 
+  const mintBadge = async (
+    eventId: number,
+    ticketId: number,
+    userId: number
+  ) => {
+    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
+      eventId
+    );
+    const ticketInfo = await getTicketInfo(ticketId);
+    const ticketCategory = ticketInfo.name;
+    console.log("ticketInfo ..", ticketInfo);
+    const userInfo = await getUserInfo(userId);
+    const userWallet = userInfo.walletAddress;
+    console.log("userWallet ->", userWallet);
+    const digitalBadgeUri = await mintDigitalBadge(
+      eventInfo,
+      ticketCategory,
+      userWallet
+    );
+    console.log("minted digital badge uri ->", digitalBadgeUri);
+
+    const userTicketInfo = await getUserTicketInfo(
+      ticketInfo.ticketId,
+      userInfo.userId
+    );
+
+    console.log("user ticket info ->", userTicketInfo);
+
+    const updatedUserTicketInfo = {
+      ...userTicketInfo,
+      badgeUrl: digitalBadgeUri,
+    };
+
+    const updatedUserTicketResponse = await updateUserTicket(
+      ticketInfo.ticketId,
+      userInfo.userId,
+      updatedUserTicketInfo
+    );
+
+    console.log("updated user ticket response ->", updatedUserTicketResponse);
+  };
+
+  const deployDigitalBadgeContract = async () => {
+    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
+      Number(eventId)
+    );
+    const categories: any[] = [];
+    console.log(eventInfo);
+
+    tickets.map((event: any) => {
+      categories.push(event.name);
+    });
+    console.log("categories ->", categories);
+
+    const contractAddress = await deployDigitalBadge(
+      categories,
+      eventInfo.eventName,
+      eventInfo.eventName
+    );
+
+    const updatedEventInfo = {
+      ...eventInfo,
+      digitalBadgeScAddress: contractAddress,
+    };
+
+    const updatedEventResponse = await updateEventInfo(
+      Number(eventId),
+      updatedEventInfo
+    );
+    console.log("updated event response ->", updatedEventResponse);
+  };
+
   const handleActivateRaffle = async () => {
     const raffles = fetchedAttendees[0].ticket.event.raffles; // raffle object from db
     // event has a raffle and raffle is enabled
@@ -251,6 +263,9 @@ const AttendeesPage = () => {
       const updatedRaffle = { ...raffles[0], isActivated: true };
       console.log("posting raffle object -> ", updatedRaffle);
       await updateRaffle(raffles[0].raffleId, updatedRaffle);
+
+      // deploy digital badge contract
+      await deployDigitalBadgeContract();
 
       mutate((data: AttendeeListType[]) =>
         data.map(
@@ -365,10 +380,6 @@ const AttendeesPage = () => {
                 {!isRaffleActivated()
                   ? "Activate Digital Raffle"
                   : "Raffle Activated"}
-              </Button>
-
-              <Button variant="outlined" size="md" onClick={handleDigitalBadge}>
-                Digital Badge
               </Button>
             </div>
             <div className="flex gap-4">
