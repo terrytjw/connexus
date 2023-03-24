@@ -18,7 +18,6 @@ import { FaDollarSign, FaTrash } from "react-icons/fa";
 import { EventWithAllDetails } from "../../../../utils/types";
 import { TicketType } from "@prisma/client";
 import { isValid } from "date-fns";
-import { remove } from "lodash";
 
 type TicketFormPageProps = {
   isEdit: boolean;
@@ -307,7 +306,7 @@ const TicketFormPage = ({
                       />
                     )}
                   />
-                  {index > 0 && !isRaffleActivated() && (
+                  {prizesFields.length > 1 && !isRaffleActivated() && (
                     <FaTrash
                       onClick={() => {
                         removePrize(index);

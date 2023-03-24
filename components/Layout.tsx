@@ -12,14 +12,14 @@ import {
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import Modal from "./Modal";
 import dynamic from "next/dynamic";
 import Loading from "./Loading";
-import { getSession, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import { getUserInfo } from "../lib/api-helpers/user-api";
-import { useUserRole } from "../utils/hooks";
+import { UserRoleContext } from "../contexts/UserRoleProvider";
 
 const SocialLoginDynamic = dynamic(
   () => import("../components/scw").then((res) => res.default),
@@ -33,11 +33,12 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
+const MobileNavbar = ({ userData, children }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const checkboxRef = useRef<HTMLInputElement>(null);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { isFan, switchRole } = useContext(UserRoleContext);
 
   // to automatically close daisyUI side drawer when route changes
   useEffect(() => {
@@ -126,7 +127,14 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
           </Link>
           <li className="mt-10 mb-4">
             <Link
-              href="/communities"
+              // href={
+              //   isFan
+              //     ? `/communities`
+              //     : userData.createdCommunities.length > 0
+              //     ? `/communities/${userData.createdCommunities[0].communityId}`
+              //     : `/communities/create`
+              // }
+              href={`/communities/create`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
                 router.pathname === "/communities"
@@ -212,10 +220,11 @@ const MobileNavbar = ({ userData, isFan, switchRole, children }: any) => {
   );
 };
 
-const DesktopSidebar = ({ isFan }: any) => {
+const DesktopSidebar = ({ userData }: any) => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const { isFan } = useContext(UserRoleContext);
 
   return (
     <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">
@@ -234,7 +243,14 @@ const DesktopSidebar = ({ isFan }: any) => {
       <ul className="mt-28 pl-2 pr-8 text-gray-700">
         <li className="mb-4">
           <Link
-            href="/communities"
+            // href={
+            //   isFan
+            //     ? `/communities`
+            //     : userData.createdCommunities.length > 0
+            //     ? `/communities/${userData.createdCommunities[0].communityId}`
+            //     : `/communities/create`
+            // }
+            href={`/communities/create`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
               router.pathname === "/communities" ? "bg-blue-600 text-white" : ""
@@ -323,27 +339,15 @@ const Layout = ({ children }: LayoutProps) => {
     error,
     isLoading,
   } = useSWR(session?.user.userId, getUserInfo);
-  const [isFan, setIsFan] = useUserRole();
 
-  const switchRole = () => {
-    if (
-      localStorage.getItem("role") === null ||
-      localStorage.getItem("role") === "fan"
-    ) {
-      localStorage.setItem("role", "creator");
-      setIsFan(false);
-    } else if (localStorage.getItem("role") === "creator") {
-      localStorage.setItem("role", "fan");
-      setIsFan(true);
-    }
-  };
+  const { isFan, switchRole } = useContext(UserRoleContext);
 
   if (isLoading) return <Loading />;
 
   return (
     <MobileNavbar userData={userData} isFan={isFan} switchRole={switchRole}>
       <div className="flex text-black">
-        <DesktopSidebar isFan={isFan} />
+        <DesktopSidebar userData={userData} />
         <main className="debug-screens w-full lg:ml-64 lg:w-[calc(100%-16rem)]">
           <div className="min-h-screen bg-sky-100">
             {/* desktop profile dropdown */}
@@ -370,7 +374,7 @@ const Layout = ({ children }: LayoutProps) => {
                   className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
                 >
                   <li>
-                    <a onClick={() => switchRole()}>
+                    <a onClick={switchRole}>
                       {isFan ? "Switch to Creator view" : "Switch to Fan view"}
                     </a>
                   </li>

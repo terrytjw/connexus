@@ -8,9 +8,7 @@ import { truncateString } from "../../utils/text-truncate";
 import router from "next/router";
 import { CategoryType, Ticket } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
-}
+import { toast } from "react-hot-toast";
 
 type EventsTableProps = {
   data: EventWithAllDetails[]; // TODO: change type any to data type
@@ -41,6 +39,10 @@ const EventsTable = ({
     return ticketsRevenue;
   };
 
+  const eventEnded = (event: EventWithAllDetails): boolean => {
+    return new Date(event.endDate) < new Date();
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="table w-full ">
@@ -48,7 +50,10 @@ const EventsTable = ({
         <thead>
           <tr>
             {columns.map((headerTitle, index) => (
-              <th className="bg-blue-gray-200 text-gray-700" key={index}>
+              <th
+                className="bg-blue-gray-200 !relative text-gray-700"
+                key={index}
+              >
                 {headerTitle}
               </th>
             ))}
@@ -99,46 +104,55 @@ const EventsTable = ({
               <td className=" text-sm font-bold text-red-400">
                 {data?.visibilityType}
               </td>
-              <th className=" text-gray-700">
-                {/* note: these buttons display depending on tab a user is on */}
-                <div className="flex flex-row">
-                  <Link
-                    href={`/events/attendees/${data.eventId}`}
-                    onClick={async (e) => {
-                      // prevent row on click
-                      e.stopPropagation();
-                    }}
-                  >
-                    <button className="btn-ghost btn-xs btn">
-                      <TbClipboardText className="text-lg text-orange-300" />
-                    </button>
-                  </Link>
+              {!eventEnded(data) && (
+                <th className=" text-gray-700">
+                  {/* note: these buttons display depending on tab a user is on */}
+                  <div className="flex flex-row">
+                    <Link
+                      href={`/events/attendees/${data.eventId}`}
+                      onClick={async (e) => {
+                        // prevent row on click
+                        e.stopPropagation();
+                      }}
+                    >
+                      <button className="btn-ghost btn-xs btn">
+                        <TbClipboardText className="text-lg text-orange-300" />
+                      </button>
+                    </Link>
 
-                  <Link
-                    href={`/events/edit/${data.eventId}`}
-                    onClick={async (e) => {
-                      // prevent row on click
-                      e.stopPropagation();
-                    }}
-                  >
-                    <button className="btn-ghost btn-xs btn">
-                      <FaEdit className="text-lg text-blue-600" />
-                    </button>
-                  </Link>
+                    <Link
+                      href={`/events/edit/${data.eventId}`}
+                      onClick={async (e) => {
+                        // prevent row on click
+                        e.stopPropagation();
+                      }}
+                    >
+                      <button className="btn-ghost btn-xs btn">
+                        <FaEdit className="text-lg text-blue-600" />
+                      </button>
+                    </Link>
 
-                  <button
-                    className="btn-ghost btn-xs btn"
-                    onClick={async (e) => {
-                      // prevent row on click
-                      e.stopPropagation();
-                      setEventIdToDelete(data.eventId);
-                      setDeleteConfirmationModalOpen(true);
-                    }}
-                  >
-                    <FaTrashAlt className="text-lg text-red-400" />
-                  </button>
-                </div>
-              </th>
+                    <button
+                      className="btn-ghost btn-xs btn"
+                      onClick={async (e) => {
+                        // prevent row on click
+                        e.stopPropagation();
+                        if (data.ticketURIs.length !== 0) {
+                          toast.error(
+                            "Cannot delete - event has at least 1 Attendee."
+                          );
+                          return;
+                        }
+
+                        setEventIdToDelete(data.eventId);
+                        setDeleteConfirmationModalOpen(true);
+                      }}
+                    >
+                      <FaTrashAlt className="text-lg text-red-400" />
+                    </button>
+                  </div>
+                </th>
+              )}
             </tr>
           ))}
         </tbody>

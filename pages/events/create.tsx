@@ -43,44 +43,43 @@ const CreatorEventCreate = () => {
   const { data: session } = useSession();
   const userId = session?.user.userId;
 
-  // const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
-  //   useForm<EventWithAllDetails>({
-  //     defaultValues: {
-  //       eventName: "test",
-  //       description: "desc",
-  //       eventPic: "",
-  //       bannerPic: "",
-  //       category: [],
-  //       tickets: [],
-  //       visibilityType: VisibilityType.PUBLISHED,
-  //       privacyType: PrivacyType.PUBLIC,
-  //       publishType: PublishType.NOW,
-  //       address: {
-  //         address1: "",
-  //         address2: "",
-  //         locationName: "",
-  //         postalCode: "",
-  //       },
-  //       promotion: [
-  //         {
-  //           name: "",
-  //           promotionValue: undefined,
-  //           eventId: undefined,
-  //           stripePromotionId: "",
-  //           isEnabled: false,
-  //         },
-  //       ],
-  //       raffles: [
-  //         {
-  //           raffleId: undefined,
-  //           eventId: undefined,
-  //           isEnabled: false,
-  //         },
-  //       ],
-  //     },
-  //   });
-
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
+    //   useForm<EventWithAllDetails>({
+    //     defaultValues: {
+    //       eventName: "test",
+    //       description: "desc",
+    //       eventPic: "",
+    //       bannerPic: "",
+    //       category: [],
+    //       tickets: [],
+    //       visibilityType: VisibilityType.PUBLISHED,
+    //       privacyType: PrivacyType.PUBLIC,
+    //       publishType: PublishType.NOW,
+    //       address: {
+    //         address1: "",
+    //         address2: "",
+    //         locationName: "",
+    //         postalCode: "",
+    //       },
+    //       promotion: [
+    //         {
+    //           name: "",
+    //           promotionValue: undefined,
+    //           eventId: undefined,
+    //           stripePromotionId: "",
+    //           isEnabled: false,
+    //         },
+    //       ],
+    //       raffles: [
+    //         {
+    //           raffleId: undefined,
+    //           eventId: undefined,
+    //           isEnabled: false,
+    //         },
+    //       ],
+    //     },
+    //   });
+
     useForm<EventWithAllDetails>({
       defaultValues: {
         eventName: "event 1",
@@ -97,7 +96,7 @@ const CreatorEventCreate = () => {
             description: "desc",
             price: "1",
             totalTicketSupply: "6",
-            startDate: "2023-03-24T23:57",
+            startDate: "2023-03-25T23:57",
             endDate: "2023-03-30T23:57",
             eventId: 5e-324,
             ticketType: "ON_SALE",
@@ -132,7 +131,7 @@ const CreatorEventCreate = () => {
             ],
           },
         ],
-        startDate: "2023-03-23T23:55",
+        startDate: "2023-03-25T23:55",
         endDate: "2023-03-31T23:55",
         maxAttendee: "12",
       },
@@ -273,12 +272,14 @@ const CreatorEventCreate = () => {
   };
 
   useEffect(() => {
-    // scroll to ticket
-    document.getElementById(`ticket-${tickets?.length}`)?.scrollIntoView({
-      behavior: "smooth",
-      block: "center",
-      inline: "nearest",
-    });
+    // scroll to ticket from 2nd ticket onwards
+    if (tickets.length > 1) {
+      document.getElementById(`ticket-${tickets?.length}`)?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "nearest",
+      });
+    }
   }, [tickets]);
 
   const removeTicket = (index: number): void => {
