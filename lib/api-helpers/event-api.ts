@@ -5,7 +5,14 @@ import {
   USER_TICKET_ENDPOINT,
   smartContract,
 } from "./../constant";
-import { CategoryType, Collection, Event, Raffles, User } from "@prisma/client";
+import {
+  CategoryType,
+  Collection,
+  Event,
+  Raffles,
+  User,
+  VisibilityType,
+} from "@prisma/client";
 import { API_URL, COLLECTION_ENDPOINT, USER_ENDPOINT } from "../constant";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -158,19 +165,22 @@ export async function filterEvent(
   categories: CategoryType[],
   startDate: Date | undefined,
   endDate: Date | undefined,
-  likedEvent: boolean = false,
-  userId: number | undefined
+  // likedEvent: boolean = false,
+  // userId: number | undefined,
+  status: VisibilityType | undefined
 ) {
   const baseUrl = `${API_URL}/${EVENT_ENDPOINT}`;
+
   const response = (
     await axios.get(baseUrl, {
       params: {
         keyword,
-        categories,
+        tags: categories.toString(),
         startDate,
         endDate,
-        likedEvent,
-        userId,
+        // likedEvent,
+        // userId,
+        status,
       },
     })
   ).data;

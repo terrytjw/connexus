@@ -11,6 +11,7 @@ import {
   PublishType,
   Raffles,
   Promotion,
+  VisibilityType,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -99,7 +100,9 @@ export default async function handler(
         ? (query.eventIds as string).split(",").map((id) => parseInt(id))
         : undefined;
 
-      // const likedEvents = query.likedEvents;
+      const likedEvents = query.likedEvent === "true";
+
+      console.log("tags -> ", query.tags);
 
       const tags = query.tags
         ? ((query.tags as string).split(",") as CategoryType[])
@@ -113,7 +116,23 @@ export default async function handler(
         ? new Date(query.endDate as string)
         : undefined;
 
-      await handleGET(cursor, keyword, eventIds, tags, startDate, endDate);
+      const userId = query.userId
+        ? parseInt(query.userId as string)
+        : undefined;
+
+      const status = query.status as string as VisibilityType;
+
+      await handleGET(
+        cursor,
+        keyword,
+        eventIds,
+        tags,
+        startDate,
+        endDate,
+        likedEvents,
+        userId,
+        status
+      );
       break;
     case "POST":
       const event = JSON.parse(JSON.stringify(body)) as EventCreation;
@@ -130,7 +149,10 @@ export default async function handler(
     eventIds: number[] | undefined,
     tags: CategoryType[] | undefined,
     startDate: Date | undefined,
-    endDate: Date | undefined
+    endDate: Date | undefined,
+    // likedEvents: boolean | undefined,
+    // userId: number | undefined,
+    status: VisibilityType | undefined
   ) {
     try {
       const events = await filterEvent(
@@ -139,7 +161,10 @@ export default async function handler(
         eventIds,
         tags,
         startDate,
-        endDate
+        endDate,
+        // likedEvents,
+        // userId,
+        status
       );
       res.status(200).json(events);
     } catch (error) {

@@ -8,6 +8,7 @@ import {
   Address,
   Raffles,
   Promotion,
+  VisibilityType,
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
@@ -75,7 +76,10 @@ export async function filterEvent(
   eventIds: number[] | undefined,
   tags: CategoryType[] | undefined,
   startDate: Date | undefined,
-  endDate: Date | undefined
+  endDate: Date | undefined,
+  // likedEvents: boolean | undefined,
+  // userId: number | undefined,
+  status: VisibilityType | undefined
 ) {
   console.log(
     "filterEvent",
@@ -84,8 +88,12 @@ export async function filterEvent(
     eventIds,
     tags,
     startDate,
-    endDate
+    endDate,
+    // likedEvents,
+    // userId,
+    status
   );
+
   return prisma.event.findMany({
     include: { userLikes: true, address: true, tickets: true },
     take: 10,
@@ -122,6 +130,18 @@ export async function filterEvent(
           },
         },
       ],
+      // userLikes: likedEvents
+      //   ? {
+      //       some: {
+      //         userId: userId,
+      //       },
+      //     }
+      //   : {
+      //       none: {
+      //         userId: userId,
+      //       },
+      //     },
+      visibilityType: status,
     },
   });
 }
@@ -280,6 +300,11 @@ export async function retrieveTrendingEvents() {
       },
     },
     take: 1,
+    where: {
+      endDate: {
+        gte: new Date(),
+      },
+    },
     include: { userLikes: true, address: true },
   });
 }

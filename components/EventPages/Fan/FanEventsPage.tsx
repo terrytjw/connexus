@@ -8,9 +8,10 @@ import Modal from "../../Modal";
 import EventsGrid from "../EventsGrid";
 import { EventWithAllDetails } from "../../../utils/types";
 import Link from "next/link";
-import { CategoryType, Event } from "@prisma/client";
+import { CategoryType, Event, VisibilityType } from "@prisma/client";
 import axios from "axios";
 import {
+  filterEvent,
   retrieveVisitedEvents,
   viewExpiredEvent,
   viewTrendingEvents,
@@ -27,15 +28,26 @@ type FanEventsPageProps = {
 };
 
 const FanEventsPage = ({ events }: FanEventsPageProps) => {
-  const [selectedTopics, setSelectedTopics] = useState<
-    string[] | CategoryType[]
-  >([]);
+  const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
+  const [likedEventsFilter, setLikedEventsFilter] = useState<boolean>(false);
+  const [fromDateFilter, setFromDateFilter] = useState<Date | undefined>(
+    undefined
+  );
+  const [toDateFilter, setToDateFilter] = useState<Date | undefined>(undefined);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
   >([]);
+
+  // console.log("filters ->", {
+  //   searchString,
+  //   selectedTopics,
+  //   likedEventsFilter,
+  //   fromDateFilter,
+  //   toDateFilter,
+  // });
 
   // fetch userId if from session
   const { data: session, status } = useSession();
@@ -75,31 +87,49 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
   const searchEvents = async (searchTerm: string) => {
     try {
-      const searchUrl = `http://localhost:3000/api/events?keyword=${searchTerm}`;
-      const url = appendFilterParamsToURL(searchUrl, selectedTopics);
-      const { data } = await axios.get(url);
+      console.log("passing in filters ->", {
+        searchTerm,
+        selectedTopics,
+        fromDate: new Date("2023-02-20T00:00:00.000Z"),
+        toDate: new Date("2023-05-26T00:00:00.000Z"),
+        visibilityType: VisibilityType.DRAFT,
+      });
+      const data = await filterEvent(
+        searchTerm,
+        selectedTopics,
+        new Date("2023-02-20T00:00:00.000Z"),
+        new Date("2023-05-26T00:00:00.000Z"),
+        undefined
+      );
 
-      // fetch addresses using address ID
+      console.log("filtered data ->", data);
       setSearchAndFilterResults(data);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const onFromDateChanged = (e) => {
+    return setFromDateFilter(new Date(e.target.value));
+  };
+
   // listen to filter and search changes
   useEffect(() => {
     // dont debounce on first page load
     if (searchString !== "" || selectedTopics.length > 0) {
-      debounceSearchApiCall(searchString);
+      // debounceSearchApiCall(searchString);
+      searchEvents(searchString);
     } else {
       // using this state to display events on initial page load
       setSearchAndFilterResults(events);
     }
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [searchString, selectedTopics]);
+  }, [
+    searchString,
+    selectedTopics,
+    likedEventsFilter,
+    fromDateFilter,
+    toDateFilter,
+  ]);
 
   // Listed Tab
   const ListedTabContent = () => {
@@ -116,12 +146,12 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
     if (isTrendingEventsLoading) return <Loading />;
 
-    console.log(
-      "search results -> ",
-      searchAndFilterResults.filter(
-        (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
-      )
-    );
+    // console.log(
+    //   "search results -> ",
+    //   searchAndFilterResults.filter(
+    //     (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
+    //   )
+    // );
 
     return (
       <>
@@ -300,8 +330,9 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             <Input
               type="datetime-local"
               label="From"
-              value={""}
-              onChange={() => {}}
+              value={fromDateFilter?.toString()}
+              onChange={onFromDateChanged}
+              // onChange={(e) => setFromDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -310,8 +341,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             <Input
               type="datetime-local"
               label="To"
-              value={""}
-              onChange={() => {}}
+              value={toDateFilter?.toString()}
+              onChange={(e) => setToDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -325,8 +356,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <Badge
             label="Select Liked Events Only"
             size="lg"
-            selected={false}
-            onClick={() => {}}
+            selected={likedEventsFilter}
+            onClick={() => setLikedEventsFilter((prev) => !prev)}
             className="mt-2 h-8 min-w-fit rounded-lg"
           />
 

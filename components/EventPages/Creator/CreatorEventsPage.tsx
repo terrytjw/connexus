@@ -5,7 +5,7 @@ import EventsTable from "../EventsTable";
 import { EventWithAllDetails } from "../../../utils/types";
 import Modal from "../../Modal";
 import { BiFilter } from "react-icons/bi";
-import { CategoryType } from "@prisma/client";
+import { CategoryType, VisibilityType } from "@prisma/client";
 import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
@@ -15,6 +15,8 @@ import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
 import Input from "../../Input";
 import { Toaster } from "react-hot-toast";
+import { filterEvent } from "../../../lib/api-helpers/event-api";
+import { useSession } from "next-auth/react";
 
 const DELAY_TIME = 400;
 
@@ -37,6 +39,10 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     useState<boolean>(false);
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
   console.log(events);
+
+  // fetch userId if from session
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
 
   useEffect(() => {
     console.log("in use effect");
@@ -163,11 +169,27 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               setIsChecked={setIsCreated}
             />
             <Button
-              href="/events/create"
               variant="solid"
               size="md"
               className="max-w-xs shadow-md"
+              onClick={async () => {
+                const data = await filterEvent(
+                  "",
+                  [],
+                  new Date("2023-02-20T00:00:00.000Z"),
+                  new Date("2023-05-26T00:00:00.000Z"),
+                  false,
+                  Number(userId),
+                  VisibilityType.DRAFT
+                );
+
+                console.log("filtered events-> ", data);
+              }}
             >
+              <FiCalendar className="text-lg text-neutral-50" />
+              fitler
+            </Button>
+            <Button variant="solid" size="md" className="max-w-xs shadow-md">
               <FiCalendar className="text-lg text-neutral-50" />
             </Button>
           </div>
@@ -258,9 +280,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               "Event Name",
               "Date",
               "Location",
-              "Attendees Number",
+              "Max Attendees",
               "Tickets Sold",
-              "Revenue ($)",
+              "Revenue",
               "Tags",
               "Status",
             ]}

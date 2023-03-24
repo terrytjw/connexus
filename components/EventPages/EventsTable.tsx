@@ -84,12 +84,12 @@ const EventsTable = ({
                 {getTicketsSold(data.tickets ?? [])}
               </td>
               <td className="text-gray-700">
-                {getTicketsRevenue(data.tickets ?? [])}
+                ${getTicketsRevenue(data.tickets ?? [])?.toFixed(2)}
               </td>
 
               <td className="text-gray-700">
                 {data?.category.length === 0 && (
-                  <p className="text-gray-500">No Topics Selected</p>
+                  <p className="text-gray-500">No Tags Selected</p>
                 )}
                 {data?.category.map((label: CategoryType, index: number) => (
                   <Badge
