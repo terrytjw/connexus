@@ -14,8 +14,14 @@ import Layout from "../../../components/Layout";
 import Loading from "../../../components/Loading";
 
 import { FaChevronLeft } from "react-icons/fa";
-import { EventWithTicketsandAddress } from "../../../utils/types";
-import { Ticket, Address, TicketType } from "@prisma/client";
+import { EventWithAllDetails } from "../../../utils/types";
+import {
+  Ticket,
+  Address,
+  TicketType,
+  Promotion,
+  Raffles,
+} from "@prisma/client";
 
 import axios from "axios";
 
@@ -28,6 +34,9 @@ import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
 import { useRouter } from "next/router";
+import { Toaster } from "react-hot-toast";
+import raffle from "../../api/events/raffle";
+import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -36,10 +45,9 @@ const provider = new ethers.providers.JsonRpcProvider(
 const abi = contract.abi;
 const bytecode = contract.bytecode;
 var signer = new ethers.Wallet(smartContract.privateKey, provider);
-console.log(signer);
 
 type CreatorEventPageProps = {
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
   address: Address;
 };
 
@@ -47,7 +55,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   const router = useRouter();
   const { id: eventId } = router.query;
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
-    useForm<EventWithTicketsandAddress>({
+    useForm<EventWithAllDetails>({
       defaultValues: {
         ...event,
         address: {
@@ -56,10 +64,22 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       },
     });
 
+  const formData = watch();
+  console.log("current form data->", formData);
   // listen to tickets array
   const { fields, append, remove, update } = useFieldArray({
     control,
     name: "tickets",
+  });
+  // listen to raffles array
+  const {
+    fields: prizesFields,
+    append: appendPrize,
+    remove: removePrize,
+    update: updatePrize,
+  } = useFieldArray({
+    control,
+    name: "raffles.0.rafflePrizes",
   });
   const [tickets] = watch(["tickets"]);
   const [steps, setSteps] = useState<Step[]>([
@@ -72,7 +92,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     useState(false);
 
   async function mintOnChain(
-    eventInfo: Partial<EventWithTicketsandAddress>,
+    eventInfo: Partial<EventWithAllDetails>,
     ticket_category: string
   ) {
     console.log(ticket_category);
@@ -134,7 +154,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     let response_event = await axios.get(
       "http://localhost:3000/api/events/" + event_id.toString()
     );
-    const eventInfo = response_event.data as EventWithTicketsandAddress;
+    const eventInfo = response_event.data as EventWithAllDetails;
     const { scAddress, ticketURIs, tickets } = eventInfo;
     console.log("db eventInfo -> ", eventInfo);
 
@@ -265,7 +285,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     console.log("Event Info");
 
     let newticketURIs = [];
-    const updated_event: Partial<EventWithTicketsandAddress> = { ...newEvent };
+    const updated_event: Partial<EventWithAllDetails> = { ...newEvent };
 
     // case if db event has tickets
     if (ticketURIs.length > 0) {
@@ -317,7 +337,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
       console.log("updated address ->", addressRes.data);
 
-      const updated_event_withuri: Partial<EventWithTicketsandAddress> = {
+      const updated_event_withuri: Partial<EventWithAllDetails> = {
         ...newEventWOTicketsNAddress,
         ticketURIs: newticketURIs,
       }; //redo again to add the new URI arr
@@ -338,7 +358,12 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     } else {
       // no change in tickets
       console.log("Nothing to update for tokenURIs in event");
-      // remove tickets since its updated separately before
+
+      /**
+       * 1. updating address separately
+       * 2. updated tickets separately
+       * 3. userLikes not needed and will crash post api call
+       * */
       const {
         address,
         tickets: { tempTickets },
@@ -351,10 +376,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
         address
       );
-
       console.log("updated address ->", addressRes.data);
 
-      const updated_event_WITHOUT_uri: Partial<EventWithTicketsandAddress> = {
+      // final form object before calling post api
+      const updated_event_WITHOUT_uri: Partial<EventWithAllDetails> = {
         ...newEventWOTicketsNAddress,
       }; //redo again to add the new URI arr
 
@@ -374,10 +399,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     }
   }
 
-  const parseAndUpdate = (event: EventWithTicketsandAddress): void => {
+  const parseAndUpdate = (event: EventWithAllDetails): void => {
     console.log("Submitting Form Data", event);
 
-    const { tickets, startDate, endDate, maxAttendee } = event;
+    const { tickets, startDate, endDate, maxAttendee, promotion } = event;
 
     // parse to prisma type
     const prismaEvent = {
@@ -400,6 +425,10 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           endDate: new Date(endDate),
         })
       ),
+      promotion: promotion.map((promo: Promotion) => ({
+        ...promo,
+        promotionValue: Number(promo.promotionValue),
+      })),
     };
     updateEvent(prismaEvent);
   };
@@ -417,6 +446,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       startDate: undefined as unknown as Date,
       endDate: undefined as unknown as Date,
       eventId: Number.MIN_VALUE,
+      stripePriceId: "",
     });
   };
 
@@ -508,6 +538,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: "#FFFFFF",
+                color: "#34383F",
+                textAlign: "center",
+              },
+            }}
+          />
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}
@@ -564,7 +604,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           {/* Form */}
           <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <form
-              onSubmit={handleSubmit((event: EventWithTicketsandAddress) =>
+              onSubmit={handleSubmit((event: EventWithAllDetails) =>
                 parseAndUpdate(event)
               )}
             >
@@ -587,12 +627,16 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
                     isEdit={true}
                     getFieldState={getFieldState}
                     watch={watch}
+                    setValue={setValue}
                     control={control}
                     trigger={trigger}
                     fields={fields}
                     update={update}
                     addNewTicket={addNewTicket}
                     removeTicket={removeTicket}
+                    prizesFields={prizesFields}
+                    appendPrize={appendPrize}
+                    removePrize={removePrize}
                     proceedStep={proceedStep}
                   />
                 )}
@@ -623,7 +667,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   );
 
   // parsing to format date for html 'date-time-local' inputs
-  const parsedEvent: Partial<EventWithTicketsandAddress> = {
+  const parsedEvent: Partial<EventWithAllDetails> = {
     ...event,
     startDate: formatDateForInput(event.startDate) as unknown as Date, // hack to fit string into Date type -
     endDate: formatDateForInput(event.endDate) as unknown as Date,

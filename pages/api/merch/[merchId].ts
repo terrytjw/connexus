@@ -3,11 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Merchandise, Prisma } from "@prisma/client";
 import { MERCH_PROFILE_BUCKET } from "../../../lib/constant";
-import {
-  deleteMerchandise,
-  searchMerchandise,
-  updatedMerchandise,
-} from "../../../lib/prisma/merchandise-prisma";
+import { updatedMerchandise } from "../../../lib/prisma/merchandise-prisma";
 import {
   uploadImage,
   retrieveImageUrl,
@@ -17,6 +13,10 @@ import {
 const prisma = new PrismaClient();
 type UserWithTicketsandMerch = Prisma.UserGetPayload<{
   include: { tickets: true; merchandise: true };
+}>;
+
+type MerchandiseWithUser = Prisma.MerchandiseGetPayload<{
+  include: { users: true };
 }>;
 
 /**
@@ -79,14 +79,15 @@ export default async function handler(
 ) {
   const { query, method } = req;
   let merchId = parseInt(query.merchId as string);
+  let userId = parseInt(query.userId as string);
 
   switch (req.method) {
     case "GET":
       await handleGET(merchId);
       break;
     case "POST":
-      const merch = JSON.parse(JSON.stringify(req.body)) as Merchandise;
-      await handlePOST(merchId, merch);
+      const merch = JSON.parse(JSON.stringify(req.body)) as MerchandiseWithUser;
+      await handlePOST(merchId, merch, userId);
       break;
     case "DELETE":
       await handleDELETE(merchId);
@@ -112,7 +113,11 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(merchId: number, merch: Merchandise) {
+  async function handlePOST(
+    merchId: number,
+    merch: MerchandiseWithUser,
+    userId: number | undefined
+  ) {
     try {
       const { image } = merch;
       let merchUrl = "";
@@ -130,6 +135,7 @@ export default async function handler(
 
       const updatedMerchInfo = {
         ...merch,
+        users: { connect: { userId: userId } },
       };
       console.log(merchUrl);
 

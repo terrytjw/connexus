@@ -1,5 +1,5 @@
 import TicketCard from "../../components/EventPages/TicketCard";
-import React from "react";
+import React, { useContext } from "react";
 import {
   FaCalendar,
   FaFacebook,
@@ -18,12 +18,13 @@ import Layout from "../../components/Layout";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { Ticket, User, Address } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
 import { formatDate } from "../../utils/date-util";
 import { getSession } from "next-auth/react";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 
 type EventPageProps = {
-  event: EventWithTicketsandAddress;
+  event: EventWithAllDetails;
   userData: User & { tickets: Ticket[] };
 };
 
@@ -40,11 +41,18 @@ const EventPage = ({ event, userData }: EventPageProps) => {
     tickets,
     category,
   } = event;
+  const { isFan } = useContext(UserRoleContext);
 
   const isRegistered = (): boolean => {
     console.log("user tickets ->", userData?.tickets);
     return !!userData.tickets?.find(
       (ticket: Ticket) => ticket.eventId === event.eventId
+    );
+  };
+
+  const allTicketsSoldOut = (): boolean => {
+    return event.tickets.every(
+      (ticket) => ticket.currentTicketSupply === ticket.totalTicketSupply
     );
   };
 
@@ -97,7 +105,17 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                   </h1>
                   <h3 className="mt-4">{description || "description"}</h3>
                 </div>
-                {!isRegistered() ? (
+                {/* not registered and not sold out */}
+                {!isFan ? (
+                  <Link
+                    href={`/events/edit/${eventId}`}
+                    className="mt-8 sm:mt-0"
+                  >
+                    <Button variant="solid" size="md" className="max-w-xs">
+                      Edit Event
+                    </Button>
+                  </Link>
+                ) : !isRegistered() && !allTicketsSoldOut() ? (
                   <Link
                     href={`/events/register/${eventId}`}
                     className="mt-8 sm:mt-0"
@@ -106,7 +124,8 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                       Register for event
                     </Button>
                   </Link>
-                ) : (
+                ) : isRegistered() ? (
+                  // Registered (show this even if sold out)
                   <Button
                     disabled
                     variant="solid"
@@ -114,6 +133,16 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                     className="max-w-xs"
                   >
                     Registered
+                  </Button>
+                ) : (
+                  // Sold Out
+                  <Button
+                    disabled
+                    variant="solid"
+                    size="md"
+                    className="max-w-xs"
+                  >
+                    Tickets Sold Out
                   </Button>
                 )}
               </div>

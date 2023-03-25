@@ -110,26 +110,26 @@ contract Collection is  Ownable, ReentrancyGuard, ERC721URIStorage {
     }
 
 
-    function mint(string memory merchCategory, string memory tokenURI) public virtual payable returns(uint256){
-        emit userMints(msg.sender); //event emitted
+    function mint(address _to, string memory merchCategory, string memory tokenURI) public virtual payable returns(uint256){
+        emit userMints(_to); //event emitted
         //script should capture the event 
 
-        require(merchPerOwner[msg.sender] < maxMerchPerAddress, "Exceeded Max Minting");    
+        require(merchPerOwner[_to] < maxMerchPerAddress, "Exceeded Max Minting");    
         require(idToMerchTypeDetails[merchCategory].currentMerchSupply < idToMerchTypeDetails[merchCategory].maxMerchSupply, "Exceeded Category minting");
         require(msg.value >= (idToMerchTypeDetails[merchCategory].price * (1 + (commission/100))), "Not enough ETH");
         idToMerchTypeDetails[merchCategory].currentMerchSupply = idToMerchTypeDetails[merchCategory].currentMerchSupply + 1; 
         Merchandise memory newMerchandise = Merchandise( 
-            collectionOwner, msg.sender, idToMerchTypeDetails[merchCategory],idToMerchTypeDetails[merchCategory].price, collectionStatus.ON_SALE
+            collectionOwner, _to, idToMerchTypeDetails[merchCategory],idToMerchTypeDetails[merchCategory].price, collectionStatus.ON_SALE
         );  
 
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
-        _safeMint(msg.sender, newItemId);
+        _safeMint(_to, newItemId);
         _setTokenURI(newItemId, tokenURI); 
 
-        merchPerOwner[msg.sender] += 1;
+        merchPerOwner[_to] += 1;
         merchIDs[newItemId] = newMerchandise;
-        emit merchMinted(newItemId, msg.sender);
+        emit merchMinted(newItemId, _to);
 
         return newItemId;  //get the newItemId
     }

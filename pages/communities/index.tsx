@@ -202,7 +202,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                   className="max-w-sm !bg-white !text-gray-700"
                   onClick={() => setIsModalOpen(true)}
                 >
-                  Filter by Topic
+                  Filter
                   <BiFilter className="h-8 w-8" />
                 </Button>
               </div>

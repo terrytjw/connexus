@@ -7,16 +7,16 @@ import {
 import Button from "../../../Button";
 import Input from "../../../Input";
 import InputGroup from "../../../InputGroup";
-import { UserWithSelectedTicket } from "../../../../pages/events/register/[id]";
+import { TicketsForm } from "../../../../pages/events/register/[id]";
 // @ts-ignore
 import { isEmail, isMobilePhone } from "validator";
 import useSWR from "swr";
 import { swrFetcher } from "../../../../lib/swrFetcher";
 
 type ConfirmationFormProps = {
-  watch: UseFormWatch<UserWithSelectedTicket>;
-  control: Control<UserWithSelectedTicket, any>;
-  trigger: UseFormTrigger<UserWithSelectedTicket>;
+  watch: UseFormWatch<TicketsForm>;
+  control: Control<TicketsForm, any>;
+  trigger: UseFormTrigger<TicketsForm>;
   setIsRegisterSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -98,7 +98,7 @@ const ConfirmationFormProps = ({
             },
           }}
           render={({ field: { onChange, value }, fieldState: { error } }) => (
-            <InputGroup
+            <Input
               type="text"
               label="Mobile Number *"
               value={value ?? ""}
@@ -109,9 +109,7 @@ const ConfirmationFormProps = ({
               errorMessage={error?.message}
               className="max-w-3xl"
               disabled={!!userData?.phoneNumber}
-            >
-              <span className="text-xs text-gray-400">+65</span>
-            </InputGroup>
+            />
           )}
         />
 
@@ -124,12 +122,12 @@ const ConfirmationFormProps = ({
             <span className="text-sm font-normal ">
               {qty}x {ticketName}
             </span>
-            <span className="text-sm font-normal ">${price}</span>
+            <span className="text-sm font-normal ">${price?.toFixed(2)}</span>
           </div>
           <div className="flex flex-row justify-between">
             {/* only one selected ticket hence total price will be that */}
             <span className="text-md font-medium ">Total</span>
-            <span className="text-md font-medium ">${price}</span>
+            <span className="text-md font-medium ">${price?.toFixed(2)}</span>
           </div>
         </div>
 

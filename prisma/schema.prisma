@@ -15,32 +15,35 @@ generator jsonSchema {
 }
 
 model User {
-  userId              Int           @id @default(autoincrement())
-  walletAddress       String        @unique
+  userId              Int               @id @default(autoincrement())
+  walletAddress       String            @unique
   phoneNumber         String?
   profilePic          String?
   bannerPic           String?
   displayName         String?
-  username            String        @unique
-  email               String        @unique
+  username            String            @unique
+  email               String            @unique
   bio                 String?
-  notificationBySMS   Boolean       @default(true)
-  notificationByEmail Boolean       @default(true)
-  createdCollections  Collection[]  @relation(name: "createdCollections")
-  createdCommunities  Community[]   @relation(name: "createdCommunities")
-  joinedCommunities   Community[]   @relation(name: "joinedCommunities")
+  notificationBySMS   Boolean           @default(true)
+  notificationByEmail Boolean           @default(true)
+  createdCollections  Collection[]      @relation(name: "createdCollections")
+  createdCommunities  Community[]       @relation(name: "createdCommunities")
+  joinedCommunities   Community[]       @relation(name: "joinedCommunities")
   joinedChannels      Channel[]
-  posts               Post[]        @relation(name: "creator")
-  likedPosts          Post[]        @relation(name: "likedPosts")
-  comments            Comment[]     @relation(name: "commenter")
-  likedComments       Comment[]     @relation(name: "likedComments")
+  posts               Post[]            @relation(name: "creator")
+  likedPosts          Post[]            @relation(name: "likedPosts")
+  comments            Comment[]         @relation(name: "commenter")
+  likedComments       Comment[]         @relation(name: "likedComments")
   tickets             Ticket[]
   merchandise         Merchandise[]
-  likedEvents         Event[]       @relation("eventLikes")
+  likedEvents         Event[]           @relation("eventLikes")
   userTicket          UserTicket[]
-  events              Event[]       @relation("createdEvents")
-  walletBalance       Float         @default(0)
+  events              Event[]           @relation("createdEvents")
+  walletBalance       Float             @default(0)
   questions           Question[]
+  transactions        Transaction[]
+  bankAccount         BankAccount?
+  rafflePrizeUser     RafflePrizeUser[]
 }
 
 model Post {
@@ -58,30 +61,33 @@ model Post {
 }
 
 model Community {
-  communityId Int            @id @default(autoincrement())
-  name        String
-  description String
-  profilePic  String?
-  bannerPic   String?
-  tags        CategoryType[]
-  maxMembers  Int            @default(100)
-  creator     User           @relation(name: "createdCommunities", fields: [userId], references: [userId])
-  userId      Int
-  members     User[]         @relation(name: "joinedCommunities")
-  channels    Channel[]
+  communityId         Int                           @id @default(autoincrement())
+  name                String
+  description         String
+  profilePic          String?
+  bannerPic           String?
+  tags                CategoryType[]
+  maxMembers          Int                           @default(100)
+  creator             User                          @relation(name: "createdCommunities", fields: [userId], references: [userId])
+  userId              Int
+  members             User[]                        @relation(name: "joinedCommunities")
+  channels            Channel[]
+  analyticsTimestamps CommunityAnalyticsTimestamp[]
+  clicks              Int                           @default(0)
 }
 
 model Channel {
-  channelId    Int         @id @default(autoincrement())
-  name         String
-  channelType  ChannelType @default(PREMIUM)
-  members      User[]
-  community    Community   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
-  communityId  Int
-  posts        Post[]
-  collection   Collection? @relation(fields: [collectionId], references: [collectionId])
-  collectionId Int?        @unique
-  questions    Question[]
+  channelId           Int                         @id @default(autoincrement())
+  name                String
+  channelType         ChannelType                 @default(PREMIUM)
+  members             User[]
+  community           Community                   @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
+  communityId         Int
+  posts               Post[]
+  collection          Collection?                 @relation(fields: [collectionId], references: [collectionId])
+  collectionId        Int?                        @unique
+  questions           Question[]
+  analyticsTimestamps ChannelAnalyticsTimestamp[]
 
   @@unique([communityId, name])
 }
@@ -100,28 +106,32 @@ model Comment {
 }
 
 model Event {
-  eventId          Int            @id @default(autoincrement())
-  eventName        String
-  category         CategoryType[]
-  address          Address        @relation(fields: [addressId], references: [addressId])
-  addressId        Int
-  startDate        DateTime       @default(now())
-  endDate          DateTime       @default(now())
-  summary          String?
-  description      String?
-  visibilityType   VisibilityType
-  privacyType      PrivacyType
-  eventPic         String?
-  bannerPic        String?
-  maxAttendee      Int            @default(0)
-  publishType      PublishType
-  publishStartDate DateTime       @default(now())
-  tickets          Ticket[]
-  ticketURIs       String[]
-  scAddress        String
-  userLikes        User[]         @relation("eventLikes")
-  creator          User           @relation(fields: [creatorId], references: [userId], name: "createdEvents")
-  creatorId        Int
+  eventId             Int                       @id @default(autoincrement())
+  eventName           String
+  category            CategoryType[]
+  address             Address                   @relation(fields: [addressId], references: [addressId])
+  addressId           Int
+  startDate           DateTime                  @default(now())
+  endDate             DateTime                  @default(now())
+  summary             String?
+  description         String?
+  visibilityType      VisibilityType
+  privacyType         PrivacyType
+  eventPic            String?
+  bannerPic           String?
+  maxAttendee         Int                       @default(0)
+  publishType         PublishType
+  publishStartDate    DateTime                  @default(now())
+  tickets             Ticket[]
+  ticketURIs          String[]
+  scAddress           String
+  userLikes           User[]                    @relation("eventLikes")
+  creator             User                      @relation(fields: [creatorId], references: [userId], name: "createdEvents")
+  creatorId           Int
+  analyticsTimestamps EventAnalyticsTimestamp[]
+  raffles             Raffles[]
+  clicks              Int                       @default(0)
+  promotion           Promotion[]
 }
 
 enum PublishType {
@@ -152,9 +162,9 @@ model Ticket {
   description         String?
   event               Event        @relation(references: [eventId], fields: [eventId], onDelete: Cascade)
   eventId             Int
-  promotion           Promotion[]
   users               User[]
   userTicket          UserTicket[]
+  stripePriceId       String? //To be removed
 }
 
 model UserTicket {
@@ -175,15 +185,13 @@ enum TicketType {
 }
 
 model Promotion {
-  promotionId    Int           @id @default(autoincrement())
-  name           String
-  promotionType  PromotionType
-  promotionValue Float         @default(0)
-  quantity       Int           @default(0)
-  startDate      DateTime      @default(now())
-  endDate        DateTime      @default(now())
-  ticket         Ticket        @relation(references: [ticketId], fields: [ticketId], onDelete: Cascade)
-  ticketId       Int
+  promotionId       Int     @id @default(autoincrement())
+  name              String
+  promotionValue    Float   @default(0)
+  event             Event   @relation(fields: [eventId], references: [eventId], onDelete: Cascade)
+  eventId           Int
+  isEnabled         Boolean @default(false)
+  stripePromotionId String? //To be removed
 }
 
 enum CategoryType {
@@ -230,24 +238,21 @@ enum ChannelType {
   PRIVATE
 }
 
-enum PromotionType {
-  LIMITED
-  UNLIMITED
-}
-
 model Collection {
-  collectionId    Int             @id @default(autoincrement())
-  collectionName  String          @unique
-  description     String
-  currency        Currency        @default(USD)
-  collectionState CollectionState @default(ON_SALE)
-  merchandise     Merchandise[]
-  fixedPrice      Float           @default(0)
-  scAddress       String
-  merchURIs       String[]
-  creator         User            @relation(name: "createdCollections", fields: [creatorId], references: [userId])
-  creatorId       Int
-  premiumChannel  Channel?
+  collectionId        Int                            @id @default(autoincrement())
+  collectionName      String                         @unique
+  description         String
+  currency            Currency                       @default(USD)
+  collectionState     CollectionState                @default(ON_SALE)
+  merchandise         Merchandise[]
+  fixedPrice          Float                          @default(0)
+  scAddress           String
+  merchURIs           String[]
+  creator             User                           @relation(name: "createdCollections", fields: [creatorId], references: [userId])
+  creatorId           Int
+  analyticsTimestamps CollectionAnalyticsTimestamp[]
+  premiumChannel      Channel?
+  clicks              Int                            @default(0)
 }
 
 enum CollectionState {
@@ -276,6 +281,47 @@ model Merchandise {
   users            User[]
 }
 
+model CommunityAnalyticsTimestamp {
+  id             Int       @id @default(autoincrement())
+  members        Int
+  premiumMembers Int
+  clicks         Int
+  date           DateTime  @default(now())
+  community      Community @relation(fields: [communityId], references: [communityId])
+  communityId    Int
+}
+
+model ChannelAnalyticsTimestamp {
+  id         Int      @id @default(autoincrement())
+  likes      Int
+  comments   Int
+  engagement Float
+  date       DateTime @default(now())
+  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channelId  Int
+}
+
+model EventAnalyticsTimestamp {
+  id          Int      @id @default(autoincrement())
+  ticketsSold Int
+  revenue     Int
+  clicks      Int
+  likes       Int
+  date        DateTime @default(now())
+  event       Event    @relation(fields: [eventId], references: [eventId])
+  eventId     Int
+}
+
+model CollectionAnalyticsTimestamp {
+  id           Int        @id @default(autoincrement())
+  merchSold    Int
+  revenue      Int
+  clicks       Int
+  date         DateTime   @default(now())
+  collection   Collection @relation(fields: [collectionId], references: [collectionId])
+  collectionId Int
+}
+
 model Question {
   questionId Int      @id @default(autoincrement())
   question   String
@@ -285,4 +331,57 @@ model Question {
   userId     Int
   channel    Channel  @relation(fields: [channelId], references: [channelId])
   channelId  Int
+}
+
+model Transaction {
+  transactionId     Int                   @id @default(autoincrement())
+  timestamp         DateTime              @default(now())
+  amount            Float                 @default(0)
+  user              User                  @relation(fields: [userId], references: [userId])
+  userId            Int
+  transactionStatus TransactionStatusType @default(PENDING)
+}
+
+model BankAccount {
+  bankAccountId Int    @id @default(autoincrement())
+  bankName      String
+  accountName   String
+  accountNumber String
+  routingNumber String
+  user          User   @relation(fields: [userId], references: [userId])
+  userId        Int    @unique
+}
+
+enum TransactionStatusType {
+  PENDING
+  COMPLETED
+  REJECTED
+}
+
+model Raffles {
+  raffleId     Int           @id @default(autoincrement())
+  event        Event         @relation(fields: [eventId], references: [eventId])
+  eventId      Int
+  rafflePrizes RafflePrize[]
+  isEnabled    Boolean       @default(false)
+  isActivated  Boolean       @default(false)
+}
+
+model RafflePrize {
+  rafflePrizeId   Int               @id @default(autoincrement())
+  name            String
+  Raffles         Raffles           @relation(fields: [rafflesId], references: [raffleId])
+  rafflesId       Int
+  rafflePrizeUser RafflePrizeUser[]
+}
+
+model RafflePrizeUser {
+  rafflePrizeUserId Int         @id @default(autoincrement())
+  prizeWon          RafflePrize @relation(fields: [rafflePrizeId], references: [rafflePrizeId])
+  rafflePrizeId     Int
+  isClaimed         Boolean     @default(false)
+  user              User        @relation(fields: [userId], references: [userId])
+  userId            Int
+
+  @@unique([userId, rafflePrizeId])
 }

@@ -1,29 +1,29 @@
-import React, { useState } from "react";
+import React, { useContext } from "react";
 import axios from "axios";
 import { GetServerSideProps } from "next";
-import Toggle from "../../components/Toggle";
 import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEventsPage";
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../utils/types";
+import { EventWithAllDetails } from "../../utils/types";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 
 type EventsPageProps = {
-  events: EventWithTicketsandAddress[];
+  events: EventWithAllDetails[];
 };
 
 const EventsPage = ({ events }: EventsPageProps) => {
-  const [isCreator, setIsCreator] = useState<boolean>(false);
+  const { isFan } = useContext(UserRoleContext);
 
   console.log(events);
 
   // temporary filter to see only public events TODO: filter on server side or make it into an api call
   const filterEvents = (
-    events: EventWithTicketsandAddress[]
-  ): EventWithTicketsandAddress[] => {
-    if (!isCreator) {
+    events: EventWithAllDetails[]
+  ): EventWithAllDetails[] => {
+    if (isFan) {
       // see only public and published events
       return events?.filter(
         (event) =>
@@ -37,11 +37,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
   return (
     <ProtectedRoute>
       <Layout>
-        <div className="flex justify-start p-8">
-          {isCreator ? "Creator" : "Fan"}
-          <Toggle isChecked={isCreator} setIsChecked={setIsCreator} />
-        </div>
-        {isCreator ? (
+        {!isFan ? (
           <CreatorEventsPage events={filterEvents(events)} />
         ) : (
           <FanEventsPage events={filterEvents(events)} />

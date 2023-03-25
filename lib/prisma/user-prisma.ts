@@ -20,7 +20,10 @@ export async function searchUser(searchType: UserPartialType) {
       ...searchType,
     },
     include: {
-      createdCommunities: true,
+      createdCollections: {
+        include: { merchandise: true, premiumChannel: true },
+      },
+      createdCommunities: { include: { channels: true } },
       joinedCommunities: {
         include: {
           _count: {
@@ -33,10 +36,14 @@ export async function searchUser(searchType: UserPartialType) {
       merchandise: {
         include: {
           collection: {
-            include: { premiumChannel: { select: { channelId: true } } },
+            include: {
+              premiumChannel: { select: { channelId: true } },
+            },
           },
         },
       },
+      bankAccount: true,
+      transactions: true,
     },
   });
 }
@@ -71,6 +78,10 @@ export async function deleteUser(userId: number) {
 
 export async function updateUser(userId: number, updateType: UserPartialType) {
   return prisma.user.update({
+    include: {
+      bankAccount: true,
+      transactions: true,
+    },
     where: {
       userId: userId,
     },

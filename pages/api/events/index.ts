@@ -1,3 +1,4 @@
+import { TicketWithUser } from "./../../../lib/prisma/user-ticket-prisma";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { handleError, ErrorResponse } from "../../../lib/prisma/prisma-helpers";
 import {
@@ -8,6 +9,8 @@ import {
   Ticket,
   Address,
   PublishType,
+  Raffles,
+  Promotion,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -17,13 +20,29 @@ import {
   uploadImage,
 } from "./../../../lib/supabase";
 import {
-  createEventWithTickets,
+  createEventWithTickets as createEvent,
   filterEvent,
 } from "../../../lib/prisma/event-prisma";
 import { EVENT_PROFILE_BUCKET } from "../../../lib/constant";
+import { saveRaffles } from "../../../lib/prisma/raffle-prisma";
+import { createProduct, createPromo } from "../../../lib/stripe/api-helpers";
 
 export type EventCreation = Prisma.EventGetPayload<{
-  include: { tickets: true; address: true };
+  include: {
+    tickets: {
+      include: { users: true };
+    };
+    address: true;
+    userLikes: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+    promotion: true;
+  };
+}>;
+
+type RaffleWithPrizes = Prisma.RafflesGetPayload<{
+  include: { rafflePrizes: true };
 }>;
 
 /**
@@ -149,12 +168,33 @@ export default async function handler(
 
   async function handlePOST(eventWithTickets: EventCreation) {
     try {
-      const { tickets, eventPic, bannerPic, creatorId, ...eventInfo } =
-        eventWithTickets;
-      const updatedTickets = tickets.map((ticket: Ticket) => {
-        const { ticketId, eventId, ...ticketInfo } = ticket;
+      const {
+        tickets,
+        eventPic,
+        bannerPic,
+        creatorId,
+        userLikes,
+        raffles,
+        promotion,
+        ...eventInfo
+      } = eventWithTickets;
+
+      const updatedTickets = tickets.map((ticket: TicketWithUser) => {
+        const { ticketId, eventId, users, ...ticketInfo } = ticket;
         return ticketInfo;
       });
+
+      const updatedPromo = await Promise.all(
+        promotion.map(async (promo: Promotion) => {
+          const { eventId, ...promoInfo } = promo;
+
+          const stripePromoId = await createPromo(promoInfo.promotionValue);
+          promoInfo.stripePromotionId = stripePromoId as string;
+
+          return promoInfo;
+        })
+      );
+
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";
 
@@ -194,17 +234,49 @@ export default async function handler(
 
       console.log(eventBannerPictureUrl, eventImageUrl);
 
+      // updatedTickets.forEach(async (ticket) => {
+      //   const stripePriceId = await createProduct(
+      //     ticket.name,
+      //     ticket.description ?? "",
+      //     eventImageUrl,
+      //     true,
+      //     ticket.price
+      //   );
+
+      //   ticket.stripePriceId = stripePriceId as string;
+      //   ticket;
+      // }, updatedTickets);
+
+      console.log("TESTEST", eventImageUrl);
+      for (let i = 0; i < updatedTickets.length; i++) {
+        const image = eventImageUrl.length > 0 ? eventImageUrl : eventPic;
+
+        const stripePriceId = await createProduct(
+          updatedTickets[i].name,
+          updatedTickets[i].description ?? "",
+          image as string,
+          true,
+          updatedTickets[i].price
+        );
+        updatedTickets[i].stripePriceId = stripePriceId as string;
+      }
+
       const updatedEvent = {
         ...eventInfo,
         eventPic: eventImageUrl,
         bannerPic: eventBannerPictureUrl,
       } as EventCreation;
 
-      const response = await createEventWithTickets(
+      const response = await createEvent(
         updatedEvent as EventCreation,
         updatedTickets as Ticket[],
-        creatorId
+        creatorId,
+        updatedPromo as Promotion[]
       );
+
+      raffles.forEach(async (raffle) => {
+        await saveRaffles(response.eventId, raffle);
+      });
 
       res.status(200).json(response);
       // now create the contract

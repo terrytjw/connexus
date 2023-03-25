@@ -6,7 +6,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import Badge from "../../Badge";
 import Modal from "../../Modal";
 import EventsGrid from "../EventsGrid";
-import { EventWithTicketsandAddress } from "../../../utils/types";
+import { EventWithAllDetails } from "../../../utils/types";
 import Link from "next/link";
 import { CategoryType, Event } from "@prisma/client";
 import axios from "axios";
@@ -18,11 +18,12 @@ import {
 import { useSession } from "next-auth/react";
 import useSWR from "swr";
 import Loading from "../../Loading";
+import Input from "../../Input";
 
 const DELAY_TIME = 400;
 
 type FanEventsPageProps = {
-  events: EventWithTicketsandAddress[];
+  events: EventWithAllDetails[];
 };
 
 const FanEventsPage = ({ events }: FanEventsPageProps) => {
@@ -33,7 +34,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [searchString, setSearchString] = useState("");
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
-    EventWithTicketsandAddress[]
+    EventWithAllDetails[]
   >([]);
 
   // fetch userId if from session
@@ -104,8 +105,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const ListedTabContent = () => {
     // client filter for listed events
     const listedEvents = searchAndFilterResults.filter(
-      (event: EventWithTicketsandAddress) =>
-        new Date(event.endDate) >= new Date()
+      (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
     );
 
     const {
@@ -119,8 +119,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     console.log(
       "search results -> ",
       searchAndFilterResults.filter(
-        (event: EventWithTicketsandAddress) =>
-          new Date(event.endDate) >= new Date()
+        (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
       )
     );
 
@@ -245,30 +244,35 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        {/* Fitler modal */}
         <Modal
           isOpen={isFilterModalOpen}
           setIsOpen={setIsFilterModalOpen}
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="ml-2 text-xl font-semibold">Filter Topics</h3>
+            <h3 className="text-xl font-semibold">Filter Events</h3>
             <Button
               variant="outlined"
               size="sm"
-              className="border-0"
-              onClick={() => setIsFilterModalOpen(false)}
+              className="border-0 text-red-500"
+              onClick={() => {
+                setSelectedTopics([]);
+              }}
             >
-              Done
+              Clear
             </Button>
           </div>
 
-          <div className="mt-8 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Categories */}
+          <h3 className="mt-8 text-sm font-medium text-gray-500">CATEGORIES</h3>
+          <div className="mt-2 mb-4 grid grid-cols-1 justify-center gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {Object.values(CategoryType).map((label, index) => {
               return (
                 <Badge
                   key={index}
                   label={label}
-                  size="lg"
+                  size="md"
                   selected={
                     selectedTopics.length > 0 &&
                     selectedTopics.indexOf(label) != -1
@@ -284,20 +288,55 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
                       })
                     );
                   }}
-                  className="h-8 w-full sm:w-48"
+                  className="h-8 w-full rounded-lg sm:w-32"
                 />
               );
             })}
           </div>
+          <div className="divider"></div>
+          {/* Date Range */}
+          <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
+          <div className="mt-2 flex justify-between gap-8">
+            <Input
+              type="datetime-local"
+              label="From"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+            <Input
+              type="datetime-local"
+              label="To"
+              value={""}
+              onChange={() => {}}
+              placeholder="From Date and Time"
+              size="xs"
+              variant="bordered"
+              className="max-w-3xl align-middle text-gray-500"
+            />
+          </div>
+
+          <div className="divider"></div>
+          {/* Liked */}
+          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
+          <Badge
+            label="Select Liked Events Only"
+            size="lg"
+            selected={false}
+            onClick={() => {}}
+            className="mt-2 h-8 min-w-fit rounded-lg"
+          />
+
           <Button
-            variant="outlined"
-            size="sm"
-            className="mt-8 w-full text-red-500"
-            onClick={() => {
-              setSelectedTopics([]);
-            }}
+            variant="solid"
+            size="md"
+            className="mt-8"
+            onClick={() => setIsFilterModalOpen(false)}
           >
-            Clear selected topics
+            Submit
           </Button>
         </Modal>
         <h1 className="text-4xl font-bold">Events</h1>
@@ -368,7 +407,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               className="max-w-sm !bg-white !text-gray-700"
               onClick={() => setIsFilterModalOpen(true)}
             >
-              Filter by Category
+              Filter
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>

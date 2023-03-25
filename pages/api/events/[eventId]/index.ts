@@ -4,7 +4,7 @@ import {
   handleError,
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
-import { PrismaClient, Event, Prisma } from "@prisma/client";
+import { PrismaClient, Event, Prisma, Promotion } from "@prisma/client";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "../../auth/[...nextauth]";
 import {
@@ -17,9 +17,18 @@ import {
   retrieveEventInfo,
   updateEvent,
 } from "../../../../lib/prisma/event-prisma";
+import { updatePromotion } from "../../../../lib/prisma/promotion-prisma";
+import { updateRaffle } from "../../../../lib/prisma/raffle-prisma";
 
 const prisma = new PrismaClient();
-type EventWithTickets = Prisma.EventGetPayload<{ include: { tickets: true } }>;
+type EventUpdate = Prisma.EventGetPayload<{
+  include: {
+    promotion: true;
+    raffles: {
+      include: { rafflePrizes: true };
+    };
+  };
+}>;
 
 /**
  * @swagger
@@ -96,7 +105,7 @@ export default async function handler(
       await handleGET(eventId);
       break;
     case "POST":
-      const event = JSON.parse(JSON.stringify(req.body)) as Event;
+      const event = JSON.parse(JSON.stringify(req.body)) as EventUpdate;
       await handlePOST(eventId, event);
       break;
     case "DELETE":
@@ -119,11 +128,12 @@ export default async function handler(
     }
   }
 
-  async function handlePOST(eventId: number, eventWithTickets: Event) {
+  async function handlePOST(eventId: number, eventWithPromo: EventUpdate) {
     try {
-      const { eventPic, bannerPic } = eventWithTickets;
-      let eventImageUrl = "";
-      let eventBannerPictureUrl = "";
+      const { eventPic, bannerPic, promotion, raffles, ...event } =
+        eventWithPromo;
+      let eventImageUrl = eventPic;
+      let eventBannerPictureUrl = bannerPic;
 
       if (eventPic && checkIfStringIsBase64(eventPic)) {
         const { data, error } = await uploadImage(
@@ -160,12 +170,29 @@ export default async function handler(
       }
 
       const updatedEventInfo = {
-        ...eventWithTickets,
+        bannerPic: eventBannerPictureUrl,
+        eventPic: eventImageUrl,
+        ...event,
       };
+
+      console.log("promotion ->", promotion);
+
+      promotion.forEach(async (promo: Promotion) => {
+        const { eventId, ...promoInfo } = promo;
+        updatePromotion(promo.promotionId, promoInfo);
+      });
+
+      console.log("raffles->", raffles);
+
+      raffles.forEach(async (raffle) => {
+        console.log("LOGGING,", raffle);
+        await updateRaffle(raffle.raffleId, raffle);
+      });
 
       if (eventImageUrl) updatedEventInfo.eventPic = eventImageUrl;
       if (eventBannerPictureUrl)
         updatedEventInfo.bannerPic = eventBannerPictureUrl;
+
       const response = await updateEvent(eventId, updatedEventInfo);
 
       res.status(200).json(response);

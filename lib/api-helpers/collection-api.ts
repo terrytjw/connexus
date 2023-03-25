@@ -1,4 +1,9 @@
-import { Prisma, CollectionState, Collection } from "@prisma/client";
+import {
+  Prisma,
+  CollectionState,
+  Collection,
+  Merchandise,
+} from "@prisma/client";
 import axios from "axios";
 import { ethers } from "ethers";
 import {
@@ -8,6 +13,7 @@ import {
   smartContract,
 } from "../constant";
 import { CollectionsGETParams } from "../../pages/api/collections";
+import { updateMerchandise } from "./merchandise-api";
 
 export type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -198,6 +204,7 @@ export async function searchAllCollections(
     cursor: cursor,
     keyword: keyword,
     isLinked: isLinked,
+    collectionState: CollectionState.ON_SALE,
   };
   const response = await sendCollectionsGetReq(params);
   return response;
@@ -251,4 +258,105 @@ export async function getCollection(collectionId: number) {
   const url = baseUrl + `/${collectionId}`;
   const response = (await axios.get(url)).data;
   return response;
+}
+
+export async function registerCollectionClick(collectionId: number) {
+  const collectionUrl = baseUrl + `/${collectionId}`;
+  const retrievedCollectionResponse = (await axios.get(collectionUrl)).data;
+
+  const { merchandise, ...collectionInfo } =
+    retrievedCollectionResponse as CollectionwithMerch;
+
+  const updatedCollection: Partial<Collection> = {
+    ...collectionInfo,
+    clicks: retrievedCollectionResponse.clicks + 1,
+  };
+
+  const updatedCollectionResponse = (
+    await axios.post(collectionUrl, updatedCollection)
+  ).data;
+
+  console.log("Start collection response: ", updatedCollectionResponse);
+  return updatedCollectionResponse;
+}
+
+export async function mintMerchandise(
+  userWallet: string,
+  userId: number,
+  merchandiseInfo: Merchandise,
+  collectionScAddress: string
+) {
+  const response = await mintOnChainMerchandise(merchandiseInfo);
+  let ipfsHash = response.data.IpfsHash;
+  console.log(ipfsHash);
+
+  if (ipfsHash == "") return;
+  const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
+  console.log("Collection PFS Hash Link  : ", link);
+  const scAddress = collectionScAddress ?? "";
+  const collectionContract = new ethers.Contract(scAddress, abi, signer);
+  console.log("smart contract address ->", scAddress);
+
+  console.log("name ->", merchandiseInfo.name);
+  console.log("userWallet ->", userWallet);
+
+  const info = await collectionContract.getMerchinformation(
+    merchandiseInfo.name
+  );
+  const price = info._price._hex;
+
+  console.log(price);
+  console.log("output : ", parseInt(price, 16));
+
+  await collectionContract.mint(userWallet, merchandiseInfo.name, link, {
+    gasLimit: 2100000,
+    value: price,
+  });
+
+  const updatedMerchandiseInfo = {
+    ...merchandiseInfo,
+    currMerchSupply: merchandiseInfo.currMerchSupply + 1,
+  };
+
+  const updatedMerchandiseResponse = await updateMerchandise(
+    merchandiseInfo.merchId,
+    updatedMerchandiseInfo,
+    userId
+  );
+
+  console.log("updatedMerchandiseResponse ->", updatedMerchandiseResponse);
+
+  return link;
+}
+
+async function mintOnChainMerchandise(merchandise: Partial<Merchandise>) {
+  const { name, collectionId, price } = merchandise;
+
+  let metaData = JSON.stringify({
+    pinataOptions: {
+      cidVersion: 1,
+    },
+    pinataMetadata: {
+      name: "testing",
+      keyvalues: {
+        customKey: "customValue",
+        customKey2: "customValue2",
+      },
+    },
+    pinataContent: {
+      name,
+      collectionId,
+      price,
+    },
+  });
+
+  const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+
+  return axios.post(url, metaData, {
+    headers: {
+      "Content-Type": "application/json",
+      pinata_api_key: smartContract.pinataApiKey,
+      pinata_secret_api_key: smartContract.pinataSecretApiKey,
+    },
+  });
 }

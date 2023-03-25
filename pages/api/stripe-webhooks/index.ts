@@ -98,8 +98,6 @@ export default async function handleWebhook(
   // Handle the event
   switch (event.type) {
     case "checkout.session.async_payment_succeeded":
-      // console.log(event.data.)
-
       // @ts-ignore TODO: type the below line in the future
       const customerEmail = event.data.object.customer_details.email;
 

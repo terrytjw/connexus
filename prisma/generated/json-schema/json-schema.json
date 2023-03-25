@@ -135,6 +135,34 @@
         "walletBalance": {
           "type": "number",
           "default": 0
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Transaction"
+          }
+        },
+        "bankAccount": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/BankAccount"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "rafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
         }
       }
     },
@@ -253,6 +281,16 @@
           "items": {
             "$ref": "#/definitions/Channel"
           }
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CommunityAnalyticsTimestamp"
+          }
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
         }
       }
     },
@@ -287,6 +325,28 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Post"
+          }
+        },
+        "collection": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Collection"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Question"
+          }
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/ChannelAnalyticsTimestamp"
           }
         }
       }
@@ -457,6 +517,28 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EventAnalyticsTimestamp"
+          }
+        },
+        "raffles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Raffles"
+          }
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
+        },
+        "promotion": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Promotion"
+          }
         }
       }
     },
@@ -541,12 +623,6 @@
         "event": {
           "$ref": "#/definitions/Event"
         },
-        "promotion": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/Promotion"
-          }
-        },
         "users": {
           "type": "array",
           "items": {
@@ -558,6 +634,12 @@
           "items": {
             "$ref": "#/definitions/UserTicket"
           }
+        },
+        "stripePriceId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -588,31 +670,22 @@
         "name": {
           "type": "string"
         },
-        "promotionType": {
-          "type": "string",
-          "enum": [
-            "LIMITED",
-            "UNLIMITED"
-          ]
-        },
         "promotionValue": {
           "type": "number",
           "default": 0
         },
-        "quantity": {
-          "type": "integer",
-          "default": 0
+        "event": {
+          "$ref": "#/definitions/Event"
         },
-        "startDate": {
-          "type": "string",
-          "format": "date-time"
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
         },
-        "endDate": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "ticket": {
-          "$ref": "#/definitions/Ticket"
+        "stripePromotionId": {
+          "type": [
+            "string",
+            "null"
+          ]
         }
       }
     },
@@ -626,10 +699,7 @@
           "type": "string"
         },
         "description": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "currency": {
           "type": "string",
@@ -645,7 +715,6 @@
           "type": "string",
           "default": "ON_SALE",
           "enum": [
-            "CREATED",
             "ON_SALE",
             "SOLD",
             "PAUSED"
@@ -672,6 +741,26 @@
         },
         "creator": {
           "$ref": "#/definitions/User"
+        },
+        "analyticsTimestamps": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CollectionAnalyticsTimestamp"
+          }
+        },
+        "premiumChannel": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Channel"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "clicks": {
+          "type": "integer",
+          "default": 0
         }
       }
     },
@@ -685,10 +774,7 @@
           "type": "string"
         },
         "image": {
-          "type": [
-            "string",
-            "null"
-          ]
+          "type": "string"
         },
         "stripePriceId": {
           "type": [
@@ -716,6 +802,244 @@
           "items": {
             "$ref": "#/definitions/User"
           }
+        }
+      }
+    },
+    "CommunityAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "members": {
+          "type": "integer"
+        },
+        "premiumMembers": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "community": {
+          "$ref": "#/definitions/Community"
+        }
+      }
+    },
+    "ChannelAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "comments": {
+          "type": "integer"
+        },
+        "engagement": {
+          "type": "number"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "EventAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "ticketsSold": {
+          "type": "integer"
+        },
+        "revenue": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "likes": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        }
+      }
+    },
+    "CollectionAnalyticsTimestamp": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "merchSold": {
+          "type": "integer"
+        },
+        "revenue": {
+          "type": "integer"
+        },
+        "clicks": {
+          "type": "integer"
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "collection": {
+          "$ref": "#/definitions/Collection"
+        }
+      }
+    },
+    "Question": {
+      "type": "object",
+      "properties": {
+        "questionId": {
+          "type": "integer"
+        },
+        "question": {
+          "type": "string"
+        },
+        "answer": {
+          "type": "string",
+          "default": ""
+        },
+        "date": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "channel": {
+          "$ref": "#/definitions/Channel"
+        }
+      }
+    },
+    "Transaction": {
+      "type": "object",
+      "properties": {
+        "transactionId": {
+          "type": "integer"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "amount": {
+          "type": "number",
+          "default": 0
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        },
+        "transactionStatus": {
+          "type": "string",
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "COMPLETED",
+            "REJECTED"
+          ]
+        }
+      }
+    },
+    "BankAccount": {
+      "type": "object",
+      "properties": {
+        "bankAccountId": {
+          "type": "integer"
+        },
+        "bankName": {
+          "type": "string"
+        },
+        "accountName": {
+          "type": "string"
+        },
+        "accountNumber": {
+          "type": "string"
+        },
+        "routingNumber": {
+          "type": "string"
+        },
+        "user": {
+          "$ref": "#/definitions/User"
+        }
+      }
+    },
+    "Raffles": {
+      "type": "object",
+      "properties": {
+        "raffleId": {
+          "type": "integer"
+        },
+        "event": {
+          "$ref": "#/definitions/Event"
+        },
+        "rafflePrizes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrize"
+          }
+        },
+        "isEnabled": {
+          "type": "boolean",
+          "default": false
+        },
+        "isActivated": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "RafflePrize": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeId": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        },
+        "Raffles": {
+          "$ref": "#/definitions/Raffles"
+        },
+        "rafflePrizeUser": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/RafflePrizeUser"
+          }
+        }
+      }
+    },
+    "RafflePrizeUser": {
+      "type": "object",
+      "properties": {
+        "rafflePrizeUserId": {
+          "type": "integer"
+        },
+        "prizeWon": {
+          "$ref": "#/definitions/RafflePrize"
+        },
+        "isClaimed": {
+          "type": "boolean",
+          "default": false
+        },
+        "user": {
+          "$ref": "#/definitions/User"
         }
       }
     }
@@ -757,6 +1081,36 @@
     },
     "merchandise": {
       "$ref": "#/definitions/Merchandise"
+    },
+    "communityAnalyticsTimestamp": {
+      "$ref": "#/definitions/CommunityAnalyticsTimestamp"
+    },
+    "channelAnalyticsTimestamp": {
+      "$ref": "#/definitions/ChannelAnalyticsTimestamp"
+    },
+    "eventAnalyticsTimestamp": {
+      "$ref": "#/definitions/EventAnalyticsTimestamp"
+    },
+    "collectionAnalyticsTimestamp": {
+      "$ref": "#/definitions/CollectionAnalyticsTimestamp"
+    },
+    "question": {
+      "$ref": "#/definitions/Question"
+    },
+    "transaction": {
+      "$ref": "#/definitions/Transaction"
+    },
+    "bankAccount": {
+      "$ref": "#/definitions/BankAccount"
+    },
+    "raffles": {
+      "$ref": "#/definitions/Raffles"
+    },
+    "rafflePrize": {
+      "$ref": "#/definitions/RafflePrize"
+    },
+    "rafflePrizeUser": {
+      "$ref": "#/definitions/RafflePrizeUser"
     }
   }
 }

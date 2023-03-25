@@ -19,8 +19,8 @@ export async function getChannel(channelId: number) {
 export async function getAllChannelsInCommunity(communityId: number) {
   return prisma.channel.findMany({
     where: {
-      communityId: communityId
-    }
+      communityId: communityId,
+    },
   });
 }
 
@@ -126,4 +126,20 @@ export async function getChannelsToLeave(communityId: number, userId: number) {
     }
   });
   return channelIDs;
+}
+export async function getChannelsForAnalytics() {
+  return await prisma.channel.findMany({
+    include: {
+      posts: {
+        include: {
+          _count: {
+            select: { likes: true, comments: true },
+          },
+        },
+      },
+      _count: {
+        select: { members: true, posts: true },
+      },
+    },
+  });
 }

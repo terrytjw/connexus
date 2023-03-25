@@ -1,7 +1,12 @@
-import { PrismaClient, Community, CategoryType, ChannelType } from "@prisma/client";
+import {
+  PrismaClient,
+  Community,
+  CategoryType,
+  ChannelType,
+} from "@prisma/client";
 import { Prisma } from "@prisma/client";
 
-export interface CommunityPartialType extends Partial<Community> { }
+export interface CommunityPartialType extends Partial<Community> {}
 
 const prisma = new PrismaClient();
 
@@ -24,7 +29,7 @@ export async function saveCommunity(community: Community) {
 export async function getCommunityById(communityId: number) {
   return prisma.community.findFirst({
     where: {
-      communityId: communityId
+      communityId: communityId,
     },
     include: {
       channels: {
@@ -44,8 +49,11 @@ export async function getCommunityById(communityId: number) {
   });
 }
 
-export async function searchCommunities(keyword: string, cursor: number, filter?: CategoryType[]) {
-
+export async function searchCommunities(
+  keyword: string,
+  cursor: number,
+  filter?: CategoryType[]
+) {
   return prisma.community.findMany({
     take: 10,
     skip: cursor ? 1 : 0, // Skip cursor
@@ -53,13 +61,13 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
     where: {
       name: {
         contains: keyword,
-        mode: 'insensitive'
+        mode: "insensitive",
       },
-      tags: filter 
-      ? {
-        hasSome: filter,
-      }
-      : undefined
+      tags: filter
+        ? {
+            hasSome: filter,
+          }
+        : undefined,
     },
     include: {
       channels: {
@@ -79,14 +87,17 @@ export async function searchCommunities(keyword: string, cursor: number, filter?
   });
 }
 
-export async function findAllCommunities(cursor: number, filter?: CategoryType[]) {
+export async function findAllCommunities(
+  cursor: number,
+  filter?: CategoryType[]
+) {
   const filterCondition = {
-    tags : filter 
-    ? {
-      hasSome: filter,
-    }
-    : undefined
-  }
+    tags: filter
+      ? {
+          hasSome: filter,
+        }
+      : undefined,
+  };
 
   return prisma.community.findMany({
     take: 10,
@@ -95,9 +106,9 @@ export async function findAllCommunities(cursor: number, filter?: CategoryType[]
     where: { ...filterCondition },
     include: {
       members: {
-        select: { userId: true}
-      }
-    }
+        select: { userId: true },
+      },
+    },
   });
 }
 
@@ -109,7 +120,10 @@ export async function deleteCommunity(communityId: number) {
   });
 }
 
-export async function updateCommunity(communityId: number, updateType: CommunityPartialType) {
+export async function updateCommunity(
+  communityId: number,
+  updateType: CommunityPartialType
+) {
   return prisma.community.update({
     where: {
       communityId: communityId,
@@ -132,11 +146,11 @@ export async function joinCommunity(communityId: number, userId: number) {
     },
     include: {
       channels: {
-        select: { 
-          channelId: true 
+        select: {
+          channelId: true,
         },
-        orderBy: { 
-          channelId: "asc" 
+        orderBy: {
+          channelId: "asc",
         },
       },
     },
@@ -157,13 +171,31 @@ export async function leaveCommunity(communityId: number, userId: number) {
     },
     include: {
       channels: {
-        select: { 
-          channelId: true 
+        select: {
+          channelId: true,
         },
-        orderBy: { 
-          channelId: "asc" 
+        orderBy: {
+          channelId: "asc",
         },
       },
+    },
+  });
+}
+
+export async function getCommunitiesForAnalytics() {
+  return await prisma.community.findMany({
+    include: {
+      _count: {
+        select: { members: true },
+      },
+      channels: {
+        include: {
+          _count: {
+            select: { members: true },
+          },
+        },
+      },
+      analyticsTimestamps: true,
     },
   });
 }

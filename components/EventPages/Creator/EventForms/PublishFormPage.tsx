@@ -4,13 +4,13 @@ import { FaHeart } from "react-icons/fa";
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
-import { PrivacyType, VisibilityType } from "@prisma/client";
-import { EventWithTicketsandAddress } from "../../../../utils/types";
+import { PrivacyType, Ticket, VisibilityType } from "@prisma/client";
+import { EventWithAllDetails } from "../../../../utils/types";
 import { formatDate } from "../../../../utils/date-util";
 
 type PublishFormPageProps = {
-  watch: UseFormWatch<EventWithTicketsandAddress>;
-  setValue: UseFormSetValue<EventWithTicketsandAddress>;
+  watch: UseFormWatch<EventWithAllDetails>;
+  setValue: UseFormSetValue<EventWithAllDetails>;
   setIsCreateSuccessModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isLoading: boolean | undefined;
 };
@@ -31,8 +31,26 @@ const PublishFormPage = ({
     maxAttendee,
     visibilityType,
     privacyType,
+    tickets,
   } = watch();
   const [isPreview, setIsPreview] = useState<boolean>(false);
+
+  const checkAttendeesExists = (): boolean | undefined => {
+    console.log("check tickets ->", tickets);
+    console.log(
+      "check attendee resutls ->",
+      tickets.some((ticket: any) => ticket.users?.length !== 0)
+    );
+
+    console.log(tickets);
+    return tickets.some((ticket: any) => {
+      if (ticket.users) {
+        return ticket.users?.length !== 0;
+      } else {
+        false;
+      }
+    });
+  };
 
   return (
     <div>
@@ -167,18 +185,32 @@ const PublishFormPage = ({
                                 e.target.value as VisibilityType
                               )
                             }
+                            disabled={
+                              checkAttendeesExists() &&
+                              visibilityOption == VisibilityType.DRAFT
+                            }
                           />
                         </div>
                         <div className="ml-3 text-sm">
                           <label
                             htmlFor={visibilityOption}
-                            className="font-medium text-gray-800"
+                            className={`font-medium text-gray-800 ${
+                              checkAttendeesExists() &&
+                              visibilityOption == VisibilityType.DRAFT &&
+                              "text-slate-300"
+                            }`}
                           >
                             {visibilityOption === VisibilityType.PUBLISHED
                               ? "Now"
                               : "Later"}
                           </label>
-                          <p className="text-gray-500">
+                          <p
+                            className={`text-gray-500 ${
+                              checkAttendeesExists() &&
+                              visibilityOption == VisibilityType.DRAFT &&
+                              "text-slate-300"
+                            }`}
+                          >
                             {visibilityOption === VisibilityType.PUBLISHED
                               ? "Publish now"
                               : "Keep as Draft"}
