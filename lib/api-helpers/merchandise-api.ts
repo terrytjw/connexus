@@ -1,3 +1,4 @@
+import { Merchandise } from "@prisma/client";
 import { MerchandisePriceType } from "../../pages/api/merch";
 import { API_URL, MERCHANDISE_ENDPOINT } from "../constant";
 import axios from "axios";
@@ -35,6 +36,17 @@ export async function searchCollectedMerchandise(
         priceType: priceType,
       },
     })
+  ).data;
+  return response;
+}
+
+export async function updateMerchandise(
+  mercId: number,
+  merch: Merchandise,
+  userId: number | undefined
+) {
+  const response = (
+    await axios.post(baseUrl + `/${mercId}?userId=${userId}`, merch)
   ).data;
   return response;
 }

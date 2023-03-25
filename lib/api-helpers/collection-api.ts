@@ -13,6 +13,7 @@ import {
   smartContract,
 } from "../constant";
 import { CollectionsGETParams } from "../../pages/api/collections";
+import { updateMerchandise } from "./merchandise-api";
 
 export type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
@@ -275,35 +276,57 @@ export async function registerCollectionClick(collectionId: number) {
   return updatedCollectionResponse;
 }
 
-export async function mintCollection(
+export async function mintMerchandise(
   userWallet: string,
-  collectionInfo: Collection
+  userId: number,
+  merchandiseInfo: Merchandise,
+  collectionScAddress: string
 ) {
-  const response = await mintOnChainCollection(collectionInfo);
+  const response = await mintOnChainMerchandise(merchandiseInfo);
   let ipfsHash = response.data.IpfsHash;
   console.log(ipfsHash);
 
   if (ipfsHash == "") return;
   const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
   console.log("Collection PFS Hash Link  : ", link);
-  const scAddress = collectionInfo.scAddress ?? "";
+  const scAddress = collectionScAddress ?? "";
   const collectionContract = new ethers.Contract(scAddress, abi, signer);
   console.log("smart contract address ->", scAddress);
 
-  await collectionContract.mint(
-    collectionInfo.collectionName,
-    userWallet,
-    link,
-    {
-      gasLimit: 2100000,
-    }
+  console.log("name ->", merchandiseInfo.name);
+  console.log("userWallet ->", userWallet);
+
+  const info = await collectionContract.getMerchinformation(
+    merchandiseInfo.name
   );
+  const price = info._price._hex;
+
+  console.log(price);
+  console.log("output : ", parseInt(price, 16));
+
+  await collectionContract.mint(userWallet, merchandiseInfo.name, link, {
+    gasLimit: 2100000,
+    value: price,
+  });
+
+  const updatedMerchandiseInfo = {
+    ...merchandiseInfo,
+    currMerchSupply: merchandiseInfo.currMerchSupply + 1,
+  };
+
+  const updatedMerchandiseResponse = await updateMerchandise(
+    merchandiseInfo.merchId,
+    updatedMerchandiseInfo,
+    userId
+  );
+
+  console.log("updatedMerchandiseResponse ->", updatedMerchandiseResponse);
 
   return link;
 }
 
-async function mintOnChainCollection(collection: Partial<Collection>) {
-  const { collectionName, collectionId, fixedPrice } = collection;
+async function mintOnChainMerchandise(merchandise: Partial<Merchandise>) {
+  const { name, collectionId, price } = merchandise;
 
   let metaData = JSON.stringify({
     pinataOptions: {
@@ -317,9 +340,9 @@ async function mintOnChainCollection(collection: Partial<Collection>) {
       },
     },
     pinataContent: {
-      name: collectionName,
+      name,
       collectionId,
-      price: fixedPrice,
+      price,
     },
   });
 

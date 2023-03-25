@@ -18,13 +18,36 @@ import {
   checkIfStringIsBase64,
 } from "../../../../lib/supabase";
 
+// export type UserWithAllInfo = Prisma.UserGetPayload<{
+//   include: {
+//     tickets: true;
+//     merchandise: true;
+//     joinedChannels: true;
+//     joinedCommunities: true;
+//     createdCommunities: true;
+//     bankAccount: true;
+//     transactions: true;
+//   };
+// }>;
+
 export type UserWithAllInfo = Prisma.UserGetPayload<{
   include: {
     tickets: true;
-    merchandise: true;
+    merchandise: {
+      include: {
+        collection: {
+          include: {
+            premiumChannel: { select: { channelId: true } };
+          };
+        };
+      };
+    };
     joinedChannels: true;
     joinedCommunities: true;
-    createdCommunities: true;
+    createdCommunities: { include: { channels: true } };
+    createdCollections: {
+      include: { merchandise: true; premiumChannel: true };
+    };
     bankAccount: true;
     transactions: true;
   };

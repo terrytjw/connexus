@@ -20,7 +20,8 @@ export async function searchUser(searchType: UserPartialType) {
       ...searchType,
     },
     include: {
-      createdCommunities: true,
+      createdCollections: true,
+      createdCommunities: { include: { channels: true } },
       joinedCommunities: {
         include: {
           _count: {
@@ -30,7 +31,15 @@ export async function searchUser(searchType: UserPartialType) {
       },
       joinedChannels: true,
       tickets: true,
-      merchandise: true,
+      merchandise: {
+        include: {
+          collection: {
+            include: {
+              premiumChannel: { select: { channelId: true } },
+            },
+          },
+        },
+      },
       bankAccount: true,
       transactions: true,
     },
