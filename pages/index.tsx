@@ -3,7 +3,7 @@ import Head from "next/head";
 import { FaGithub, FaShareSquare } from "react-icons/fa";
 import Button from "../components/Button";
 import Badge from "../components/Badge";
-import { useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import Notification from "../components/Notification";
 import "@biconomy/web3-auth/dist/src/style.css";
 import { useRouter } from "next/router";
@@ -12,6 +12,9 @@ import dynamic from "next/dynamic";
 import Loading from "../components/Loading";
 import Modal from "../components/Modal";
 import StripeCheckoutForm from "../components/Stripe/StripeCheckoutForm";
+import { getUserInfo } from "../lib/api-helpers/user-api";
+import { UserRoleContext } from "../contexts/UserRoleProvider";
+import useSWR from "swr";
 
 const HomePage: NextPage = () => {
   const router = useRouter();
@@ -20,6 +23,11 @@ const HomePage: NextPage = () => {
   const [selected, setSelected] = useState(false);
 
   const { data: session, status } = useSession();
+  const userId = session?.user.userId;
+
+  const { isFan } = useContext(UserRoleContext);
+
+  const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const SocialLoginDynamic = dynamic(
     () => import("../components/scw").then((res) => res.default),
@@ -28,6 +36,10 @@ const HomePage: NextPage = () => {
       loading: () => <Loading className="!h-full" />,
     }
   );
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div>
@@ -49,7 +61,14 @@ const HomePage: NextPage = () => {
             className="mt-4"
             onClick={
               session
-                ? () => router.push("/communities")
+                ? isFan
+                  ? () => router.push("/communities")
+                  : userData.createdCommunities.length > 0
+                  ? () =>
+                      router.push(
+                        `/communities/${userData.createdCommunities[0].communityId}`
+                      )
+                  : () => router.push("/communities/create")
                 : () => setIsAuthModalOpen(true)
             }
           >

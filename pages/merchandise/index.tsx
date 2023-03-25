@@ -1,12 +1,12 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
-import React, { useState } from "react";
+import { useContext } from "react";
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
-import WordToggle from "../../components/Toggle/WordToggle";
 import CreatorCollectionsPage from "../../components/MerchandisePages/Creator";
 import FanCollectionsPage from "../../components/MerchandisePages/Fan";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 import {
   CollectionWithMerchAndPremiumChannel,
   searchAllCollections,
@@ -23,7 +23,7 @@ const CollectionsPage = ({
   merchandiseData,
   collectionsData,
 }: CollectionsPageProps) => {
-  const [isCreator, setIsCreator] = useState(false);
+  const { isFan } = useContext(UserRoleContext);
 
   return (
     <ProtectedRoute>
@@ -33,20 +33,13 @@ const CollectionsPage = ({
             <title>Merchandise | Connexus</title>
           </Head>
 
-          <WordToggle
-            leftWord="Fan"
-            rightWord="Creator"
-            isChecked={isCreator}
-            setIsChecked={setIsCreator}
-          />
-
-          {isCreator ? (
-            <CreatorCollectionsPage />
-          ) : (
+          {isFan ? (
             <FanCollectionsPage
               merchandiseData={merchandiseData}
               collectionsData={collectionsData}
             />
+          ) : (
+            <CreatorCollectionsPage />
           )}
         </div>
       </Layout>

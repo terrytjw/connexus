@@ -1,3 +1,5 @@
+import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { toast, Toaster } from "react-hot-toast";
 import { FaShareSquare, FaUserFriends } from "react-icons/fa";
@@ -9,13 +11,21 @@ import Banner from "../../Banner";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  registerCollectionClick,
+} from "../../../lib/api-helpers/collection-api";
 
 type CommunityPagePageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
   setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
+  linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
-const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
+const CreatorCommunityPage = ({
+  community,
+  linkedCollections,
+}: CommunityPagePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   return (
@@ -80,6 +90,32 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
               </Button>
             </div>
           </div>
+          {linkedCollections.length > 0 ? (
+            <Link
+              href={`/merchandise/${linkedCollections[0].collectionId}`}
+              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
+              onClick={async () => {
+                await registerCollectionClick(
+                  linkedCollections[0].collectionId
+                );
+              }}
+            >
+              Highlighted Collection
+              <Image
+                height={144}
+                width={144}
+                className="aspect-square rounded-lg object-cover object-center"
+                src={linkedCollections[0].merchandise[0].image}
+                alt="Highlight Collection Image"
+              />
+              <div
+                aria-hidden="true"
+                className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+              >
+                {linkedCollections[0].collectionName}
+              </div>
+            </Link>
+          ) : null}
           {/* <Link
             href="/merchandise"
             className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"

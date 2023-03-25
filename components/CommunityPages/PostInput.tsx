@@ -37,16 +37,15 @@ const PostInput = ({
     channelId: number;
   };
 
-  const { handleSubmit, setValue, control, watch, reset } =
-    useForm<postForm>({
-      defaultValues: {
-        postId: post ? post.postId : null as unknown as number,
-        content: post ? post.content : "",
-        media: post ? post.media : ([] as string[]),
-        isPinned: post ? post.isPinned : null as unknown as boolean,
-        channelId: channelId ?? null as unknown as number
-      },
-    });
+  const { handleSubmit, setValue, control, watch, reset } = useForm<postForm>({
+    defaultValues: {
+      postId: post ? post.postId : (null as unknown as number),
+      content: post ? post.content : "",
+      media: post ? post.media : ([] as string[]),
+      isPinned: post ? post.isPinned : (null as unknown as boolean),
+      channelId: channelId ?? (null as unknown as number),
+    },
+  });
 
   const [content, media] = watch(["content", "media"]);
 
@@ -87,7 +86,12 @@ const PostInput = ({
   };
 
   const onCreate = async (formData: postForm) => {
-    const res = await createPostAPI(formData.content, formData.media, userId, formData.channelId);
+    const res = await createPostAPI(
+      formData.content,
+      formData.media,
+      userId,
+      formData.channelId
+    );
     const temp = res[0];
     mutatePosts((data: Post[]) => {
       data.unshift(temp);
@@ -98,7 +102,12 @@ const PostInput = ({
   };
 
   const onEdit = async (formData: postForm) => {
-    const res = await updatePostAPI(formData.postId, formData.content, formData.media, formData.isPinned);
+    const res = await updatePostAPI(
+      formData.postId,
+      formData.content,
+      formData.media,
+      formData.isPinned
+    );
 
     mutatePosts((data: Post[]) => {
       const updatedItems = data.map((item) => {
@@ -127,17 +136,6 @@ const PostInput = ({
         onCreate(data);
       })}
     >
-      <Toaster
-        position="bottom-center"
-        toastOptions={{
-          style: {
-            background: "#1A7DFF",
-            color: "#fff",
-            textAlign: "center",
-          },
-        }}
-      />
-
       <Controller
         control={control}
         name="content"
