@@ -203,12 +203,12 @@ const MerchandiseTab = ({
 
   return (
     <>
-      {true || collections.length > 0 ? ( // to be updated when user api is updated
+      {collections.length > 0 ? (
         <>
           <Modal
             isOpen={isModalOpen}
             setIsOpen={setIsModalOpen}
-            className="min-w-fit !max-w-xl"
+            className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">
@@ -542,13 +542,23 @@ const MerchandiseTab = ({
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
-          There are no merchandise analytics to show for now, go create a
-          collection!
-          <Button variant="solid" size="md" href="/merchandise/create">
-            Go create a collection
-          </Button>
-        </div>
+        <>
+          <div className="my-8 flex w-full items-center justify-between">
+            <Select
+              data={options}
+              selected={optionSelected}
+              setSelected={setOptionSelected}
+              className="w-40 flex-grow-0 sm:w-64"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+            There are no merchandise analytics to show for now, go create a
+            collection!
+            <Button variant="solid" size="md" href="/merchandise/create">
+              Go create a collection
+            </Button>
+          </div>
+        </>
       )}
     </>
   );

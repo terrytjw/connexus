@@ -1,3 +1,4 @@
+import { Community } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -28,14 +29,13 @@ import {
   getCommunityAnalyticsByCreatorAPI,
 } from "../../lib/api-helpers/analytics-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
-import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
 import { SelectOption } from "../../pages/analytics";
 
 type CommunityTabProps = {
   options: SelectOption[];
   optionSelected: SelectOption;
   setOptionSelected: Dispatch<SetStateAction<SelectOption>>;
-  community: CommunityWithCreatorAndChannelsAndMembers | null;
+  community: Community | null;
 };
 
 const CommunityTab = ({
@@ -77,12 +77,12 @@ const CommunityTab = ({
 
   return (
     <>
-      {true || community ? ( // to be updated when user api is updated
+      {community ? (
         <>
           <Modal
             isOpen={isModalOpen}
             setIsOpen={setIsModalOpen}
-            className="min-w-fit !max-w-xl"
+            className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">
@@ -342,13 +342,23 @@ const CommunityTab = ({
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
-          There are no community analytics to show for now, go create a
-          community to interact with your fans!
-          <Button variant="solid" size="md" href="/communities/create">
-            Go create a community
-          </Button>
-        </div>
+        <>
+          <div className="my-8 flex w-full items-center justify-between">
+            <Select
+              data={options}
+              selected={optionSelected}
+              setSelected={setOptionSelected}
+              className="w-40 flex-grow-0 sm:w-64"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+            There are no community analytics to show for now, go create a
+            community to interact with your fans!
+            <Button variant="solid" size="md" href="/communities/create">
+              Go create a community
+            </Button>
+          </div>
+        </>
       )}
     </>
   );

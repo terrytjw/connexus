@@ -14,6 +14,8 @@ import {
   getCommunityAnalyticsByCreatorAPI,
   getEventAnalyticsByCreatorAPI,
 } from "../lib/api-helpers/analytics-api";
+import { getUserInfo } from "../lib/api-helpers/user-api";
+import { UserWithAllInfo } from "./api/users/[userId]";
 
 export type SelectOption = {
   id: number;
@@ -22,6 +24,7 @@ export type SelectOption = {
 };
 
 type AnalyticsPageProps = {
+  userData: UserWithAllInfo;
   channelAnalyticsData: any[];
   communityAnalyticsData: any[];
   collectionAnalyticsData: any[];
@@ -29,6 +32,7 @@ type AnalyticsPageProps = {
 };
 
 const AnalyticsPage = ({
+  userData,
   channelAnalyticsData,
   communityAnalyticsData,
   collectionAnalyticsData,
@@ -89,7 +93,7 @@ const AnalyticsPage = ({
                 options={options}
                 optionSelected={optionSelected}
                 setOptionSelected={setOptionSelected}
-                collections={[]}
+                collections={userData.createdCollections}
               />
             )}
             {optionSelected.id == 2 && (
@@ -105,7 +109,11 @@ const AnalyticsPage = ({
                 options={options}
                 optionSelected={optionSelected}
                 setOptionSelected={setOptionSelected}
-                community={null}
+                community={
+                  userData.createdCommunities.length > 0
+                    ? userData.createdCommunities[0]
+                    : null
+                }
               />
             )}
             {optionSelected.id == 4 && (
@@ -113,7 +121,11 @@ const AnalyticsPage = ({
                 options={options}
                 optionSelected={optionSelected}
                 setOptionSelected={setOptionSelected}
-                channels={[]}
+                channels={
+                  userData.createdCommunities.length > 0
+                    ? userData.createdCommunities[0].channels
+                    : []
+                }
               />
             )}
           </div>
@@ -129,7 +141,9 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const session = await getSession(context);
   const userId = Number(session?.user.userId);
 
-  // call user api to retrieve created collections, events and community (with channels)
+  const userData = await getUserInfo(userId);
+
+  // call searchEvents(userId, true) to return list of created events
 
   const channelAnalyticsData = await getChannelAnalyticsByCreatorAPI(userId);
   const communityAnalyticsData = await getCommunityAnalyticsByCreatorAPI(
@@ -142,6 +156,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   return {
     props: {
+      userData,
       channelAnalyticsData,
       communityAnalyticsData: communityAnalyticsData.map((data: any) => {
         return {
