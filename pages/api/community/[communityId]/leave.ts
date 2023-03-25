@@ -5,7 +5,7 @@ import {
   ErrorResponse,
 } from "../../../../lib/prisma/prisma-helpers";
 import { PrismaClient, Community, ChannelType } from "@prisma/client";
-import { leaveChannel } from "../../../../lib/prisma/channel-prisma";
+import { getChannelsToLeave, leaveChannel } from "../../../../lib/prisma/channel-prisma";
 import { getCommunityById, leaveCommunity } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
@@ -58,6 +58,14 @@ export default async function handler(
     try {
       const communityToLeave = await leaveCommunity(communityId, userId);
       await leaveChannel(communityToLeave.channels[0].channelId, userId);
+
+      const channelIDsToLeave = await getChannelsToLeave(communityId, userId);
+      console.log(channelIDsToLeave);
+
+      for (const channelId of channelIDsToLeave) {
+        await leaveChannel(channelId, userId);
+      }
+
       const response = await getCommunityById(communityId);
       res.status(200).json(response!);
     } catch (error) {
