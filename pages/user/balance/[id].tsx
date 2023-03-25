@@ -89,6 +89,17 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
   const [updatedUserData, setUpdatedUserData] = useState(userData);
 
+  const handleWithdraw = async () => {
+    try {
+      const userId = userData.userId;
+      const response = await withdraw(userId);
+      setUpdatedUserData(response);
+      toast.success("Withdraw initiated");
+    } catch (e) {
+      toast.error("Withdraw initiation failed");
+    }
+  };
+
   const onSubmit = async (formData: BankDetailsForm) => {
     try {
       const userId = userData.userId;
@@ -100,12 +111,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       } as BankAccount;
 
       await upsertBankAccount(userId, bankDetails);
-      const response = await withdraw(userId);
-      setUpdatedUserData(response);
 
-      toast.success("Withdrawal initiated");
+      toast.success("Saved bank details");
     } catch (e) {
-      toast.error("Withdrawal initiation failed");
+      toast.error("Unable to save bank details");
     }
   };
 
@@ -130,7 +139,9 @@ const BalancePage = ({ userData }: BalancePageProps) => {
                 className="lg:hidden"
                 variant="solid"
                 size="sm"
-                type="submit"
+                type="button"
+                onClick={handleWithdraw}
+                disabled={updatedUserData.walletBalance === 0}
               >
                 Withdraw
               </Button>
@@ -138,7 +149,8 @@ const BalancePage = ({ userData }: BalancePageProps) => {
                 className="hidden lg:inline-block"
                 variant="solid"
                 size="md"
-                type="submit"
+                type="button"
+                onClick={handleWithdraw}
                 disabled={updatedUserData.walletBalance === 0}
               >
                 Withdraw
@@ -147,87 +159,107 @@ const BalancePage = ({ userData }: BalancePageProps) => {
           </section>
 
           {/* fill up bank details section */}
-          <section className="mb-4 max-w-2xl lg:mb-8">
-            <h4 className="mb-4 text-lg font-semibold">Bank details</h4>
-            <Controller
-              control={control}
-              name="bankName"
-              rules={{ required: "Bank name is required" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Input
-                  type="text"
-                  label="Bank Name*"
-                  value={value}
-                  onChange={onChange}
-                  placeholder=""
-                  errorMessage={error?.message}
-                  size="md"
-                  variant="bordered"
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="accountName"
-              rules={{ required: "Full account name is required" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Input
-                  type="text"
-                  label="Full Account Name*"
-                  value={value}
-                  onChange={onChange}
-                  placeholder=""
-                  errorMessage={error?.message}
-                  size="md"
-                  variant="bordered"
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="bankAccountNum"
-              rules={{ required: "Bank name is required" }}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Input
-                  type="text"
-                  label="Bank Account Number*"
-                  value={value}
-                  onChange={onChange}
-                  placeholder=""
-                  errorMessage={error?.message}
-                  size="md"
-                  variant="bordered"
-                />
-              )}
-            />
-            <Controller
-              control={control}
-              name="bankRoutingNum"
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => (
-                <Input
-                  type="text"
-                  label="Bank Routing Number"
-                  value={value}
-                  onChange={onChange}
-                  placeholder=""
-                  errorMessage={error?.message}
-                  size="md"
-                  variant="bordered"
-                />
-              )}
-            />
+          <section className="lg:flex lg:justify-between">
+            <div className="mb-4 max-w-2xl lg:mb-8 lg:grow">
+              <h4 className="mb-4 text-lg font-semibold">Bank details</h4>
+              <Controller
+                control={control}
+                name="bankName"
+                rules={{ required: "Bank name is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    type="text"
+                    label="Bank Name*"
+                    value={value}
+                    onChange={onChange}
+                    placeholder="e.g. Oversea-Chinese Banking Corporation"
+                    errorMessage={error?.message}
+                    size="md"
+                    variant="bordered"
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="accountName"
+                rules={{ required: "Full account name is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    type="text"
+                    label="Full Account Name*"
+                    value={value}
+                    onChange={onChange}
+                    placeholder="e.g. Mark Lim Zhi Hao"
+                    errorMessage={error?.message}
+                    size="md"
+                    variant="bordered"
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="bankAccountNum"
+                rules={{ required: "Bank account number is required" }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    type="text"
+                    label="Bank Account Number*"
+                    value={value}
+                    onChange={onChange}
+                    placeholder="e.g. 501123956001"
+                    errorMessage={error?.message}
+                    size="md"
+                    variant="bordered"
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="bankRoutingNum"
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <Input
+                    type="text"
+                    label="Bank Routing Number"
+                    value={value}
+                    onChange={onChange}
+                    placeholder=""
+                    errorMessage={error?.message}
+                    size="md"
+                    variant="bordered"
+                  />
+                )}
+              />
+            </div>
+            <div className="mb-12 flex justify-center lg:block lg:self-end">
+              <Button
+                className="lg:hidden"
+                variant="solid"
+                size="sm"
+                type="submit"
+              >
+                Save Details
+              </Button>
+              <Button
+                className="hidden lg:inline-block"
+                variant="solid"
+                size="md"
+                type="submit"
+              >
+                Save Details
+              </Button>
+            </div>
           </section>
 
           {/* withdrawal history section */}
