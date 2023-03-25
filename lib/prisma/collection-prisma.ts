@@ -14,7 +14,7 @@ export async function getCollection(collectionId: number) {
     include: {
       creator: { select: { username: true } },
       merchandise: true,
-      premiumChannel: { select: { name: true } }
+      premiumChannel: true,
     },
   });
 }

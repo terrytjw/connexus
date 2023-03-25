@@ -96,8 +96,16 @@ const FanCollectionPage = ({
         collection.scAddress
       );
 
-      // either call api to check if user is member of community
-      // if user is member of community, call joinChannel api to add user as member of premium channel
+      // if user is member of community, add user as member of premium channel
+      if (
+        collection.premiumChannel &&
+        userData.joinedCommunities.findIndex(
+          (community) =>
+            collection.premiumChannel?.communityId === community.communityId
+        ) !== -1
+      ) {
+        joinChannelAPI(collection.premiumChannel.channelId, userData.userId);
+      }
 
       setLoading(false);
     };
@@ -117,9 +125,25 @@ const FanCollectionPage = ({
             <h3 className="text-xl font-semibold">Purchase Completed!</h3>
 
             <p>
-              {localStorage.getItem("communityUrl")
-                ? "You have successfully purchased Name of NFT from Prem CC2! See the tabs in the community page you joined."
-                : "You have successfully purchased Name of Collectible from Collection Name #1! You are in for Premium Channel #1!"}
+              {localStorage.getItem("merchandiseToMint") ? (
+                <>
+                  {localStorage.getItem("communityUrl")
+                    ? `You have successfully purchased ${
+                        JSON.parse(localStorage.getItem("merchandiseToMint")!)
+                          .name
+                      } from ${
+                        collection.premiumChannel?.name
+                      }! See the tabs in the community page you joined.`
+                    : `You have successfully purchased ${
+                        JSON.parse(localStorage.getItem("merchandiseToMint")!)
+                          .name
+                      } from ${collection.collectionName}! ${
+                        collection.premiumChannel
+                          ? `You are in for ${collection.premiumChannel.name}!`
+                          : null
+                      }`}
+                </>
+              ) : null}
             </p>
 
             <div className="flex gap-4">
@@ -130,7 +154,7 @@ const FanCollectionPage = ({
                   router.push(
                     localStorage.getItem("communityUrl") ?? "/merchandise"
                   );
-                  localStorage.removeItem("paymentSuccessful");
+                  localStorage.removeItem("merchandiseToMint");
                   localStorage.removeItem("communityUrl");
                 }}
               >
