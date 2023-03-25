@@ -1,32 +1,151 @@
 import { Merchandise } from "@prisma/client";
 import Link from "next/link";
-import React, { useState } from "react";
+import { useRouter } from "next/router";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useState } from "react";
 import { FaChevronLeft } from "react-icons/fa";
 import Badge from "../../Badge";
 import Button from "../../Button";
 import CollectibleGrid from "../../CollectibleGrid";
-import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
+import Modal from "../../Modal";
+import Loading from "../../Loading";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  mintMerchandise,
+} from "../../../lib/api-helpers/collection-api";
+import { joinChannelAPI } from "../../../lib/api-helpers/channel-api";
+import getStripe from "../../../lib/stripe";
+import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
+import { UserWithAllInfo } from "../../../pages/api/users/[userId]";
 
 type FanCollectionPageProps = {
+  userData: UserWithAllInfo;
   collection: CollectionWithMerchAndPremiumChannel;
 };
 
-const FanCollectionPage = ({ collection }: FanCollectionPageProps) => {
+const FanCollectionPage = ({
+  userData,
+  collection,
+}: FanCollectionPageProps) => {
   const maxQuantity = collection.merchandise.reduce(
     (total: number, m: Merchandise) =>
       total + m.totalMerchSupply - m.currMerchSupply,
     0
   );
+  const router = useRouter();
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
   const [quantity, setQuantity] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const payForMerchandise = async () => {
+    setLoading(true);
+
+    const merchandiseToMint =
+      collection.merchandise[
+        Math.floor(Math.random() * collection.merchandise.length)
+      ];
+
+    localStorage.setItem(
+      "merchandiseToMint",
+      JSON.stringify(merchandiseToMint)
+    );
+
+    // Create a Checkout Session.
+    const response = await fetchPostJSON("/api/checkout_sessions", {
+      priceId: merchandiseToMint.stripePriceId,
+      creatorId: collection.creatorId,
+      paymentSuccessUrl: `${router.asPath}?paymentSuccess=true`,
+    });
+
+    if (response.statusCode === 500) {
+      console.error(response.message);
+      return;
+    }
+
+    // Redirect to Checkout.
+    const stripe = await getStripe();
+    const { error } = await stripe!.redirectToCheckout({
+      // Make the id field from the Checkout Session creation API response
+      // available to this file, so you can provide it as parameter here
+      // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+      sessionId: response.id,
+    });
+    // If `redirectToCheckout` fails due to a browser or network
+    // error, display the localized error message to your customer
+    // using `error.message`.
+    console.warn(error.message);
+  };
+
+  useEffect(() => {
+    const purchaseMerchandise = async () => {
+      setIsModalOpen(true);
+
+      // call api to mint merchandise
+      const merchandiseToMint: Merchandise = localStorage.getItem(
+        "merchandiseToMint"
+      )
+        ? JSON.parse(localStorage.getItem("merchandiseToMint")!)
+        : null;
+
+      await mintMerchandise(
+        userData.walletAddress,
+        userData.userId,
+        merchandiseToMint,
+        collection.scAddress
+      );
+
+      // either call api to check if user is member of community
+      // if user is member of community, call joinChannel api to add user as member of premium channel
+
+      setLoading(false);
+    };
+
+    if (router.query.paymentSuccess) {
+      purchaseMerchandise();
+    }
+  }, []);
 
   return (
     <main className="py-12 px-4 sm:px-12">
+      <Modal isOpen={isModalOpen} setIsOpen={() => {}}>
+        {loading ? (
+          <Loading className="!h-full" />
+        ) : (
+          <div className="flex flex-col gap-6">
+            <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+
+            <p>
+              {localStorage.getItem("communityUrl")
+                ? "You have successfully purchased Name of NFT from Prem CC2! See the tabs in the community page you joined."
+                : "You have successfully purchased Name of Collectible from Collection Name #1! You are in for Premium Channel #1!"}
+            </p>
+
+            <div className="flex gap-4">
+              <Button
+                variant="solid"
+                size="md"
+                onClick={() => {
+                  router.push(
+                    localStorage.getItem("communityUrl") ?? "/merchandise"
+                  );
+                  localStorage.removeItem("paymentSuccessful");
+                  localStorage.removeItem("communityUrl");
+                }}
+              >
+                Got it, thanks!
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
       <div className="mb-8 flex items-center gap-4">
         <Button
           className="border-0"
           variant="outlined"
           size="md"
-          onClick={() => history.back()}
+          href={localStorage.getItem("communityUrl") ?? "/merchandise"}
         >
           <FaChevronLeft />
         </Button>
@@ -82,13 +201,13 @@ const FanCollectionPage = ({ collection }: FanCollectionPageProps) => {
                   <button
                     className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
                     disabled={quantity == 1}
-                    onClick={() => {
-                      if (quantity > 1) {
-                        setQuantity(quantity - 1);
-                        return;
-                      }
-                      setQuantity(1);
-                    }}
+                    // onClick={() => {
+                    //   if (quantity > 1) {
+                    //     setQuantity(quantity - 1);
+                    //     return;
+                    //   }
+                    //   setQuantity(1);
+                    // }}
                   >
                     <span className="m-auto text-2xl">-</span>
                   </button>
@@ -98,50 +217,54 @@ const FanCollectionPage = ({ collection }: FanCollectionPageProps) => {
                     max={maxQuantity}
                     step={1}
                     value={quantity}
-                    onKeyDown={(e) => {
-                      // disallow decimal
-                      // only allow numbers, backspace, arrow left and right for editing
-                      if (
-                        e.code == "Backspace" ||
-                        e.code == "ArrowLeft" ||
-                        e.code == "ArrowRight" ||
-                        (e.key >= "0" && e.key <= "9")
-                      ) {
-                        return;
-                      }
-                      e.preventDefault();
-                    }}
-                    onChange={(e) => {
-                      if (e.target.valueAsNumber > maxQuantity) {
-                        setQuantity(maxQuantity);
-                        return;
-                      }
-                      setQuantity(e.target.valueAsNumber);
-                    }}
-                    onBlur={(e) => {
-                      if (e.target.value == "") {
-                        setQuantity(1);
-                      }
-                    }}
+                    // onKeyDown={(e) => {
+                    //   // disallow decimal
+                    //   // only allow numbers, backspace, arrow left and right for editing
+                    //   if (
+                    //     e.code == "Backspace" ||
+                    //     e.code == "ArrowLeft" ||
+                    //     e.code == "ArrowRight" ||
+                    //     (e.key >= "0" && e.key <= "9")
+                    //   ) {
+                    //     return;
+                    //   }
+                    //   e.preventDefault();
+                    // }}
+                    // onChange={(e) => {
+                    //   if (e.target.valueAsNumber > maxQuantity) {
+                    //     setQuantity(maxQuantity);
+                    //     return;
+                    //   }
+                    //   setQuantity(e.target.valueAsNumber);
+                    // }}
+                    // onBlur={(e) => {
+                    //   if (e.target.value == "") {
+                    //     setQuantity(1);
+                    //   }
+                    // }}
                     className="w-full appearance-none bg-gray-200 text-center outline-none"
                   ></input>
                   {/* increase button */}
                   <button
                     className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
                     disabled={quantity == maxQuantity}
-                    onClick={() => {
-                      if (quantity) {
-                        setQuantity(quantity + 1);
-                        return;
-                      }
-                      setQuantity(1);
-                    }}
+                    // onClick={() => {
+                    //   if (quantity) {
+                    //     setQuantity(quantity + 1);
+                    //     return;
+                    //   }
+                    //   setQuantity(1);
+                    // }}
                   >
                     <span className="m-auto text-2xl font-thin">+</span>
                   </button>
                 </div>
               </div>
-              <Button variant="solid" size="md">
+              <Button
+                variant="solid"
+                size="md"
+                onClick={() => payForMerchandise()}
+              >
                 Buy
               </Button>
             </div>

@@ -1,6 +1,5 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
-import { useSession } from "next-auth/react";
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import CreatorCollectionPage from "../../components/MerchandisePages/Creator/[id]";
@@ -9,14 +8,18 @@ import {
   CollectionWithMerchAndPremiumChannel,
   getCollection,
 } from "../../lib/api-helpers/collection-api";
+import { getUserInfo } from "../../lib/api-helpers/user-api";
+import { UserWithAllInfo } from "../api/users/[userId]";
+import { getSession, useSession } from "next-auth/react";
 
 type CollectionPageProps = {
+  userData: UserWithAllInfo;
   collectionData: CollectionWithMerchAndPremiumChannel;
 };
 
-const CollectionPage = ({ collectionData }: CollectionPageProps) => {
-  const { data: session } = useSession();
-  const userId = Number(session?.user.userId);
+const CollectionPage = ({ userData, collectionData }: CollectionPageProps) => {
+  // const { data: session } = useSession();
+  // const userId = Number(session?.user.userId);
 
   return (
     <ProtectedRoute>
@@ -26,10 +29,13 @@ const CollectionPage = ({ collectionData }: CollectionPageProps) => {
             <title>Merchandise | Connexus</title>
           </Head>
 
-          {collectionData.creatorId == userId ? (
+          {collectionData.creatorId == userData.userId ? (
             <CreatorCollectionPage />
           ) : (
-            <FanCollectionPage collection={collectionData} />
+            <FanCollectionPage
+              userData={userData}
+              collection={collectionData}
+            />
           )}
         </div>
       </Layout>
@@ -41,6 +47,11 @@ export default CollectionPage;
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const { id } = context.params;
+
+  const session = await getSession(context);
+  const userId = Number(session?.user.userId);
+
+  const userData = await getUserInfo(userId);
 
   const collectionData = await getCollection(id);
   if (collectionData && Object.keys(collectionData).length === 0) {
@@ -54,6 +65,7 @@ export const getServerSideProps: GetServerSideProps = async (context: any) => {
 
   return {
     props: {
+      userData,
       collectionData,
     },
   };
