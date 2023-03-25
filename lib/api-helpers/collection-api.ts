@@ -1,4 +1,9 @@
-import { Prisma, CollectionState, Collection } from "@prisma/client";
+import {
+  Prisma,
+  CollectionState,
+  Collection,
+  Merchandise,
+} from "@prisma/client";
 import axios from "axios";
 import { ethers } from "ethers";
 import {
@@ -259,7 +264,7 @@ export async function registerCollectionClick(collectionId: number) {
 
   const updatedCollection: Partial<Collection> = {
     ...collectionInfo,
-    clicks: retrievedCollectionResponse.clicks + 1
+    clicks: retrievedCollectionResponse.clicks + 1,
   };
 
   const updatedCollectionResponse = (
@@ -268,4 +273,63 @@ export async function registerCollectionClick(collectionId: number) {
 
   console.log("Start collection response: ", updatedCollectionResponse);
   return updatedCollectionResponse;
+}
+
+export async function mintCollection(
+  userWallet: string,
+  collectionInfo: Collection
+) {
+  const response = await mintOnChainCollection(collectionInfo);
+  let ipfsHash = response.data.IpfsHash;
+  console.log(ipfsHash);
+
+  if (ipfsHash == "") return;
+  const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
+  console.log("Collection PFS Hash Link  : ", link);
+  const scAddress = collectionInfo.scAddress ?? "";
+  const collectionContract = new ethers.Contract(scAddress, abi, signer);
+  console.log("smart contract address ->", scAddress);
+
+  await collectionContract.mint(
+    collectionInfo.collectionName,
+    userWallet,
+    link,
+    {
+      gasLimit: 2100000,
+    }
+  );
+
+  return link;
+}
+
+async function mintOnChainCollection(collection: Partial<Collection>) {
+  const { collectionName, collectionId, fixedPrice } = collection;
+
+  let metaData = JSON.stringify({
+    pinataOptions: {
+      cidVersion: 1,
+    },
+    pinataMetadata: {
+      name: "testing",
+      keyvalues: {
+        customKey: "customValue",
+        customKey2: "customValue2",
+      },
+    },
+    pinataContent: {
+      name: collectionName,
+      collectionId,
+      price: fixedPrice,
+    },
+  });
+
+  const url = `https://api.pinata.cloud/pinning/pinJSONToIPFS`;
+
+  return axios.post(url, metaData, {
+    headers: {
+      "Content-Type": "application/json",
+      pinata_api_key: smartContract.pinataApiKey,
+      pinata_secret_api_key: smartContract.pinataSecretApiKey,
+    },
+  });
 }
