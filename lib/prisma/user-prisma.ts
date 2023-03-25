@@ -20,7 +20,9 @@ export async function searchUser(searchType: UserPartialType) {
       ...searchType,
     },
     include: {
-      createdCollections: true,
+      createdCollections: {
+        include: { merchandise: true, premiumChannel: true },
+      },
       createdCommunities: { include: { channels: true } },
       joinedCommunities: {
         include: {

@@ -202,6 +202,7 @@ export default async function handler(
         joinedChannels,
         bankAccount,
         transactions,
+        createdCollections,
         ...userInfo
       } = userWithAllInfo;
 
