@@ -1,3 +1,4 @@
+import { Event } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -30,14 +31,13 @@ import {
   getEventAnalyticsByEventAPI,
 } from "../../lib/api-helpers/analytics-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
-import { EventWithAllDetails } from "../../utils/types";
 import { SelectOption } from "../../pages/analytics";
 
 type EventTabProps = {
   options: SelectOption[];
   optionSelected: SelectOption;
   setOptionSelected: Dispatch<SetStateAction<SelectOption>>;
-  events: EventWithAllDetails[];
+  events: Event[];
 };
 
 const EventTab = ({
@@ -127,7 +127,7 @@ const EventTab = ({
 
             <h3 className="mt-8 text-sm font-medium text-gray-500">EVENT</h3>
             <div className="mt-2 mb-4 flex flex-wrap gap-4">
-              {events.map((event: EventWithAllDetails) => {
+              {events.map((event: Event) => {
                 return (
                   <Badge
                     key={event.eventId}
