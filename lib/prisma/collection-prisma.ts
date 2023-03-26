@@ -11,9 +11,10 @@ export async function getCollection(collectionId: number) {
     where: {
       collectionId: collectionId,
     },
-    include: { 
+    include: {
+      creator: { select: { username: true } },
       merchandise: true,
-      premiumChannel: { select: { name: true } }
+      premiumChannel: true,
     },
   });
 }
@@ -59,7 +60,7 @@ export async function updateCollection(
   collection: CollectionWithMerchAndPremiumChannel
 ) {
   // theres some error if i pass a collection with merch/premiumChannel to data, so im taking them out.
-  const { merchandise, premiumChannel, ...collectionInfo } = collection; 
+  const { creator, merchandise, premiumChannel, ...collectionInfo } = collection;
   return prisma.collection.update({
     where: {
       collectionId: collectionId,

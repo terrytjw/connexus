@@ -10,7 +10,7 @@ import {
 } from "../../lib/api-helpers/collection-api";
 import { getUserInfo } from "../../lib/api-helpers/user-api";
 import { UserWithAllInfo } from "../api/users/[userId]";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 
 type CollectionPageProps = {
   userData: UserWithAllInfo;
@@ -18,9 +18,6 @@ type CollectionPageProps = {
 };
 
 const CollectionPage = ({ userData, collectionData }: CollectionPageProps) => {
-  // const { data: session } = useSession();
-  // const userId = Number(session?.user.userId);
-
   return (
     <ProtectedRoute>
       <Layout>

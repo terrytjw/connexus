@@ -8,7 +8,7 @@ import { PrismaClient, Community } from "@prisma/client";
 import channelHandler from "../../channel/[channelId]/join";
 import axios from "axios";
 import { url } from "inspector";
-import { joinChannel, } from "../../../../lib/prisma/channel-prisma";
+import { getChannelsToJoin, joinChannel, } from "../../../../lib/prisma/channel-prisma";
 import { joinCommunity, getCommunityById } from "../../../../lib/prisma/community-prisma";
 
 const prisma = new PrismaClient();
@@ -61,6 +61,14 @@ export default async function handler(
     try {
       const communityToJoin = await joinCommunity(communityId, userId);
       await joinChannel(communityToJoin.channels[0].channelId, userId);
+
+      const channelIDsToJoin = await getChannelsToJoin(userId);
+      console.log("channelIDsToJoin", channelIDsToJoin);
+
+      for (const channelId of channelIDsToJoin) {
+        await joinChannel(channelId, userId);
+      }
+
       const response = await getCommunityById(communityId);
       res.status(200).json(response!);
     } catch (error) {

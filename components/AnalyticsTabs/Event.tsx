@@ -1,3 +1,4 @@
+import { Event } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { Dispatch, SetStateAction, useState } from "react";
@@ -30,14 +31,13 @@ import {
   getEventAnalyticsByEventAPI,
 } from "../../lib/api-helpers/analytics-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
-import { EventWithAllDetails } from "../../utils/types";
 import { SelectOption } from "../../pages/analytics";
 
 type EventTabProps = {
   options: SelectOption[];
   optionSelected: SelectOption;
   setOptionSelected: Dispatch<SetStateAction<SelectOption>>;
-  events: EventWithAllDetails[];
+  events: Event[];
 };
 
 const EventTab = ({
@@ -97,12 +97,12 @@ const EventTab = ({
 
   return (
     <>
-      {true || events.length > 0 ? ( // to be updated when user api is updated
+      {events.length > 0 ? (
         <>
           <Modal
             isOpen={isModalOpen}
             setIsOpen={setIsModalOpen}
-            className="min-w-fit !max-w-xl"
+            className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">Filter Event Analytics</h3>
@@ -127,7 +127,7 @@ const EventTab = ({
 
             <h3 className="mt-8 text-sm font-medium text-gray-500">EVENT</h3>
             <div className="mt-2 mb-4 flex flex-wrap gap-4">
-              {events.map((event: EventWithAllDetails) => {
+              {events.map((event: Event) => {
                 return (
                   <Badge
                     key={event.eventId}
@@ -442,12 +442,22 @@ const EventTab = ({
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
-          There are no event analytics to show for now, go create an event!
-          <Button variant="solid" size="md" href="/events/create">
-            Go create an event
-          </Button>
-        </div>
+        <>
+          <div className="my-8 flex w-full items-center justify-between">
+            <Select
+              data={options}
+              selected={optionSelected}
+              setSelected={setOptionSelected}
+              className="w-40 flex-grow-0 sm:w-64"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+            There are no event analytics to show for now, go create an event!
+            <Button variant="solid" size="md" href="/events/create">
+              Go create an event
+            </Button>
+          </div>
+        </>
       )}
     </>
   );
