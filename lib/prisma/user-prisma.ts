@@ -31,11 +31,6 @@ export async function searchUser(searchType: UserPartialType) {
           },
         },
       },
-      createdCollections: {
-        include: {
-          merchandise: true,
-        },
-      },
       joinedChannels: true,
       tickets: true,
       merchandise: {
