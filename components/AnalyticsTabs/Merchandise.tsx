@@ -33,7 +33,7 @@ import {
   getCollectionAnalyticsByCreatorAPI,
   getTopNSellingCollectionsAPI,
 } from "../../lib/api-helpers/analytics-api";
-import { CollectionWithMerchAndPremiumChannel } from "../../lib/api-helpers/collection-api";
+import { CollectionwithMerch } from "../../lib/api-helpers/collection-api";
 import { lastWeek, todayMinus } from "../../utils/date-util";
 import { SelectOption } from "../../pages/analytics";
 
@@ -41,7 +41,7 @@ type MerchandiseTabProps = {
   options: SelectOption[];
   optionSelected: SelectOption;
   setOptionSelected: Dispatch<SetStateAction<SelectOption>>;
-  collections: CollectionWithMerchAndPremiumChannel[];
+  collections: CollectionwithMerch[];
 };
 
 const MerchandiseTab = ({
@@ -203,12 +203,12 @@ const MerchandiseTab = ({
 
   return (
     <>
-      {true || collections.length > 0 ? ( // to be updated when user api is updated
+      {collections.length > 0 ? (
         <>
           <Modal
             isOpen={isModalOpen}
             setIsOpen={setIsModalOpen}
-            className="min-w-fit !max-w-xl"
+            className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
               <h3 className="text-xl font-semibold">
@@ -237,26 +237,24 @@ const MerchandiseTab = ({
               COLLECTION
             </h3>
             <div className="mt-2 mb-4 flex flex-wrap gap-4">
-              {collections.map(
-                (collection: CollectionWithMerchAndPremiumChannel) => {
-                  return (
-                    <Badge
-                      key={collection.collectionId}
-                      label={collection.collectionName}
-                      size="lg"
-                      selected={collection.collectionId == collectionIdSelected}
-                      onClick={() => {
-                        if (collection.collectionId == collectionIdSelected) {
-                          setCollectionIdSelected(null as unknown as number);
-                        } else {
-                          setCollectionIdSelected(collection.collectionId);
-                        }
-                      }}
-                      className="h-8 min-w-fit rounded-lg"
-                    />
-                  );
-                }
-              )}
+              {collections.map((collection: CollectionwithMerch) => {
+                return (
+                  <Badge
+                    key={collection.collectionId}
+                    label={collection.collectionName}
+                    size="lg"
+                    selected={collection.collectionId == collectionIdSelected}
+                    onClick={() => {
+                      if (collection.collectionId == collectionIdSelected) {
+                        setCollectionIdSelected(null as unknown as number);
+                      } else {
+                        setCollectionIdSelected(collection.collectionId);
+                      }
+                    }}
+                    className="h-8 min-w-fit rounded-lg"
+                  />
+                );
+              })}
             </div>
             <div className="divider"></div>
             <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
@@ -542,13 +540,23 @@ const MerchandiseTab = ({
           </div>
         </>
       ) : (
-        <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
-          There are no merchandise analytics to show for now, go create a
-          collection!
-          <Button variant="solid" size="md" href="/merchandise/create">
-            Go create a collection
-          </Button>
-        </div>
+        <>
+          <div className="my-8 flex w-full items-center justify-between">
+            <Select
+              data={options}
+              selected={optionSelected}
+              setSelected={setOptionSelected}
+              className="w-40 flex-grow-0 sm:w-64"
+            />
+          </div>
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+            There are no merchandise analytics to show for now, go create a
+            collection!
+            <Button variant="solid" size="md" href="/merchandise/create">
+              Go create a collection
+            </Button>
+          </div>
+        </>
       )}
     </>
   );
