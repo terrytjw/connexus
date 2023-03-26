@@ -62,3 +62,15 @@ export async function updateRafflePrize(
   const response = (await axios.post(url, rafflePrizeUser)).data;
   return response;
 }
+
+export async function searchEvents(userId: number, isCreated: boolean) {
+  const url = `${API_URL}/${USER_ENDPOINT}/${userId}/events`;
+  const response = (
+    await axios.get(url, {
+      params: {
+        isCreated,
+      },
+    })
+  ).data;
+  return response;
+}

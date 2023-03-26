@@ -19,7 +19,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     // a hacky way to lengthen the loading animation
     setTimeout(() => {
       setLoading(false);
-    }, 800);
+    }, 500);
   });
 
   if (loading) {
