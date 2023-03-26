@@ -2,7 +2,12 @@ import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import React, { useState } from "react";
-import { FaFacebook, FaTwitter, FaTelegram } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaTwitter,
+  FaTelegram,
+  FaExternalLinkAlt,
+} from "react-icons/fa";
 import { FiSettings } from "react-icons/fi";
 import Avatar from "../../../components/Avatar";
 import Banner from "../../../components/Banner";
@@ -21,6 +26,10 @@ import { UserWithAllInfo } from "../../api/users/[userId]";
 import { getUserInfo } from "../../../lib/api-helpers/user-api";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import CommunitiesTab from "../../../components/UserProfileTabs/CommunitiesTab";
+import EventsTab from "../../../components/UserProfileTabs/EventsTab";
+import CollectionsTab from "../../../components/UserProfileTabs/CollectionsTab";
+import CreationsTab from "../../../components/UserProfileTabs/CreationsTab";
 
 type UserProfilePageProps = {
   userData: UserWithAllInfo;
@@ -40,12 +49,6 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
     // const url = encodeURIComponent(window.location.href);
     const message = encodeURIComponent("Check out my profile on Connexus!");
     const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${message}`;
-    return shareUrl;
-  }
-
-  function getInstagramShareLink(url: string | null) {
-    // const url = encodeURIComponent(window.location.href);
-    const shareUrl = `https://www.instagram.com/share?url=${url}`;
     return shareUrl;
   }
 
@@ -110,7 +113,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 <span className="hidden sm:inline-block">Settings</span>
               </Button>
 
-              <div className="ml-4 flex flex-wrap gap-4 py-4">
+              <div className="ml-4 flex flex-wrap items-center gap-4 py-4">
                 <Link
                   href={getFacebookShareLink(profileLink)}
                   target="_blank"
@@ -132,6 +135,14 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 >
                   <FaTelegram className="h-6 w-6" />
                 </Link>
+                <Link
+                  href={`https://mumbai.polygonscan.com/address/${userData.walletAddress}`}
+                  target="_blank"
+                  className="ml-2 flex items-center gap-x-2 text-blue-500 transition-all hover:text-blue-700 hover:underline"
+                >
+                  <FaExternalLinkAlt className="h-3 w-3" />
+                  <span className="font-medium">On-chain data</span>
+                </Link>
               </div>
             </div>
 
@@ -147,10 +158,10 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 setActiveTab(index);
               }}
             >
-              {activeTab == 0 && <h1>Coming soon...</h1>}
-              {activeTab == 1 && <h1>Coming soon...</h1>}
-              {activeTab == 2 && <h1>Coming soon...</h1>}
-              {activeTab == 3 && <h1>Coming soon...</h1>}
+              {activeTab == 0 && <CreationsTab userData={userData} />}
+              {activeTab == 1 && <CollectionsTab userData={userData} />}
+              {activeTab == 2 && <CommunitiesTab userData={userData} />}
+              {activeTab == 3 && <EventsTab userData={userData} />}
             </TabGroupBordered>
           </div>
           <Toaster
