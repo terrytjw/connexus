@@ -104,9 +104,9 @@ const EventsTable = ({
               <td className=" text-sm font-bold text-red-400">
                 {data?.visibilityType}
               </td>
-              {!eventEnded(data) && (
-                <th className=" text-gray-700">
-                  {/* note: these buttons display depending on tab a user is on */}
+              <th className=" text-gray-700">
+                {/* note: these buttons display depending on tab a user is on */}
+                {!eventEnded(data) && (
                   <div className="flex flex-row">
                     <Link
                       href={`/events/attendees/${data.eventId}`}
@@ -151,8 +151,8 @@ const EventsTable = ({
                       <FaTrashAlt className="text-lg text-red-400" />
                     </button>
                   </div>
-                </th>
-              )}
+                )}
+              </th>
             </tr>
           ))}
         </tbody>
