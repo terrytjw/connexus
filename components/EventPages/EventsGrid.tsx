@@ -16,11 +16,13 @@ import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
 
 type CollectionGridItemProps = {
+  isListed?: boolean;
   item: EventWithAllDetails;
   mutateTrendingEvents?: any;
   setSearchAndFilterResults?: any;
 };
 const CollectionGridItem = ({
+  isListed,
   item,
   mutateTrendingEvents,
   setSearchAndFilterResults,
@@ -113,27 +115,31 @@ const CollectionGridItem = ({
           <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
             <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
             {/* TODO: Replace boolean with like check*/}
-            {item.userLikes &&
-            item.userLikes.find(
-              (user: User) => user.userId === Number(userId)
-            ) ? (
-              <Button
-                size="md"
-                variant="solid"
-                className="!btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold !text-blue-600 hover:!bg-opacity-30"
-                onClick={async (e) => await handleUnlike(e)}
-              >
-                <FaHeart size={24} />
-              </Button>
-            ) : (
-              <Button
-                size="md"
-                variant="outlined"
-                className=" !btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
-                onClick={async (e) => await handleLike(e)}
-              >
-                <FaRegHeart size={24} />
-              </Button>
+            {isListed && (
+              <div className="relative ml-auto">
+                {item.userLikes &&
+                item.userLikes.find(
+                  (user: User) => user.userId === Number(userId)
+                ) ? (
+                  <Button
+                    size="md"
+                    variant="solid"
+                    className="!btn-circle relative rounded-full border-0 !bg-neutral-100 text-lg font-semibold !text-blue-600 hover:!bg-opacity-30"
+                    onClick={async (e) => await handleUnlike(e)}
+                  >
+                    <FaHeart size={24} />
+                  </Button>
+                ) : (
+                  <Button
+                    size="md"
+                    variant="outlined"
+                    className=" !btn-circle relative rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
+                    onClick={async (e) => await handleLike(e)}
+                  >
+                    <FaRegHeart size={24} />
+                  </Button>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -161,11 +167,13 @@ const CollectionGridItem = ({
 };
 
 type EventsGridProps = {
+  isListed?: boolean;
   data: any[]; // todo: remove any type and set a proper type
   mutateTrendingEvents?: any;
   setSearchAndFilterResults?: any;
 };
 const EventsGrid = ({
+  isListed,
   data,
   mutateTrendingEvents,
   setSearchAndFilterResults,
@@ -174,6 +182,7 @@ const EventsGrid = ({
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
       {data.map((item) => (
         <CollectionGridItem
+          isListed={isListed}
           key={item.eventId}
           item={item}
           mutateTrendingEvents={mutateTrendingEvents}

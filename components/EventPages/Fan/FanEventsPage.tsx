@@ -161,6 +161,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <EventsGrid
             data={trendingEvents}
             mutateTrendingEvents={mutateTrendingEvents}
+            isListed={true}
           />
         </div>
         <div>
@@ -170,6 +171,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <EventsGrid
             data={listedEvents}
             setSearchAndFilterResults={setSearchAndFilterResults}
+            isListed={true}
           />
         </div>
       </>
