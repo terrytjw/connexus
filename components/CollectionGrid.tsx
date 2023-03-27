@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import {
@@ -11,6 +13,8 @@ type CollectionGridItemProps = {
   item: CollectionWithMerchAndPremiumChannel;
 };
 const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
+  const router = useRouter();
+
   if (!item) return <Skeleton height={350} />;
 
   return (
@@ -18,6 +22,10 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
       href={`/merchandise/${item.collectionId}`}
       className="group rounded-lg p-2 text-sm hover:bg-gray-200"
       onClick={async () => {
+        if (router.asPath.includes("communities")) {
+          localStorage.setItem("communityUrl", router.asPath);
+        }
+
         await registerCollectionClick(item.collectionId);
       }}
     >
@@ -59,6 +67,10 @@ type CollectionGridProps = {
   data: CollectionWithMerchAndPremiumChannel[];
 };
 const CollectionGrid = ({ data }: CollectionGridProps) => {
+  useEffect(() => {
+    localStorage.removeItem("communityUrl");
+  }, []);
+
   return (
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
       {data.map((item) => (

@@ -12,6 +12,8 @@ import {
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
+import { getTicketsOwned } from "../api-helpers/ticket-api";
+import { filterTickets } from "./ticket-prisma";
 
 export interface EventPartialType extends Partial<Event> {}
 
@@ -55,6 +57,9 @@ export async function createEventWithTickets(
       tickets: { create: tickets },
       address: { create: event.address },
       creator: { connect: { userId: creatorId } },
+      analyticsTimestamps: {
+        create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 },
+      },
       analyticsTimestamps: {
         create: { ticketsSold: 0, revenue: 0, clicks: 0, likes: 0 },
       },
@@ -319,4 +324,21 @@ export async function getEventsForAnalytics() {
       },
     },
   });
+}
+
+export async function searchEventByUser(userId: number, isCreated: boolean) {
+  if (isCreated) {
+    return prisma.event.findMany({
+      where: {
+        creatorId: userId,
+      },
+    });
+  } else {
+    const tickets = await filterTickets(userId);
+    const events = [];
+    for (const ticket of tickets) {
+      events.push(ticket.event);
+    }
+    return events;
+  }
 }
