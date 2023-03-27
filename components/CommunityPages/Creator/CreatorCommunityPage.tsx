@@ -116,26 +116,6 @@ const CreatorCommunityPage = ({
               </div>
             </Link>
           ) : null}
-          {/* <Link
-            href="/merchandise"
-            className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
-          >
-            Highlighted Collection
-            <Image
-              height={144}
-              width={144}
-              className="aspect-square rounded-lg object-cover object-center"
-              src="/images/bear.jpg"
-              alt="Member profile pic"
-            />
-            <div
-              aria-hidden="true"
-              className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-between rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
-            >
-              <span className="self-end">x100</span>
-              Collection #1
-            </div>
-          </Link> */}
         </div>
 
         <TabGroupBordered
