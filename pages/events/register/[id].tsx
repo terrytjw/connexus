@@ -27,7 +27,7 @@ import Link from "next/link";
 import { fetchPostJSON } from "../../../lib/stripe/api-helpers";
 import getStripe from "../../../lib/stripe";
 import { useRouter } from "next/router";
-import { sendEmail } from "../../../lib/api-helpers/communication-api";
+import { sendEmail, sendSMS } from "../../../lib/api-helpers/communication-api";
 import { saveUserTicket } from "../../../lib/api-helpers/ticket-api";
 
 export type SelectedTicket = {
@@ -113,6 +113,9 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         stripePriceId: savedFormData.stripePriceId,
       });
 
+      // show user previously entered phone number in order summary
+      setValue("phoneNumber", savedFormData.updatedUser.phoneNumber);
+
       // bring users back to confirmation page
       setSteps([
         { id: "Step 1", name: "Select Tickets", status: StepStatus.COMPLETE },
@@ -130,7 +133,18 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         savedFormData.selectedTicket.ticketName,
         savedFormData.selectedTicket.ticketId
       );
-      // localStorage.removeItem("savedFormData");
+      localStorage.removeItem("savedFormData");
+
+      console.log("Sending email", {
+        email: userData.email,
+        subject: `Reminder for ${event.eventName}`,
+        message: "Some reminder",
+      });
+
+      console.log("Sending sms", {
+        number: "+6591713316",
+        message: "Some reminder",
+      });
 
       // send email
       sendEmail(
@@ -138,6 +152,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         `Reminder for ${event.eventName}`,
         "Some reminder"
       );
+
+      // if (userData.phoneNumber) {
+      //   sendSMS(userData.phoneNumber, "Some reminder");
+      // }
+
+      console.log("email sent");
     }
   }, [router.query]);
 
