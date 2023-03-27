@@ -160,7 +160,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        <div>{!isCreated ? " created" : "ended"}</div>
         <Toaster
           position="top-center"
           toastOptions={{
