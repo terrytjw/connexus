@@ -9,7 +9,6 @@ import { CategoryType, VisibilityType } from "@prisma/client";
 import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { Event } from "@prisma/client";
 import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
@@ -17,6 +16,7 @@ import Input from "../../Input";
 import { Toaster } from "react-hot-toast";
 import { filterEvent } from "../../../lib/api-helpers/event-api";
 import { useSession } from "next-auth/react";
+import { formatDateWithLocalTime } from "../../../utils/date-util";
 
 const DELAY_TIME = 400;
 
@@ -26,64 +26,30 @@ type CreatorEventsPageProps = {
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const router = useRouter();
-  const [isCreated, setIsCreated] = useState<boolean>(false);
-  const [selectedTopics, setSelectedTopics] = useState<
-    string[] | CategoryType[]
-  >([]);
+  const [isCreated, setIsCreated] = useState<boolean>(false); // rendering using this  state is abit janky but it works
+  const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [searchString, setSearchString] = useState("");
+  const [fromDateFilter, setFromDateFilter] = useState<Date | undefined>(
+    undefined
+  );
+  const [toDateFilter, setToDateFilter] = useState<Date | undefined>(undefined);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
   >([]);
+  const [visibilityType, setVisibilityType] = useState<
+    VisibilityType | undefined
+  >(undefined);
   const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] =
     useState<boolean>(false);
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
-  console.log(events);
 
   // fetch userId if from session
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
 
-  useEffect(() => {
-    console.log("in use effect");
-    // ended events
-    if (!isCreated) {
-      console.log("in !created");
-      setSearchAndFilterResults(
-        events.filter(
-          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
-        )
-      );
-    } else {
-      // created events
-      console.log("in created");
-      setSearchAndFilterResults(
-        events.filter(
-          (event: EventWithAllDetails) => new Date(event.endDate) <= new Date()
-        )
-      );
-    }
-  }, [isCreated]);
-
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
-
-  const appendFilterParamsToURL = (
-    url: string,
-    filterParams: CategoryType[] | string[]
-  ) => {
-    if (!filterParams || filterParams.length === 0) {
-      return url;
-    }
-
-    const filterString = filterParams
-      .map((filter: CategoryType | string) => "filter=" + filter)
-      .join("&");
-    const separator = url.includes("?") ? "&" : "?";
-    const newURL = `${url}${separator}${filterString}`;
-
-    return newURL;
-  };
 
   // delay api call until the last action
   const debounceSearchApiCall = (searchTerm: string) => {
@@ -93,55 +59,108 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     // Set a new timeout to execute the search API call after the delay time has elapsed
     timeoutId = setTimeout(() => {
       // Make the search API call with the given search term
-      searchEvents(searchTerm);
+      searchAndFilterEvents(searchTerm);
     }, DELAY_TIME);
   };
 
-  const searchEvents = async (searchTerm: string) => {
+  const searchAndFilterEvents = async (searchTerm: string) => {
     try {
-      const searchUrl = `http://localhost:3000/api/events?keyword=${searchTerm}`;
-      const url = appendFilterParamsToURL(searchUrl, selectedTopics);
-      const { data } = await axios.get(url);
-
-      // fetch addresses using address ID
-      const eventsWithAddresses: EventWithAllDetails[] = await Promise.all(
-        data.map(async (event: Partial<Event>) => {
-          const { data: address } = await axios.get(
-            `http://localhost:3000/api/addresses/${event?.addressId}`
-          );
-
-          return { ...event, address };
-        })
+      // console.log("passing in filters ->", {
+      //   searchTerm,
+      //   selectedTopics,
+      //   fromDate: fromDateFilter,
+      //   toDate: toDateFilter,
+      //   visibilityType: visibilityType,
+      // });
+      const data = await filterEvent(
+        searchTerm,
+        selectedTopics,
+        fromDateFilter,
+        toDateFilter,
+        visibilityType // this is used for creator events page
       );
-      setSearchAndFilterResults(eventsWithAddresses);
+
+      // console.log("search Term ->", searchString);
+      // console.log("filtered data from api ->", data);
+      // console.log(
+      //   "filtered data after frontend filter ->",
+      //   filterCreatedEvents(data)
+      // );
+      // set search and filter results
+      setSearchAndFilterResults(filterCreatedEvents(data));
     } catch (error) {
       console.error(error);
     }
   };
 
+  const hasFilters = (): boolean => {
+    return Boolean(
+      fromDateFilter ||
+        toDateFilter ||
+        visibilityType ||
+        selectedTopics.length > 0
+    );
+  };
+
+  const clearFilters = (): void => {
+    setSelectedTopics([]);
+    setFromDateFilter(undefined);
+    setToDateFilter(undefined);
+    setVisibilityType(undefined);
+  };
+
+  // checks current toggle state for created and ended and filters events accordingly
+  const filterCreatedEvents = (eventsToFilter: EventWithAllDetails[]) => {
+    if (!isCreated) {
+      return eventsToFilter.filter(
+        (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
+      );
+    } else {
+      // created events
+      return eventsToFilter.filter(
+        (event: EventWithAllDetails) => new Date(event.endDate) <= new Date()
+      );
+    }
+  };
+
+  // listens to created and ended events toggle
+  useEffect(() => {
+    if (!isCreated) {
+      clearFilters();
+      setSearchAndFilterResults(filterCreatedEvents(events));
+    } else {
+      // created events
+      clearFilters();
+      setSearchAndFilterResults(filterCreatedEvents(events));
+    }
+    // ended events
+  }, [isCreated]);
+
   // listen to filter and search changes
   useEffect(() => {
     // dont debounce on first page load
-    if (searchString !== "" || selectedTopics.length > 0) {
-      // console.log("search api called");
+    if (searchString !== "" || hasFilters()) {
       debounceSearchApiCall(searchString);
     } else {
       // using this to display events on initial page load
-      setSearchAndFilterResults(
-        events.filter(
-          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
-        )
-      );
+      setSearchAndFilterResults(filterCreatedEvents(events));
     }
 
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [searchString, selectedTopics]);
+  }, [
+    searchString,
+    selectedTopics,
+    fromDateFilter,
+    toDateFilter,
+    visibilityType,
+  ]);
 
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        <div>{!isCreated ? " created" : "ended"}</div>
         <Toaster
           position="top-center"
           toastOptions={{
@@ -168,27 +187,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               isChecked={isCreated}
               setIsChecked={setIsCreated}
             />
-            <Button
-              variant="solid"
-              size="md"
-              className="max-w-xs shadow-md"
-              onClick={async () => {
-                const data = await filterEvent(
-                  "",
-                  [],
-                  new Date("2023-02-20T00:00:00.000Z"),
-                  new Date("2023-05-26T00:00:00.000Z"),
-                  false,
-                  Number(userId),
-                  VisibilityType.DRAFT
-                );
-
-                console.log("filtered events-> ", data);
-              }}
-            >
-              <FiCalendar className="text-lg text-neutral-50" />
-              fitler
-            </Button>
             <Button variant="solid" size="md" className="max-w-xs shadow-md">
               <FiCalendar className="text-lg text-neutral-50" />
             </Button>
@@ -303,9 +301,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               variant="outlined"
               size="sm"
               className="border-0 text-red-500"
-              onClick={() => {
-                setSelectedTopics([]);
-              }}
+              onClick={clearFilters}
             >
               Clear
             </Button>
@@ -347,8 +343,8 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             <Input
               type="datetime-local"
               label="From"
-              value={""}
-              onChange={() => {}}
+              value={formatDateWithLocalTime(fromDateFilter)}
+              onChange={(e) => setFromDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -357,8 +353,8 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             <Input
               type="datetime-local"
               label="To"
-              value={""}
-              onChange={() => {}}
+              value={formatDateWithLocalTime(toDateFilter)}
+              onChange={(e) => setToDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -367,21 +363,34 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           </div>
 
           <div className="divider"></div>
-          {/* Liked */}
+
+          {/* Publish status */}
           <h3 className="text-sm font-medium text-gray-500">PUBLISH STATUS</h3>
           <div className="flex gap-2">
             <Badge
               label="Draft"
               size="lg"
-              selected={false}
-              onClick={() => {}}
+              selected={visibilityType == VisibilityType.DRAFT}
+              onClick={() => {
+                if (visibilityType === VisibilityType.DRAFT) {
+                  setVisibilityType(undefined);
+                } else {
+                  setVisibilityType(VisibilityType.DRAFT);
+                }
+              }}
               className="mt-2 h-8 min-w-fit rounded-lg"
             />
             <Badge
               label="Published"
               size="lg"
-              selected={false}
-              onClick={() => {}}
+              selected={visibilityType === VisibilityType.PUBLISHED}
+              onClick={() => {
+                if (visibilityType === VisibilityType.PUBLISHED) {
+                  setVisibilityType(undefined);
+                } else {
+                  setVisibilityType(VisibilityType.PUBLISHED);
+                }
+              }}
               className="mt-2 h-8 min-w-fit rounded-lg"
             />
           </div>

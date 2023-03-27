@@ -129,8 +129,8 @@ export default async function handler(
         tags,
         startDate,
         endDate,
-        likedEvents,
-        userId,
+        // likedEvents,
+        // userId,
         status
       );
       break;
