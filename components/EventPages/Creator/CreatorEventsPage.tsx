@@ -173,12 +173,12 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
 
-        <div className="mt-6 flex flex-wrap justify-between">
+        <div className="mt-4 flex flex-wrap justify-between sm:mt-6">
           <h2 className="text-md mt-2 font-bold sm:text-xl">Created Events</h2>
         </div>
 
         {/* dekstop filter and search */}
-        <div className="invisible mt-6 flex flex-wrap justify-between sm:visible">
+        <div className="mt-6 hidden flex-wrap justify-between sm:flex">
           <div className="flex gap-4">
             <EventWordToggle
               leftWord="Created"
@@ -186,7 +186,12 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
               isChecked={isCreated}
               setIsChecked={setIsCreated}
             />
-            <Button variant="solid" size="md" className="max-w-xs shadow-md">
+            <Button
+              href="/events/create"
+              variant="solid"
+              size="md"
+              className="max-w-xs shadow-md"
+            >
               <FiCalendar className="text-lg text-neutral-50" />
             </Button>
           </div>
@@ -217,33 +222,35 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           </div>
         </div>
         {/* mobile search and filter */}
-        <div className="mt-8 flex w-full gap-2 sm:hidden">
-          <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch className="text-gray-500" />
-            </div>
-            <input
-              className="input-outlined input input-md block w-full rounded-md pl-10"
-              type="text"
-              value={searchString}
-              placeholder="Search Communities"
-              onChange={(e) => {
-                setSearchString(e.target.value);
-              }}
-            />
-          </div>
-          <BiFilter
-            className="h-12 w-10"
-            onClick={() => setIsFilterModalOpen(true)}
-          />
+        <div className="mt-6 flex-col gap-2 sm:hidden ">
           <Button
             href="/events/create"
             variant="solid"
             size="md"
-            className="max-w-xs"
+            className="w-full"
           >
             Create Event
           </Button>
+          <div className="mt-4 flex w-full gap-2 ">
+            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <FaSearch className="text-gray-500" />
+              </div>
+              <input
+                className="input-outlined input input-md block w-full rounded-md pl-10"
+                type="text"
+                value={searchString}
+                placeholder="Search Communities"
+                onChange={(e) => {
+                  setSearchString(e.target.value);
+                }}
+              />
+            </div>
+            <BiFilter
+              className="h-12 w-10"
+              onClick={() => setIsFilterModalOpen(true)}
+            />
+          </div>
         </div>
 
         <section className="mt-6">
