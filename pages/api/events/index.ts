@@ -11,6 +11,7 @@ import {
   PublishType,
   Raffles,
   Promotion,
+  VisibilityType,
 } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
@@ -93,17 +94,19 @@ export default async function handler(
         ? parseInt(query.cursor as string)
         : undefined;
 
+      const keyword = query.keyword as string;
+
       const eventIds = query.eventIds
         ? (query.eventIds as string).split(",").map((id) => parseInt(id))
         : undefined;
 
+      const likedEvents = query.likedEvent === "true";
+
+      console.log("tags -> ", query.tags);
+
       const tags = query.tags
         ? ((query.tags as string).split(",") as CategoryType[])
         : undefined;
-
-      const locationName = query.locationName;
-      const address1 = query.address1;
-      const address = { locationName, address1 } as Partial<Address>;
 
       const startDate = query.startDate
         ? new Date(query.startDate as string)
@@ -113,19 +116,21 @@ export default async function handler(
         ? new Date(query.endDate as string)
         : undefined;
 
-      const maxAttendee = query.maxAttendee
-        ? parseInt(query.maxAttendee as string)
+      const userId = query.userId
+        ? parseInt(query.userId as string)
         : undefined;
-      const status = query.status as PublishType;
+
+      const status = query.status as string as VisibilityType;
 
       await handleGET(
         cursor,
+        keyword,
         eventIds,
         tags,
-        address,
         startDate,
         endDate,
-        maxAttendee,
+        // likedEvents,
+        // userId,
         status
       );
       break;
@@ -140,23 +145,25 @@ export default async function handler(
 
   async function handleGET(
     cursor: number | undefined,
+    keyword: string | undefined,
     eventIds: number[] | undefined,
     tags: CategoryType[] | undefined,
-    address: Partial<Address> | undefined,
     startDate: Date | undefined,
     endDate: Date | undefined,
-    maxAttendee: number | undefined,
-    status: PublishType | undefined
+    // likedEvents: boolean | undefined,
+    // userId: number | undefined,
+    status: VisibilityType | undefined
   ) {
     try {
       const events = await filterEvent(
         cursor,
+        keyword,
         eventIds,
         tags,
-        address,
         startDate,
         endDate,
-        maxAttendee,
+        // likedEvents,
+        // userId,
         status
       );
       res.status(200).json(events);

@@ -506,8 +506,14 @@
             "type": "string"
           }
         },
-        "scAddress": {
+        "eventScAddress": {
           "type": "string"
+        },
+        "digitalBadgeScAddress": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "userLikes": {
           "type": "array",
@@ -652,6 +658,12 @@
         "checkIn": {
           "type": "boolean",
           "default": false
+        },
+        "badgeUrl": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "user": {
           "$ref": "#/definitions/User"

@@ -13,6 +13,8 @@ import {
   filterAttendeeList,
   exportPDF,
   updateRaffle,
+  getEventInfo,
+  updateEventInfo,
 } from "../../../lib/api-helpers/event-api";
 import useSWR from "swr";
 import { useRouter } from "next/router";
@@ -22,8 +24,20 @@ import { toast, Toaster } from "react-hot-toast";
 import { AttendeeListType } from "../../../utils/types";
 import { BiGift } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-import { updateRafflePrize } from "../../../lib/api-helpers/user-api";
+import {
+  getUserInfo,
+  updateRafflePrize,
+} from "../../../lib/api-helpers/user-api";
 import { truncateString } from "../../../utils/text-truncate";
+import {
+  deployDigitalBadge,
+  mintDigitalBadge,
+} from "../../../lib/api-helpers/digital-badge-api";
+import {
+  getTicketInfo,
+  getUserTicketInfo,
+  updateUserTicket,
+} from "../../../lib/api-helpers/ticket-api";
 
 export enum CheckInStatus {
   INITIAL,
@@ -52,11 +66,11 @@ const AttendeesPage = () => {
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState(false);
   const [currentPrizeSelection, setCurrentPrizeSelection] =
     useState<prizeSelection | null>(null);
-
   const [isValid, setIsValid] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [attendees, setAttendees] = useState<AttendeeListType[]>([]);
   const [selectedOption, setSelectedOption] = useState(null);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const {
     data: fetchedAttendees,
@@ -126,12 +140,18 @@ const AttendeesPage = () => {
       console.log("scan result ->", scanResult);
       const idList = scanResult.split(",");
       const [eventId, ticketId, userId] = idList;
+
+      // update userTicket check in status in db
       const res = await checkIn(
         Number(eventId),
         Number(ticketId),
         Number(userId)
       );
       setIsValid(true);
+
+      // mint badge to user
+      await mintBadge(Number(eventId), Number(ticketId), Number(userId));
+
       toast.success("Check-in Success!", { duration: 1000 });
       setTimeout(() => {
         mutate((data: AttendeeListType[]) => {
@@ -164,13 +184,101 @@ const AttendeesPage = () => {
     }
   };
 
+  const mintBadge = async (
+    eventId: number,
+    ticketId: number,
+    userId: number
+  ) => {
+    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
+      eventId
+    );
+    const ticketInfo = await getTicketInfo(ticketId);
+    const ticketCategory = ticketInfo.name;
+    console.log("ticketInfo ..", ticketInfo);
+    const userInfo = await getUserInfo(userId);
+    const userWallet = userInfo.walletAddress;
+    console.log("userWallet ->", userWallet);
+    const digitalBadgeUri = await mintDigitalBadge(
+      eventInfo,
+      ticketCategory,
+      userWallet
+    );
+    console.log("minted digital badge uri ->", digitalBadgeUri);
+
+    const userTicketInfo = await getUserTicketInfo(
+      ticketInfo.ticketId,
+      userInfo.userId
+    );
+
+    console.log("user ticket info ->", userTicketInfo);
+
+    const updatedUserTicketInfo = {
+      ...userTicketInfo,
+      badgeUrl: digitalBadgeUri,
+    };
+
+    const updatedUserTicketResponse = await updateUserTicket(
+      ticketInfo.ticketId,
+      userInfo.userId,
+      updatedUserTicketInfo
+    );
+
+    console.log("updated user ticket response ->", updatedUserTicketResponse);
+  };
+
+  const deployDigitalBadgeContract = async () => {
+    const { userLikes, tickets, address, ...eventInfo } = await getEventInfo(
+      Number(eventId)
+    );
+    const categories: any[] = [];
+    console.log(eventInfo);
+
+    tickets.map((event: any) => {
+      categories.push(event.name);
+    });
+    console.log("categories ->", categories);
+
+    const contractAddress = await deployDigitalBadge(
+      categories,
+      eventInfo.eventName,
+      eventInfo.eventName
+    );
+
+    const updatedEventInfo = {
+      ...eventInfo,
+      digitalBadgeScAddress: contractAddress,
+    };
+
+    const updatedEventResponse = await updateEventInfo(
+      Number(eventId),
+      updatedEventInfo
+    );
+    console.log("updated event response ->", updatedEventResponse);
+  };
+
   const handleActivateRaffle = async () => {
     const raffles = fetchedAttendees[0].ticket.event.raffles; // raffle object from db
+
+    // show different error messages
+    if (!isRaffleEnabled()) {
+      toast.error("Please enable raffle first");
+      return;
+    }
     // event has a raffle and raffle is enabled
     if (raffles.length !== 0 && raffles[0].isEnabled) {
+      setLoading(true);
       const updatedRaffle = { ...raffles[0], isActivated: true };
-      console.log("posting raffle object -> ", updatedRaffle);
-      await updateRaffle(raffles[0].raffleId, updatedRaffle);
+      await toast.promise(updateRaffle(raffles[0].raffleId, updatedRaffle), {
+        loading: "Activating Raffle...",
+        success: "Raffle Activated!",
+        error: "Error Activating Raffle",
+      });
+      // deploy digital badge contract
+      await toast.promise(deployDigitalBadgeContract(), {
+        loading: "Deploying Digital Badge Contract...",
+        success: "Digital Badge Contract Deployed!",
+        error: "Error Deploying Digital Badge Contract",
+      });
 
       mutate((data: AttendeeListType[]) =>
         data.map(
@@ -178,38 +286,40 @@ const AttendeesPage = () => {
             index === 0 && attendee.ticket.event.raffles[0]?.isActivated
         )
       );
-      toast.success("Raffle activated!");
-    } else {
-      // show different error messages
-      if (!isRaffleEnabled()) {
-        toast.error("Please enable raffle first");
-      } else {
-        toast.error("Failed to activate Raffle...");
-      }
+      setLoading(false);
     }
   };
 
   const handleVerify = async () => {
     if (currentPrizeSelection?.rafflePrizeUserData) {
-      console.log("passing this obj -> ", {
-        rafflePrizeUserId:
+      // console.log("passing this obj -> ", {
+      //   rafflePrizeUserId:
+      //     currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+      //   rafflePrizeId:
+      //     currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
+      //   isClaimed: true,
+      //   userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
+      // });
+
+      const res = await toast.promise(
+        updateRafflePrize(
           currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
-        rafflePrizeId:
-          currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
-        isClaimed: true,
-        userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
-      });
-      const res = await updateRafflePrize(
-        currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+          {
+            rafflePrizeUserId:
+              currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
+            rafflePrizeId:
+              currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
+            isClaimed: true,
+            userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
+          }
+        ),
         {
-          rafflePrizeUserId:
-            currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
-          rafflePrizeId:
-            currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
-          isClaimed: true,
-          userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
+          loading: "Verifying Prize Claim...",
+          success: "Prize Claim Verified!",
+          error: "Error Verifying Prize Claim",
         }
       );
+
       console.log("res ->", res);
       mutate((data: AttendeeListType[]) => {
         data.map((attendee) =>
@@ -218,12 +328,8 @@ const AttendeesPage = () => {
             : attendee
         );
       });
-
-      toast.success("Verified!");
-    } else {
-      toast.error("Failed to verify prize claim");
+      setIsPrizeModalOpen(false);
     }
-    setIsPrizeModalOpen(false);
   };
 
   const isRaffleActivated = (): boolean | undefined => {
@@ -276,15 +382,15 @@ const AttendeesPage = () => {
           <div className="flex justify-between">
             <div className="flex gap-4">
               <Button
-                variant="outlined"
+                variant="solid"
                 size="md"
                 className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
                 onClick={handleActivateRaffle}
-                disabled={isRaffleActivated()}
+                disabled={
+                  isRaffleActivated() || loading || attendees.length === 0
+                }
               >
-                {!isRaffleActivated()
-                  ? "Activate Digital Raffle"
-                  : "Raffle Activated"}
+                {!isRaffleActivated() ? "Start Event" : "Event Started"}
               </Button>
             </div>
             <div className="flex gap-4">
@@ -305,7 +411,7 @@ const AttendeesPage = () => {
               <select
                 value={selectedOption ?? ""}
                 onChange={handleChange}
-                className="btn-md btn flex gap-x-2 rounded-md border-white/0 bg-blue-600 normal-case text-white hover:border-white/0 hover:bg-blue-900"
+                className="btn-outline btn flex gap-x-2 rounded-md normal-case text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600"
               >
                 <option value="" hidden>
                   Export Table

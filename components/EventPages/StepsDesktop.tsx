@@ -61,18 +61,18 @@ const StepsDesktop = ({ steps, setSteps, isEdit }: StepsDesktopProps) => {
             }}
           >
             {step.status === StepStatus.COMPLETE ? (
-              <a className="group flex flex-col border-indigo-600 py-2 pl-4 hover:border-indigo-800 sm:border-l-0 sm:border-t-4 sm:pl-0 sm:pt-4 sm:pb-0">
-                <span className="text-sm font-medium text-indigo-600 group-hover:text-indigo-800">
+              <a className="group flex flex-col border-blue-600 py-2 pl-4 hover:border-blue-800 sm:border-l-0 sm:border-t-4 sm:pl-0 sm:pt-4 sm:pb-0">
+                <span className="text-sm font-medium text-blue-600 group-hover:text-blue-800">
                   {step.id}
                 </span>
                 <span className="text-sm font-medium">{step.name}</span>
               </a>
             ) : step.status === StepStatus.CURRENT ? (
               <a
-                className="flex flex-col border-indigo-600 py-2 pl-4 sm:border-l-0 sm:border-t-4 sm:pl-0 sm:pt-4 sm:pb-0"
+                className="flex flex-col border-blue-600 py-2 pl-4 sm:border-l-0 sm:border-t-4 sm:pl-0 sm:pt-4 sm:pb-0"
                 aria-current="step"
               >
-                <span className="text-sm font-medium text-indigo-600">
+                <span className="text-sm font-medium text-blue-600">
                   {step.id}
                 </span>
                 <span className="text-sm font-medium">{step.name}</span>

@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, Ticket, User } from "@prisma/client";
+import { Prisma, PrismaClient, Ticket, User, UserTicket } from "@prisma/client";
 import { generateUniqueUsername } from "../../utils/user-util";
 import { filterEvent, searchEventContainingTickets } from "./event-prisma";
 
@@ -45,6 +45,39 @@ export async function saveUserTicket(
           userId: userId,
         },
       },
+    },
+  });
+}
+
+export async function updateUserTicket(
+  ticketId: number,
+  userId: number,
+  userTicket: UserTicket
+) {
+  console.log("ticketId: ", ticketId);
+  console.log("userId: ", userId);
+  console.log("BE userTicket: ", userTicket);
+  return prisma.userTicket.update({
+    where: {
+      userId_ticketId: {
+        userId: userId,
+        ticketId: ticketId,
+      },
+    },
+    data: {
+      badgeUrl: userTicket.badgeUrl,
+    },
+  });
+}
+
+export async function getUserTicketInfo(
+  ticketId: number | undefined,
+  userId: number | undefined
+) {
+  return prisma.userTicket.findFirst({
+    where: {
+      ticketId: ticketId,
+      userId: userId,
     },
   });
 }

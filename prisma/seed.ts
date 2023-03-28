@@ -23,19 +23,18 @@ import { getRandomInt } from "../utils/math-util";
 const prisma = new PrismaClient();
 
 async function generateCommunity() {
-
-  const analyticsTimestamps: any[][] = [[],[],[]];
+  const analyticsTimestamps: any[][] = [[], [], []];
   for (let arr of analyticsTimestamps) {
     let members = 10;
     let premiumMembers = 5;
     let clicks = 20;
     for (let i = 7; i > 0; i--) {
       arr.push({
-        members: getRandomInt(members, members += 10),
-        premiumMembers: getRandomInt(premiumMembers, premiumMembers += 5),
+        members: getRandomInt(members, (members += 10)),
+        premiumMembers: getRandomInt(premiumMembers, (premiumMembers += 5)),
         clicks: getRandomInt(0, clicks),
         date: todayMinus(i),
-      })
+      });
     }
   }
 
@@ -60,9 +59,9 @@ async function generateCommunity() {
         },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[0]
+        create: analyticsTimestamps[0],
       },
-      clicks: 200
+      clicks: 200,
     },
     {
       name: "Cosplay Kawaii",
@@ -79,9 +78,9 @@ async function generateCommunity() {
         },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[1]
+        create: analyticsTimestamps[1],
       },
-      clicks: 200
+      clicks: 200,
     },
     {
       name: "Travley",
@@ -101,9 +100,9 @@ async function generateCommunity() {
         connect: [{ userId: 1 }, { userId: 2 }],
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[2]
+        create: analyticsTimestamps[2],
       },
-      clicks: 200
+      clicks: 200,
     },
   ];
 
@@ -115,21 +114,20 @@ async function generateCommunity() {
 }
 
 async function generateChannel() {
-  
-  const analyticsTimestamps: any[][] = [[],[],[]];
+  const analyticsTimestamps: any[][] = [[], [], []];
   for (let arr of analyticsTimestamps) {
     let likes = 20;
     let comments = 2;
 
     for (let i = 7; i > 0; i--) {
-      likes = getRandomInt(likes, likes += 10);
-      comments = getRandomInt(comments, comments += 5),
-      arr.push({
-        likes: likes,
-        comments: comments,
-        engagement: (likes + comments) / 500,
-        date: todayMinus(i)
-      })
+      likes = getRandomInt(likes, (likes += 10));
+      (comments = getRandomInt(comments, (comments += 5))),
+        arr.push({
+          likes: likes,
+          comments: comments,
+          engagement: (likes + comments) / 500,
+          date: todayMinus(i),
+        });
     }
   }
   const channels = [
@@ -147,8 +145,8 @@ async function generateChannel() {
       },
       channelType: ChannelType.REGULAR,
       analyticsTimestamps: {
-        create: analyticsTimestamps[0]
-      }
+        create: analyticsTimestamps[0],
+      },
     },
     {
       name: "Home",
@@ -159,8 +157,8 @@ async function generateChannel() {
       },
       channelType: ChannelType.REGULAR,
       analyticsTimestamps: {
-        create: analyticsTimestamps[1]
-      }
+        create: analyticsTimestamps[1],
+      },
     },
     {
       name: "Home",
@@ -174,8 +172,8 @@ async function generateChannel() {
         connect: [{ userId: 1 }, { userId: 2 }],
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[2]
-      }
+        create: analyticsTimestamps[2],
+      },
     },
   ];
 
@@ -187,7 +185,6 @@ async function generateChannel() {
 }
 
 async function generatePost() {
-
   const posts = [
     {
       content: "Have yall played in the Lotus map? There are 3 ways of entry!!",
@@ -401,18 +398,17 @@ async function generateUser() {
 }
 
 async function generateCollection() {
-
-  const analyticsTimestamps: any[][] = [[],[],[]];
+  const analyticsTimestamps: any[][] = [[], [], []];
   for (let arr of analyticsTimestamps) {
     for (let i = 7; i > 0; i--) {
-      const merchSold = getRandomInt(0, 20)
-      const revenue = merchSold * 3
+      const merchSold = getRandomInt(0, 20);
+      const revenue = merchSold * 3;
       arr.push({
         merchSold: merchSold,
         revenue: revenue,
         clicks: getRandomInt(0, 10),
-        date: todayMinus(i)
-      })
+        date: todayMinus(i),
+      });
     }
   }
   const collections = [
@@ -442,9 +438,9 @@ async function generateCollection() {
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
       analyticsTimestamps: {
-        create: analyticsTimestamps[0]
+        create: analyticsTimestamps[0],
       },
-      clicks: 100
+      clicks: 100,
     },
     {
       collectionName: "Cosplay Collection",
@@ -471,10 +467,10 @@ async function generateCollection() {
         },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[1]
+        create: analyticsTimestamps[1],
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
-      clicks: 100
+      clicks: 100,
     },
     {
       collectionName: "Travel Picture Collection",
@@ -501,10 +497,10 @@ async function generateCollection() {
         },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[2]
+        create: analyticsTimestamps[2],
       },
       scAddress: "0x926796E0113DBf4a6964F2015b84452D43697B76",
-      clicks: 100
+      clicks: 100,
     },
   ];
 
@@ -515,21 +511,20 @@ async function generateCollection() {
   }
 }
 async function generateEvent() {
-
-  const analyticsTimestamps: any[][] = [[],[],[]];
+  const analyticsTimestamps: any[][] = [[], [], []];
   for (let arr of analyticsTimestamps) {
     let likes = 10;
     for (let i = 7; i > 0; i--) {
-      const ticketsSold = getRandomInt(0, 20)
+      const ticketsSold = getRandomInt(0, 20);
       const revenue = ticketsSold * 5;
       likes += 10;
       arr.push({
         ticketsSold: ticketsSold,
         revenue: revenue,
         clicks: getRandomInt(0, 10),
-        likes: getRandomInt(likes, likes += 10),
-        date: todayMinus(i)
-      })
+        likes: getRandomInt(likes, (likes += 10)),
+        date: todayMinus(i),
+      });
     }
   }
   const events = [
@@ -538,7 +533,7 @@ async function generateEvent() {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[0]
+        create: analyticsTimestamps[0],
       },
       eventName: "Live Valorant Session with Josh",
       category: CategoryType.ENTERTAINMENT,
@@ -610,7 +605,7 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-profile.jpeg",
-      scAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
+      eventScAddress: "0x93F4B7386b29760c6586b5Ccb522C4E87C51c117",
       raffles: {
         create: [
           {
@@ -625,14 +620,14 @@ async function generateEvent() {
           },
         ],
       },
-      clicks: 100
+      clicks: 100,
     },
     {
       creator: {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[1]
+        create: analyticsTimestamps[1],
       },
       eventName: "Malanie Cosplaying with You",
       category: CategoryType.ENTERTAINMENT,
@@ -694,15 +689,15 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-profile.jpeg",
-      scAddress: "0xA4c5d3D268b749f0417f0767b4903545F02194b0",
-      clicks: 100
+      eventScAddress: "0xA4c5d3D268b749f0417f0767b4903545F02194b0",
+      clicks: 100,
     },
     {
       creator: {
         connect: { userId: 4 },
       },
       analyticsTimestamps: {
-        create: analyticsTimestamps[2]
+        create: analyticsTimestamps[2],
       },
       eventName:
         "Planning to travel soon? Learn more about Travely that will help solve your itinerary planning troubles and find the best recommendations.",
@@ -765,8 +760,8 @@ async function generateEvent() {
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
-      scAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
-      clicks: 100
+      eventScAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
+      clicks: 100,
     },
   ];
 

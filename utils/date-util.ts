@@ -1,14 +1,27 @@
 import { format, isValid, set, sub } from "date-fns"
 
 export const formatDate = (date: Date): string | undefined => {
-    return isValid(date)
-        ? format(date, "E, MMM d, HH:mm")
-        : format(new Date(date.toString()), "E, MMM d, HH:mm")
+  return isValid(date)
+    ? format(date, "E, MMM d, HH:mm")
+    : format(new Date(date.toString()), "E, MMM d, HH:mm")
 }
 
 export const formatDateForInput = (date: Date): string | undefined => {
-    return isValid(date) ? format(date, 'yyyy-MM-dd\'T\'HH:mm') : format(new Date(date), 'yyyy-MM-dd\'T\'HH:mm')
+  return isValid(date) ? format(date, 'yyyy-MM-dd\'T\'HH:mm') : format(new Date(date), 'yyyy-MM-dd\'T\'HH:mm')
 }
+
+export const formatDateWithLocalTime = (date: Date | undefined): string => {
+  if (!date) {
+    return "";
+  }
+  if (!isValid(date)) {
+    // Return an error message if the date is not valid
+    return "Invalid date";
+  }
+  // Format the date with local timezone
+  const formattedDate = format(date, "yyyy-MM-dd'T'HH:mm");
+  return formattedDate;
+};
 
 export function lastWeek() {
   const today = new Date();

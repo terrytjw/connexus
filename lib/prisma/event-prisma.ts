@@ -8,13 +8,14 @@ import {
   Address,
   Raffles,
   Promotion,
+  VisibilityType,
 } from "@prisma/client";
 import { AttendeeListType } from "../../utils/types";
 import { EventCreation } from "../../pages/api/events";
 import { getTicketsOwned } from "../api-helpers/ticket-api";
 import { filterTickets } from "./ticket-prisma";
 
-export interface EventPartialType extends Partial<Event> {}
+export interface EventPartialType extends Partial<Event> { }
 
 const prisma = new PrismaClient();
 
@@ -73,14 +74,28 @@ export async function createEventWithTickets(
 
 export async function filterEvent(
   cursor: number | undefined,
+  keyword: string | undefined,
   eventIds: number[] | undefined,
   tags: CategoryType[] | undefined,
-  address: Partial<Address> | undefined,
   startDate: Date | undefined,
   endDate: Date | undefined,
-  maxAttendee: number | undefined,
-  status: PublishType | undefined
+  // likedEvents: boolean | undefined,
+  // userId: number | undefined,
+  status: VisibilityType | undefined
 ) {
+  console.log(
+    "filterEvent",
+    cursor,
+    keyword,
+    eventIds,
+    tags,
+    startDate,
+    endDate,
+    // likedEvents,
+    // userId,
+    status
+  );
+
   return prisma.event.findMany({
     include: { userLikes: true, address: true, tickets: true },
     take: 10,
@@ -90,27 +105,21 @@ export async function filterEvent(
       eventId: "asc",
     },
     where: {
+      eventName: {
+        contains: keyword,
+        mode: "insensitive",
+      },
       category: tags
         ? {
-            hasSome: tags,
-          }
+          hasSome: tags,
+        }
         : undefined,
 
       eventId: eventIds
         ? {
-            in: eventIds,
-          }
+          in: eventIds,
+        }
         : undefined,
-      address: {
-        locationName: {
-          contains: address?.locationName,
-          mode: "insensitive",
-        },
-        address1: {
-          contains: address?.address1,
-          mode: "insensitive",
-        },
-      },
       AND: [
         {
           startDate: {
@@ -123,10 +132,18 @@ export async function filterEvent(
           },
         },
       ],
-      maxAttendee: {
-        lte: maxAttendee,
-      },
-      publishType: status,
+      // userLikes: likedEvents
+      //   ? {
+      //       some: {
+      //         userId: userId,
+      //       },
+      //     }
+      //   : {
+      //       none: {
+      //         userId: userId,
+      //       },
+      //     },
+      visibilityType: status,
     },
   });
 }
@@ -284,7 +301,12 @@ export async function retrieveTrendingEvents() {
         _count: "desc",
       },
     },
-    take: 1,
+    take: 3,
+    where: {
+      endDate: {
+        gte: new Date(),
+      },
+    },
     include: { userLikes: true, address: true },
   });
 }
