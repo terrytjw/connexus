@@ -84,12 +84,12 @@ const EventsTable = ({
                 {getTicketsSold(data.tickets ?? [])}
               </td>
               <td className="text-gray-700">
-                {getTicketsRevenue(data.tickets ?? [])}
+                ${getTicketsRevenue(data.tickets ?? [])?.toFixed(2)}
               </td>
 
               <td className="text-gray-700">
                 {data?.category.length === 0 && (
-                  <p className="text-gray-500">No Topics Selected</p>
+                  <p className="text-gray-500">No Tags Selected</p>
                 )}
                 {data?.category.map((label: CategoryType, index: number) => (
                   <Badge
@@ -104,9 +104,9 @@ const EventsTable = ({
               <td className=" text-sm font-bold text-red-400">
                 {data?.visibilityType}
               </td>
-              {!eventEnded(data) && (
-                <th className=" text-gray-700">
-                  {/* note: these buttons display depending on tab a user is on */}
+              <th className=" text-gray-700">
+                {/* note: these buttons display depending on tab a user is on */}
+                {!eventEnded(data) && (
                   <div className="flex flex-row">
                     <Link
                       href={`/events/attendees/${data.eventId}`}
@@ -151,8 +151,8 @@ const EventsTable = ({
                       <FaTrashAlt className="text-lg text-red-400" />
                     </button>
                   </div>
-                </th>
-              )}
+                )}
+              </th>
             </tr>
           ))}
         </tbody>

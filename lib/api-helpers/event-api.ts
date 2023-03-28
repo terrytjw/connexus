@@ -5,7 +5,14 @@ import {
   USER_TICKET_ENDPOINT,
   smartContract,
 } from "./../constant";
-import { Collection, Event, Raffles, User } from "@prisma/client";
+import {
+  CategoryType,
+  Collection,
+  Event,
+  Raffles,
+  User,
+  VisibilityType,
+} from "@prisma/client";
 import { API_URL, COLLECTION_ENDPOINT, USER_ENDPOINT } from "../constant";
 import axios from "axios";
 import { ethers } from "ethers";
@@ -88,7 +95,7 @@ export async function checkIn(
 ) {
   const eventResponse = (await getEventInfo(eventId)) as Event;
   const eventContract = new ethers.Contract(
-    eventResponse.scAddress,
+    eventResponse.eventScAddress,
     abi,
     signer
   );
@@ -150,5 +157,32 @@ export async function updateRaffle(raffleId: number, raffles: Raffles) {
 export async function registerEventClick(eventId: number) {
   const url = `${API_URL}/${EVENT_ENDPOINT}/${eventId}/click`;
   const response = (await axios.post(url)).data;
+  return response;
+}
+
+export async function filterEvent(
+  keyword: string | undefined,
+  categories: CategoryType[],
+  startDate: Date | undefined,
+  endDate: Date | undefined,
+  // likedEvent: boolean = false,
+  // userId: number | undefined,
+  status: VisibilityType | undefined
+) {
+  const baseUrl = `${API_URL}/${EVENT_ENDPOINT}`;
+
+  const response = (
+    await axios.get(baseUrl, {
+      params: {
+        keyword,
+        tags: categories.toString(),
+        startDate,
+        endDate,
+        // likedEvent,
+        // userId,
+        status,
+      },
+    })
+  ).data;
   return response;
 }

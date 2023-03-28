@@ -155,7 +155,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       "http://localhost:3000/api/events/" + event_id.toString()
     );
     const eventInfo = response_event.data as EventWithAllDetails;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const { eventScAddress, ticketURIs, tickets } = eventInfo;
     console.log("db eventInfo -> ", eventInfo);
 
     //assign new tickets into ticket categories
@@ -270,7 +270,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
       category_price.push(input);
     }
 
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
+    const event_contract = new ethers.Contract(eventScAddress, abi, signer);
     const category_info = await event_contract.changeCategories(
       categories,
       category_price,
@@ -299,7 +299,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
         let category_chosen = new_user_ticket_category;
         console.log(category_chosen);
-        const event_contract = new ethers.Contract(scAddress, abi, signer);
+        const event_contract = new ethers.Contract(eventScAddress, abi, signer);
 
         let response_pinning = await mintOnChain(
           updated_event,

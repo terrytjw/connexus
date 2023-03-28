@@ -135,7 +135,7 @@ const EventsPage = (props: any) => {
       visibilityType: VisibilityType.DRAFT,
       privacyType: PrivacyType.PUBLIC,
       publishStartDate: new Date(),
-      scAddress: event_contract.address,
+      eventScAddress: event_contract.address,
       ticketURIs: [],
       publishType: "NOW",
       tickets: ticket_categories,
@@ -209,7 +209,7 @@ const EventsPage = (props: any) => {
       "http://localhost:3000/api/events/" + eventId.toString()
     );
     const eventInfo = response.data as EventWithTickets;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const { eventScAddress, ticketURIs, tickets } = eventInfo;
 
     //stop minting if paused
     for (let j = 0; j < tickets.length; j++) {
@@ -238,8 +238,8 @@ const EventsPage = (props: any) => {
     if (ipfsHash == "") return;
     const link = "https://gateway.pinata.cloud/ipfs/" + ipfsHash;
     console.log("IPFS Hash Link  : ", link);
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
-    console.log(scAddress);
+    const event_contract = new ethers.Contract(eventScAddress, abi, signer);
+    console.log(eventScAddress);
     const category_info = await event_contract.getCategoryInformation(
       ticket_category
     );
@@ -337,7 +337,7 @@ const EventsPage = (props: any) => {
       "http://localhost:3000/api/events/" + event_id.toString()
     );
     const eventInfo = response_event.data as EventWithTickets;
-    const { scAddress, ticketURIs, tickets } = eventInfo;
+    const { eventScAddress, ticketURIs, tickets } = eventInfo;
     console.log(eventInfo);
 
     //updating ticket categories
@@ -459,7 +459,7 @@ const EventsPage = (props: any) => {
       //rounds off to 1 matic bcos bigint > float
     }
 
-    const event_contract = new ethers.Contract(scAddress, abi, signer);
+    const event_contract = new ethers.Contract(eventScAddress, abi, signer);
     const category_info = await event_contract.changeCategories(
       categories,
       category_price,
@@ -503,7 +503,7 @@ const EventsPage = (props: any) => {
 
         let category_chosen = new_user_ticket_category;
         console.log(category_chosen);
-        const event_contract = new ethers.Contract(scAddress, abi, signer);
+        const event_contract = new ethers.Contract(eventScAddress, abi, signer);
         let response_pinning = await mintOnChain(
           updated_event,
           category_chosen

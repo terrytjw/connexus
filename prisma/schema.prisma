@@ -106,32 +106,33 @@ model Comment {
 }
 
 model Event {
-  eventId             Int                       @id @default(autoincrement())
-  eventName           String
-  category            CategoryType[]
-  address             Address                   @relation(fields: [addressId], references: [addressId])
-  addressId           Int
-  startDate           DateTime                  @default(now())
-  endDate             DateTime                  @default(now())
-  summary             String?
-  description         String?
-  visibilityType      VisibilityType
-  privacyType         PrivacyType
-  eventPic            String?
-  bannerPic           String?
-  maxAttendee         Int                       @default(0)
-  publishType         PublishType
-  publishStartDate    DateTime                  @default(now())
-  tickets             Ticket[]
-  ticketURIs          String[]
-  scAddress           String
-  userLikes           User[]                    @relation("eventLikes")
-  creator             User                      @relation(fields: [creatorId], references: [userId], name: "createdEvents")
-  creatorId           Int
-  analyticsTimestamps EventAnalyticsTimestamp[]
-  raffles             Raffles[]
-  clicks              Int                       @default(0)
-  promotion           Promotion[]
+  eventId               Int                       @id @default(autoincrement())
+  eventName             String
+  category              CategoryType[]
+  address               Address                   @relation(fields: [addressId], references: [addressId])
+  addressId             Int
+  startDate             DateTime                  @default(now())
+  endDate               DateTime                  @default(now())
+  summary               String?
+  description           String?
+  visibilityType        VisibilityType
+  privacyType           PrivacyType
+  eventPic              String?
+  bannerPic             String?
+  maxAttendee           Int                       @default(0)
+  publishType           PublishType
+  publishStartDate      DateTime                  @default(now())
+  tickets               Ticket[]
+  ticketURIs            String[]
+  eventScAddress        String
+  digitalBadgeScAddress String?
+  userLikes             User[]                    @relation("eventLikes")
+  creator               User                      @relation(fields: [creatorId], references: [userId], name: "createdEvents")
+  creatorId             Int
+  analyticsTimestamps   EventAnalyticsTimestamp[]
+  raffles               Raffles[]
+  clicks                Int                       @default(0)
+  promotion             Promotion[]
 }
 
 enum PublishType {
@@ -172,9 +173,9 @@ model UserTicket {
   userId       Int
   ticketId     Int
   checkIn      Boolean @default(false)
-
-  user   User   @relation(fields: [userId], references: [userId])
-  ticket Ticket @relation(fields: [ticketId], references: [ticketId])
+  badgeUrl     String?
+  user         User    @relation(fields: [userId], references: [userId])
+  ticket       Ticket  @relation(fields: [ticketId], references: [ticketId])
 
   @@unique([userId, ticketId])
 }
