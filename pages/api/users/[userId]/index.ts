@@ -50,6 +50,7 @@ export type UserWithAllInfo = Prisma.UserGetPayload<{
     };
     bankAccount: true;
     transactions: true;
+    userTicket: true;
   };
 }>;
 
@@ -203,6 +204,7 @@ export default async function handler(
         bankAccount,
         transactions,
         createdCollections,
+        userTicket,
         ...userInfo
       } = userWithAllInfo;
 
@@ -223,17 +225,17 @@ export default async function handler(
       const updatedUserInfo = {
         ...userInfo,
 
-        createdCommunities: {
-          connect: [...createdCommunities],
-        },
+        // createdCommunities: {
+        //   connect: [...createdCommunities],
+        // },
 
-        joinedCommunities: {
-          connect: [...joinedCommunities],
-        },
+        // joinedCommunities: {
+        //   connect: [...joinedCommunities],
+        // },
 
-        joinedChannels: {
-          connect: [...joinedChannels],
-        },
+        // joinedChannels: {
+        //   connect: [...joinedChannels],
+        // },
 
         tickets: {
           connect: [...ticketIdArray],

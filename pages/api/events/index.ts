@@ -191,16 +191,20 @@ export default async function handler(
         return ticketInfo;
       });
 
-      const updatedPromo = await Promise.all(
-        promotion.map(async (promo: Promotion) => {
-          const { eventId, ...promoInfo } = promo;
+      let updatedPromo;
 
-          const stripePromoId = await createPromo(promoInfo.promotionValue);
-          promoInfo.stripePromotionId = stripePromoId as string;
+      if (promotion) {
+        updatedPromo = await Promise.all(
+          promotion.map(async (promo: Promotion) => {
+            const { eventId, ...promoInfo } = promo;
 
-          return promoInfo;
-        })
-      );
+            const stripePromoId = await createPromo(promoInfo.promotionValue);
+            promoInfo.stripePromotionId = stripePromoId as string;
+
+            return promoInfo;
+          })
+        );
+      }
 
       let eventImageUrl = "";
       let eventBannerPictureUrl = "";

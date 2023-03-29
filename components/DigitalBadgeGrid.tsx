@@ -1,12 +1,16 @@
-import { Merchandise } from "@prisma/client";
+import { Event, Merchandise, UserTicket } from "@prisma/client";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Button from "./Button";
-import { MerchandiseWithCollectionName } from "../utils/types";
+import {
+  MerchandiseWithCollectionName,
+  TicketWithEvent,
+  UserWithTicketsAndEvent,
+} from "../utils/types";
 
 type DigitalBadgeGridItemProps = {
-  item: any;
+  item: UserWithTicketsAndEvent;
   collectedTab: boolean;
 };
 
@@ -15,6 +19,9 @@ const DigitalBadgeGridItem = ({
   collectedTab,
 }: DigitalBadgeGridItemProps) => {
   if (!item) return <Skeleton height={350} />;
+
+  const eventName = item.ticket.event.eventName;
+  const eventDescription = item.ticket.event.description;
 
   return (
     <div className="group rounded-lg p-2 text-sm hover:bg-gray-200">
@@ -43,20 +50,20 @@ const DigitalBadgeGridItem = ({
           ) : null}
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">Name of event</h3>
+      <h3 className="mt-4 font-medium text-gray-900">{eventName}</h3>
       {/* {collectedTab && "collection" in item ? (
         <p className="mt-2 text-sm text-gray-500">
           From{" "}
           {(item as MerchandiseWithCollectionName).collection.collectionName}
         </p>
       ) : null} */}
-      <p className="mt-2 text-sm text-gray-500">Date Collected</p>
+      <p className="mt-2 text-sm text-gray-500">{eventDescription}</p>
     </div>
   );
 };
 
 type DigitalBadgeGridProps = {
-  data: MerchandiseWithCollectionName[] | Merchandise[];
+  data: UserWithTicketsAndEvent[];
   collectedTab: boolean;
 };
 const DigitalBadgeGrid = ({ data, collectedTab }: DigitalBadgeGridProps) => {
@@ -71,7 +78,7 @@ const DigitalBadgeGrid = ({ data, collectedTab }: DigitalBadgeGridProps) => {
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
       {data.map((item) => (
         <DigitalBadgeGridItem
-          key={item.merchId} // todo: replace with digital badge id
+          key={item.userTicketId} // todo: replace with digital badge id
           item={item}
           collectedTab={collectedTab}
         />

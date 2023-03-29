@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { UserWithAllInfo } from "../../pages/api/users/[userId]";
-import { MerchandiseWithCollectionName } from "../../utils/types";
+import {
+  MerchandiseWithCollectionName,
+  UserWithTicketsAndEvent,
+} from "../../utils/types";
 import CollectibleGrid from "../CollectibleGrid";
 import DigitalBadgeGrid from "../DigitalBadgeGrid";
 import WordToggle from "../Toggle/WordToggle";
@@ -12,7 +15,7 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
   const [isFree, setIsFree] = useState(false);
 
   // filter by price
-  const freeMerch = userData.merchandise.filter((item) => item.price === 0);
+  const userTicketData = userData.userTicket as UserWithTicketsAndEvent;
   const paidMerch = userData.merchandise.filter((item) => item.price !== 0);
 
   return (
@@ -25,19 +28,9 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
       />
       <div className="mt-12">
         {isFree ? (
-          <DigitalBadgeGrid
-            data={
-              isFree
-                ? [{ merchId: 12323 } as MerchandiseWithCollectionName] // todo: replace with actual data
-                : paidMerch
-            }
-            collectedTab={true}
-          />
+          <DigitalBadgeGrid data={userTicketData} collectedTab={true} />
         ) : (
-          <CollectibleGrid
-            data={isFree ? freeMerch : paidMerch}
-            collectedTab={true}
-          />
+          <CollectibleGrid data={paidMerch} collectedTab={true} />
         )}
       </div>
     </main>

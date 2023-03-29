@@ -14,6 +14,7 @@ import { EventWithAllDetails } from "../../utils/types";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { User } from "@prisma/client";
+import { truncateString } from "../../utils/text-truncate";
 
 type CollectionGridItemProps = {
   isListed?: boolean;
@@ -145,7 +146,7 @@ const CollectionGridItem = ({
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          {item.eventName}
+          {truncateString(item.eventName, 20)}
         </h3>
         <p className="mt-2 text-base font-semibold text-gray-500">
           {formatDate(item.startDate)} - {formatDate(item.endDate)}

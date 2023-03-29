@@ -69,6 +69,8 @@ export type UserWithTickets = Prisma.UserGetPayload<{
   include: { tickets: true };
 }>;
 
+export type UserWithTicketsAndEvent = UserTicket & { ticket: TicketWithEvent }
+
 export type MerchandiseWithCollectionName = Prisma.MerchandiseGetPayload<{
   include: {
     collection: { select: { collectionName: true } };

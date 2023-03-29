@@ -225,7 +225,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               </svg>
               <span className="text-xs sm:text-sm">
                 Events that you have{" "}
-                <span className="font-medium">registered</span> and{" "}
+                <span className="font-medium">registered for</span> and{" "}
                 <span className="font-medium">attended</span>.
               </span>
             </div>
@@ -269,7 +269,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             </svg>
             <span className="text-xs sm:text-sm">
               Events that you have{" "}
-              <span className="font-medium">registered</span> but{" "}
+              <span className="font-medium">registered for</span> but{" "}
               <span className="font-medium">did not attend</span>.
             </span>
           </div>
