@@ -178,8 +178,14 @@ const EventsGrid = ({
   mutateTrendingEvents,
   setSearchAndFilterResults,
 }: EventsGridProps) => {
+  if (data.length === 0)
+    return (
+      <div className=" flex h-80 items-center justify-center p-4 text-sm tracking-widest text-gray-400">
+        No events to show.
+      </div>
+    );
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8">
+    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {data.map((item) => (
         <CollectionGridItem
           isListed={isListed}

@@ -64,27 +64,45 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             </Link>
             <h2 className="text-2xl font-bold sm:text-4xl">My Tickets</h2>
           </nav>
-          <section>
-            {tickets.map((ticket: TicketWithEvent) => (
-              <div key={ticket.ticketId} className="mt-10">
-                <Link href={`/events/${ticket.eventId}`}>
-                  <h3 className="mb-4 text-xl font-semibold text-gray-500">
-                    {ticket.event.eventName}
-                  </h3>
-                </Link>
-                <TicketCard
-                  key={ticket.ticketId}
-                  ticket={ticket}
-                  isOwnedTicket={true} // render buttons
-                  setIsModalOpen={setIsModalOpen}
-                  setQrValue={setQrValue}
-                  setIsPrizeModalOpen={setIsPrizeModalOpen}
-                  setRafflePrizes={setRafflePrizes}
-                  setCurrentTicket={setCurrentTicket}
-                />
-              </div>
-            ))}
-          </section>
+
+          {tickets.length === 0 ? (
+            <div className="-mt-48 flex h-screen flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+              <span> No tickets to show. </span>{" "}
+              <span> Start by registering for an event!</span>
+              <Button
+                href="/events"
+                variant="solid"
+                size="md"
+                className="max-w-xs !tracking-normal shadow-md"
+              >
+                Browse events
+              </Button>
+            </div>
+          ) : (
+            <section>
+              {tickets.map((ticket: TicketWithEvent) => (
+                <div key={ticket.ticketId} className="mt-10">
+                  <Link href={`/events/${ticket.eventId}`}>
+                    <h3 className="mb-4 text-xl font-semibold text-gray-500">
+                      {ticket.event.eventName}
+                    </h3>
+                  </Link>
+                  <TicketCard
+                    key={ticket.ticketId}
+                    ticket={ticket}
+                    isOwnedTicket={true} // render buttons
+                    setIsModalOpen={setIsModalOpen}
+                    setQrValue={setQrValue}
+                    setIsPrizeModalOpen={setIsPrizeModalOpen}
+                    setRafflePrizes={setRafflePrizes}
+                    setCurrentTicket={setCurrentTicket}
+                  />
+                </div>
+              ))}
+            </section>
+          )}
+          {/* Tickets */}
+
           {/* QR and Digital Badge Modal */}
           <Modal
             isOpen={isModalOpen}

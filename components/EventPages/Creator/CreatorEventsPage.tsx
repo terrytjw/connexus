@@ -223,14 +223,16 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
         </div>
         {/* mobile search and filter */}
         <div className="mt-6 flex-col gap-2 sm:hidden ">
-          <Button
-            href="/events/create"
-            variant="solid"
-            size="md"
-            className="w-full"
-          >
-            Create Event
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              href="/events/create"
+              variant="solid"
+              size="md"
+              className="max-w-xs shadow-md"
+            >
+              <FiCalendar className="text-lg text-neutral-50" />
+            </Button>
+          </div>
           <div className="mt-4 flex w-full gap-2 ">
             <div className="relative w-full items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -345,7 +347,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           <div className="divider"></div>
           {/* Date Range */}
           <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
-          <div className="mt-2 flex justify-between gap-8">
+          <div className="mt-2 flex-col justify-between gap-8">
             <Input
               type="datetime-local"
               label="From"
