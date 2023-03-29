@@ -5,6 +5,7 @@ import { useState } from "react";
 import Loading from "../components/Loading";
 import { Router } from "next/router";
 import { SessionProvider } from "next-auth/react";
+import { UserRoleProvider } from "../contexts/UserRoleProvider";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   const [loading, setLoading] = useState(false);
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     // a hacky way to lengthen the loading animation
     setTimeout(() => {
       setLoading(false);
-    }, 800);
+    }, 500);
   });
 
   if (loading) {
@@ -27,7 +28,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
   return (
     <SessionProvider session={session}>
-      <Component {...pageProps} />
+      <UserRoleProvider>
+        <Component {...pageProps} />
+      </UserRoleProvider>
     </SessionProvider>
   );
 }

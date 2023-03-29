@@ -14,6 +14,7 @@ import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
 import Input from "../../Input";
+import { Toaster } from "react-hot-toast";
 
 const DELAY_TIME = 400;
 
@@ -23,7 +24,7 @@ type CreatorEventsPageProps = {
 
 const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const router = useRouter();
-  const [isCreated, setIsCreated] = useState<boolean>(true);
+  const [isCreated, setIsCreated] = useState<boolean>(false);
   const [selectedTopics, setSelectedTopics] = useState<
     string[] | CategoryType[]
   >([]);
@@ -36,6 +37,27 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     useState<boolean>(false);
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
   console.log(events);
+
+  useEffect(() => {
+    console.log("in use effect");
+    // ended events
+    if (!isCreated) {
+      console.log("in !created");
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
+        )
+      );
+    } else {
+      // created events
+      console.log("in created");
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) <= new Date()
+        )
+      );
+    }
+  }, [isCreated]);
 
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
@@ -98,9 +120,12 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       // console.log("search api called");
       debounceSearchApiCall(searchString);
     } else {
-      // using this state to display events on initial page load
-      // console.log("search api NOT called ");
-      setSearchAndFilterResults(events);
+      // using this to display events on initial page load
+      setSearchAndFilterResults(
+        events.filter(
+          (event: EventWithAllDetails) => new Date(event.endDate) > new Date()
+        )
+      );
     }
 
     return () => {
@@ -111,6 +136,16 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
         {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
 
@@ -311,14 +346,23 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
           <div className="divider"></div>
           {/* Liked */}
-          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
-          <Badge
-            label="Select Liked Events Only"
-            size="lg"
-            selected={false}
-            onClick={() => {}}
-            className="mt-2 h-8 min-w-fit rounded-lg"
-          />
+          <h3 className="text-sm font-medium text-gray-500">PUBLISH STATUS</h3>
+          <div className="flex gap-2">
+            <Badge
+              label="Draft"
+              size="lg"
+              selected={false}
+              onClick={() => {}}
+              className="mt-2 h-8 min-w-fit rounded-lg"
+            />
+            <Badge
+              label="Published"
+              size="lg"
+              selected={false}
+              onClick={() => {}}
+              className="mt-2 h-8 min-w-fit rounded-lg"
+            />
+          </div>
 
           <Button
             variant="solid"

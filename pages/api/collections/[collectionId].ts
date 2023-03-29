@@ -5,14 +5,11 @@ import { PrismaClient, Collection, Prisma } from "@prisma/client";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
 import { getCollection, updateCollection } from "../../../lib/prisma/collection-prisma";
+import { CollectionWithMerchAndPremiumChannel } from "../../../lib/api-helpers/collection-api";
 
 const prisma = new PrismaClient();
 type CollectionwithMerch = Prisma.CollectionGetPayload<{
   include: { merchandise: true };
-}>;
-
-type CollectionWithMerchAndPremiumChannel = Prisma.CollectionGetPayload<{
-  include: { merchandise: true; premiumChannel: true };
 }>;
 
 /**
