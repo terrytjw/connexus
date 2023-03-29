@@ -1,7 +1,14 @@
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
-import { toast, Toaster } from "react-hot-toast";
-import { FaShareSquare, FaUserFriends } from "react-icons/fa";
-import copy from "copy-to-clipboard";
+import { Toaster } from "react-hot-toast";
+import {
+  FaFacebook,
+  FaTelegram,
+  FaTwitter,
+  FaUserFriends,
+} from "react-icons/fa";
 import ChannelTab from "../CommunityTabs/Channel";
 import Avatar from "../../Avatar";
 import Badge from "../../Badge";
@@ -9,14 +16,44 @@ import Banner from "../../Banner";
 import Button from "../../Button";
 import TabGroupBordered from "../../TabGroupBordered";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
+import {
+  CollectionWithMerchAndPremiumChannel,
+  registerCollectionClick,
+} from "../../../lib/api-helpers/collection-api";
 
 type CommunityPagePageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
   setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
+  linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
-const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
+const CreatorCommunityPage = ({
+  community,
+  linkedCollections,
+}: CommunityPagePageProps) => {
   const [activeTab, setActiveTab] = useState(0);
+
+  const router = useRouter();
+  const communityLink = "connexus.com" + router.asPath; // dummy URL
+
+  function getFacebookShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+    return shareUrl;
+  }
+
+  function getTwitterShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const message = encodeURIComponent("Check out my profile on Connexus!");
+    const shareUrl = `https://twitter.com/intent/tweet?url=${url}&text=${message}`;
+    return shareUrl;
+  }
+
+  function getTelegramShareLink(url: string | null) {
+    // const url = encodeURIComponent(window.location.href);
+    const shareUrl = `https://t.me/share/url?url=${url}`;
+    return shareUrl;
+  }
 
   return (
     <main>
@@ -49,7 +86,7 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
 
             <p className="mt-1 text-gray-500">{community.description}</p>
 
-            <div className="mt-6 flex gap-2">
+            <div className="mt-6 flex flex-wrap gap-4">
               <Button
                 variant="solid"
                 size="sm"
@@ -58,16 +95,29 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
                 Edit <span className="hidden sm:contents">Community</span>
               </Button>
 
-              <Button
-                variant="solid"
-                size="sm"
-                onClick={() => {
-                  copy(location.href);
-                  toast("Community link copied successfully!");
-                }}
-              >
-                <FaShareSquare />
-              </Button>
+              <div className="flex items-center gap-4">
+                <Link
+                  href={getFacebookShareLink(communityLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaFacebook className="h-6 w-6" />
+                </Link>
+                <Link
+                  href={getTwitterShareLink(communityLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaTwitter className="h-6 w-6" />
+                </Link>
+                <Link
+                  href={getTelegramShareLink(communityLink)}
+                  target="_blank"
+                  className="text-gray-500 transition-all hover:text-blue-500"
+                >
+                  <FaTelegram className="h-6 w-6" />
+                </Link>
+              </div>
 
               <Button
                 variant="outlined"
@@ -80,26 +130,32 @@ const CreatorCommunityPage = ({ community }: CommunityPagePageProps) => {
               </Button>
             </div>
           </div>
-          {/* <Link
-            href="/merchandise"
-            className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
-          >
-            Highlighted Collection
-            <Image
-              height={144}
-              width={144}
-              className="aspect-square rounded-lg object-cover object-center"
-              src="/images/bear.jpg"
-              alt="Member profile pic"
-            />
-            <div
-              aria-hidden="true"
-              className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-between rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+          {linkedCollections.length > 0 ? (
+            <Link
+              href={`/merchandise/${linkedCollections[0].collectionId}`}
+              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
+              onClick={async () => {
+                await registerCollectionClick(
+                  linkedCollections[0].collectionId
+                );
+              }}
             >
-              <span className="self-end">x100</span>
-              Collection #1
-            </div>
-          </Link> */}
+              Highlighted Collection
+              <Image
+                height={144}
+                width={144}
+                className="aspect-square rounded-lg object-cover object-center"
+                src={linkedCollections[0].merchandise[0].image}
+                alt="Highlight Collection Image"
+              />
+              <div
+                aria-hidden="true"
+                className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+              >
+                {linkedCollections[0].collectionName}
+              </div>
+            </Link>
+          ) : null}
         </div>
 
         <TabGroupBordered

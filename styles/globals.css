@@ -22,6 +22,11 @@ select.btn {
   appearance: none;
 }
 
+.tooltip {
+  position: relative; /* or absolute, depending on your layout */
+  z-index: 1000; /* a value higher than the table header's z-index */
+}
+
 @layer base {
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {

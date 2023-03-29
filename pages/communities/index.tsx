@@ -1,9 +1,11 @@
 import { CategoryType } from "@prisma/client";
 import { GetServerSideProps } from "next";
+import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import useSWR from "swr";
 import Badge from "../../components/Badge";
 import Button from "../../components/Button";
 import CommunityGrid from "../../components/CommunityPages/CommunityGrid";
@@ -12,7 +14,7 @@ import Loading from "../../components/Loading";
 import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TabGroupBordered from "../../components/TabGroupBordered";
-import useSWR from "swr";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 import { CommunityWithMemberIds } from "../../utils/types";
 import { getUserInfo } from "../../lib/api-helpers/user-api";
 import {
@@ -44,6 +46,23 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
   useEffect(() => {
     searchAndFilterCommunities();
   }, [searchString, selectedTopics]);
+
+  const router = useRouter();
+  const { isFan } = useContext(UserRoleContext);
+
+  useEffect(() => {
+    // currently in fan view, wants to switch to creator view
+    // but setIsFan is asynchronous, so there may be a chance where isFan == false but localStorage.getItem("role") === "fan"
+    // so have to check localstorage to ensure that role is actually creator before redirecting
+    if (!isFan && localStorage.getItem("role") === "creator" && userData) {
+      console.log("in index, redirecting to create/[id]...");
+      router.replace(
+        userData.createdCommunities.length > 0
+          ? `/communities/${userData.createdCommunities[0].communityId}`
+          : `/communities/create`
+      );
+    }
+  }, [isFan]);
 
   if (isLoading) return <Loading />;
 

@@ -18,6 +18,7 @@ import { TicketWithEvent } from "../../utils/types";
 import Confetti from "react-confetti";
 import { Ticket } from "@prisma/client";
 import { BiGift } from "react-icons/bi";
+import DigitalBadge from "../../components/EventPages/DigitalBadge";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
@@ -98,7 +99,6 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 {truncateString(currentTicket?.eventName ?? "", 40)}
               </p>
             </div>
-            {/* <QRCodeCanvas value="https://reactjs.org/" /> */}
             {!currentTicket.isCheckedIn ? (
               <QRCode
                 className="mt-4 flex items-center"
@@ -106,10 +106,12 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
                 value={qrValue}
               />
             ) : (
-              <div>DIGITAL BADGE</div>
+              <div className="mt-4 flex w-full justify-center rounded-lg bg-sky-100 p-8">
+                <DigitalBadge imageUrl={"/images/digital-badge.png"} />
+              </div>
             )}
 
-            <div className="mt-4 flex justify-end">
+            <div className="mt-2 flex justify-end">
               <Button
                 className="border-0"
                 variant="outlined"

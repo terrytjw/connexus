@@ -13,7 +13,7 @@ const EditCommunityPage = () => {
     error,
     isLoading,
     mutate,
-  } = useSWR(id, getCommunityAPI);
+  } = useSWR("getCommunityAPI", async () => await getCommunityAPI(Number(id)));
 
   if (isLoading) return <Loading />;
 

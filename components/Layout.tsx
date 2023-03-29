@@ -127,14 +127,13 @@ const MobileNavbar = ({ userData, children }: any) => {
           </Link>
           <li className="mt-10 mb-4">
             <Link
-              // href={
-              //   isFan
-              //     ? `/communities`
-              //     : userData.createdCommunities.length > 0
-              //     ? `/communities/${userData.createdCommunities[0].communityId}`
-              //     : `/communities/create`
-              // }
-              href={`/communities/create`}
+              href={
+                isFan
+                  ? `/communities`
+                  : userData.createdCommunities.length > 0
+                  ? `/communities/${userData.createdCommunities[0].communityId}`
+                  : `/communities/create`
+              }
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
                 router.pathname === "/communities"
@@ -243,14 +242,13 @@ const DesktopSidebar = ({ userData }: any) => {
       <ul className="mt-28 pl-2 pr-8 text-gray-700">
         <li className="mb-4">
           <Link
-            // href={
-            //   isFan
-            //     ? `/communities`
-            //     : userData.createdCommunities.length > 0
-            //     ? `/communities/${userData.createdCommunities[0].communityId}`
-            //     : `/communities/create`
-            // }
-            href={`/communities/create`}
+            href={
+              isFan
+                ? `/communities`
+                : userData.createdCommunities.length > 0
+                ? `/communities/${userData.createdCommunities[0].communityId}`
+                : `/communities/create`
+            }
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
               router.pathname === "/communities" ? "bg-blue-600 text-white" : ""

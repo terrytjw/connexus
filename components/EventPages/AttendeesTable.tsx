@@ -64,6 +64,11 @@ const AttendeesTable = ({
     );
   };
 
+  const hasEventStarted = (attendee: any): boolean | undefined => {
+    if (!attendee) return;
+    return attendee.ticket.event.raffles[0]?.isActivated;
+  };
+
   return (
     <div className="w-full overflow-x-auto">
       <table className="table w-full ">
@@ -92,7 +97,7 @@ const AttendeesTable = ({
                       className="tooltip z-10"
                       data-tip={
                         !isPrizeClaimed(data)
-                          ? "Click here to verify prize claim!"
+                          ? "Verify prize claim!"
                           : "Prize claimed"
                       }
                     >
@@ -112,7 +117,11 @@ const AttendeesTable = ({
                             rafflePrizeUser
                           );
 
-                          if (rafflePrizeUser?.rafflePrizeId && rafflePrizeUser?.rafflePrizeUserId && rafflePrizeUser?.userId) {
+                          if (
+                            rafflePrizeUser?.rafflePrizeId &&
+                            rafflePrizeUser?.rafflePrizeUserId &&
+                            rafflePrizeUser?.userId
+                          ) {
                             setCurrentPrizeSelection({
                               prizeName: getPrizeWon(data, winner.rafflePrizeId)
                                 ?.name,
@@ -125,7 +134,7 @@ const AttendeesTable = ({
                               },
                             });
                           }
-        
+
                           setIsPrizeModalOpen(true);
                         }}
                         disabled={isPrizeClaimed(data)}
@@ -157,7 +166,10 @@ const AttendeesTable = ({
                     onClick={async () => {
                       setIsQrModalOpen(true);
                     }}
-                    disabled={checkInStatus === CheckInStatus.LOADING}
+                    disabled={
+                      checkInStatus === CheckInStatus.LOADING ||
+                      !hasEventStarted(data)
+                    }
                   >
                     Scan QR code
                   </Button>

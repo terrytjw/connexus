@@ -1,24 +1,26 @@
-import React, { useEffect, useState } from "react";
-import Button from "../../Button";
-import TabGroupBordered from "../../TabGroupBordered";
+import { CategoryType } from "@prisma/client";
+import { has } from "lodash";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import Badge from "../../Badge";
-import Modal from "../../Modal";
-import EventsGrid from "../EventsGrid";
-import { EventWithAllDetails } from "../../../utils/types";
-import Link from "next/link";
-import { CategoryType, Event } from "@prisma/client";
-import axios from "axios";
+import useSWR from "swr";
 import {
+  filterEvent,
   retrieveVisitedEvents,
   viewExpiredEvent,
   viewTrendingEvents,
 } from "../../../lib/api-helpers/event-api";
-import { useSession } from "next-auth/react";
-import useSWR from "swr";
-import Loading from "../../Loading";
+import { formatDateWithLocalTime } from "../../../utils/date-util";
+import { EventWithAllDetails } from "../../../utils/types";
+import Badge from "../../Badge";
+import Button from "../../Button";
 import Input from "../../Input";
+import Loading from "../../Loading";
+import Modal from "../../Modal";
+import TabGroupBordered from "../../TabGroupBordered";
+import EventsGrid from "../EventsGrid";
 
 const DELAY_TIME = 400;
 
@@ -27,11 +29,13 @@ type FanEventsPageProps = {
 };
 
 const FanEventsPage = ({ events }: FanEventsPageProps) => {
-  const [selectedTopics, setSelectedTopics] = useState<
-    string[] | CategoryType[]
-  >([]);
+  const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
+  const [fromDateFilter, setFromDateFilter] = useState<Date | undefined>(
+    undefined
+  );
+  const [toDateFilter, setToDateFilter] = useState<Date | undefined>(undefined);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
@@ -41,25 +45,18 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const { data: session, status } = useSession();
   const userId = session?.user.userId;
 
+  const hasFilters = (): boolean => {
+    return Boolean(fromDateFilter || toDateFilter || selectedTopics.length > 0);
+  };
+
+  const clearFilters = (): void => {
+    setSelectedTopics([]);
+    setFromDateFilter(undefined);
+    setToDateFilter(undefined);
+  };
+
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
-
-  const appendFilterParamsToURL = (
-    url: string,
-    filterParams: CategoryType[] | string[]
-  ) => {
-    if (!filterParams || filterParams.length === 0) {
-      return url;
-    }
-
-    const filterString = filterParams
-      .map((filter: CategoryType | string) => "filter=" + filter)
-      .join("&");
-    const separator = url.includes("?") ? "&" : "?";
-    const newURL = `${url}${separator}${filterString}`;
-
-    return newURL;
-  };
 
   // delay api call until the last action
   const debounceSearchApiCall = (searchTerm: string) => {
@@ -69,17 +66,29 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     // Set a new timeout to execute the search API call after the delay time has elapsed
     timeoutId = setTimeout(() => {
       // Make the search API call with the given search term
-      searchEvents(searchTerm);
+      searchAndFilterEvents(searchTerm);
     }, DELAY_TIME);
   };
 
-  const searchEvents = async (searchTerm: string) => {
+  // this function retrieves the latest events with the given filters and search term
+  const searchAndFilterEvents = async (searchTerm: string) => {
     try {
-      const searchUrl = `http://localhost:3000/api/events?keyword=${searchTerm}`;
-      const url = appendFilterParamsToURL(searchUrl, selectedTopics);
-      const { data } = await axios.get(url);
+      // console.log("passing in filters ->", {
+      //   searchTerm,
+      //   selectedTopics,
+      //   fromDate: fromDateFilter,
+      //   toDate: toDateFilter,
+      //   visibilityType: undefined,
+      // });
+      const data = await filterEvent(
+        searchTerm,
+        selectedTopics,
+        fromDateFilter,
+        toDateFilter,
+        undefined // this is used for creator events page
+      );
 
-      // fetch addresses using address ID
+      // console.log("filtered data ->", data);
       setSearchAndFilterResults(data);
     } catch (error) {
       console.error(error);
@@ -89,17 +98,18 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   // listen to filter and search changes
   useEffect(() => {
     // dont debounce on first page load
-    if (searchString !== "" || selectedTopics.length > 0) {
+    if (searchString !== "" || hasFilters()) {
       debounceSearchApiCall(searchString);
     } else {
       // using this state to display events on initial page load
       setSearchAndFilterResults(events);
     }
+  }, [searchString, selectedTopics, fromDateFilter, toDateFilter]);
 
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [searchString, selectedTopics]);
+  const handleFilterSubmit = () => {
+    searchAndFilterEvents(searchString);
+    setIsFilterModalOpen(false);
+  };
 
   // Listed Tab
   const ListedTabContent = () => {
@@ -115,13 +125,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     } = useSWR("trendingEvents", viewTrendingEvents);
 
     if (isTrendingEventsLoading) return <Loading />;
-
-    console.log(
-      "search results -> ",
-      searchAndFilterResults.filter(
-        (event: EventWithAllDetails) => new Date(event.endDate) >= new Date()
-      )
-    );
 
     return (
       <>
@@ -158,6 +161,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <EventsGrid
             data={trendingEvents}
             mutateTrendingEvents={mutateTrendingEvents}
+            isListed={true}
           />
         </div>
         <div>
@@ -167,6 +171,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <EventsGrid
             data={listedEvents}
             setSearchAndFilterResults={setSearchAndFilterResults}
+            isListed={true}
           />
         </div>
       </>
@@ -188,31 +193,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
     return (
       <>
-        <div className="mb-4 flex flex-wrap gap-2">
-          {selectedTopics.map((label) => {
-            return (
-              <Button
-                key={label}
-                size="sm"
-                variant="outlined"
-                onClick={(e) => e.preventDefault()}
-                className="font-normal"
-              >
-                {label}
-                <FaTimes
-                  onClick={() => {
-                    setSelectedTopics(
-                      selectedTopics.filter((topic) => {
-                        return topic != label;
-                      })
-                    );
-                  }}
-                />
-              </Button>
-            );
-          })}
-        </div>
-
         {/* Visited Events  */}
         <div>
           <EventsGrid data={visitedEvents} />
@@ -256,9 +236,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               variant="outlined"
               size="sm"
               className="border-0 text-red-500"
-              onClick={() => {
-                setSelectedTopics([]);
-              }}
+              onClick={clearFilters}
             >
               Clear
             </Button>
@@ -300,8 +278,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             <Input
               type="datetime-local"
               label="From"
-              value={""}
-              onChange={() => {}}
+              value={formatDateWithLocalTime(fromDateFilter)}
+              onChange={(e) => setFromDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -310,8 +288,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             <Input
               type="datetime-local"
               label="To"
-              value={""}
-              onChange={() => {}}
+              value={formatDateWithLocalTime(toDateFilter)}
+              onChange={(e) => setToDateFilter(new Date(e.target.value))}
               placeholder="From Date and Time"
               size="xs"
               variant="bordered"
@@ -319,22 +297,11 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             />
           </div>
 
-          <div className="divider"></div>
-          {/* Liked */}
-          <h3 className="text-sm font-medium text-gray-500">LIKED EVENTS</h3>
-          <Badge
-            label="Select Liked Events Only"
-            size="lg"
-            selected={false}
-            onClick={() => {}}
-            className="mt-2 h-8 min-w-fit rounded-lg"
-          />
-
           <Button
             variant="solid"
             size="md"
             className="mt-8"
-            onClick={() => setIsFilterModalOpen(false)}
+            onClick={handleFilterSubmit}
           >
             Submit
           </Button>

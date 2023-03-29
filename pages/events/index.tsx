@@ -16,10 +16,12 @@ type EventsPageProps = {
 
 const EventsPage = ({ events }: EventsPageProps) => {
   const { isFan } = useContext(UserRoleContext);
-
-  console.log(events);
-
-  // temporary filter to see only public events TODO: filter on server side or make it into an api call
+  
+  /** 
+   * NOTE: /events is returning everything from the db, including unpublished events
+   * temporary filter to see only public events TODO: filter on server side or make it into an api call
+   * 
+   * */ 
   const filterEvents = (
     events: EventWithAllDetails[]
   ): EventWithAllDetails[] => {
@@ -33,7 +35,6 @@ const EventsPage = ({ events }: EventsPageProps) => {
     }
     return events;
   };
-
   return (
     <ProtectedRoute>
       <Layout>
