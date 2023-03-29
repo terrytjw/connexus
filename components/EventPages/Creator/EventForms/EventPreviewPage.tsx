@@ -47,7 +47,7 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
     <div>
       <main>
         {/* TODO: abstract out to Alert Component */}
-        <div className="alert alert-info mb-8 shadow-lg">
+        <div className="alert alert-info mb-8 text-xs shadow-lg sm:text-base">
           <div id="preview-alert">
             <svg
               xmlns="http://www.w3.org/2000/svg"
