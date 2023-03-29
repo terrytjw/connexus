@@ -50,7 +50,7 @@ async function generateCommunity() {
       tags: [CategoryType.ENTERTAINMENT],
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       members: {
@@ -184,6 +184,61 @@ async function generateChannel() {
   }
 }
 
+async function generateQuestion() {
+  const questions = [
+    {
+      question: "Who's your favourite agent?",
+      answer: "Jett!",
+      isAnon: false,
+      channel: {
+        connect: {
+          channelId: 1
+        }
+      },
+      user: {
+        connect: {
+          userId: 2
+        }
+      }
+    },
+    {
+      question: "I'm hardstuck iron 3, how do I climb?",
+      isAnon: false,
+      channel: {
+        connect: {
+          channelId: 1
+        }
+      },
+      user: {
+        connect: {
+          userId: 2
+        }
+      }
+    },
+    {
+      question: "When is the best time to visit Europe?",
+      answer: "We recommend avoiding the summer months, and visiting during April/May or September/October instead, when crowds are thinner",
+      isAnon: false,
+      channel: {
+        connect: {
+          channelId: 3
+        }
+      },
+      user: {
+        connect: {
+          userId: 1
+        }
+      }
+    },
+  ]
+
+  for (const question of questions) {
+    await prisma.question.create({
+      data: question,
+    });
+  }
+}
+
 async function generatePost() {
   const posts = [
     {
@@ -194,7 +249,7 @@ async function generatePost() {
       isPinned: false,
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       channel: {
@@ -217,7 +272,7 @@ async function generatePost() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       date: new Date("2023-02-23"),
@@ -235,7 +290,7 @@ async function generatePost() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       date: new Date("2023-02-24"),
@@ -783,6 +838,7 @@ async function main() {
   await generateUser();
   await generateCommunity();
   await generateChannel();
+  await generateQuestion();
   await generatePost();
   await generateComment();
   await generateEvent();
