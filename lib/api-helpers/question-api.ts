@@ -26,7 +26,8 @@ export async function createQuestionAPI(
   const response = (await axios.post(baseUrl, {
     question: question,
     channelId: channelId,
-    userId: userId
+    userId: userId,
+    isAnon: false
   })).data;
   return response;
 }
