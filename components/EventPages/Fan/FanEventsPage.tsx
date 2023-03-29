@@ -252,7 +252,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     return (
       <div>
         {/* info alert */}
-        <div className="alert mb-8 bg-gray-200 text-gray-800 shadow-md">
+        <div className="alert mb-8 bg-slate-200 text-gray-800 shadow-md">
           <div>
             <svg
               xmlns="http://www.w3.org/2000/svg"
