@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { UserWithAllInfo } from "../../pages/api/users/[userId]";
+import { MerchandiseWithCollectionName } from "../../utils/types";
 import CollectibleGrid from "../CollectibleGrid";
+import DigitalBadgeGrid from "../DigitalBadgeGrid";
 import WordToggle from "../Toggle/WordToggle";
 
 type CollectionsTabProps = {
@@ -22,10 +24,21 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
         setIsChecked={setIsFree}
       />
       <div className="mt-12">
-        <CollectibleGrid
-          data={isFree ? freeMerch : paidMerch}
-          collectedTab={true}
-        />
+        {isFree ? (
+          <DigitalBadgeGrid
+            data={
+              isFree
+                ? [{ merchId: 12323 } as MerchandiseWithCollectionName] // todo: replace with actual data
+                : paidMerch
+            }
+            collectedTab={true}
+          />
+        ) : (
+          <CollectibleGrid
+            data={isFree ? freeMerch : paidMerch}
+            collectedTab={true}
+          />
+        )}
       </div>
     </main>
   );
