@@ -50,7 +50,7 @@ async function generateCommunity() {
       tags: [CategoryType.ENTERTAINMENT],
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       members: {
@@ -202,6 +202,20 @@ async function generateQuestion() {
       }
     },
     {
+      question: "I'm hardstuck iron 3, how do I climb?",
+      isAnon: false,
+      channel: {
+        connect: {
+          channelId: 1
+        }
+      },
+      user: {
+        connect: {
+          userId: 2
+        }
+      }
+    },
+    {
       question: "When is the best time to visit Europe?",
       answer: "We recommend avoiding the summer months, and visiting during April/May or September/October instead, when crowds are thinner",
       isAnon: false,
@@ -235,7 +249,7 @@ async function generatePost() {
       isPinned: false,
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       channel: {
@@ -258,7 +272,7 @@ async function generatePost() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       date: new Date("2023-02-23"),
@@ -276,7 +290,7 @@ async function generatePost() {
       },
       creator: {
         connect: {
-          userId: 1,
+          userId: 4,
         },
       },
       date: new Date("2023-02-24"),
