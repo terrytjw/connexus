@@ -1,6 +1,7 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 import { BsPinFill } from "react-icons/bs";
 import {
   FaEllipsisH,
@@ -108,6 +109,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       return data.filter((post) => post.postId != res.postId);
     });
+    toast("Post deleted!");
   };
 
   const createComment = async () => {

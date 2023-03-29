@@ -1,8 +1,10 @@
 import { CategoryType } from "@prisma/client";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useRouter } from "next/router";
+import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaChevronLeft } from "react-icons/fa";
+import { toast, Toaster } from "react-hot-toast";
 import AvatarInput from "../../components/AvatarInput";
 import Badge from "../../components/Badge";
 import BannerInput from "../../components/BannerInput";
@@ -13,6 +15,7 @@ import Loading from "../../components/Loading";
 import Modal from "../../components/Modal";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import TextArea from "../../components/TextArea";
+import { UserRoleContext } from "../../contexts/UserRoleProvider";
 import {
   createCommunityAPI,
   updateCommunityAPI,
@@ -89,6 +92,11 @@ const CreateCommunityPage = ({
   ]);
 
   const onCreate = async (formData: CommunityForm) => {
+    if (!(profilePic && bannerPic)) {
+      toast.error("Images are required!");
+      return;
+    }
+
     setModalContent(content[0]);
     setIsModalOpen(true);
     setIsLoading(true);
@@ -106,6 +114,11 @@ const CreateCommunityPage = ({
   };
 
   const onEdit = async (formData: CommunityForm) => {
+    if (!(profilePic && bannerPic)) {
+      toast.error("Images are required!");
+      return;
+    }
+
     setModalContent(content[1]);
     setIsModalOpen(true);
     setIsLoading(true);
@@ -139,9 +152,23 @@ const CreateCommunityPage = ({
     }
   };
 
+  const router = useRouter();
+  const { isFan } = useContext(UserRoleContext);
+
+  useEffect(() => {
+    // currently in creator view, wants to switch to fan view
+    // but setIsFan is asynchronous, so there may be a chance where isFan == true but localStorage.getItem("role") === "creator"
+    // so have to check localstorage to ensure that role is actually fan before redirecting
+    if (isFan && localStorage.getItem("role") === "fan") {
+      console.log("in create, redirecting to index...");
+      router.replace("/communities");
+    }
+  }, [isFan]);
+
   return (
     <ProtectedRoute>
       <Layout>
+        <Toaster />
         <form onSubmit={handleSubmit(!community ? onCreate : onEdit)}>
           <Modal isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen}>
             <div className="flex flex-col gap-6">

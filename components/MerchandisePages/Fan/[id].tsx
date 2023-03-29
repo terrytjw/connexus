@@ -80,6 +80,7 @@ const FanCollectionPage = ({
 
   useEffect(() => {
     const purchaseMerchandise = async () => {
+      setLoading(true);
       setIsModalOpen(true);
 
       // call api to mint merchandise
@@ -104,7 +105,10 @@ const FanCollectionPage = ({
             collection.premiumChannel?.communityId === community.communityId
         ) !== -1
       ) {
-        joinChannelAPI(collection.premiumChannel.channelId, userData.userId);
+        await joinChannelAPI(
+          collection.premiumChannel.channelId,
+          userData.userId
+        );
       }
 
       setLoading(false);

@@ -40,7 +40,7 @@ export async function getCommunityById(communityId: number) {
         },
       },
       creator: {
-        select: { profilePic: true, username: true },
+        select: { userId: true, profilePic: true, username: true },
       },
       members: {
         select: { userId: true },

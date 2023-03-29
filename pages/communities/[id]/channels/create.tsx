@@ -46,8 +46,8 @@ const CreatePremiumChannelPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data: collections, isLoading: isLoadingSWR } = useSWR(
-    userId,
-    getUnsoldUnlinkedCollections
+    "getUnsoldUnlinkedCollections",
+    async () => await getUnsoldUnlinkedCollections(Number(userId))
   );
 
   const {

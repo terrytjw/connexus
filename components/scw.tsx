@@ -25,6 +25,11 @@ const Home = ({ isAuthModalOpen }: any) => {
 
   const { data: session, status } = useSession();
 
+  useEffect(() => {
+    // set role to fan when user logs in or out
+    localStorage.setItem("role", "fan");
+  });
+
   const connectWeb3 = useCallback(async () => {
     if (typeof window === "undefined") return;
     setConnectWeb3Loading(true);
