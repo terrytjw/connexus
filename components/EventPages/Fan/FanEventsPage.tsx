@@ -155,9 +155,21 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
         {/* Trending Events  */}
         <div>
-          <h2 className="mb-6 text-2xl font-semibold text-slate-600">
-            Trending Events in SG
-          </h2>
+          <div className="flex gap-4">
+            <h2 className="mb-6 text-2xl font-semibold tracking-wide text-slate-600">
+              Trending Events in SG
+            </h2>
+            <div className="tooltip" data-tip="Most Liked Events">
+              <Button
+                variant="solid"
+                size="sm"
+                className="!bg-blue-100 !text-blue-500"
+              >
+                i
+              </Button>
+            </div>
+          </div>
+
           <EventsGrid
             data={trendingEvents}
             mutateTrendingEvents={mutateTrendingEvents}
@@ -165,7 +177,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           />
         </div>
         <div>
-          <h2 className="mt-12 mb-6 text-2xl font-semibold text-slate-600">
+          <h2 className="mt-12 mb-6 text-2xl font-semibold tracking-wide text-slate-600">
             Events in Singapore
           </h2>
           <EventsGrid
@@ -195,6 +207,29 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       <>
         {/* Visited Events  */}
         <div>
+          {/* info alert */}
+          <div className="alert mb-8 bg-slate-200 text-gray-800 shadow-md">
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                className="h-6 w-6 flex-shrink-0 stroke-info"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              <span className="text-xs sm:text-sm">
+                Events that you have{" "}
+                <span className="font-medium">registered for</span> and{" "}
+                <span className="font-medium">attended</span>.
+              </span>
+            </div>
+          </div>
           <EventsGrid data={visitedEvents} />
         </div>
       </>
@@ -216,6 +251,29 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
     return (
       <div>
+        {/* info alert */}
+        <div className="alert mb-8 bg-slate-200 text-gray-800 shadow-md">
+          <div>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              className="h-6 w-6 flex-shrink-0 stroke-info"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
+            </svg>
+            <span className="text-xs sm:text-sm">
+              Events that you have{" "}
+              <span className="font-medium">registered for</span> but{" "}
+              <span className="font-medium">did not attend</span>.
+            </span>
+          </div>
+        </div>
         <EventsGrid data={expiredEvents} />
       </div>
     );
@@ -274,7 +332,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <div className="divider"></div>
           {/* Date Range */}
           <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
-          <div className="mt-2 flex justify-between gap-8">
+          <div className="mt-2 flex-col justify-between gap-8">
             <Input
               type="datetime-local"
               label="From"

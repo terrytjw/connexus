@@ -9,6 +9,7 @@ import router from "next/router";
 import { CategoryType, Ticket } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
 import { toast } from "react-hot-toast";
+import Button from "../Button";
 
 type EventsTableProps = {
   data: EventWithAllDetails[]; // TODO: change type any to data type
@@ -42,6 +43,22 @@ const EventsTable = ({
   const eventEnded = (event: EventWithAllDetails): boolean => {
     return new Date(event.endDate) < new Date();
   };
+
+  if (data.length === 0)
+    return (
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        <span> No events to show. </span>{" "}
+        <span> Start by creating an event!</span>
+        <Button
+          href="/events/create"
+          variant="solid"
+          size="md"
+          className="max-w-xs !tracking-normal shadow-md"
+        >
+          Create Event
+        </Button>
+      </div>
+    );
 
   return (
     <div className="w-full overflow-x-auto">

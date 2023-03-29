@@ -1,3 +1,4 @@
+import { events } from "./../../utils/dummyData";
 import { PrismaClient, User } from "@prisma/client";
 import { generateUniqueUsername } from "../../utils/user-util";
 
@@ -44,6 +45,15 @@ export async function searchUser(searchType: UserPartialType) {
       },
       bankAccount: true,
       transactions: true,
+      userTicket: {
+        include: {
+          ticket: {
+            include: {
+              event: true,
+            },
+          },
+        },
+      },
     },
   });
 }

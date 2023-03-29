@@ -192,45 +192,46 @@ async function generateQuestion() {
       isAnon: false,
       channel: {
         connect: {
-          channelId: 1
-        }
+          channelId: 1,
+        },
       },
       user: {
         connect: {
-          userId: 2
-        }
-      }
+          userId: 2,
+        },
+      },
     },
     {
       question: "I'm hardstuck iron 3, how do I climb?",
       isAnon: false,
       channel: {
         connect: {
-          channelId: 1
-        }
+          channelId: 1,
+        },
       },
       user: {
         connect: {
-          userId: 2
-        }
-      }
+          userId: 2,
+        },
+      },
     },
     {
       question: "When is the best time to visit Europe?",
-      answer: "We recommend avoiding the summer months, and visiting during April/May or September/October instead, when crowds are thinner",
+      answer:
+        "We recommend avoiding the summer months, and visiting during April/May or September/October instead, when crowds are thinner",
       isAnon: false,
       channel: {
         connect: {
-          channelId: 3
-        }
+          channelId: 3,
+        },
       },
       user: {
         connect: {
-          userId: 1
-        }
-      }
+          userId: 1,
+        },
+      },
     },
-  ]
+  ];
 
   for (const question of questions) {
     await prisma.question.create({
@@ -404,7 +405,7 @@ async function generateUser() {
         "https://lh3.googleusercontent.com/a/AGNmyxY7B4XC3FpA8d_swUELfrEvBg11sVLz6iUNIa86=s96-c",
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/alene-bannerPic.jpg",
-      phoneNumber: "+6586582648",
+      phoneNumber: "+6591713316",
       bio: "I film tiktok for a day and I also schedule livestreams to create a stronger connection with my audience.",
     },
     {
@@ -566,7 +567,7 @@ async function generateCollection() {
   }
 }
 async function generateEvent() {
-  const analyticsTimestamps: any[][] = [[], [], []];
+  const analyticsTimestamps: any[][] = [[], [], [], [], []];
   for (let arr of analyticsTimestamps) {
     let likes = 10;
     for (let i = 7; i > 0; i--) {
@@ -616,8 +617,8 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 45,
             price: 10,
-            startDate: new Date("2023-02-22"),
-            endDate: new Date("2023-02-25"),
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-01-25"),
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 4 }, { userId: 5 }, { userId: 6 }] },
             currentTicketSupply: 20,
@@ -627,8 +628,8 @@ async function generateEvent() {
             name: "VIP Pass",
             totalTicketSupply: 50,
             price: 10,
-            startDate: new Date("2023-02-22"),
-            endDate: new Date("2023-02-25"),
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-01-25"),
             description: "This is a VIP Pass",
             currentTicketSupply: 5,
             ticketType: TicketType.ON_SALE,
@@ -637,8 +638,8 @@ async function generateEvent() {
             name: "VVIP Pass",
             totalTicketSupply: 50,
             price: 10,
-            startDate: new Date("2023-02-22"),
-            endDate: new Date("2023-02-25"),
+            startDate: new Date("2023-01-22"),
+            endDate: new Date("2023-01-25"),
             description: "This is a VVIP Pass",
             currentTicketSupply: 3,
             ticketType: TicketType.ON_SALE,
@@ -655,7 +656,7 @@ async function generateEvent() {
       },
       publishType: PublishType.NOW,
       maxAttendee: 50,
-      publishStartDate: new Date("2023-02-22"),
+      publishStartDate: new Date("2023-01-22"),
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/valorant-banner.jpeg",
       eventPic:
@@ -678,6 +679,9 @@ async function generateEvent() {
       clicks: 100,
     },
     {
+      userLikes: {
+        connect: [{ userId: 1 }, { userId: 2 }],
+      },
       creator: {
         connect: { userId: 4 },
       },
@@ -710,10 +714,10 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 45,
             price: 10,
-            startDate: new Date("2023-01-23"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-03-23"),
+            endDate: new Date("2023-03-26"),
             description: "Freebies, photo-taking session and on-stage event!",
-            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            users: { connect: [{ userId: 4 }] },
             currentTicketSupply: 2,
             ticketType: TicketType.ON_SALE,
           },
@@ -721,8 +725,8 @@ async function generateEvent() {
             name: "VIP Pass",
             totalTicketSupply: 50,
             price: 100,
-            startDate: new Date("2023-01-22"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-03-22"),
+            endDate: new Date("2023-03-26"),
             description: "This is a VIP Pass",
             ticketType: TicketType.ON_SALE,
           },
@@ -730,8 +734,8 @@ async function generateEvent() {
             name: "VVIP Pass",
             totalTicketSupply: 50,
             price: 1000,
-            startDate: new Date("2023-01-22"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-03-22"),
+            endDate: new Date("2023-03-26"),
             description: "This is a VVIP Pass",
             ticketType: TicketType.ON_SALE,
           },
@@ -739,7 +743,7 @@ async function generateEvent() {
       },
       publishType: PublishType.NOW,
       maxAttendee: 145,
-      publishStartDate: new Date("2023-01-22"),
+      publishStartDate: new Date("2023-03-22"),
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/cosplay-banner.jpeg",
       eventPic:
@@ -748,6 +752,9 @@ async function generateEvent() {
       clicks: 100,
     },
     {
+      userLikes: {
+        connect: [{ userId: 1 }],
+      },
       creator: {
         connect: { userId: 4 },
       },
@@ -767,8 +774,8 @@ async function generateEvent() {
           postalCode: "486065",
         },
       },
-      startDate: new Date("2023-03-24"),
-      endDate: new Date("2023-03-27"),
+      startDate: new Date("2023-04-24"),
+      endDate: new Date("2023-04-27"),
       summary:
         "This is a travel fair with Travely. They will be showcasing their new app and taking photos with their fans.",
       description:
@@ -781,8 +788,8 @@ async function generateEvent() {
             name: "General Admission",
             totalTicketSupply: 45,
             price: 10,
-            startDate: new Date("2023-01-24"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-04-24"),
+            endDate: new Date("2023-04-26"),
             description: "Freebies, photo-taking session and on-stage event!",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
@@ -792,8 +799,8 @@ async function generateEvent() {
             name: "VIP Pass",
             totalTicketSupply: 50,
             price: 100,
-            startDate: new Date("2023-01-24"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-04-24"),
+            endDate: new Date("2023-04-26"),
             description: "This is a VIP Pass",
             ticketType: TicketType.ON_SALE,
           },
@@ -801,8 +808,8 @@ async function generateEvent() {
             name: "VVIP Pass",
             totalTicketSupply: 50,
             price: 1000,
-            startDate: new Date("2023-01-24"),
-            endDate: new Date("2023-02-26"),
+            startDate: new Date("2023-04-24"),
+            endDate: new Date("2023-04-26"),
             description: "This is a VVIP Pass",
             ticketType: TicketType.ON_SALE,
           },
@@ -810,11 +817,151 @@ async function generateEvent() {
       },
       publishType: PublishType.NOW,
       maxAttendee: 145,
-      publishStartDate: new Date("2023-02-22"),
+      publishStartDate: new Date("2023-04-22"),
       bannerPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-banner.jpeg",
       eventPic:
         "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-profile.jpeg",
+      eventScAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
+      clicks: 100,
+    },
+    {
+      creator: {
+        connect: { userId: 4 },
+      },
+      analyticsTimestamps: {
+        create: analyticsTimestamps[3],
+      },
+      eventName: "The Nexus Summit",
+      category: CategoryType.TECHNOLOGY,
+      address: {
+        create: {
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          lat: 1.01,
+          lng: 1.2,
+          locationName: "Expo Hall 3",
+          postalCode: "486065",
+        },
+      },
+      startDate: new Date("2023-05-24"),
+      endDate: new Date("2023-05-27"),
+      summary: "",
+      description:
+        "The Nexus Summit is a professional conference that brings together experts and thought leaders from various fields such as healthcare, education, and technology",
+      visibilityType: VisibilityType.PUBLISHED,
+      privacyType: PrivacyType.PUBLIC,
+      tickets: {
+        create: [
+          {
+            name: "Early Bird Pass",
+            totalTicketSupply: 45,
+            price: 8,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description: "Freebies, photo-taking session and on-stage event!",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE,
+          },
+          {
+            name: "Backstage Pass",
+            totalTicketSupply: 50,
+            price: 88,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description: "This is a VIP Pass",
+            ticketType: TicketType.ON_SALE,
+          },
+          {
+            name: "VVIP Pass",
+            totalTicketSupply: 50,
+            price: 888,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description: "This is a VVIP Pass",
+            ticketType: TicketType.ON_SALE,
+          },
+        ],
+      },
+      publishType: PublishType.NOW,
+      maxAttendee: 145,
+      publishStartDate: new Date("2023-05-22"),
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/nexus-summit-profile.jpeg",
+      eventPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/nexus-summit-banner.jpeg",
+      eventScAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
+      clicks: 100,
+    },
+    {
+      creator: {
+        connect: { userId: 4 },
+      },
+      analyticsTimestamps: {
+        create: analyticsTimestamps[4],
+      },
+      eventName: "Innovate X",
+      category: CategoryType.TECHNOLOGY,
+      address: {
+        create: {
+          address1: "1 Singapore Expo",
+          address2: "Singapore",
+          lat: 1.01,
+          lng: 1.2,
+          locationName: "Expo Hall 3",
+          postalCode: "486065",
+        },
+      },
+      startDate: new Date("2023-05-24"),
+      endDate: new Date("2023-05-27"),
+      summary: "",
+      description:
+        "InnovateX is a technology conference that showcases the latest advancements in software development, artificial intelligence, machine learning, and other emerging technologies",
+      visibilityType: VisibilityType.PUBLISHED,
+      privacyType: PrivacyType.PUBLIC,
+      tickets: {
+        create: [
+          {
+            name: "Early Bird Pass",
+            totalTicketSupply: 45,
+            price: 8,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description:
+              "Access to all keynote speeches and panel discussions.",
+            users: { connect: [{ userId: 1 }, { userId: 2 }] },
+            currentTicketSupply: 2,
+            ticketType: TicketType.ON_SALE,
+          },
+          {
+            name: "Speaker Access Pass",
+            totalTicketSupply: 50,
+            price: 88,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description:
+              "All perks of General Admission Pass, Priority seating during keynote speeches and panel discussions.",
+            ticketType: TicketType.ON_SALE,
+          },
+          {
+            name: "Executive VIP Pass",
+            totalTicketSupply: 50,
+            price: 888,
+            startDate: new Date("2023-05-24"),
+            endDate: new Date("2023-05-26"),
+            description: "VIP lounge access with complimentary food and drinks",
+            ticketType: TicketType.ON_SALE,
+          },
+        ],
+      },
+      publishType: PublishType.NOW,
+      maxAttendee: 145,
+      publishStartDate: new Date("2023-05-22"),
+      bannerPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/innovate-x-banner.jpeg",
+      eventPic:
+        "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/innovate-x-profile.jpeg",
       eventScAddress: "0x2eC4AA6839328e9Fa2912Aa198a0Bfb06711e329",
       clicks: 100,
     },
@@ -832,6 +979,11 @@ async function generateUserWithTicket() {
   const tickets =
     (event?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
   await saveUserTickets(tickets);
+
+  const event1 = await retrieveEventInfo(2);
+  const tickets1 =
+    (event1?.tickets as TicketWithUser[]) ?? ([] as TicketWithUser[]);
+  await saveUserTickets(tickets1, true);
 }
 
 async function main() {

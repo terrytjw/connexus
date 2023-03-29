@@ -32,6 +32,7 @@ import Link from "next/link";
 import Button from "../../components/Button";
 import { useSession } from "next-auth/react";
 import { Toaster } from "react-hot-toast";
+import _ from "lodash";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(ALCHEMY_API);
@@ -115,10 +116,10 @@ const CreatorEventCreate = () => {
   //     },
   //     promotion: [
   //       {
-  //         name: "promo200",
-  //         promotionValue: "10",
+  //         name: "",
+  //         promotionValue: undefined,
   //         stripePromotionId: "",
-  //         isEnabled: true,
+  //         isEnabled: false,
   //       },
   //     ],
   //     raffles: [
@@ -132,7 +133,7 @@ const CreatorEventCreate = () => {
   //       },
   //     ],
   //     startDate: "2023-03-30T23:55",
-  //     endDate: "2023-04-31T23:55",
+  //     endDate: "2023-05-20T23:55",
   //     maxAttendee: "12",
   //   },
   // });
@@ -222,8 +223,9 @@ const CreatorEventCreate = () => {
     const { tickets, startDate, endDate, maxAttendee, promotion } = event;
 
     console.log(tickets.map((ticket) => ({ ...ticket })));
+
     // parse to prisma type
-    const prismaEvent = {
+    let prismaEvent = {
       ...event,
       startDate: new Date(startDate),
       endDate: new Date(endDate),
@@ -251,7 +253,13 @@ const CreatorEventCreate = () => {
       })),
       creatorId: userId,
     };
-    createEvent(prismaEvent);
+
+    if (!promotion[0].isEnabled) {
+      const newEvent = _.omit(prismaEvent, "promotion");
+      createEvent(newEvent);
+    } else {
+      createEvent(prismaEvent);
+    }
   };
 
   // a null/ undefined state is needed for form validation

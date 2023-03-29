@@ -153,9 +153,9 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         "Some reminder"
       );
 
-      // if (userData.phoneNumber) {
-      //   sendSMS(userData.phoneNumber, "Some reminder");
-      // }
+      if (userData.phoneNumber) {
+        sendSMS(userData.phoneNumber, "Some reminder");
+      }
 
       console.log("email sent");
     }

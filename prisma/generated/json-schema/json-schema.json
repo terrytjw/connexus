@@ -938,6 +938,9 @@
         },
         "channel": {
           "$ref": "#/definitions/Channel"
+        },
+        "isAnon": {
+          "type": "boolean"
         }
       }
     },

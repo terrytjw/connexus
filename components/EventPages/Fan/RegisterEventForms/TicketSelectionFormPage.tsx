@@ -75,16 +75,6 @@ const TicketSelectionFormPage = ({
     }
   };
 
-  // replace with this with actual promo code field
-  const promoCode = {
-    promoId: 1,
-    promoName: "PROMO10",
-    discount: 0.23,
-  };
-
-  // tickets.map((ticket: Ticket) => ({
-  //   ...ticket,
-  //   price: getDiscountedPrice(ticket.price, promoCode.discount),
   return (
     <div>
       <section>
@@ -109,8 +99,9 @@ const TicketSelectionFormPage = ({
                 e.preventDefault();
                 applyPromoCode();
               }}
+              disabled={isPromoApplied}
             >
-              Apply
+              {isPromoApplied ? "Applied" : "Apply"}
             </Button>
           </div>
         </div>

@@ -15,7 +15,7 @@ import { EventCreation } from "../../pages/api/events";
 import { getTicketsOwned } from "../api-helpers/ticket-api";
 import { filterTickets } from "./ticket-prisma";
 
-export interface EventPartialType extends Partial<Event> { }
+export interface EventPartialType extends Partial<Event> {}
 
 const prisma = new PrismaClient();
 
@@ -44,7 +44,7 @@ export async function createEventWithTickets(
   event: EventCreation,
   tickets: Ticket[],
   creatorId: number,
-  promotion: Promotion[]
+  promotion?: Promotion[]
 ) {
   return prisma.event.create({
     data: {
@@ -111,14 +111,14 @@ export async function filterEvent(
       },
       category: tags
         ? {
-          hasSome: tags,
-        }
+            hasSome: tags,
+          }
         : undefined,
 
       eventId: eventIds
         ? {
-          in: eventIds,
-        }
+            in: eventIds,
+          }
         : undefined,
       AND: [
         {
@@ -301,7 +301,7 @@ export async function retrieveTrendingEvents() {
         _count: "desc",
       },
     },
-    take: 3,
+    take: 2,
     where: {
       endDate: {
         gte: new Date(),

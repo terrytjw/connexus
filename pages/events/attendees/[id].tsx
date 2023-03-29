@@ -378,81 +378,86 @@ const AttendeesPage = () => {
               </h1>
             </div>
           </div>
-
-          <div className="flex justify-between">
-            <div className="flex gap-4">
-              <Button
-                variant="solid"
-                size="md"
-                className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
-                onClick={handleActivateRaffle}
-                disabled={
-                  isRaffleActivated() || loading || attendees.length === 0
-                }
-              >
-                {!isRaffleActivated() ? "Start Event" : "Event Started"}
-              </Button>
+          {attendees.length === 0 ? (
+            <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+              <span> No attendees for this event yet. </span>
             </div>
-            <div className="flex gap-4">
-              <div className="relative hidden w-full items-center justify-center rounded-md shadow-sm lg:flex">
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                  <FaSearch className="text-gray-500" />
+          ) : (
+            <>
+              <div className="flex justify-between">
+                <div className="flex gap-4">
+                  <Button
+                    variant="solid"
+                    size="md"
+                    className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
+                    onClick={handleActivateRaffle}
+                    disabled={
+                      isRaffleActivated() || loading || attendees.length === 0
+                    }
+                  >
+                    {!isRaffleActivated() ? "Start Event" : "Event Started"}
+                  </Button>
                 </div>
-                <input
-                  className="input-outlined input input-md block w-full rounded-md pl-10"
-                  type="text"
-                  value={searchString}
-                  placeholder="Search Attendees"
-                  onChange={(e) => {
-                    setSearchString(e.target.value);
-                  }}
-                />
+                <div className="flex gap-4">
+                  <div className="relative hidden w-full items-center justify-center rounded-md shadow-sm lg:flex">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                      <FaSearch className="text-gray-500" />
+                    </div>
+                    <input
+                      className="input-outlined input input-md block w-full rounded-md pl-10"
+                      type="text"
+                      value={searchString}
+                      placeholder="Search Attendees"
+                      onChange={(e) => {
+                        setSearchString(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <select
+                    value={selectedOption ?? ""}
+                    onChange={handleChange}
+                    className="btn-outline btn flex gap-x-2 rounded-md normal-case text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600"
+                  >
+                    <option value="" hidden>
+                      Export Table
+                    </option>
+                    <option value="csv">Export as CSV</option>
+                    <option value="pdf">Export as PDF</option>
+                  </select>
+                </div>
               </div>
-              <select
-                value={selectedOption ?? ""}
-                onChange={handleChange}
-                className="btn-outline btn flex gap-x-2 rounded-md normal-case text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600"
-              >
-                <option value="" hidden>
-                  Export Table
-                </option>
-                <option value="csv">Export as CSV</option>
-                <option value="pdf">Export as PDF</option>
-              </select>
-            </div>
-          </div>
-
-          {/* mobile search */}
-          <div className="mt-4 flex w-full gap-2 lg:hidden">
-            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <FaSearch className="text-gray-500" />
+              {/* mobile search */}
+              <div className="mt-4 flex w-full gap-2 lg:hidden">
+                <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                    <FaSearch className="text-gray-500" />
+                  </div>
+                  <input
+                    className="input-outlined input input-md block w-full rounded-md pl-10"
+                    type="text"
+                    value={searchString}
+                    placeholder="Search Attendees"
+                    onChange={(e) => {
+                      setSearchString(e.target.value);
+                    }}
+                  />
+                </div>
               </div>
-              <input
-                className="input-outlined input input-md block w-full rounded-md pl-10"
-                type="text"
-                value={searchString}
-                placeholder="Search Attendees"
-                onChange={(e) => {
-                  setSearchString(e.target.value);
-                }}
-              />
-            </div>
-          </div>
-
-          <section>
-            <div className="pt-6">
-              <AttendeesTable
-                data={attendees}
-                columns={["Name", "Email Address", "Check-in Status"]}
-                setIsQrModalOpen={setIsQrModalOpen}
-                checkInStatus={checkInStatus}
-                isRaffleActivated={isRaffleActivated}
-                setIsPrizeModalOpen={setIsPrizeModalOpen}
-                setCurrentPrizeSelection={setCurrentPrizeSelection}
-              />
-            </div>
-          </section>
+              <section>
+                <div className="pt-6">
+                  <AttendeesTable
+                    data={attendees}
+                    columns={["Name", "Email Address", "Check-in Status"]}
+                    setIsQrModalOpen={setIsQrModalOpen}
+                    checkInStatus={checkInStatus}
+                    isRaffleActivated={isRaffleActivated}
+                    setIsPrizeModalOpen={setIsPrizeModalOpen}
+                    setCurrentPrizeSelection={setCurrentPrizeSelection}
+                  />
+                </div>
+              </section>
+            </>
+          )}
 
           {/* Prize Modal */}
           <Modal
