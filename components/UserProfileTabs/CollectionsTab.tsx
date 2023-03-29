@@ -15,7 +15,8 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
   const [isFree, setIsFree] = useState(false);
 
   // filter by price
-  const userTicketData = userData.userTicket as UserWithTicketsAndEvent;
+  const userTicketData =
+    userData.userTicket as unknown as UserWithTicketsAndEvent[];
   const paidMerch = userData.merchandise.filter((item) => item.price !== 0);
 
   return (

@@ -1,4 +1,4 @@
-import { Prisma, Ticket } from "@prisma/client";
+import { Prisma, Ticket, UserTicket } from "@prisma/client";
 
 export enum ChannelType {
   HOME,
@@ -69,7 +69,7 @@ export type UserWithTickets = Prisma.UserGetPayload<{
   include: { tickets: true };
 }>;
 
-export type UserWithTicketsAndEvent = UserTicket & { ticket: TicketWithEvent }
+export type UserWithTicketsAndEvent = UserTicket & { ticket: TicketWithEvent };
 
 export type MerchandiseWithCollectionName = Prisma.MerchandiseGetPayload<{
   include: {
