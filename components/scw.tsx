@@ -38,12 +38,12 @@ const Home = ({ isAuthModalOpen }: any) => {
 
     if (!socialLoginSDK) {
       const signature1 = await sdk.whitelistUrl(
-        "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/"
+        "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app"
       );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
-          "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/":
+          "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app":
             signature1,
         },
       });
