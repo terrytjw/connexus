@@ -17,9 +17,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 
   Router.events.on("routeChangeComplete", (url) => {
     // a hacky way to lengthen the loading animation
-    setTimeout(() => {
-      setLoading(false);
-    }, 500);
+    // setTimeout(() => {
+    //   setLoading(false);
+    // }, 500);
+    setLoading(false);
   });
 
   if (loading) {
