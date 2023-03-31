@@ -12,6 +12,7 @@ const CommunitiesTab = ({ userData }: CommunitiesTabProps) => {
     <div>
       <CommunityGrid
         communities={userData.joinedCommunities as CommunityWithMemberIds[]}
+        joinedTab={true}
       />
     </div>
   );
