@@ -20,7 +20,7 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
   const paidMerch = userData.merchandise.filter((item) => item.price !== 0);
 
   return (
-    <main className="h-96">
+    <main className="">
       <WordToggle
         leftWord="Paid"
         rightWord="Free"
