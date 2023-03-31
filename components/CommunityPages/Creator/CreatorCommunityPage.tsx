@@ -86,7 +86,7 @@ const CreatorCommunityPage = ({
 
             <p className="mt-1 text-gray-500">{community.description}</p>
 
-            <div className="mt-6 flex flex-wrap gap-4">
+            <div className="mt-6 flex gap-4">
               <Button
                 variant="solid"
                 size="sm"
@@ -95,7 +95,7 @@ const CreatorCommunityPage = ({
                 Edit <span className="hidden sm:contents">Community</span>
               </Button>
 
-              <div className="flex items-center gap-4">
+              <div className="flex h-8 items-center gap-4">
                 <Link
                   href={getFacebookShareLink(communityLink)}
                   target="_blank"
@@ -122,18 +122,17 @@ const CreatorCommunityPage = ({
               <Button
                 variant="outlined"
                 size="sm"
-                className="max-w-xs border-0 !text-red-500 hover:!bg-gray-300"
+                className="h-fit flex-shrink flex-wrap border-0 text-left !text-red-500 hover:!bg-blue-100"
                 href={`/communities/${community.communityId}/channels/create`}
               >
-                + <span className="hidden md:contents">Create New</span> Premium
-                Channel
+                + Create New Premium Channel
               </Button>
             </div>
           </div>
           {linkedCollections.length > 0 ? (
             <Link
               href={`/merchandise/${linkedCollections[0].collectionId}`}
-              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
+              className="relative flex flex-shrink-0 flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm shadow-md"
               onClick={async () => {
                 await registerCollectionClick(
                   linkedCollections[0].collectionId
@@ -141,16 +140,17 @@ const CreatorCommunityPage = ({
               }}
             >
               Highlighted Collection
-              <Image
-                height={144}
-                width={144}
-                className="aspect-square rounded-lg object-cover object-center"
-                src={linkedCollections[0].merchandise[0].image}
-                alt="Highlight Collection Image"
-              />
+              <div className="relative h-36 w-full rounded-lg sm:w-36">
+                <Image
+                  fill
+                  className="object-cover object-center"
+                  src={linkedCollections[0].merchandise[0].image}
+                  alt="Highlight Collection Image"
+                />
+              </div>
               <div
                 aria-hidden="true"
-                className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+                className="text-md absolute bottom-0 my-2 flex h-36 w-[calc(100%-0.75rem)] flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
               >
                 {linkedCollections[0].collectionName}
               </div>

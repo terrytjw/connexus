@@ -16,6 +16,11 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
+  if (communities.length === 0)
+    return (
+      <div className="p-4 text-sm tracking-widest text-gray-400">No items.</div>
+    );
+
   return (
     <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
       {communities?.map((community) => (
