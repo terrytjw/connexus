@@ -71,6 +71,11 @@ const CollectionGrid = ({ data }: CollectionGridProps) => {
     localStorage.removeItem("communityUrl");
   }, []);
 
+  if (data.length === 0)
+    return (
+      <div className="p-4 text-sm tracking-widest text-gray-400">No items.</div>
+    );
+
   return (
     <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
       {data.map((item) => (

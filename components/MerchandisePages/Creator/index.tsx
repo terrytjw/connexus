@@ -218,11 +218,20 @@ const CreatorCollectionsPage = () => {
 
       <h1 className="text-4xl font-bold">Your Digital Merchandise Creation</h1>
       <h3 className="mt-4">
-        View all your on sale paused, and sold digital merchandise collections
+        View all your on sale, paused, and sold digital merchandise collections
       </h3>
 
       {/* mobile */}
       <div className="mt-8 flex w-full flex-col gap-4 lg:hidden">
+        <Button
+          href="/merchandise/create"
+          variant="solid"
+          size="md"
+          className="w-fit"
+        >
+          Create a New Collection
+        </Button>
+
         <div className="flex gap-x-2">
           <div className="relative w-full items-center justify-center rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -232,22 +241,13 @@ const CreatorCollectionsPage = () => {
               className="input-outlined input input-md block w-full rounded-md pl-10"
               type="text"
               value={searchString}
-              placeholder="Search Collection"
+              placeholder="Search Collections"
               onChange={(e) => {
                 setSearchString(e.target.value);
               }}
             />
           </div>
         </div>
-
-        <Button
-          href="/merchandise/create"
-          variant="solid"
-          size="md"
-          className="w-fit"
-        >
-          Create a New Collection
-        </Button>
       </div>
 
       {/* desktop */}
@@ -265,7 +265,7 @@ const CreatorCollectionsPage = () => {
               className="input-outlined input input-md block w-full rounded-md pl-10"
               type="text"
               value={searchString}
-              placeholder="Search Collection"
+              placeholder="Search Collections"
               onChange={(e) => {
                 setSearchString(e.target.value);
               }}

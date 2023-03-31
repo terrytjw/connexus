@@ -423,7 +423,7 @@ const MerchandiseTab = ({
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
               <h3 className="mb-8 ml-4 text-xl font-semibold">
-                Tickets Sold Per Day
+                Merchandise Sold Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
@@ -455,9 +455,12 @@ const MerchandiseTab = ({
                         year: "numeric",
                       });
                     }}
-                    formatter={(value, name, props) => [value, "Tickets Sold"]}
+                    formatter={(value, name, props) => [
+                      value,
+                      "Merchandise Sold",
+                    ]}
                   />
-                  <Legend formatter={(value) => "Tickets Sold"} />
+                  <Legend formatter={(value) => "Merchandise Sold"} />
 
                   <Bar
                     dataKey={`${

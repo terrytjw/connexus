@@ -144,7 +144,7 @@ const FanCollectionPage = ({
                       } from ${collection.collectionName}! ${
                         collection.premiumChannel
                           ? `You are in for ${collection.premiumChannel.name}!`
-                          : null
+                          : ""
                       }`}
                 </>
               ) : null}

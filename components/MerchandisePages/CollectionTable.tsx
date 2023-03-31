@@ -27,6 +27,11 @@ const CollectionTable = ({
   const router = useRouter();
   const textColour = onEdit ? "text-gray-700" : "text-gray-300";
 
+  if (data.length === 0)
+    return (
+      <div className="p-4 text-sm tracking-widest text-gray-400">No items.</div>
+    );
+
   return (
     <div className="relative w-full overflow-x-auto">
       <table className="table w-full">
