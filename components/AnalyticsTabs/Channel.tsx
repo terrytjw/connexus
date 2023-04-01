@@ -306,7 +306,7 @@ const ChannelTab = ({
                   <Legend formatter={(value) => "Likes"} />
                   <Bar
                     dataKey={`${channelIdSelected ? "likes" : "_sum.likes"}`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -351,7 +351,7 @@ const ChannelTab = ({
                     dataKey={`${
                       channelIdSelected ? "comments" : "_sum.comments"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -417,7 +417,7 @@ const ChannelTab = ({
                     dataKey={`${
                       channelIdSelected ? "engagement" : "_avg.engagement"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>

@@ -109,7 +109,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       return data.filter((post) => post.postId != res.postId);
     });
-    toast("Post deleted!");
+    toast.success("Post deleted!");
   };
 
   const createComment = async () => {
@@ -156,8 +156,8 @@ const Post = ({ post, mutatePosts }: PostProps) => {
       </Modal>
 
       <div className="card-body gap-4 p-4 sm:p-8">
-        <div className="flex w-full flex-wrap items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex w-full items-center justify-between gap-2">
+          <div className="flex w-3/4 items-center gap-4">
             <Image
               height={48}
               width={48}
@@ -167,10 +167,17 @@ const Post = ({ post, mutatePosts }: PostProps) => {
             />
             <CustomLink
               href={`/user/profile/${post.creator.userId}`}
-              className="text-gray-700"
+              className="!inline-block truncate font-semibold text-gray-700"
             >
               {post.creator.username}
-            </CustomLink>{" "}
+            </CustomLink>
+
+            <span className="whitespace-nowrap text-gray-500">
+              {new Date(post.date).toLocaleString("en-gb", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -238,13 +245,6 @@ const Post = ({ post, mutatePosts }: PostProps) => {
         <p className="break-words">{post.content}</p>
 
         <div className="flex w-full flex-row-reverse flex-wrap items-center justify-between gap-4">
-          <span>
-            {new Date(post.date).toLocaleString("en-gb", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
           <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
             <div className="flex items-center gap-x-2">
               {post.likes.find(

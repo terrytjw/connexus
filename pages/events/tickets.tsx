@@ -19,6 +19,7 @@ import Confetti from "react-confetti";
 import { Ticket } from "@prisma/client";
 import { BiGift } from "react-icons/bi";
 import DigitalBadge from "../../components/EventPages/DigitalBadge";
+import { useRouter } from "next/router";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
@@ -32,7 +33,7 @@ export type CurrentTicket = Partial<Ticket> & {
 };
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
-  console.log("tickets ->", tickets);
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [qrValue, setQrValue] = useState<string>("");
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
@@ -45,8 +46,10 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
   });
 
   useEffect(() => {
-    if (currentTicket.rafflePrizeWinner)
+    if (currentTicket.rafflePrizeWinner) {
       toast.success("Congrats, you won something!!!");
+      setTimeout(() => router.reload(), 5000);
+    }
   }, [currentTicket.rafflePrizeWinner]);
 
   function isEmpty(obj: any) {

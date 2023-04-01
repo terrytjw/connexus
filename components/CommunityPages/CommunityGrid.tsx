@@ -18,7 +18,9 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
 
   if (communities.length === 0)
     return (
-      <div className="p-4 text-sm tracking-widest text-gray-400">No items.</div>
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No communities to show.
+      </div>
     );
 
   return (
@@ -27,7 +29,7 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
         <Link
           key={community.communityId}
           href={`/communities/${community.communityId}`}
-          className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+          className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md"
           onClick={async () => {
             await registerCommunityClick(community.communityId);
           }}

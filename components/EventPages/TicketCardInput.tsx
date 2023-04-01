@@ -94,12 +94,12 @@ const TicketCardInput = ({
             <h1 className="flex gap-4 text-xl font-bold text-gray-700">
               {ticket.name}{" "}
               {isPaused() && (
-                <span className="flex items-center rounded-full border-2 border-rose-100 bg-rose-100 px-2 text-sm font-normal text-rose-400">
+                <span className="flex items-center rounded-full border-2 border-red-100 bg-red-100 px-2 text-sm font-normal text-red-500">
                   Sale Paused
                 </span>
               )}
               {isSoldOut() && (
-                <span className="flex items-center rounded-full border-2 border-blue-100 bg-blue-100 px-2 text-sm font-normal text-blue-400">
+                <span className="flex items-center rounded-full border-2 border-blue-100 bg-blue-100 px-2 text-sm font-normal text-blue-600">
                   Sold Out
                 </span>
               )}

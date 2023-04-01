@@ -20,13 +20,13 @@ const StepsMobile = ({ currentStep, steps }: StepsMobileProps) => {
         {steps?.map((step) => (
           <li key={step.name}>
             {step.status === StepStatus.COMPLETE ? (
-              <span className="block h-2.5 w-2.5 rounded-full bg-indigo-600 hover:bg-indigo-900" />
+              <span className="block h-2.5 w-2.5 rounded-full bg-blue-600 hover:bg-blue-800" />
             ) : step.status === StepStatus.CURRENT ? (
               <a className="relative flex items-center justify-center">
                 <span className="absolute flex h-5 w-5 p-px">
-                  <span className="h-full w-full rounded-full bg-indigo-200" />
+                  <span className="h-full w-full rounded-full bg-blue-200" />
                 </span>
-                <span className="relative block h-2.5 w-2.5 rounded-full bg-indigo-600" />
+                <span className="relative block h-2.5 w-2.5 rounded-full bg-blue-600" />
               </a>
             ) : (
               <span className="block h-2.5 w-2.5 rounded-full bg-gray-200 hover:bg-gray-400" />

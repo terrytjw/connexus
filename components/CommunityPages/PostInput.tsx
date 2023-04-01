@@ -52,7 +52,7 @@ const PostInput = ({
   const uploadMultipleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (media.length + e.target.files.length > 10) {
-        toast("You can only upload a maximum of 10 files!");
+        toast.error("You can only upload a maximum of 10 files!");
         return;
       }
 

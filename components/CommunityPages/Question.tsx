@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { useState } from "react";
-import { FaTelegramPlane } from "react-icons/fa";
+import { FaEllipsisH, FaTelegramPlane } from "react-icons/fa";
 import { answerQuestionAPI } from "../../lib/api-helpers/question-api";
 import { QuestionWithUser } from "../../utils/types";
 import Button from "../Button";
@@ -18,6 +18,7 @@ const Question = ({
   isCommunityCreator,
 }: questionProps) => {
   const [answer, setAnswer] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
 
   const answerQuestion = async () => {
     const res = await answerQuestionAPI(question.questionId, answer);
@@ -31,12 +32,15 @@ const Question = ({
       });
       return updatedItems;
     });
+
+    setAnswer("");
+    setIsEditing(false);
   };
 
   return (
     <div className="card border-2 border-gray-200 bg-white">
       <div className="card-body p-4 sm:p-8">
-        <div className="mb-2 flex w-full flex-wrap items-center justify-between">
+        <div className="mb-2 flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Image
               height={48}
@@ -47,24 +51,53 @@ const Question = ({
             />
             <CustomLink
               href={`/user/profile/${question.userId}`}
-              className="text-gray-700"
+              className="!inline-block flex-grow-0 truncate font-semibold text-gray-700"
             >
               {question.user.username}
             </CustomLink>
+            <span className="whitespace-nowrap text-gray-500">
+              {new Date(question.date).toLocaleString("en-gb", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
           </div>
-          <span className="text-gray-500">
-            {new Date(question.date).toLocaleString("en-gb", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
+          <div className="flex items-center gap-2">
+            {isCommunityCreator && question.answer ? (
+              <div className="dropdown-btm dropdown-end dropdown">
+                <label tabIndex={0}>
+                  <Button variant="outlined" size="sm" className="border-0">
+                    <FaEllipsisH />
+                  </Button>
+                </label>
+                <ul
+                  tabIndex={0}
+                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                >
+                  <li>
+                    <Button
+                      size="md"
+                      variant="solid"
+                      className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                      onClick={() => {
+                        setAnswer(question.answer);
+                        setIsEditing(true);
+                      }}
+                    >
+                      Edit Answer
+                    </Button>
+                  </li>
+                </ul>
+              </div>
+            ) : null}
+          </div>
         </div>
+
         <p className="break-words text-lg font-semibold text-gray-700">
           {question.question}
         </p>
 
-        {question.answer ? (
+        {question.answer && !isEditing ? (
           <p className="break-words border-l-2 pl-4 text-gray-700">
             {question.answer}
           </p>

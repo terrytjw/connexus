@@ -127,7 +127,11 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
         </Modal>
 
         <main className="py-12 px-4 sm:px-12">
-          <h2 className="text-4xl font-bold">Communities</h2>
+          <h2 className="text-4xl font-bold">Browse Communities</h2>
+          <h3 className="mt-4">
+            Take a look at all these communities by other creators and join a
+            community!
+          </h3>
 
           {/* mobile */}
           {activeTab == 0 ? (

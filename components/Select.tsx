@@ -1,6 +1,6 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Listbox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { ChevronUpDownIcon } from "@heroicons/react/20/solid";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -42,7 +42,7 @@ const Select = ({ data, selected, setSelected, className }: SelectProps) => {
                   key={index}
                   className={({ active }) =>
                     `relative cursor-default select-none py-2 px-4 ${
-                      active ? "bg-amber-100 text-amber-900" : "text-gray-900"
+                      active ? "bg-blue-100 text-blue-600" : "text-gray-900"
                     }`
                   }
                   value={item}

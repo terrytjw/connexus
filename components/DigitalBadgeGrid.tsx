@@ -24,7 +24,7 @@ const DigitalBadgeGridItem = ({
   const eventDescription = item.ticket.event.description;
 
   return (
-    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200">
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all">
         <Image
           fill
@@ -69,8 +69,8 @@ type DigitalBadgeGridProps = {
 const DigitalBadgeGrid = ({ data, collectedTab }: DigitalBadgeGridProps) => {
   if (data.length === 0)
     return (
-      <div className=" p-4 text-sm tracking-widest text-gray-400">
-        No items.
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No digital badges to show.
       </div>
     );
 

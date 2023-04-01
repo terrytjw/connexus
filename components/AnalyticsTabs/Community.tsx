@@ -256,7 +256,7 @@ const CommunityTab = ({
                     formatter={(value, name, props) => [value, "Clicks"]}
                   />
                   <Legend formatter={(value) => "Clicks"} />
-                  <Bar dataKey="_sum.clicks" fill="#8884d8" />
+                  <Bar dataKey="_sum.clicks" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -294,7 +294,7 @@ const CommunityTab = ({
                     formatter={(value, name, props) => [value, "Members"]}
                   />
                   <Legend formatter={(value) => "Members"} />
-                  <Bar dataKey="_sum.members" fill="#8884d8" />
+                  <Bar dataKey="_sum.members" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -335,7 +335,7 @@ const CommunityTab = ({
                     ]}
                   />
                   <Legend formatter={(value) => "Premium Members"} />
-                  <Bar dataKey="_sum.premiumMembers" fill="#8884d8" />
+                  <Bar dataKey="_sum.premiumMembers" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>

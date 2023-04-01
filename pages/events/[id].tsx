@@ -179,7 +179,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
 
             <section>
               <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
-                Ticket Options (Types)
+                Ticket Options
               </h1>
               <div className="pt-6">
                 {tickets.map((ticket: Ticket) => (

@@ -18,6 +18,7 @@ import {
   XAxis,
   YAxis,
   Sector,
+  Cell,
 } from "recharts";
 import useSWR from "swr";
 import Badge from "../../components/Badge";
@@ -66,6 +67,7 @@ const MerchandiseTab = ({
     },
   ]);
 
+  const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
   const [activeIndex, setActiveIndex] = useState(0);
   const onPieEnter = useCallback(
     (_: any, index: number) => {
@@ -415,7 +417,7 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "revenue" : "_sum.revenue"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -466,7 +468,7 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "merchSold" : "_sum.merchSold"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -513,7 +515,7 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "clicks" : "_sum.clicks"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -534,9 +536,13 @@ const MerchandiseTab = ({
                     cy="50%"
                     innerRadius={50}
                     outerRadius={80}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                     onMouseEnter={onPieEnter}
-                  />
+                  >
+                    {topSellingCollections.map((entry: any, index: number) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                    ))}
+                  </Pie>
                 </PieChart>
               </ResponsiveContainer>
             </div>

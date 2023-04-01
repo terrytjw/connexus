@@ -3,7 +3,7 @@ import { has } from "lodash";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { BiFilter } from "react-icons/bi";
+import { BiFilter, BiInfoCircle } from "react-icons/bi";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import useSWR from "swr";
 import {
@@ -12,15 +12,17 @@ import {
   viewExpiredEvent,
   viewTrendingEvents,
 } from "../../../lib/api-helpers/event-api";
-import { formatDateWithLocalTime } from "../../../utils/date-util";
 import { EventWithAllDetails } from "../../../utils/types";
 import Badge from "../../Badge";
 import Button from "../../Button";
-import Input from "../../Input";
 import Loading from "../../Loading";
 import Modal from "../../Modal";
 import TabGroupBordered from "../../TabGroupBordered";
 import EventsGrid from "../EventsGrid";
+// @ts-ignore
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 
 const DELAY_TIME = 400;
 
@@ -32,10 +34,13 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
-  const [fromDateFilter, setFromDateFilter] = useState<Date | undefined>(
-    undefined
-  );
-  const [toDateFilter, setToDateFilter] = useState<Date | undefined>(undefined);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: undefined,
+      endDate: new Date(""),
+      key: "selection",
+    },
+  ]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
@@ -46,13 +51,18 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   const userId = session?.user.userId;
 
   const hasFilters = (): boolean => {
-    return Boolean(fromDateFilter || toDateFilter || selectedTopics.length > 0);
+    return Boolean(dateRange[0].startDate || selectedTopics.length > 0);
   };
 
   const clearFilters = (): void => {
     setSelectedTopics([]);
-    setFromDateFilter(undefined);
-    setToDateFilter(undefined);
+    setDateRange([
+      {
+        startDate: undefined,
+        endDate: new Date(""),
+        key: "selection",
+      },
+    ]);
   };
 
   // Initialize a variable to hold the timeout ID
@@ -83,8 +93,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       const data = await filterEvent(
         searchTerm,
         selectedTopics,
-        fromDateFilter,
-        toDateFilter,
+        dateRange[0].startDate,
+        dateRange[0].startDate ? dateRange[0].endDate : undefined,
         undefined // this is used for creator events page
       );
 
@@ -104,7 +114,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       // using this state to display events on initial page load
       setSearchAndFilterResults(events);
     }
-  }, [searchString, selectedTopics, fromDateFilter, toDateFilter]);
+  }, [searchString, selectedTopics, dateRange]);
 
   const handleFilterSubmit = () => {
     searchAndFilterEvents(searchString);
@@ -204,35 +214,20 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     if (isLoading) return <Loading />;
 
     return (
-      <>
-        {/* Visited Events  */}
-        <div>
-          {/* info alert */}
-          <div className="alert mb-8 bg-slate-200 text-gray-800 shadow-md">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                className="h-6 w-6 flex-shrink-0 stroke-info"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-              <span className="text-xs sm:text-sm">
-                Events that you have{" "}
-                <span className="font-medium">registered for</span> and{" "}
-                <span className="font-medium">attended</span>.
-              </span>
-            </div>
+      <div>
+        {/* info alert */}
+        <div className="mb-4 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
+          <div className="flex items-center gap-2">
+            <BiInfoCircle className="text-blue-600" size={24} />
+            <span className="sm:text-md text-sm text-gray-500">
+              Events that you have{" "}
+              <span className="font-medium">registered for</span> and{" "}
+              <span className="font-medium">attended</span>.
+            </span>
           </div>
-          <EventsGrid data={visitedEvents} />
         </div>
-      </>
+        <EventsGrid data={visitedEvents} />
+      </div>
     );
   };
 
@@ -252,24 +247,12 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     return (
       <div>
         {/* info alert */}
-        <div className="alert mb-8 bg-slate-200 text-gray-800 shadow-md">
-          <div>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              fill="none"
-              viewBox="0 0 24 24"
-              className="h-6 w-6 flex-shrink-0 stroke-info"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
-            <span className="text-xs sm:text-sm">
+        <div className="mb-4 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
+          <div className="flex items-center gap-2">
+            <BiInfoCircle className="text-blue-600" size={24} />
+            <span className="sm:text-md text-sm text-gray-500">
               Events that you have{" "}
-              <span className="font-medium">registered for</span> but{" "}
+              <span className="font-medium">registered for</span> and{" "}
               <span className="font-medium">did not attend</span>.
             </span>
           </div>
@@ -332,28 +315,14 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           <div className="divider"></div>
           {/* Date Range */}
           <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
-          <div className="mt-2 flex-col justify-between gap-8">
-            <Input
-              type="datetime-local"
-              label="From"
-              value={formatDateWithLocalTime(fromDateFilter)}
-              onChange={(e) => setFromDateFilter(new Date(e.target.value))}
-              placeholder="From Date and Time"
-              size="xs"
-              variant="bordered"
-              className="max-w-3xl align-middle text-gray-500"
-            />
-            <Input
-              type="datetime-local"
-              label="To"
-              value={formatDateWithLocalTime(toDateFilter)}
-              onChange={(e) => setToDateFilter(new Date(e.target.value))}
-              placeholder="From Date and Time"
-              size="xs"
-              variant="bordered"
-              className="max-w-3xl align-middle text-gray-500"
-            />
-          </div>
+          <DateRange
+            showSelectionPreview={false}
+            showDateDisplay={false}
+            onChange={(item: any) => setDateRange([item.selection])}
+            moveRangeOnFirstSelection={false}
+            ranges={dateRange}
+            className="w-full min-w-fit [&_div]:w-full"
+          />
 
           <Button
             variant="solid"
@@ -364,55 +333,20 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             Submit
           </Button>
         </Modal>
-        <h1 className="text-4xl font-bold">Events</h1>
-        <h3 className="mt-4">Register for a new event </h3>
+        <h1 className="text-4xl font-bold">Browse Events</h1>
+        <h3 className="mt-4 ">
+          Take a look at all these events by other creators and register for a
+          new event!
+        </h3>
 
-        <div className="mt-6 mb-3 flex flex-wrap justify-between">
+        <div className="mt-10 hidden items-center justify-between gap-x-4 lg:flex">
           <Link href="/events/tickets">
             <Button variant="solid" size="md" className="max-w-xs">
               View Tickets
             </Button>
           </Link>
-        </div>
-
-        {/* mobile */}
-        <div className="mt-8 flex w-full gap-2 lg:hidden">
-          <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <FaSearch className="text-gray-500" />
-            </div>
-            <input
-              className="input-outlined input input-md block w-full rounded-md pl-10"
-              type="text"
-              value={searchString}
-              placeholder="Search Communities"
-              onChange={(e) => {
-                setSearchString(e.target.value);
-              }}
-            />
-          </div>
-          <BiFilter
-            className="h-12 w-10"
-            onClick={() => setIsFilterModalOpen(true)}
-          />
-        </div>
-
-        <div className="relative">
-          <TabGroupBordered
-            tabs={["Listed", "Visited", "Expired"]}
-            activeTab={activeTab}
-            setActiveTab={(index: number) => {
-              setActiveTab(index);
-            }}
-          >
-            {activeTab == 0 && <ListedTabContent />}
-            {activeTab == 1 && <VisitedTabContent />}
-            {activeTab == 2 && <ExpiredTabContent />}
-          </TabGroupBordered>
-
-          {/* desktop */}
-          <div className="absolute right-0 top-8 hidden items-center gap-x-4 lg:flex">
-            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+          <div className="flex gap-x-4">
+            <div className="relative items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
               </div>
@@ -436,6 +370,42 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               <BiFilter className="h-8 w-8" />
             </Button>
           </div>
+        </div>
+
+        {/* mobile */}
+        <div className="mt-8 flex w-full gap-2 lg:hidden">
+          <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <FaSearch className="text-gray-500" />
+            </div>
+            <input
+              className="input-outlined input input-md block w-full rounded-md pl-10"
+              type="text"
+              value={searchString}
+              placeholder="Search Events"
+              onChange={(e) => {
+                setSearchString(e.target.value);
+              }}
+            />
+          </div>
+          <BiFilter
+            className="h-12 w-10"
+            onClick={() => setIsFilterModalOpen(true)}
+          />
+        </div>
+
+        <div className="relative">
+          <TabGroupBordered
+            tabs={["Listed", "Visited", "Expired"]}
+            activeTab={activeTab}
+            setActiveTab={(index: number) => {
+              setActiveTab(index);
+            }}
+          >
+            {activeTab == 0 && <ListedTabContent />}
+            {activeTab == 1 && <VisitedTabContent />}
+            {activeTab == 2 && <ExpiredTabContent />}
+          </TabGroupBordered>
         </div>
       </main>
     </div>

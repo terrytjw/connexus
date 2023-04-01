@@ -9,12 +9,13 @@ html {
 
 /* styling spin wheel */
 #canvas {
+  scale: 80%;
   display: flex;
   justify-content: center;
   position: relative;
   margin-top: -64px;
   margin-bottom: -240px;
-  margin-right: -385px;
+  margin-right: -320px;
 }
 
 /* styling native select */

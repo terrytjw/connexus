@@ -485,11 +485,11 @@ const AttendeesPage = () => {
 
           {/* QR Modal */}
           <Modal
-            isOpen={isQrModalOpen}
+            isOpen={true}
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
-            <h2 className="text-2xl font-bold sm:text-2xl">
+            <h2 className="text-center text-2xl font-bold sm:text-2xl">
               {checkInStatus !== CheckInStatus.LOADING
                 ? "Scan a QR code"
                 : "Scanning..."}

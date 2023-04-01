@@ -175,17 +175,20 @@ const CreateCommunityPage = ({
               <h3 className="text-xl font-semibold">Delete Community</h3>
 
               <p>
-                By deleting this community, all existing data will be removed.
+                By deleting this community, all existing data will be removed.{" "}
+                <span className="font-semibold">
+                  You cannot undo this action.
+                </span>
               </p>
 
               <div className="flex gap-4">
                 <Button
-                  className="!bg-red-600"
+                  className="bg-red-600 hover:bg-red-500"
                   variant="solid"
                   size="md"
                   onClick={() => onDelete()}
                 >
-                  Confirm
+                  Delete
                 </Button>
                 <Button
                   className="border-0"

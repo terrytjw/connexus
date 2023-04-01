@@ -299,7 +299,7 @@ const EventTab = ({
                   <Legend formatter={(value) => "Revenue"} />
                   <Bar
                     dataKey={`${eventIdSelected ? "revenue" : "_sum.revenue"}`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -346,7 +346,7 @@ const EventTab = ({
                     dataKey={`${
                       eventIdSelected ? "ticketsSold" : "_sum.ticketsSold"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -391,7 +391,7 @@ const EventTab = ({
                   <Legend formatter={(value) => "Clicks"} />
                   <Bar
                     dataKey={`${eventIdSelected ? "clicks" : "_sum.clicks"}`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -434,7 +434,7 @@ const EventTab = ({
                   <Legend formatter={(value) => "Likes"} />
                   <Bar
                     dataKey={`${eventIdSelected ? "likes" : "_sum.likes"}`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>

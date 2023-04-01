@@ -97,24 +97,24 @@ const CollectionGridItem = ({
   };
 
   return (
-    <Link
-      href={`/events/${item.eventId}`}
-      className="group text-sm"
-      onClick={async () => {
-        await registerEventClick(item.eventId);
-      }}
-    >
-      <div>
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
+      <Link
+        href={`/events/${item.eventId}`}
+        className="group text-sm"
+        onClick={async () => {
+          await registerEventClick(item.eventId);
+        }}
+      >
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
           <Image
+            fill
+            sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
+            className="object-cover object-center"
             src={item.eventPic || "/images/bear.jpg"}
             alt={item.eventName}
-            className="w-full object-cover object-center"
-            width={100}
-            height={100}
           />
           <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
-            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
+            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black" />
             {/* TODO: Replace boolean with like check*/}
             {isListed && (
               <div className="relative ml-auto">
@@ -161,9 +161,8 @@ const CollectionGridItem = ({
         <p className="text-s mt-2 font-semibold text-blue-600">
           {item.maxAttendee} attendees
         </p>
-        {/* </Link> */}
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 

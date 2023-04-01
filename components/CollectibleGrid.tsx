@@ -17,7 +17,7 @@ const CollectibleGridItem = ({
   if (!item) return <Skeleton height={350} />;
 
   return (
-    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200">
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
       {!collectedTab ? (
         <div className="mb-2 flex w-full gap-3 text-gray-900">
           <progress
@@ -57,10 +57,9 @@ const CollectibleGridItem = ({
           ) : null}
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{item.name}</h3>
+      <h3 className="mt-4 text-xl font-bold text-gray-900">{item.name}</h3>
       {collectedTab && "collection" in item ? (
         <p className="mt-2 text-sm text-gray-500">
-          From{" "}
           {(item as MerchandiseWithCollectionName).collection.collectionName}
         </p>
       ) : null}
@@ -75,8 +74,8 @@ type CollectibleGridProps = {
 const CollectibleGrid = ({ data, collectedTab }: CollectibleGridProps) => {
   if (data.length === 0)
     return (
-      <div className=" p-4 text-sm tracking-widest text-gray-400">
-        No items.
+      <div className="flex h-80 items-center justify-center p-4 text-sm tracking-widest text-gray-400">
+        No collectibles to show.
       </div>
     );
 

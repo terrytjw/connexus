@@ -49,7 +49,7 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
       return data.filter((comment) => comment.commentId != res.commentId);
     });
-    toast("Comment deleted!");
+    toast.success("Comment deleted!");
   };
 
   return (

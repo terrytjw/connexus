@@ -159,7 +159,7 @@ const OverviewTab = ({
                 formatter={(value, name, props) => [`$${value}`, "Revenue"]}
               />
               <Legend formatter={(value) => "Revenue"} />
-              <Bar dataKey="_sum.revenue" fill="#8884d8" />
+              <Bar dataKey="_sum.revenue" fill="#1A54C2" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -193,7 +193,7 @@ const OverviewTab = ({
                 formatter={(value, name, props) => [`$${value}`, "Revenue"]}
               />
               <Legend formatter={(value) => "Revenue"} />
-              <Bar dataKey="_sum.revenue" fill="#8884d8" />
+              <Bar dataKey="_sum.revenue" fill="#1A54C2" />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -239,9 +239,9 @@ const OverviewTab = ({
               <Bar
                 dataKey="_sum.nonPremiumMembers"
                 stackId="a"
-                fill="#8884d8"
+                fill="#1A54C2"
               />
-              <Bar dataKey="_sum.premiumMembers" stackId="a" fill="#82ca9d">
+              <Bar dataKey="_sum.premiumMembers" stackId="a" fill="#F69489">
                 <LabelList
                   position="top"
                   valueAccessor={(entry: any) => {
@@ -303,7 +303,7 @@ const OverviewTab = ({
                 ]}
               />
               <Legend formatter={(value) => "Post Engagement"} />
-              <Bar dataKey="_avg.engagement" fill="#8884d8" />
+              <Bar dataKey="_avg.engagement" fill="#1A54C2" />
             </BarChart>
           </ResponsiveContainer>
         </div>

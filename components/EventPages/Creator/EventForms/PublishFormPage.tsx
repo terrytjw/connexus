@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
@@ -65,7 +65,7 @@ const PublishFormPage = ({
                 </h2>
                 <div className="gap-y-15 grid grid-cols-1 gap-x-6 pt-8 sm:grid-cols-3">
                   <div
-                    className="group link mb-8 rounded-lg p-2 text-sm no-underline hover:cursor-pointer hover:bg-gray-200"
+                    className="group rounded-lg p-2 text-sm no-underline hover:cursor-pointer hover:bg-gray-200 hover:shadow-md"
                     onClick={() => setIsPreview((prev) => !prev)}
                   >
                     <div className="relative aspect-square w-full overflow-hidden rounded-lg group-hover:opacity-75">
@@ -79,11 +79,11 @@ const PublishFormPage = ({
                       <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
                         <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
                         <Button
-                          variant="solid"
-                          size="sm"
-                          className="relative ml-auto rounded-full text-lg font-semibold text-white"
+                          size="md"
+                          variant="outlined"
+                          className=" !btn-circle relative rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
                         >
-                          <FaHeart />
+                          <FaRegHeart size={24} />
                         </Button>
                       </div>
                     </div>
@@ -105,7 +105,7 @@ const PublishFormPage = ({
                 <Button
                   variant="solid"
                   size="md"
-                  className="max-w-xs"
+                  className="mt-4 max-w-xs"
                   onClick={() => setIsPreview((prev) => !prev)}
                 >
                   Preview Event

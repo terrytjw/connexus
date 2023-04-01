@@ -16,18 +16,30 @@ interface SpinWheelProps {
 const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
-  const segColors = [
-    "#EE4040",
-    "#F0CF50",
-    "#815CD1",
-    "#3DA5E0",
-    "#34A24F",
-    "#F9AA1F",
-    "#EC3F3F",
-    "#FF9000",
-  ];
+  const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
 
   const emptyPrizeValues = ["No prize :(", "No prize :("];
+
+  const concatArrayByCeilDivision = (
+    a: number,
+    b: number,
+    values: string[]
+  ): string[] => {
+    const repetitions = Math.ceil(a / b);
+    const result = [] as string[];
+
+    for (let i = 0; i < repetitions; i++) {
+      result.push(...values);
+    }
+
+    return result;
+  };
+
+  const segColors = concatArrayByCeilDivision(
+    prizes.concat(emptyPrizeValues).length,
+    COLORS.length,
+    COLORS
+  );
 
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
