@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
@@ -15,11 +15,16 @@ import {
   getLinkedCollections,
 } from "../../lib/api-helpers/collection-api";
 import { getUserInfo } from "../../lib/api-helpers/user-api";
+import { ParsedUrlQuery } from "querystring";
 
 type CommunityPagePageProps = {
   communityData: CommunityWithCreatorAndChannelsAndMembers;
   linkedCollections: CollectionWithMerchAndPremiumChannel[];
 };
+
+interface Params extends ParsedUrlQuery {
+  id: string;
+}
 
 const CommunityPage = ({
   communityData,
@@ -87,10 +92,11 @@ const CommunityPage = ({
 
 export default CommunityPage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const { id } = context.params;
-
-  const communityData = await getCommunityAPI(id);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const { id } = context.params as Params;
+  const communityData = await getCommunityAPI(Number(id));
 
   if (communityData && Object.keys(communityData).length === 0) {
     return {

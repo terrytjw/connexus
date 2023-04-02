@@ -40,11 +40,15 @@ const Home = ({ isAuthModalOpen }: any) => {
       const signature1 = await sdk.whitelistUrl(
         "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app"
       );
+      const signature2 = await sdk.whitelistUrl(
+        "https://9038-116-15-156-213.ap.ngrok.io"
+      );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
           "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app":
             signature1,
+          "https://9038-116-15-156-213.ap.ngrok.io": signature2,
         },
       });
       setSocialLoginSDK(sdk);
@@ -69,13 +73,16 @@ const Home = ({ isAuthModalOpen }: any) => {
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
         };
+
         const response = await signIn("custom-login", {
           redirect: false,
-          callbackUrl: "/communities",
+          callbackUrl: "https://9038-116-15-156-213.ap.ngrok.io/communities",
           ...userInfo,
         });
 
         socialLoginSDK.hideWallet();
+
+        console.log("response ->", response);
         if (response && response.url) router.push(response.url);
       }
 

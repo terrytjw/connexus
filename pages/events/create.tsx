@@ -26,7 +26,7 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { ALCHEMY_API, smartContract } from "../../lib/constant";
+import { ALCHEMY_API, API_URL, smartContract } from "../../lib/constant";
 import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
@@ -205,7 +205,7 @@ const CreatorEventCreate = () => {
 
     // call post api
     const { data: response } = await axios.post(
-      "http://localhost:3000/api/events",
+      `${API_URL}/events`,
       {
         ...event,
         eventScAddress: event_contract.address,

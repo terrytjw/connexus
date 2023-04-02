@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import { filterEvent } from "../../../lib/api-helpers/event-api";
 import { useSession } from "next-auth/react";
 import { formatDateWithLocalTime } from "../../../utils/date-util";
+import { API_URL } from "../../../lib/constant";
 
 const DELAY_TIME = 400;
 
@@ -440,7 +441,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="bg-red-600 hover:bg-red-500"
                 onClick={async () => {
                   await axios.delete(
-                    `http://localhost:3000/api/events/${eventIdToDelete}`
+                    `${API_URL}/events/${eventIdToDelete}`
                   );
                   router.reload();
                   setDeleteConfirmationModalOpen(false);
