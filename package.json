@@ -17,9 +17,12 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@babel/core": "^7.0.0-0",
+    "@babel/runtime": "^7.x",
     "@biconomy/core-types": "^1.0.0",
     "@biconomy/smart-account": "^1.0.0",
     "@biconomy/web3-auth": "^1.0.0",
+    "@ethersproject/hardware-wallets": "^5.0.14",
     "@formkit/auto-animate": "^1.0.0-beta.5",
     "@headlessui/react": "^1.7.7",
     "@heroicons/react": "^2.0.13",
@@ -37,6 +40,8 @@
     "alchemy-sdk": "^2.4.3",
     "axios": "^1.2.1",
     "bignumber.js": "^9.1.1",
+    "chai": ">= 2.1.2 < 5",
+    "csstype": "^3.0.10",
     "csv-writer": "^1.6.0",
     "daisyui": "^2.46.1",
     "date-fns": "^2.29.3",
@@ -51,10 +56,12 @@
     "next": "^13.1.0",
     "next-auth": "^4.19.2",
     "next-swagger-doc": "^0.3.6",
+    "openapi-types": ">=7",
     "path": "^0.12.7",
     "pdfkit": "^0.13.0",
     "pdfkit-table": "^0.1.99",
     "prisma": "^4.9.0",
+    "prop-types": "^15.6.0",
     "react": "^18.2.0",
     "react-confetti": "^6.1.0",
     "react-date-range": "^1.4.0",
@@ -75,9 +82,11 @@
     "theme-change": "^2.3.0",
     "truffle": "^5.7.6",
     "twilio": "^4.8.0",
+    "typechain": "^5.1.2",
     "uuid": "^9.0.0",
     "validator": "^13.9.0",
-    "web3": "^1.8.2"
+    "web3": "^1.8.2",
+    "ws": "*"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.3",

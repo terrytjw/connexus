@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useContext, useEffect, useState } from "react";
 import { BiFilter } from "react-icons/bi";
 import { FaSearch, FaTimes } from "react-icons/fa";
+import { Toaster } from "react-hot-toast";
 import useSWR from "swr";
 import Badge from "../../components/Badge";
 import Button from "../../components/Button";
@@ -68,6 +69,16 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
 
   return (
     <ProtectedRoute>
+      <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
       <Layout>
         <Modal
           isOpen={isModalOpen}

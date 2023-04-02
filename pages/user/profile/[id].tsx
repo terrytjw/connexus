@@ -117,31 +117,32 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 <Link
                   href={getFacebookShareLink(profileLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaFacebook className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTwitterShareLink(profileLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTwitter className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTelegramShareLink(profileLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTelegram className="h-6 w-6" />
                 </Link>
                 <Link
                   href={`https://mumbai.polygonscan.com/address/${userData.walletAddress}`}
                   target="_blank"
-                  className="ml-2 flex items-center gap-x-2 text-blue-500 transition-all hover:text-blue-700 hover:underline"
+                  className="ml-2 flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline tooltip" 
+                  data-tip="For Web3 native users to view the smart contract transactions in Polygon"
                 >
                   <FaExternalLinkAlt className="h-3 w-3" />
-                  <span className="font-medium">On-chain data</span>
+                  <span className="font-medium">On-chain Analysis</span>
                 </Link>
               </div>
             </div>
@@ -165,11 +166,11 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             </TabGroupBordered>
           </div>
           <Toaster
-            position="bottom-center"
+            position="top-center"
             toastOptions={{
               style: {
-                background: "#1A7DFF",
-                color: "#fff",
+                background: "#FFFFFF",
+                color: "#34383F",
                 textAlign: "center",
               },
             }}

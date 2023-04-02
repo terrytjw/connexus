@@ -5,7 +5,7 @@ import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEvents
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
-
+import { Toaster } from "react-hot-toast";
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
 import { UserRoleContext } from "../../contexts/UserRoleProvider";
@@ -37,6 +37,16 @@ const EventsPage = ({ events }: EventsPageProps) => {
   };
   return (
     <ProtectedRoute>
+      <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: "#FFFFFF",
+              color: "#34383F",
+              textAlign: "center",
+            },
+          }}
+        />
       <Layout>
         {!isFan ? (
           <CreatorEventsPage events={filterEvents(events)} />

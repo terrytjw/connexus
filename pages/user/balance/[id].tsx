@@ -132,7 +132,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               Your Balance
             </h4>
             <div className="flex justify-between py-2">
-              <h2 className="text-3xl font-semibold text-blue-500 lg:text-4xl">
+              <h2 className="text-3xl font-semibold text-blue-600 lg:text-4xl">
                 ${updatedUserData.walletBalance}
               </h2>
               <Button
