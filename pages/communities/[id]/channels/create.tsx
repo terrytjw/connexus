@@ -205,7 +205,7 @@ const CreatePremiumChannelPage = () => {
                 <input
                   type="radio"
                   name="radio-10"
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   checked={!displayCollectionForm}
                   onChange={() => setDisplayCollectionForm(false)}
                 />
@@ -257,7 +257,7 @@ const CreatePremiumChannelPage = () => {
                 <input
                   type="radio"
                   name="radio-10"
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   checked={displayCollectionForm}
                   onChange={() => setDisplayCollectionForm(true)}
                 />

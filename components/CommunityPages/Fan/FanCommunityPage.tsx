@@ -135,21 +135,21 @@ const FanCommunityPage = ({
                 <Link
                   href={getFacebookShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaFacebook className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTwitterShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTwitter className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTelegramShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTelegram className="h-6 w-6" />
                 </Link>

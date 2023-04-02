@@ -113,7 +113,7 @@ const TicketFormPage = ({
                   type="radio"
                   value={"yes"}
                   checked={isPromoEnabled()}
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   onChange={() => setValue("promotion.0.isEnabled", true)}
                 />
               </div>
@@ -137,7 +137,7 @@ const TicketFormPage = ({
                   type="radio"
                   value={"no"}
                   checked={!isPromoEnabled()}
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   onChange={() => setValue("promotion.0.isEnabled", false)}
                 />
               </div>
@@ -231,7 +231,7 @@ const TicketFormPage = ({
                     type="radio"
                     value={"yes"}
                     checked={isRaffleEnabled()}
-                    className="radio checked:bg-blue-500"
+                    className="radio checked:bg-blue-600"
                     onChange={() => {
                       setValue("raffles.0.isEnabled", true);
                     }}
@@ -255,7 +255,7 @@ const TicketFormPage = ({
                     type="radio"
                     value={"no"}
                     checked={!isRaffleEnabled()}
-                    className="radio checked:bg-blue-500"
+                    className="radio checked:bg-blue-600"
                     onChange={() => {
                       setValue("raffles.0.isEnabled", false);
                     }}
@@ -554,7 +554,7 @@ const TicketFormPage = ({
                           checked={
                             ticketTypeOption === tickets[index].ticketType
                           }
-                          className="radio checked:bg-blue-500"
+                          className="radio checked:bg-blue-600"
                           onChange={() => {
                             // console.log("new Ticket ->", {
                             //   ...tickets[index],
