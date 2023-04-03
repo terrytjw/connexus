@@ -163,8 +163,10 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     <div>
       <main className="py-12 px-4 sm:px-12">
         {/* Rest of page */}
-        <h1 className="text-4xl font-bold">Your Events</h1>
-        <h3 className="mt-4">View all your created upcoming and past events</h3>
+        <h1 className="text-4xl font-bold text-gray-900">Your Events</h1>
+        <h3 className="mt-4 text-gray-500">
+          View all your created upcoming and past events
+        </h3>
 
         {/* dekstop filter and search */}
         <div className="mt-10 hidden items-center justify-between gap-x-4 lg:flex">
@@ -293,7 +295,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Filter Events</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Filter Events
+            </h3>
             <Button
               variant="outlined"
               size="sm"

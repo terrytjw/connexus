@@ -92,11 +92,20 @@ const MobileNavbar = ({ userData, children }: any) => {
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
+              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold text-gray-900 shadow"
             >
               <li>
-                <a onClick={() => {switchRole(); {isFan ? toast.success("You're a Creator!") : toast.success("You're a Fan!")} }}>
-                      {isFan ? "Switch to Creator View" : "Switch to Fan View"}
+                <a
+                  onClick={() => {
+                    switchRole();
+                    {
+                      isFan
+                        ? toast.success("You're a Creator!")
+                        : toast.success("You're a Fan!");
+                    }
+                  }}
+                >
+                  {isFan ? "Switch to Creator View" : "Switch to Fan View"}
                 </a>
               </li>
               <li>
@@ -142,7 +151,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                   : ""
               )}
             >
-              <HiOutlineHome className="ml-2 w-6 h-6" />
+              <HiOutlineHome className="ml-2 h-6 w-6" />
               Communities
             </Link>
           </li>
@@ -156,7 +165,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                   : ""
               )}
             >
-              <HiOutlinePhotograph className="ml-2 w-6 h-6" />
+              <HiOutlinePhotograph className="ml-2 h-6 w-6" />
               Merchandise
             </Link>
           </li>
@@ -170,7 +179,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                   : ""
               )}
             >
-              <HiOutlineCalendar className="ml-2 w-6 h-6" />
+              <HiOutlineCalendar className="ml-2 h-6 w-6" />
               Events
             </Link>
           </li>
@@ -185,7 +194,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                     : ""
                 )}
               >
-                <HiOutlineChartSquareBar className="ml-2 w-6 h-6" />
+                <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
                 Analytics
               </Link>
             </li>
@@ -200,7 +209,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                   : ""
               )}
             >
-              <HiOutlineUser className="ml-2 w-6 h-6" />
+              <HiOutlineUser className="ml-2 h-6 w-6" />
               Profile
             </Link>
           </li>
@@ -209,7 +218,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
               onClick={() => setIsAuthModalOpen(true)}
             >
-              <HiOutlineLogout className="ml-2 w-6 h-6" />
+              <HiOutlineLogout className="ml-2 h-6 w-6" />
               Logout
             </button>
           </li>
@@ -229,7 +238,7 @@ const DesktopSidebar = ({ userData }: any) => {
   const { isFan } = useContext(UserRoleContext);
 
   return (
-    <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block drop-shadow-md">
+    <div className="hidden min-h-screen w-64 bg-white drop-shadow-md lg:fixed lg:block">
       <Link
         href="/"
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
@@ -259,7 +268,7 @@ const DesktopSidebar = ({ userData }: any) => {
                 : ""
             )}
           >
-            <HiOutlineHome className="ml-2 w-6 h-6" />
+            <HiOutlineHome className="ml-2 h-6 w-6" />
             Communities
           </Link>
         </li>
@@ -273,7 +282,7 @@ const DesktopSidebar = ({ userData }: any) => {
                 : ""
             )}
           >
-            <HiOutlinePhotograph className="ml-2 w-6 h-6" />
+            <HiOutlinePhotograph className="ml-2 h-6 w-6" />
             Merchandise
           </Link>
         </li>
@@ -287,7 +296,7 @@ const DesktopSidebar = ({ userData }: any) => {
                 : ""
             )}
           >
-            <HiOutlineCalendar className="ml-2 w-6 h-6" />
+            <HiOutlineCalendar className="ml-2 h-6 w-6" />
             Events
           </Link>
         </li>
@@ -302,7 +311,7 @@ const DesktopSidebar = ({ userData }: any) => {
                   : ""
               )}
             >
-              <HiOutlineChartSquareBar className="ml-2 w-6 h-6" />
+              <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
               Analytics
             </Link>
           </li>
@@ -318,7 +327,7 @@ const DesktopSidebar = ({ userData }: any) => {
                 : ""
             )}
           >
-            <HiOutlineUser className="ml-2 w-6 h-6" />
+            <HiOutlineUser className="ml-2 h-6 w-6" />
             Profile
           </Link>
         </li>
@@ -327,7 +336,7 @@ const DesktopSidebar = ({ userData }: any) => {
             className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
             onClick={() => setIsAuthModalOpen(true)}
           >
-            <HiOutlineLogout className="ml-2 w-6 h-6" />
+            <HiOutlineLogout className="ml-2 h-6 w-6" />
             Logout
           </button>
         </li>
@@ -377,16 +386,25 @@ const Layout = ({ children }: LayoutProps) => {
                   <span className="ml-2 lowercase italic text-gray-500 transition-all  group-hover:text-gray-400">
                     @{userData.username}
                   </span>
-                  <HiChevronDown className="ml-2 w-6 h-6 text-gray-500 transition-all  group-hover:text-gray-400" />
+                  <HiChevronDown className="ml-2 h-6 w-6 text-gray-500 transition-all  group-hover:text-gray-400" />
                 </label>
                 <ul
                   tabIndex={0}
                   className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
                 >
                   <li>
-                  <a onClick={() => {switchRole(); {isFan ? toast.success("You're a Creator!") : toast.success("You're a Fan!")} }}>
+                    <a
+                      onClick={() => {
+                        switchRole();
+                        {
+                          isFan
+                            ? toast.success("You're a Creator!")
+                            : toast.success("You're a Fan!");
+                        }
+                      }}
+                    >
                       {isFan ? "Switch to Creator View" : "Switch to Fan View"}
-                  </a>
+                    </a>
                   </li>
                   <li>
                     <a href={`/user/balance/${session?.user.userId}`}>
@@ -401,7 +419,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Footer />
         </main>
       </div>
-      <Toaster/>
+      <Toaster />
     </MobileNavbar>
   );
 };

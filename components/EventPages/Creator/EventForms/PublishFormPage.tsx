@@ -53,14 +53,14 @@ const PublishFormPage = ({
   };
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl">
       {!isPreview ? (
         <div>
           <section>
             <div>
               {/* TODO: Abstract out to event grid item  */}
               <div>
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Preview Event Details
                 </h2>
                 <div className="gap-y-15 grid grid-cols-1 gap-x-6 pt-8 sm:grid-cols-3">
@@ -114,7 +114,7 @@ const PublishFormPage = ({
 
               {/* Radios */}
               <div className="mt-12">
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Who can see your event?
                 </h2>
                 <fieldset className="mt-8">
@@ -162,7 +162,7 @@ const PublishFormPage = ({
 
               {/* Dummy component */}
               <div className="mt-12">
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   When should we publish your event?
                 </h2>
                 <fieldset className="mt-8">

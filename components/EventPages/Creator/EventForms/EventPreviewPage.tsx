@@ -75,13 +75,13 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           <Banner coverImageUrl={bannerPic ? bannerPic : ""} />
         </div>
 
-        <div className="z-30 mx-auto px-16">
+        <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           <div className="relative z-30 -mt-12 sm:-mt-16">
             <Avatar imageUrl={eventPic ? eventPic : ""} />
           </div>
         </div>
 
-        <div className="py-8 px-4 sm:px-12">
+        <div className="mx-auto mt-6 max-w-3xl px-4 pb-12 sm:px-6 lg:px-8">
           <section>
             <div className="mt-4 flex flex-wrap justify-between">
               <div className="flex flex-col">
@@ -89,20 +89,20 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
                 <h3 className="mt-4">{description}</h3>
               </div>
               <Button variant="solid" size="md" className="max-w-xs" disabled>
-                Register for event
+                Register for Event
               </Button>
             </div>
           </section>
 
           <section>
-            <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
+            <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
               When and Where
             </h1>
             <div className="mt-8 flex justify-between">
               <div className="flex w-1/2">
-                <FaCalendar className="text-md" />
-                <span className="sm:text-md ml-2 flex-col text-sm">
-                  <p className="font-bold">Date and Time</p>
+                <FaCalendar className="h-6 w-6 text-blue-600" />
+                <span className="sm:text-md ml-2 flex-col text-sm text-gray-900">
+                  <p className="text-lg font-bold">Date and Time</p>
                   <p>
                     {formatDate(startDate)} - {formatDate(endDate)}
                   </p>
@@ -110,9 +110,9 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
               </div>
 
               <div className="flex w-1/2">
-                <FaMapPin className="text-md" />
-                <span className="sm:text-md ml-2 flex-col text-sm">
-                  <p className="font-bold">Location</p>
+                <FaMapPin className="h-6 w-6 text-blue-600" />
+                <span className="sm:text-md ml-2 flex-col text-sm text-gray-900">
+                  <p className="text-lg font-bold">Location</p>
                   <p>{address?.locationName}</p>
                   <p>
                     {address?.address2} {address?.address1}
@@ -124,7 +124,7 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           </section>
 
           <section>
-            <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
+            <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
               Ticket Options
             </h1>
             <div className="pt-6">
@@ -135,7 +135,9 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           </section>
 
           <section>
-            <h1 className="mt-12 text-xl font-semibold sm:text-2xl">Topics</h1>
+            <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
+              Topics
+            </h1>
             <div className="flex flex-wrap gap-6 py-4">
               {category.length === 0 && (
                 <p className="text-gray-500">No Topics Selected</p>
@@ -153,15 +155,13 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           </section>
 
           <section>
-            <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
+            <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
               Share through Social Media
             </h1>
-            <div className="flex flex-wrap gap-4 py-4">
-              <FaFacebook />
-              <FaTwitter />
-              <FaInstagram />
-              <FaFacebookMessenger />
-              <FaTelegram />
+            <div className="flex flex-wrap gap-4 py-4 text-gray-500">
+              <FaFacebook className="h-6 w-6" />
+              <FaTwitter className="h-6 w-6" />
+              <FaTelegram className="h-6 w-6" />
             </div>
           </section>
         </div>

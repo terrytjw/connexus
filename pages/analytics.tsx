@@ -74,8 +74,8 @@ const AnalyticsPage = ({
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <h1 className="text-4xl font-bold">Analytics</h1>
-          <h3 className="mt-4">
+          <h1 className="text-4xl font-bold text-gray-900">Analytics</h1>
+          <h3 className="mt-4 text-gray-500">
             Have an in-depth look at all the metrics of your fans' engagement
           </h3>
 

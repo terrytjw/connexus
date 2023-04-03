@@ -72,7 +72,7 @@ const Question = ({
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 text-gray-900 shadow"
                 >
                   <li>
                     <Button

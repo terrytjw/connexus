@@ -272,7 +272,9 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Filter Events</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Filter Events
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -333,8 +335,8 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
             Submit
           </Button>
         </Modal>
-        <h1 className="text-4xl font-bold">Browse Events</h1>
-        <h3 className="mt-4 ">
+        <h1 className="text-4xl font-bold text-gray-900">Browse Events</h1>
+        <h3 className="mt-4 text-gray-500">
           Take a look at all these events by other creators and register for a
           new event!
         </h3>

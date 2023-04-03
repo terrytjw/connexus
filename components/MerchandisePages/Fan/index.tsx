@@ -127,7 +127,7 @@ const FanCollectionsPage = ({
         className="min-w-fit"
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl font-semibold text-gray-900">
             {activeTab == 0
               ? "Filter Collections"
               : "Filter Collected Merchandise"}
@@ -200,12 +200,12 @@ const FanCollectionsPage = ({
         </Button>
       </Modal>
 
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-4xl font-bold text-gray-900">
         {activeTab === 0
           ? "Browse Digital Merchandise Collections"
           : "Your Digital Merchandise Collection"}
       </h1>
-      <h3 className="mt-4">
+      <h3 className="mt-4 text-gray-500">
         {activeTab === 0
           ? "Take a look at all these collections by other creators!"
           : "View all your collected digital merchandise"}

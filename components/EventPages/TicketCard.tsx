@@ -136,9 +136,7 @@ const TicketCard = ({
               </p>
             </span>
             <span className=" flex flex-col">
-              <p className="text-md text-blue-600">
-                Perks of owning this ticket:
-              </p>
+              <p className="text-md font-semibold text-blue-600">Perks</p>
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
           </div>

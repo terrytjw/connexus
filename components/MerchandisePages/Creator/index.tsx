@@ -195,8 +195,10 @@ const CreatorCollectionsPage = () => {
         </form>
       </Modal>
 
-      <h1 className="text-4xl font-bold">Your Digital Merchandise Creation</h1>
-      <h3 className="mt-4">
+      <h1 className="text-4xl font-bold text-gray-900">
+        Your Digital Merchandise Creation
+      </h1>
+      <h3 className="mt-4 text-gray-500">
         View all your on sale, paused, and sold digital merchandise collections
       </h3>
 

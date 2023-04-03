@@ -191,7 +191,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 text-gray-900 shadow"
                 >
                   <li>
                     {post.isPinned ? (
@@ -242,11 +242,11 @@ const Post = ({ post, mutatePosts }: PostProps) => {
 
         <Carousel images={post.media} />
 
-        <p className="break-words">{post.content}</p>
+        <p className="break-words text-gray-900">{post.content}</p>
 
         <div className="flex w-full flex-row-reverse flex-wrap items-center justify-between gap-4">
           <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 text-gray-700">
               {post.likes.find(
                 (like: { userId: number }) => like.userId == userId
               ) ? (
@@ -271,7 +271,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
               {post.likes.length}
             </div>
 
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 text-gray-700">
               <Button
                 size="md"
                 variant="outlined"

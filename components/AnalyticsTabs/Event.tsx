@@ -105,7 +105,9 @@ const EventTab = ({
             className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold">Filter Event Analytics</h3>
+              <h3 className="text-xl font-semibold text-gray-900">
+                Filter Event Analytics
+              </h3>
               <Button
                 variant="outlined"
                 size="sm"
@@ -263,7 +265,7 @@ const EventTab = ({
 
           <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Revenue Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -306,7 +308,7 @@ const EventTab = ({
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Tickets Sold Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -353,7 +355,7 @@ const EventTab = ({
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Clicks Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -398,7 +400,9 @@ const EventTab = ({
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">Likes</h3>
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
+                Likes
+              </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   width={500}
@@ -451,7 +455,7 @@ const EventTab = ({
               className="w-40 flex-grow-0 sm:w-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
             There are no event analytics to show for now, go create an event!
             <Button variant="solid" size="md" href="/events/create">
               Go create an event

@@ -405,7 +405,7 @@ const CreatorEventCreate = () => {
                 onClick={reverseStep}
               />
             )}
-            <h2 className="text-2xl font-bold sm:text-4xl">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
               {currentStep?.id === "Step 1"
                 ? "Create a New Event"
                 : currentStep?.id === "Step 2"
@@ -415,14 +415,14 @@ const CreatorEventCreate = () => {
           </nav>
 
           {/* Steps */}
-          <div className="justify-cente relative sm:py-8">
+          <div className="relative justify-center text-gray-900 sm:py-8">
             {/* conditionally rendered via css */}
             <StepsDesktop steps={steps} setSteps={setSteps} />
             <StepsMobile currentStep={currentStep} steps={steps} />
           </div>
 
           {/* Form */}
-          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+          <div>
             <form
               onSubmit={handleSubmit((event: EventWithAllDetails) =>
                 parseAndCreate(event)

@@ -90,7 +90,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
     <div>
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">Member List</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Member List</h3>
           <Button
             variant="outlined"
             size="sm"
