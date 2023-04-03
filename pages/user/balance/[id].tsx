@@ -123,9 +123,11 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       <Layout>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="max-w-7xl p-6 pb-60 lg:px-12"
+          className="max-w-7xl py-12 px-4 pb-60 sm:px-12"
         >
-          <h1 className="mb-4 text-2xl font-bold">Account Balance</h1>
+          <h1 className="mb-4 text-4xl font-bold text-gray-900">
+            Account Balance
+          </h1>
           {/* account hero section */}
           <section className="mb-8 bg-white p-4 shadow-lg lg:mb-12 lg:p-8">
             <h4 className="mb-8 text-sm text-gray-500 lg:mb-16 lg:text-base">
@@ -161,7 +163,9 @@ const BalancePage = ({ userData }: BalancePageProps) => {
           {/* fill up bank details section */}
           <section className="lg:flex lg:justify-between">
             <div className="mb-4 max-w-2xl lg:mb-8 lg:grow">
-              <h4 className="mb-4 text-lg font-semibold">Bank details</h4>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">
+                Bank details
+              </h4>
               <Controller
                 control={control}
                 name="bankName"
@@ -264,7 +268,9 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
           {/* withdrawal history section */}
           <section>
-            <h2 className="mb-2 text-lg font-semibold">Withdrawal History</h2>
+            <h2 className="mb-2 text-lg font-semibold text-gray-900">
+              Withdrawal History
+            </h2>
             <p className="mb-6 text-sm text-gray-500">
               Withdrawals will take 5-7 business days to be credited into your
               bank account.

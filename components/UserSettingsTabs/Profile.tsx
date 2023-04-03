@@ -52,7 +52,7 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
 
   return (
     <main>
-      <h1 className="mb-6 text-2xl font-semibold">
+      <h1 className="mb-6 py-2 text-2xl font-semibold text-gray-900">
         Update your profile settings
       </h1>
       {/* <Banner coverImageUrl={profile.coverImageUrl} /> */}

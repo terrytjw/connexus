@@ -359,7 +359,7 @@ const AttendeesPage = () => {
               >
                 <FaChevronLeft />
               </Button>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Attendees for{" "}
                 {truncateString(
                   attendees[0]?.ticket?.event?.eventName ?? "",
@@ -455,7 +455,7 @@ const AttendeesPage = () => {
             setIsOpen={setIsPrizeModalOpen}
             className="inline-block text-center"
           >
-            <h2 className="font-bold sm:text-2xl">
+            <h2 className="font-bold text-gray-900 sm:text-2xl">
               {currentPrizeSelection?.prizeName}
             </h2>
             <div className="mt-4 flex justify-center">
@@ -479,7 +479,7 @@ const AttendeesPage = () => {
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
-            <h2 className="text-center text-2xl font-bold sm:text-2xl">
+            <h2 className="text-center text-2xl font-bold text-gray-900 sm:text-2xl">
               {checkInStatus !== CheckInStatus.LOADING
                 ? "Scan a QR code"
                 : "Scanning..."}

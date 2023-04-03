@@ -131,7 +131,7 @@ const OverviewTab = ({
       </div>
       <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
         <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-          <h3 className="mb-8 ml-4 text-xl font-semibold">
+          <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
             Merchandise Revenue Per Day
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -165,7 +165,7 @@ const OverviewTab = ({
         </div>
 
         <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-          <h3 className="mb-8 ml-4 text-xl font-semibold">
+          <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
             Event Revenue Per Day
           </h3>
           <ResponsiveContainer width="100%" height={300}>
@@ -199,7 +199,9 @@ const OverviewTab = ({
         </div>
 
         <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-          <h3 className="mb-8 ml-4 text-xl font-semibold">Community Growth</h3>
+          <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
+            Community Growth
+          </h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart width={500} height={300} data={communityAnalyticsData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -257,7 +259,9 @@ const OverviewTab = ({
 
         <div className="rounded-lg bg-white py-8 pl-4 pr-8">
           <div className="mb-8 ml-4 flex items-center gap-4">
-            <h3 className="text-xl font-semibold">Post Engagement</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Post Engagement
+            </h3>
             <div
               className="tooltip"
               data-tip="Ratio of interactions with a post (likes and comments) to total number of members in your community"

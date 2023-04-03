@@ -138,11 +138,13 @@ const CreatePremiumChannelPage = () => {
             <Loading className="!h-full" />
           ) : (
             <div className="flex flex-col gap-6">
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Premium Channel Created!
               </h3>
 
-              <p>Your premium channel has been successfully created.</p>
+              <p className="text-gray-500">
+                Your premium channel has been successfully created.
+              </p>
 
               <div className="flex gap-4">
                 <Button variant="solid" size="md" href={`/communities/${id}`}>
@@ -168,10 +170,10 @@ const CreatePremiumChannelPage = () => {
               <FaChevronLeft />
             </Button>
             <div>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Create a New Premium Channel
               </h1>
-              <h2 className="mt-4 text-gray-700">
+              <h2 className="mt-4 text-gray-500">
                 Link to an existing digital merchandise collection or create a
                 new digital merchandise collection
               </h2>

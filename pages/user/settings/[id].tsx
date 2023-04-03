@@ -27,8 +27,8 @@ const UserSettingsPage = () => {
           <title>Settings | Connexus</title>
         </Head>
 
-        <main className="p-10">
-          <h1 className="text-2xl font-bold">Settings</h1>
+        <main className="py-12 px-4 sm:px-12">
+          <h1 className="text-4xl font-bold text-gray-900">Settings</h1>
           <TabGroupBordered
             tabs={["Profile", "Preferences"]}
             activeTab={activeTab}

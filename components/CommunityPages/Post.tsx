@@ -136,7 +136,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
         className="!max-w-3xl"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-xl font-semibold">Edit Post</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Edit Post</h3>
           <Button
             variant="outlined"
             size="sm"

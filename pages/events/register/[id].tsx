@@ -401,7 +401,9 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <Loading className="!h-full !bg-transparent" />
           ) : (
             <div className="flex flex-col gap-6 py-4">
-              <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+              <h3 className="text-xl font-semibold text-gray-900">
+                Purchase Completed!
+              </h3>
               <h3 className="text-md font-normal text-gray-500">
                 You have successfully purchased{" "}
                 {formData.selectedTicket.ticketName} for {event.eventName}!

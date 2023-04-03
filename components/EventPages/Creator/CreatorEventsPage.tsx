@@ -396,7 +396,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           isOpen={deleteConfirmationModalOpen}
           setIsOpen={setDeleteConfirmationModalOpen}
         >
-          <div className="flex flex-col gap-6">
+          <div className="flex flex-col gap-6 text-gray-900">
             <h3 className="text-xl font-semibold">Delete Event</h3>
 
             <p>
