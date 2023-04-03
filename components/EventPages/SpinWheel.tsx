@@ -18,8 +18,6 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   const userId = Number(session?.user.userId);
   const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
 
-  const emptyPrizeValues = ["No prize :(", "No prize :("];
-
   const concatArrayByCeilDivision = (
     a: number,
     b: number,
@@ -36,7 +34,7 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   };
 
   const segColors = concatArrayByCeilDivision(
-    prizes.concat(emptyPrizeValues).length,
+    prizes.length,
     COLORS.length,
     COLORS
   );
@@ -50,9 +48,7 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   };
 
   const getSpinWheelPrizes = (): any[] => {
-    return shuffleArray(
-      prizes.map((prize: any) => prize.name).concat(emptyPrizeValues)
-    );
+    return shuffleArray(prizes.map((prize: any) => prize.name));
   };
 
   const getWonPrizeId = (wonPrizeName: string): number | undefined => {
@@ -62,23 +58,21 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
 
   const onFinished = async (wonPrize: any) => {
     console.log(wonPrize);
-    if (wonPrize != "No prize :(") {
-      let prizeId = getWonPrizeId(wonPrize);
-      if (prizeId) {
-        console.log(
-          "calling user Ticket api with won prize id -> ",
-          getWonPrizeId(wonPrize)
-        );
-        const res = await insertRafflePrize(prizeId, userId);
-        setCurrentTicket((prev: CurrentTicket) => ({
-          ...prev,
-          rafflePrizeWinner: {}, // pass in an truthy object
-          rafflePrizeName: wonPrize,
-        }));
-        console.log("res ->", res);
-      } else {
-        console.log("error with getting won prize id");
-      }
+    let prizeId = getWonPrizeId(wonPrize);
+    if (prizeId) {
+      console.log(
+        "calling user Ticket api with won prize id -> ",
+        getWonPrizeId(wonPrize)
+      );
+      const res = await insertRafflePrize(prizeId, userId);
+      setCurrentTicket((prev: CurrentTicket) => ({
+        ...prev,
+        rafflePrizeWinner: {}, // pass in an truthy object
+        rafflePrizeName: wonPrize,
+      }));
+      console.log("res ->", res);
+    } else {
+      console.log("error with getting won prize id");
     }
   };
 

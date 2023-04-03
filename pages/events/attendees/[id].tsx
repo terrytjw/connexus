@@ -475,7 +475,7 @@ const AttendeesPage = () => {
 
           {/* QR Modal */}
           <Modal
-            isOpen={true}
+            isOpen={isQrModalOpen}
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
