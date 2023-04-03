@@ -135,7 +135,9 @@ const CreatorCollectionPage = () => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collectionData.collectionName}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {collectionData.collectionName}
+        </h1>
       </div>
 
       <div className="mt-6 lg:ml-16">

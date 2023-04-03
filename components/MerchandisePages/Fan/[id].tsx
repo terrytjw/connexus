@@ -180,7 +180,9 @@ const FanCollectionPage = ({
           <FaChevronLeft />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {collection.collectionName}
+          </h1>
           <p className="mt-4 text-red-500">
             Note: Upon purchasing a collectible, it is randomised from the
             collection.
