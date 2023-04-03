@@ -85,8 +85,10 @@ const EventPreviewPage = ({ watch, setIsPreview }: EventPreviewPageProps) => {
           <section>
             <div className="mt-4 flex flex-wrap justify-between">
               <div className="flex flex-col">
-                <h1 className="text-2xl font-bold sm:text-4xl">{eventName}</h1>
-                <h3 className="mt-4">{description}</h3>
+                <h1 className="text-2xl font-bold text-gray-900 sm:text-4xl">
+                  {eventName}
+                </h1>
+                <h3 className="mt-4 text-gray-900">{description}</h3>
               </div>
               <Button variant="solid" size="md" className="max-w-xs" disabled>
                 Register for Event

@@ -100,7 +100,7 @@ const TicketFormPage = ({
       {/* Promo Code */}
       <section>
         <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-          <p className="text-lg font-semibold text-gray-500">Promo Code</p>
+          <p className="text-lg font-semibold text-gray-900">Promo Code</p>
         </div>
         {/* Radios */}
         <fieldset className="my-6">
@@ -216,7 +216,7 @@ const TicketFormPage = ({
       {/* Raffle Prizes */}
       <section>
         <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-          <p className="text-lg font-semibold text-gray-500">Raffle</p>
+          <p className="text-lg font-semibold text-gray-900">Raffle</p>
         </div>
 
         {/* Radios */}
@@ -349,7 +349,7 @@ const TicketFormPage = ({
           >
             {index > 0 && <div className="divider" />}
             <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-              <p className="text-lg font-semibold text-gray-500">
+              <p className="text-lg font-semibold text-gray-900">
                 {`Ticket #${index + 1}: ${ticket.name}` ||
                   `Add Ticket #${index + 1}`}
               </p>
