@@ -84,18 +84,18 @@ const CreatorCommunityPage = ({
               {community.members.length}
             </div>
 
-            <p className="mt-1 text-gray-500">{community.description}</p>
+            <p className="mt-4 text-gray-500">{community.description}</p>
 
             <div className="mt-6 flex gap-4">
               <Button
                 variant="solid"
-                size="sm"
+                size="md"
                 href={`/communities/edit/${community.communityId}`}
               >
                 Edit <span className="hidden sm:contents">Community</span>
               </Button>
 
-              <div className="flex h-8 items-center gap-4">
+              <div className="flex h-12 items-center gap-4">
                 <Link
                   href={getFacebookShareLink(communityLink)}
                   target="_blank"
@@ -121,7 +121,7 @@ const CreatorCommunityPage = ({
 
               <Button
                 variant="outlined"
-                size="sm"
+                size="md"
                 className="h-fit flex-shrink flex-wrap border-0 text-left !text-red-500 hover:!bg-blue-100"
                 href={`/communities/${community.communityId}/channels/create`}
               >

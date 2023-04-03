@@ -87,7 +87,9 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
               src={community.profilePic ?? ""}
               alt="Community Profile"
             />
-            <h3 className="font-medium text-gray-900">{community.name}</h3>
+            <h3 className="text-xl font-bold text-gray-900">
+              {community.name}
+            </h3>
           </div>
         </Link>
       ))}

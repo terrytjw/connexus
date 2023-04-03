@@ -206,11 +206,11 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             <Button
               variant="solid"
               size="md"
-              className="max-w-sm !bg-white !text-gray-700"
+              className="max-w-sm !bg-white !text-gray-700 shadow-sm"
               onClick={() => setIsFilterModalOpen(true)}
             >
               Filter
-              <BiFilter className="h-8 w-8" />
+              <BiFilter className="h-6 w-6" />
             </Button>
           </div>
         </div>

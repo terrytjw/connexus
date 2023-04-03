@@ -8,6 +8,7 @@ import {
   TicketWithEvent,
   UserWithTicketsAndEvent,
 } from "../utils/types";
+import { truncateString } from "../utils/text-truncate";
 
 type DigitalBadgeGridItemProps = {
   item: UserWithTicketsAndEvent;
@@ -50,7 +51,9 @@ const DigitalBadgeGridItem = ({
           ) : null}
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{eventName}</h3>
+      <h3 className="mt-4 text-xl font-bold text-gray-900">
+        {truncateString(eventName, 20)}
+      </h3>
       {/* {collectedTab && "collection" in item ? (
         <p className="mt-2 text-sm text-gray-500">
           From{" "}

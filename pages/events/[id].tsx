@@ -90,20 +90,22 @@ const EventPage = ({ event, userData }: EventPageProps) => {
             <Banner coverImageUrl={bannerPic || "/images/bear.jpg"} />
           </div>
 
-          <div className="z-30 mx-auto px-16">
+          <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
             <div className="relative z-30 -mt-12 sm:-mt-16">
               <Avatar imageUrl={eventPic || "/images/bear.jpg"} />
             </div>
           </div>
 
-          <div className="py-8 px-4 sm:px-12">
+          <div className="mx-auto mt-6 max-w-5xl px-4 pb-12 sm:px-6 lg:px-8">
             <section>
               <div className="mt-4 flex flex-wrap justify-between">
-                <div className="flex flex-col">
-                  <h1 className="text-2xl font-bold sm:text-4xl">
+                <div className="flex w-3/4 flex-grow-0 flex-col">
+                  <h1 className="truncate text-4xl font-bold text-gray-900">
                     {eventName || "event name"}
                   </h1>
-                  <h3 className="mt-4">{description || "description"}</h3>
+                  <h3 className="mt-4 flex-grow-0 text-gray-500">
+                    {description || "description"}
+                  </h3>
                 </div>
                 {/* not registered and not sold out */}
                 {!isFan ? (
@@ -121,7 +123,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                     className="mt-8 sm:mt-0"
                   >
                     <Button variant="solid" size="md" className="max-w-xs">
-                      Register for event
+                      Register for Event
                     </Button>
                   </Link>
                 ) : isRegistered() ? (
@@ -130,7 +132,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                     disabled
                     variant="solid"
                     size="md"
-                    className="max-w-xs"
+                    className="mt-8 max-w-xs sm:mt-0"
                   >
                     Registered
                   </Button>
@@ -140,7 +142,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                     disabled
                     variant="solid"
                     size="md"
-                    className="max-w-xs"
+                    className="mt-8 max-w-xs sm:mt-0"
                   >
                     Tickets Sold Out
                   </Button>
@@ -149,24 +151,24 @@ const EventPage = ({ event, userData }: EventPageProps) => {
             </section>
 
             <section>
-              <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
+              <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
                 When and Where
               </h1>
               <div className="mt-8 flex justify-between">
-                <div className="flex w-1/2">
-                  <FaCalendar className="text-md" />
-                  <span className="sm:text-md ml-2 flex-col text-sm">
-                    <p className="font-bold">Date and Time</p>
+                <div className="flex w-1/2 gap-2">
+                  <FaCalendar className="h-6 w-6 text-blue-600" />
+                  <span className="sm:text-md ml-2 flex-col text-sm text-gray-900">
+                    <p className="text-lg font-bold">Date and Time</p>
                     <p>
                       {formatDate(startDate)} - {formatDate(endDate)}
                     </p>
                   </span>
                 </div>
 
-                <div className="flex w-1/2">
-                  <FaMapPin className="text-md" />
-                  <span className="sm:text-md ml-2 flex-col text-sm">
-                    <p className="font-bold">Location</p>
+                <div className="flex w-1/2 gap-2">
+                  <FaMapPin className="h-6 w-6 text-blue-600" />
+                  <span className="sm:text-md ml-2 flex-col text-sm text-gray-900">
+                    <p className="text-lg font-bold">Location</p>
                     <p>{event.address.locationName}</p>
                     <p>
                       {event.address.address2} {event.address.address1}
@@ -178,7 +180,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
             </section>
 
             <section>
-              <h1 className="mt-12 text-xl font-semibold sm:text-2xl ">
+              <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
                 Ticket Options
               </h1>
               <div className="pt-6">
@@ -193,7 +195,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
             </section>
 
             <section>
-              <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
+              <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
                 Topics
               </h1>
               <div className="flex flex-wrap gap-6 py-4">
@@ -213,37 +215,37 @@ const EventPage = ({ event, userData }: EventPageProps) => {
             </section>
 
             <section>
-              <h1 className="mt-12 text-xl font-semibold sm:text-2xl">
+              <h1 className="mt-12 text-xl font-semibold text-gray-900 sm:text-2xl">
                 Share through Social Media
               </h1>
               <div className="flex flex-wrap gap-4 py-4">
                 <Link
                   href={getFacebookShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-500"
                 >
-                  <FaFacebook />
+                  <FaFacebook className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTwitterShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-500"
                 >
-                  <FaTwitter />
+                  <FaTwitter className="h-6 w-6" />
                 </Link>
-                <Link
+                {/* <Link
                   href={getInstagramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-500"
                 >
-                  <FaInstagram />
-                </Link>
+                  <FaInstagram className="h-6 w-6" />
+                </Link> */}
                 <Link
                   href={getTelegramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-500"
                 >
-                  <FaTelegram />
+                  <FaTelegram className="h-6 w-6" />
                 </Link>
               </div>
             </section>

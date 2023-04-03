@@ -195,7 +195,7 @@ const EventTab = ({
             <div className="flex items-center gap-4">
               <div className="dropdown-end dropdown">
                 <label tabIndex={0}>
-                  <Button variant="solid" size="md">
+                  <Button variant="solid" size="md" className="shadow-sm">
                     Export <span className="hidden sm:contents">Data</span>
                   </Button>
                 </label>
@@ -248,11 +248,11 @@ const EventTab = ({
               <Button
                 variant="solid"
                 size="md"
-                className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
+                className="hidden max-w-sm !bg-white !text-gray-700 shadow-sm sm:flex"
                 onClick={() => setIsModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-8 w-8" />
+                <BiFilter className="h-6 w-6" />
               </Button>
               <BiFilter
                 className="h-12 w-10 sm:hidden"

@@ -67,7 +67,7 @@ const OverviewTab = ({
         <div className="flex items-center gap-4">
           <div className="dropdown-end dropdown">
             <label tabIndex={0}>
-              <Button variant="solid" size="md">
+              <Button variant="solid" size="md" className="shadow-sm">
                 Export <span className="hidden sm:contents">Data</span>
               </Button>
             </label>

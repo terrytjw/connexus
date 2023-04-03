@@ -109,7 +109,7 @@ const FanCommunityPage = ({
               <FaUserFriends />
               {community.members.length}
             </div>
-            <p className="mt-1 text-gray-500">{community?.description}</p>
+            <p className="mt-4 text-gray-500">{community?.description}</p>
 
             <div className="mt-6 flex flex-wrap gap-4">
               {community.members.find((member) => member.userId == userId) ? (

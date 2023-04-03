@@ -80,7 +80,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                   <h1 className="truncate text-2xl font-bold text-gray-900">
                     {userData.displayName}
                   </h1>
-                  <p className="mt-1 text-gray-500 sm:hidden">
+                  <p className="mt-4 text-gray-500 sm:hidden">
                     {/* I'm fly, drippin' with dem peaches high ·{" "} */}
                     {userData.bio ? userData.bio : "No bio"}
                     <br />
@@ -94,7 +94,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
               <h1 className="truncate text-2xl font-bold text-gray-900">
                 {userData.displayName}
               </h1>
-              <p className="mt-1 text-gray-500">
+              <p className="mt-4 text-gray-500">
                 {/* I'm fly, drippin' with dem peaches high ·{" "} */}
                 {userData.bio ? userData.bio : "No bio"}
                 <br />
