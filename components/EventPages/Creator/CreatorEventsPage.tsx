@@ -10,7 +10,6 @@ import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
 import { useRouter } from "next/router";
-import { Toaster } from "react-hot-toast";
 import { filterEvent } from "../../../lib/api-helpers/event-api";
 import { useSession } from "next-auth/react";
 import TabGroupBordered from "../../TabGroupBordered";
@@ -163,17 +162,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              color: "#34383F",
-              textAlign: "center",
-            },
-          }}
-        />
-
         {/* Rest of page */}
         <h1 className="text-4xl font-bold">Your Events</h1>
         <h3 className="mt-4">View all your created upcoming and past events</h3>

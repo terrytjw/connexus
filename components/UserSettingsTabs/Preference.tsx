@@ -1,6 +1,6 @@
 import { User } from "@prisma/client";
 import React, { useEffect } from "react";
-import toast, { Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { updateUserInfo } from "../../lib/api-helpers/user-api";
 import Button from "../Button";
 import Toggle from "../Toggle";
@@ -61,7 +61,6 @@ const PreferenceSettings = ({ userData }: PreferenceSettingsProps) => {
       >
         Save Preferences
       </Button>
-      <Toaster />
     </div>
   );
 };
