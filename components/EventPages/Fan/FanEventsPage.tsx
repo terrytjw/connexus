@@ -216,7 +216,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     return (
       <div>
         {/* info alert */}
-        <div className="mb-4 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
+        <div className="mb-6 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
           <div className="flex items-center gap-2">
             <BiInfoCircle className="text-blue-600" size={24} />
             <span className="sm:text-md text-sm text-gray-500">
@@ -247,7 +247,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
     return (
       <div>
         {/* info alert */}
-        <div className="mb-4 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
+        <div className="mb-6 rounded-lg border border-gray-400 bg-neutral-50 px-2 py-3 shadow-md">
           <div className="flex items-center gap-2">
             <BiInfoCircle className="text-blue-600" size={24} />
             <span className="sm:text-md text-sm text-gray-500">

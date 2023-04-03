@@ -434,7 +434,7 @@ const CreateCommunityPage = ({
                         Save Changes
                       </Button>
                       <Button
-                        className="w-full !text-red-500 sm:w-fit"
+                        className="w-full !text-red-500 hover:border-red-500 hover:bg-red-100 sm:w-fit"
                         variant="outlined"
                         size="md"
                         type="button"

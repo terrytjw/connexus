@@ -199,10 +199,12 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                 </>
               )}
               {activeTab == 1 && (
-                <CommunityGrid
-                  communities={userData.joinedCommunities}
-                  joinedTab={true}
-                />
+                <div className="mt-4">
+                  <CommunityGrid
+                    communities={userData.joinedCommunities}
+                    joinedTab={true}
+                  />
+                </div>
               )}
             </TabGroupBordered>
 

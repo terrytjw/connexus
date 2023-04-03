@@ -46,8 +46,8 @@ const CreatorEventCreate = () => {
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithAllDetails>({
       defaultValues: {
-        eventName: "test",
-        description: "desc",
+        eventName: "",
+        description: "",
         eventPic: "",
         bannerPic: "",
         category: [],
