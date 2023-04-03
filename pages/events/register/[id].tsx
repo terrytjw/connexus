@@ -91,6 +91,61 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     { id: "Step 2", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
 
+  // email html body
+  const htmlBody: string = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Ticket Notification</title>
+      <style>
+        /* Center all elements and set text color */
+        body {
+          display: flex;
+          justify-content: center;
+          text-align: center;
+          color: #34383F;
+        }
+        /* Add some space between elements */
+        img, h1, p, a {
+          margin: 10px auto;
+          display: block;
+          text-align: center;
+        }
+        /* Style the button */
+        a.button {
+          background: #1A7DFF;
+          color: #FFFFFF;
+          border-radius: 0.375rem;
+          border: none;
+          padding: 0.75rem 1rem;
+          text-decoration: none;
+          display: inline-block;
+          transition: background-color 0.3s ease;
+          font-weight: 600;
+          margin: 0 auto;
+        }
+        /* Style the button hover */
+        a.button:hover {
+          background: #1A54C2;
+          cursor: pointer;
+        }
+      </style>
+    </head>
+    <body>
+        <!-- Logo -->
+        <img style="margin-top: 4rem" src="https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/connexa-logo.png" alt="Logo" width="200">
+        <!-- Greeting -->
+        <h1 style="margin-top: 2rem; margin-bottom: 0rem">${userData.displayName},</h1>
+        <h1 style="margin-top: 0rem;">you've got tickets!</h1>
+        <!-- Button to view the event -->
+        <div style="display: flex; justify-content: center; margin-top: 3rem; margin-bottom: 10rem">
+          <a class="button" href="http://connexus.com/events/tickets" style="display: flex; justify-content: center;">View Event</a>  
+        </div>      
+      </body>
+  </html>
+  `;
+
   // checks if payment succeeeded and call mint api
   useEffect(() => {
     const paymentSuccessExists = "paymentSuccess" in router.query;
@@ -135,29 +190,20 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       );
       localStorage.removeItem("savedFormData");
 
-      console.log("Sending email", {
-        email: userData.email,
-        subject: `Reminder for ${event.eventName}`,
-        message: "Some reminder",
-      });
-
-      console.log("Sending sms", {
-        number: "+6591713316",
-        message: "Some reminder",
-      });
-
       // send email
       sendEmail(
         userData.email,
-        `Reminder for ${event.eventName}`,
-        "Some reminder"
+        `Registration Confirmation for ${event.eventName}`,
+        "Event Confirmation",
+        htmlBody
       );
 
       if (userData.phoneNumber) {
-        sendSMS(userData.phoneNumber, "Some reminder");
+        sendSMS(
+          userData.phoneNumber,
+          `[Connexus] Hey ${userData.displayName}! You've registered for ${event.eventName}, take a look at your tickets in Connexus! http://connexus.com/events/tickets`
+        );
       }
-
-      console.log("email sent");
     }
   }, [router.query]);
 
