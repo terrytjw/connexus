@@ -21,7 +21,7 @@ import UserProfileFeatured from "../../../components/UserProfileTabs/Featured";
 import { User } from "@prisma/client";
 import { profile, collections, collectibles } from "../../../utils/dummyData";
 import copy from "copy-to-clipboard";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { UserWithAllInfo } from "../../api/users/[userId]";
 import { getUserInfo } from "../../../lib/api-helpers/user-api";
 import Link from "next/link";
@@ -165,16 +165,6 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
               {activeTab == 3 && <EventsTab userData={userData} />}
             </TabGroupBordered>
           </div>
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
         </main>
       </Layout>
     </ProtectedRoute>

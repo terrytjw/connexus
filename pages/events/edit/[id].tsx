@@ -34,7 +34,6 @@ import Button from "../../../components/Button";
 import { GetServerSideProps } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
 import { useRouter } from "next/router";
-import { Toaster } from "react-hot-toast";
 import raffle from "../../api/events/raffle";
 import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
 
@@ -538,16 +537,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}

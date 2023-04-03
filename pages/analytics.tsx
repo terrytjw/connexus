@@ -2,7 +2,6 @@ import { Event } from "@prisma/client";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { useState } from "react";
-import { Toaster } from "react-hot-toast";
 import ChannelTab from "../components/AnalyticsTabs/Channel";
 import CommunityTab from "../components/AnalyticsTabs/Community";
 import EventTab from "../components/AnalyticsTabs/Event";
@@ -73,16 +72,6 @@ const AnalyticsPage = ({
 
   return (
     <ProtectedRoute>
-      <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              color: "#34383F",
-              textAlign: "center",
-            },
-          }}
-        />
       <Layout>
         <main className="py-12 px-4 sm:px-12">
           <h1 className="text-4xl font-bold">Analytics</h1>

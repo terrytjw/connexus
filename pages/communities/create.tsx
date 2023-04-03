@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaChevronLeft } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import AvatarInput from "../../components/AvatarInput";
 import Badge from "../../components/Badge";
 import BannerInput from "../../components/BannerInput";
@@ -168,7 +168,6 @@ const CreateCommunityPage = ({
   return (
     <ProtectedRoute>
       <Layout>
-        <Toaster />
         <form onSubmit={handleSubmit(!community ? onCreate : onEdit)}>
           <Modal isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen}>
             <div className="flex flex-col gap-6">

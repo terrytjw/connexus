@@ -7,7 +7,6 @@ import ProtectedRoute from "../../components/ProtectedRoute";
 import CreatorCollectionsPage from "../../components/MerchandisePages/Creator";
 import FanCollectionsPage from "../../components/MerchandisePages/Fan";
 import { UserRoleContext } from "../../contexts/UserRoleProvider";
-import { Toaster } from "react-hot-toast";
 import {
   CollectionWithMerchAndPremiumChannel,
   searchAllCollections,
@@ -28,16 +27,6 @@ const CollectionsPage = ({
 
   return (
     <ProtectedRoute>
-      <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              color: "#34383F",
-              textAlign: "center",
-            },
-          }}
-        />
       <Layout>
         <div className="debug-screens">
           <Head>

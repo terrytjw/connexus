@@ -9,7 +9,7 @@ import {
   HiChevronDown,
   HiOutlineChartSquareBar,
 } from "react-icons/hi";
-import { toast} from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
 import { useRouter } from "next/router";
@@ -390,6 +390,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Footer />
         </main>
       </div>
+      <Toaster/>
     </MobileNavbar>
   );
 };

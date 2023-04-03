@@ -13,7 +13,7 @@ import Input from "../../../components/Input";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import { BankAccount } from "@prisma/client";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
 type WithdrawalTableProps = {
   data: any[]; // TODO: change type any to data type
@@ -275,7 +275,6 @@ const BalancePage = ({ userData }: BalancePageProps) => {
             />
           </section>
         </form>
-        <Toaster />
       </Layout>
     </ProtectedRoute>
   );
