@@ -7,6 +7,7 @@ export type ConnexusEmail = {
   toEmail: string;
   subject: string;
   text: string;
+  html: string;
 };
 
 export default async function handler(
@@ -15,13 +16,14 @@ export default async function handler(
 ) {
   const { method, body } = req;
 
-  const { text, subject, toEmail } = body;
+  const { text, subject, toEmail, html } = body;
 
   const msg = {
     to: toEmail,
     from: "connexaofficial@gmail.com",
     subject: subject,
     text: text,
+    html: html,
   };
 
   switch (method) {
