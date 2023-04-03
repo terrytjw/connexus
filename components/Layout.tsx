@@ -136,7 +136,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               }
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/communities"
+                router.pathname.includes("/communities")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
@@ -150,7 +150,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/merchandise"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/merchandise"
+                router.pathname.includes("/merchandise")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
@@ -164,7 +164,9 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/events"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/events")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
               <FaCalendarAlt className="ml-2" />
@@ -177,7 +179,7 @@ const MobileNavbar = ({ userData, children }: any) => {
                 href="/analytics"
                 className={classNames(
                   "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                  router.pathname === "/analytics"
+                  router.pathname.includes("/analytics")
                     ? "bg-blue-600 text-white"
                     : ""
                 )}
@@ -192,7 +194,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               href={`/user/profile/${session?.user?.userId}`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/user/profile/[id]"
+                router.pathname.includes("/user")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
@@ -251,7 +253,9 @@ const DesktopSidebar = ({ userData }: any) => {
             }
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/communities" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/communities")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
             <FaHome className="ml-2" />
@@ -263,7 +267,9 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/merchandise"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/merchandise" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/merchandise")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
             <FaPhotoVideo className="ml-2" />
@@ -275,7 +281,9 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/events"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/events")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
             <FaCalendarAlt className="ml-2" />
@@ -288,7 +296,9 @@ const DesktopSidebar = ({ userData }: any) => {
               href="/analytics"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/analytics" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/analytics")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
               <FaChartBar className="ml-2" />
@@ -301,7 +311,8 @@ const DesktopSidebar = ({ userData }: any) => {
             href={`/user/profile/${session?.user?.userId}`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/user/profile/[id]"
+              router.pathname.includes("/user/profile") ||
+                router.pathname.includes("/user/settings")
                 ? "bg-blue-600 text-white"
                 : ""
             )}

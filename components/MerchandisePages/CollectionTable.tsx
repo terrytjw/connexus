@@ -82,7 +82,7 @@ const CollectionTable = ({
                       ) // returns total quantity
                 }
               </td>
-              <td className={textColour}>{item.fixedPrice}</td>
+              <td className={textColour}>${item.fixedPrice}</td>
               <td className={textColour}>
                 {item.premiumChannel ? (
                   <Badge size="sm" label={item.premiumChannel.name} />
