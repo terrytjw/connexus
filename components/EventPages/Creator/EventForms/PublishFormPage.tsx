@@ -130,7 +130,7 @@ const PublishFormPage = ({
                             type="radio"
                             value={privacyOption}
                             checked={privacyOption === privacyType}
-                            className="radio checked:bg-blue-500"
+                            className="radio checked:bg-blue-600"
                             onChange={(e) =>
                               setValue(
                                 "privacyType",
@@ -178,7 +178,7 @@ const PublishFormPage = ({
                             type="radio"
                             value={visibilityOption}
                             checked={visibilityOption === visibilityType}
-                            className="radio checked:bg-blue-500"
+                            className="radio checked:bg-blue-600"
                             onChange={(e) =>
                               setValue(
                                 "visibilityType",

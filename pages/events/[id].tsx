@@ -220,28 +220,28 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                 <Link
                   href={getFacebookShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaFacebook />
                 </Link>
                 <Link
                   href={getTwitterShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaTwitter />
                 </Link>
                 <Link
                   href={getInstagramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaInstagram />
                 </Link>
                 <Link
                   href={getTelegramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaTelegram />
                 </Link>

@@ -12,8 +12,6 @@ import ConfirmationPage from "../../../components/EventPages/Fan/RegisterEventFo
 import TicketSelectionFormPage from "../../../components/EventPages/Fan/RegisterEventForms/TicketSelectionFormPage";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import { User, Ticket } from "@prisma/client";
-import { Toaster } from "react-hot-toast";
-
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
@@ -394,16 +392,6 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   return (
     <ProtectedRoute>
       <Layout>
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              color: "#34383F",
-              textAlign: "center",
-            },
-          }}
-        />
         {/* Register success modal */}
         <Modal
           isOpen={isRegisterSuccessModalOpen}

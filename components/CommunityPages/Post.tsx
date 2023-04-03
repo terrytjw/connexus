@@ -174,7 +174,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
           </div>
 
           <div className="flex items-center gap-2">
-            {post.isPinned ? <BsPinFill className="text-blue-500" /> : null}
+            {post.isPinned ? <BsPinFill className="text-blue-600" /> : null}
             {post.creator.userId == userId ? (
               <div className="dropdown-btm dropdown-end dropdown">
                 <label tabIndex={0}>

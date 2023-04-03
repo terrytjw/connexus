@@ -2,7 +2,14 @@
 module.exports = {
   darkMode: "class",
   daisyui: {
-    themes: false,
+    themes: [
+      {
+        light: {
+          ...require("daisyui/src/colors/themes")["[data-theme=light]"],
+          primary: "#1A7DFF",
+        },
+      },
+    ],
   },
   content: [
     "./pages/**/*.{js,ts,jsx,tsx}",
