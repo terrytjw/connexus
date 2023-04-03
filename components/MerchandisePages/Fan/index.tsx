@@ -255,7 +255,9 @@ const FanCollectionsPage = ({
                     }}
                   />
                 </Button>
-              ) : null}
+              ) : (
+                <div className="mb-4" />
+              )}
               <MarketplaceTab
                 collections={allCollections}
                 trendingCollections={trendingCollections}
@@ -278,7 +280,9 @@ const FanCollectionsPage = ({
                     }}
                   />
                 </Button>
-              ) : null}
+              ) : (
+                <div className="mb-4" />
+              )}
               <CollectedTab collectedMerchandise={collectedMerchandise} />
             </>
           )}

@@ -70,7 +70,7 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
                     <Button
                       variant="outlined"
                       size="sm"
-                      className="relative rounded-full bg-white text-lg font-semibold"
+                      className="relative rounded-full border-0 bg-white text-lg font-semibold"
                     >
                       Join
                     </Button>
