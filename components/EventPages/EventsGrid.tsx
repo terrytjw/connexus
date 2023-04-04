@@ -185,7 +185,7 @@ const EventsGrid = ({
       </div>
     );
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
+    <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {data.map((item) => (
         <CollectionGridItem
           isListed={isListed}

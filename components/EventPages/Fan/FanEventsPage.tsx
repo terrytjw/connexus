@@ -347,31 +347,33 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               View Tickets
             </Button>
           </Link>
-          <div className="flex gap-x-4">
-            <div className="relative items-center justify-center rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <FaSearch className="text-gray-500" />
+          {activeTab === 0 ? (
+            <div className="flex gap-x-4">
+              <div className="relative items-center justify-center rounded-md shadow-sm">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <FaSearch className="text-gray-500" />
+                </div>
+                <input
+                  className="input-outlined input input-md block w-full rounded-md pl-10"
+                  type="text"
+                  value={searchString}
+                  placeholder="Search Events"
+                  onChange={(e) => {
+                    setSearchString(e.target.value);
+                  }}
+                />
               </div>
-              <input
-                className="input-outlined input input-md block w-full rounded-md pl-10"
-                type="text"
-                value={searchString}
-                placeholder="Search Events"
-                onChange={(e) => {
-                  setSearchString(e.target.value);
-                }}
-              />
+              <Button
+                variant="solid"
+                size="md"
+                className="max-w-sm !bg-white !text-gray-700 shadow-sm"
+                onClick={() => setIsFilterModalOpen(true)}
+              >
+                Filter
+                <BiFilter className="h-6 w-6" />
+              </Button>
             </div>
-            <Button
-              variant="solid"
-              size="md"
-              className="max-w-sm !bg-white !text-gray-700 shadow-sm"
-              onClick={() => setIsFilterModalOpen(true)}
-            >
-              Filter
-              <BiFilter className="h-6 w-6" />
-            </Button>
-          </div>
+          ) : null}
         </div>
 
         {/* mobile */}
@@ -381,26 +383,28 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
               View Tickets
             </Button>
           </Link>
-          <div className="flex w-full gap-2 lg:hidden">
-            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <FaSearch className="text-gray-500" />
+          {activeTab === 0 ? (
+            <div className="flex w-full gap-2 lg:hidden">
+              <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <FaSearch className="text-gray-500" />
+                </div>
+                <input
+                  className="input-outlined input input-md block w-full rounded-md pl-10"
+                  type="text"
+                  value={searchString}
+                  placeholder="Search Events"
+                  onChange={(e) => {
+                    setSearchString(e.target.value);
+                  }}
+                />
               </div>
-              <input
-                className="input-outlined input input-md block w-full rounded-md pl-10"
-                type="text"
-                value={searchString}
-                placeholder="Search Events"
-                onChange={(e) => {
-                  setSearchString(e.target.value);
-                }}
+              <BiFilter
+                className="h-12 w-10"
+                onClick={() => setIsFilterModalOpen(true)}
               />
             </div>
-            <BiFilter
-              className="h-12 w-10"
-              onClick={() => setIsFilterModalOpen(true)}
-            />
-          </div>
+          ) : null}
         </div>
 
         <div className="relative">
