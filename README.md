@@ -9,7 +9,7 @@
 </p><br>
 
 
-## 🖥 Quick Start
+## Quick Start
 
 1. Download Docker from [Docker](https://www.docker.com/).
 2. Ensure that Docker is running.
