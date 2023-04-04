@@ -14,10 +14,11 @@
 1. Download Docker from [Docker](https://www.docker.com/).
 2. Ensure that Docker is running.
 3. Run `yarn` to download dependencies.
+4. Ensure that `POSTGRES_HOSTNAME=db` is uncommented in `.env` file.
 4. Run `docker compose up`.
 5. Open a separate terminal and type `docker compose exec app sh`. Type `yarn db:init` within the same terminal. 
-6. Run `yarn dev` to run the local server for development.
-7. Clear the browser cookies before `Login`
+6. Run `yarn dev` to run the local server for development, if `POSTGRES_HOSTNAME=localhost` is uncommented instead.
+7. Clear the browser cookies before `Login`.
 
 <br>
 
@@ -36,12 +37,12 @@
 3. Merchandise
 4. Analytics
 5. Profile
-- To add images later 
+- To add images/gifs later 
 
 <br>
 
-<h4 align=center>Take a look at our microsite 🎨</h4>
-<p align=center><a class="button1" href="/">Connexus</a></p>
+<h4 align=center>🎨 Take a look at our microsite 🎨</h4>
+<p align=center><a class="button1" href="https://connexus-dmcvvyuam-connexaofficial-gmailcom.vercel.app/">Connexus</a></p>
 
 
 <br>
@@ -73,3 +74,4 @@
     ├── README.md
     ├── tailwind.config.js
     └── tsconfig.json
+    

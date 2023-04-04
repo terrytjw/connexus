@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import React, { useState } from "react";
 import Button from "../../../components/Button";
@@ -13,7 +13,9 @@ import Input from "../../../components/Input";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import { BankAccount } from "@prisma/client";
-import toast, { Toaster } from "react-hot-toast";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import toast from "react-hot-toast";
 
 type WithdrawalTableProps = {
   data: any[]; // TODO: change type any to data type
@@ -132,7 +134,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               Your Balance
             </h4>
             <div className="flex justify-between py-2">
-              <h2 className="text-3xl font-semibold text-blue-500 lg:text-4xl">
+              <h2 className="text-3xl font-semibold text-blue-600 lg:text-4xl">
                 ${updatedUserData.walletBalance}
               </h2>
               <Button
@@ -275,7 +277,6 @@ const BalancePage = ({ userData }: BalancePageProps) => {
             />
           </section>
         </form>
-        <Toaster />
       </Layout>
     </ProtectedRoute>
   );
@@ -283,8 +284,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
 export default BalancePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   if (!userId) {

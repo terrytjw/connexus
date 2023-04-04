@@ -27,6 +27,7 @@ import {
   createQuestionAPI,
   getAllQuestionsInChannelAPI,
 } from "../../../lib/api-helpers/question-api";
+import { API_URL } from "../../../lib/constant";
 
 type ChannelTabProps = {
   channel: ChannelWithMembers;
@@ -74,7 +75,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
 
   const searchMembers = async () => {
     const res = await axios.get(
-      `http://localhost:3000/api/channel/${channel.channelId}/users?keyword=${searchString}`
+      `${API_URL}/channel/${channel.channelId}/users?keyword=${searchString}`
     );
     const temp = res.data;
     setMembers(temp);

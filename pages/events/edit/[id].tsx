@@ -27,16 +27,16 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../../lib/constant";
+import { API_URL, smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Link from "next/link";
 import Button from "../../../components/Button";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { formatDateForInput } from "../../../utils/date-util";
 import { useRouter } from "next/router";
-import { Toaster } from "react-hot-toast";
 import raffle from "../../api/events/raffle";
 import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
+import { ParsedUrlQuery } from "querystring";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -50,6 +50,10 @@ type CreatorEventPageProps = {
   event: EventWithAllDetails;
   address: Address;
 };
+
+interface Params extends ParsedUrlQuery {
+  id: string;
+}
 
 const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   const router = useRouter();
@@ -100,7 +104,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     // event from db
     const { eventName, addressId, startDate, endDate } = eventInfo;
     let response_location = await axios.get(
-      "http://localhost:3000/api/addresses/" + addressId
+      `${API_URL}/addresses/` + addressId
     );
 
     let metaData = JSON.stringify({
@@ -152,7 +156,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     // fetch db event
     const event_id = newEvent?.eventId;
     let response_event = await axios.get(
-      "http://localhost:3000/api/events/" + event_id.toString()
+      `${API_URL}/events/` + event_id.toString()
     );
     const eventInfo = response_event.data as EventWithAllDetails;
     const { eventScAddress, ticketURIs, tickets } = eventInfo;
@@ -186,7 +190,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         // append new ticket to updated tickets array
         updatedTickets.push(new_ticket);
         // api cal for additional tickets
-        await axios.post("http://localhost:3000/api/tickets", new_ticket);
+        await axios.post(`${API_URL}/tickets`, new_ticket);
       } else {
         // case NO ADDED or REMOVED tickets, don't let creator set total supply < existing ticket supply
         if (
@@ -209,7 +213,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
           ticketType: ticket_categories[k].ticketType,
         };
         await axios.post(
-          "http://localhost:3000/api/tickets/" + tickets[k].ticketId.toString(),
+          `${API_URL}/tickets/` + tickets[k].ticketId.toString(),
           ticket
         );
         console.log(ticket);
@@ -240,8 +244,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
         } else {
           // delete tickets from db
           const updated_response = await axios.delete(
-            "http://localhost:3000/api/tickets/" +
-              tickets[j].ticketId.toString()
+            `${API_URL}/tickets/` + tickets[j].ticketId.toString()
           );
           const updated_data = updated_response.data;
 
@@ -331,7 +334,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
       // update address separately
       const addressRes = await axios.post(
-        "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
+        `${API_URL}/addresses/` + newEvent.addressId.toString(),
         address
       );
 
@@ -344,7 +347,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
       console.log("updated event with uri: -", updated_event_withuri);
       let updated_response = await axios.post(
-        "http://localhost:3000/api/events/" + event_id.toString(),
+        `${API_URL}/events/` + event_id.toString(),
         updated_event_withuri
       );
 
@@ -373,7 +376,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
       // update address separately
       const addressRes = await axios.post(
-        "http://localhost:3000/api/addresses/" + newEvent.addressId.toString(),
+        `${API_URL}/addresses/` + newEvent.addressId.toString(),
         address
       );
       console.log("updated address ->", addressRes.data);
@@ -385,7 +388,7 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
       console.log("updated event WITHOUT uri: -", updated_event_WITHOUT_uri);
       let updated_response = await axios.post(
-        "http://localhost:3000/api/events/" + event_id.toString(),
+        `${API_URL}/events/` + event_id.toString(),
         updated_event_WITHOUT_uri
       );
 
@@ -538,16 +541,6 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}
@@ -660,11 +653,13 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
 
 export default CreatorEventEdit;
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const { id } = context.params as Params;
+
   // use axios GET method to fetch data
-  const { data: event } = await axios.get(
-    `http://localhost:3000/api/events/${params?.id}`
-  );
+  const { data: event } = await axios.get(`${API_URL}/events/${id}`);
 
   // parsing to format date for html 'date-time-local' inputs
   const parsedEvent: Partial<EventWithAllDetails> = {
@@ -679,7 +674,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   };
 
   const { data: address } = await axios.get(
-    `http://localhost:3000/api/addresses/${event?.addressId}`
+    `${API_URL}/addresses/${event?.addressId}`
   );
 
   return {

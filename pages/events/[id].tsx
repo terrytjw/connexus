@@ -16,12 +16,15 @@ import Link from "next/link";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import axios from "axios";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { Ticket, User, Address } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
 import { formatDate } from "../../utils/date-util";
 import { getSession } from "next-auth/react";
 import { UserRoleContext } from "../../contexts/UserRoleProvider";
+import { API_URL } from "../../lib/constant";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type EventPageProps = {
   event: EventWithAllDetails;
@@ -220,28 +223,28 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                 <Link
                   href={getFacebookShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaFacebook />
                 </Link>
                 <Link
                   href={getTwitterShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaTwitter />
                 </Link>
                 <Link
                   href={getInstagramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaInstagram />
                 </Link>
                 <Link
                   href={getTelegramShareLink(event.eventPic)}
                   target="_blank"
-                  className="hover:text-blue-500"
+                  className="hover:text-blue-600"
                 >
                   <FaTelegram />
                 </Link>
@@ -256,17 +259,17 @@ const EventPage = ({ event, userData }: EventPageProps) => {
 
 export default EventPage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   const { data: event } = await axios.get(
-    `http://localhost:3000/api/events/${context.params?.id}`
+    `${API_URL}/events/${context.params?.id}`
   );
 
-  const { data: userData } = await axios.get(
-    `http://localhost:3000/api/users/${userId}`
-  );
+  const { data: userData } = await axios.get(`${API_URL}/users/${userId}`);
 
   return {
     props: {

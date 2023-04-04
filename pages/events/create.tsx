@@ -26,12 +26,11 @@ import axios from "axios";
 
 import { ethers } from "ethers";
 import contract from "../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { ALCHEMY_API, smartContract } from "../../lib/constant";
+import { ALCHEMY_API, API_URL, smartContract } from "../../lib/constant";
 import Modal from "../../components/Modal";
 import Link from "next/link";
 import Button from "../../components/Button";
 import { useSession } from "next-auth/react";
-import { Toaster } from "react-hot-toast";
 import _ from "lodash";
 
 // smart contract stuff
@@ -205,7 +204,7 @@ const CreatorEventCreate = () => {
 
     // call post api
     const { data: response } = await axios.post(
-      "http://localhost:3000/api/events",
+      `${API_URL}/events`,
       {
         ...event,
         eventScAddress: event_contract.address,
@@ -369,17 +368,6 @@ const CreatorEventCreate = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
-
           {/* Register success modal */}
           <Modal
             isOpen={isCreateSuccessModalOpen}

@@ -13,10 +13,10 @@ import { FiCalendar } from "react-icons/fi";
 import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
 import Input from "../../Input";
-import { Toaster } from "react-hot-toast";
 import { filterEvent } from "../../../lib/api-helpers/event-api";
 import { useSession } from "next-auth/react";
 import { formatDateWithLocalTime } from "../../../utils/date-util";
+import { API_URL } from "../../../lib/constant";
 
 const DELAY_TIME = 400;
 
@@ -168,17 +168,6 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        <Toaster
-          position="top-center"
-          toastOptions={{
-            style: {
-              background: "#FFFFFF",
-              color: "#34383F",
-              textAlign: "center",
-            },
-          }}
-        />
-        {/* Rest of page */}
         <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
 
         <div className="mt-4 flex flex-wrap justify-between sm:mt-6">
@@ -448,7 +437,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="bg-red-600 hover:bg-red-500"
                 onClick={async () => {
                   await axios.delete(
-                    `http://localhost:3000/api/events/${eventIdToDelete}`
+                    `${API_URL}/events/${eventIdToDelete}`
                   );
                   router.reload();
                   setDeleteConfirmationModalOpen(false);
