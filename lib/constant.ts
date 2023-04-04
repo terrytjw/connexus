@@ -1,5 +1,6 @@
-// export const API_URL = "http://localhost:3000/api";
-export const API_URL = "https://d1bd-116-15-156-213.ap.ngrok.io/api";
+export const BASE_URL = "http://localhost:3000";
+export const API_URL = `${BASE_URL}/api`;
+// export const API_URL = "https://d1bd-116-15-156-213.ap.ngrok.io/api";
 export const MERCHANDISE_ENDPOINT = "merch";
 export const COLLECTION_ENDPOINT = "collections";
 export const USER_ENDPOINT = "users";

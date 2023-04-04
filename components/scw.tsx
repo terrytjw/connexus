@@ -10,14 +10,13 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useRouter } from "next/router";
 import Loading from "./Loading";
+import { BASE_URL } from "../lib/constant";
 
 const Home = ({ isAuthModalOpen }: any) => {
   const router = useRouter();
   const [provider, setProvider] = useState<any>();
   const [account, setAccount] = useState<string>();
-  const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
   const [scwAddress, setScwAddress] = useState("");
-  const [scwLoading, setScwLoading] = useState(false);
   const [socialLoginSDK, setSocialLoginSDK] = useState<SocialLogin | null>(
     null
   );
@@ -76,7 +75,7 @@ const Home = ({ isAuthModalOpen }: any) => {
 
         const response = await signIn("custom-login", {
           redirect: false,
-          callbackUrl: "https://9038-116-15-156-213.ap.ngrok.io/communities",
+          callbackUrl: `${BASE_URL}/communities`,
           ...userInfo,
         });
 
@@ -152,25 +151,6 @@ const Home = ({ isAuthModalOpen }: any) => {
     setAccount(undefined);
     setScwAddress("");
   };
-
-  useEffect(() => {
-    async function setupSmartAccount() {
-      setScwAddress("");
-      setScwLoading(true);
-      const smartAccount = new SmartAccount(provider, {
-        activeNetworkId: ChainId.POLYGON_MUMBAI,
-        supportedNetworksIds: [ChainId.POLYGON_MUMBAI],
-      });
-      await smartAccount.init();
-      const context = smartAccount.getSmartAccountContext();
-      setScwAddress(context.baseWallet.getAddress());
-      setSmartAccount(smartAccount);
-      setScwLoading(false);
-    }
-    if (!!provider && !!account) {
-      setupSmartAccount();
-    }
-  }, [account, provider]);
 
   const ButtonLoadingAnimation = () => (
     <div className="flex gap-x-2">
