@@ -126,7 +126,7 @@ const TicketCard = ({
               </p>
             </span>
             <span>
-              <p className="text-md font-semibold text-blue-500">
+              <p className="text-md font-semibold text-blue-600">
                 Sale Duration
               </p>
               <p className="text-sn text-gray-700">

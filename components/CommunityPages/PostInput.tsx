@@ -2,7 +2,7 @@ import { Post } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { FaImages } from "react-icons/fa";
 import Button from "../Button";
 import Carousel from "../Carousel";

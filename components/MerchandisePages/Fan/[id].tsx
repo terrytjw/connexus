@@ -204,7 +204,7 @@ const FanCollectionPage = ({
 
             {collection.premiumChannel ? (
               <Badge
-                className="h-min !bg-blue-100 !text-blue-500"
+                className="h-min !bg-blue-100 !text-blue-600"
                 size="lg"
                 label={`Unlocks ${collection.premiumChannel?.name}`}
               />

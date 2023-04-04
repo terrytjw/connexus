@@ -5,7 +5,6 @@ import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEvents
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
-
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
 import { UserRoleContext } from "../../contexts/UserRoleProvider";

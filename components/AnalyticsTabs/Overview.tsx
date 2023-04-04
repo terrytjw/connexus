@@ -58,7 +58,7 @@ const OverviewTab = ({
             <Button
               variant="solid"
               size="sm"
-              className="!bg-blue-100 !text-blue-500"
+              className="!bg-blue-100 !text-blue-600"
             >
               i
             </Button>
@@ -265,7 +265,7 @@ const OverviewTab = ({
               <Button
                 variant="solid"
                 size="sm"
-                className="!bg-blue-100 !text-blue-500"
+                className="!bg-blue-100 !text-blue-600"
               >
                 i
               </Button>

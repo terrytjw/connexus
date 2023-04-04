@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import CollectionTable from "../CollectionTable";
 import Button from "../../Button";
 import Input from "../../Input";
@@ -160,7 +160,6 @@ const CreatorCollectionsPage = () => {
 
   return (
     <main className="py-12 px-4 sm:px-12">
-      <Toaster />
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
         <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">

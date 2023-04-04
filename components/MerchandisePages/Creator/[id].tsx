@@ -142,7 +142,7 @@ const CreatorCollectionPage = () => {
             <h2 className="text-gray-700">{collectionData.description}</h2>
             {collectionData.premiumChannel ? (
               <Badge
-                className="h-min !bg-blue-100 !text-blue-500"
+                className="h-min !bg-blue-100 !text-blue-600"
                 size="lg"
                 label={`Unlocks ${collectionData.premiumChannel?.name}`}
               />

@@ -348,16 +348,6 @@ const AttendeesPage = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
           {/* Header */}
           <div className="mb-8 flex justify-between gap-4">
             <div className="flex items-center gap-4">
