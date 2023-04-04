@@ -47,6 +47,17 @@
 
 <br>
 
+## 	💯 Core team
+- [@ccwhgetgit](https://github.com/ccwhgetgit)
+- [@kaiwenyay](https://github.com/kaiwenyay)
+- [@laiweileeee](https://github.com/laiweileeee)
+- [@niclqt](https://github.com/niclqt)
+- [@terrytjw](https://github.com/terrytjw)
+- [@shengliang-tham](https://github.com/shengliang-tham)
+- [@yukineowq](https://github.com/yukineowq)
+
+<br>
+
 ## 🔨 Directory layout (Include some of the more important folders with their explanation)
 
     .
@@ -75,3 +86,4 @@
     ├── tailwind.config.js
     └── tsconfig.json
     
+[⬆ Back to Top](#Quick-start)
