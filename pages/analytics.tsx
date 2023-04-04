@@ -1,6 +1,5 @@
 import { Event } from "@prisma/client";
-import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { useState } from "react";
 import ChannelTab from "../components/AnalyticsTabs/Channel";
 import CommunityTab from "../components/AnalyticsTabs/Community";
@@ -17,6 +16,8 @@ import {
 } from "../lib/api-helpers/analytics-api";
 import { getUserInfo, searchEvents } from "../lib/api-helpers/user-api";
 import { UserWithAllInfo } from "./api/users/[userId]";
+import { getServerSession } from "next-auth";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 export type SelectOption = {
   id: number;
@@ -140,8 +141,10 @@ const AnalyticsPage = ({
 
 export default AnalyticsPage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = Number(session?.user.userId);
 
   const userData = await getUserInfo(userId);
