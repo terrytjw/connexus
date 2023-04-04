@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://imgur.com/jQF5hm5.png" alt="Get Out of My Land Logo" draggable="false" width="50%">
+    <img src="https://imgur.com/jQF5hm5.png" alt="Connexus Logo" draggable="false" width="50%">
 </p>
 
 <h3 align="center">Empowering creators to develop authentic relationships with their fans.<br><br></h3>
@@ -8,6 +8,11 @@
     Developed by Team TH01 for NUS IS4103: Information System Capstone Project. Developed with React, Next.js, Prisma and MySQL.</h3>
 </p><br>
 
+## What is Connexus?
+All-in-one platform to empower creators to develop authentic relationships with their fans through NFT-powered Digital Ticket/Merchandise, Transparent Marketplace,
+Social Channels for Fan Engagement and Fan Behavior Analytics
+
+<br>
 
 ## 🖥️ Quick Start
 
@@ -86,4 +91,4 @@
     ├── tailwind.config.js
     └── tsconfig.json
     
-[⬆ Back to Top](#🖥️-Quick-start)
+[⬆ Back to Top](#What-is-Connexus-?)
