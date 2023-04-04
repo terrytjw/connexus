@@ -91,4 +91,4 @@ Social Channels for Fan Engagement and Fan Behavior Analytics
     ├── tailwind.config.js
     └── tsconfig.json
     
-[⬆ Back to Top](#What-is-Connexus-?)
+[⬆ Back to Top](#%EF%B8%8F-quick-start)
