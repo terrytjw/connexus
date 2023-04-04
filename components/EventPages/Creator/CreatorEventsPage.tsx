@@ -46,7 +46,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
   // fetch userId if from session
   const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  const userId = Number(session?.user.userId);
 
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
@@ -77,16 +77,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
         selectedTopics,
         fromDateFilter,
         toDateFilter,
+        userId,
         visibilityType // this is used for creator events page
       );
-
-      // console.log("search Term ->", searchString);
-      // console.log("filtered data from api ->", data);
-      // console.log(
-      //   "filtered data after frontend filter ->",
-      //   filterCreatedEvents(data)
-      // );
-      // set search and filter results
       setSearchAndFilterResults(filterCreatedEvents(data));
     } catch (error) {
       console.error(error);
@@ -123,15 +116,30 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     }
   };
 
+  const setInitialFilterResults = async () => {
+    const initialEventData = await filterEvent(
+      undefined,
+      [],
+      undefined,
+      undefined,
+      userId,
+      undefined
+    );
+    // using this state to display events on initial page load
+    setSearchAndFilterResults(filterCreatedEvents(initialEventData));
+  };
+
   // listens to created and ended events toggle
   useEffect(() => {
     if (!isCreated) {
       clearFilters();
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      // setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     } else {
       // created events
       clearFilters();
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      // setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     }
     // ended events
   }, [isCreated]);
@@ -143,7 +151,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       debounceSearchApiCall(searchString);
     } else {
       // using this to display events on initial page load
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     }
 
     return () => {
