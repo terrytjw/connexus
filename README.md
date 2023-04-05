@@ -47,7 +47,7 @@ Social Channels for Fan Engagement and Fan Behavior Analytics
 <br>
 
 <h4 align=center>🎨 Take a look at our microsite 🎨</h4>
-<p align=center><a class="button1" href="https://connexus-dmcvvyuam-connexaofficial-gmailcom.vercel.app/">Connexus</a></p>
+<p align=center><a class="button1" href="https://connexusofficial.vercel.app//">Connexus</a></p>
 
 
 <br>
