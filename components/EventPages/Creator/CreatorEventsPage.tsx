@@ -18,14 +18,11 @@ import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { API_URL } from "../../../lib/constant";
+import Loading from "../../Loading";
 
 const DELAY_TIME = 400;
 
-type CreatorEventsPageProps = {
-  events: EventWithAllDetails[];
-};
-
-const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
+const CreatorEventsPage = () => {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState(0);
   const [isCreated, setIsCreated] = useState<boolean>(false); // rendering using this  state is abit janky but it works
@@ -39,6 +36,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     },
   ]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [initialEventsData, setInitialEventsData] = useState<
+    EventWithAllDetails[]
+  >([]);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
   >([]);
@@ -48,6 +48,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] =
     useState<boolean>(false);
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   // fetch userId if from session
   const { data: session, status } = useSession();
@@ -117,6 +118,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   };
 
   const setInitialFilterResults = async () => {
+    setLoading(true);
     const initialEventData = await filterEvent(
       undefined,
       [],
@@ -125,7 +127,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       userId,
       undefined
     );
-    // using this state to display events on initial page load
+    setLoading(false);
+    // use this state to store initial event data and subsequently render events using this state
+    setInitialEventsData(initialEventData);
     setSearchAndFilterResults(filterCreatedEvents(initialEventData));
   };
 
@@ -133,15 +137,18 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   useEffect(() => {
     if (!isCreated) {
       clearFilters();
-      // setSearchAndFilterResults(filterCreatedEvents(events));
-      setInitialFilterResults();
+      if (initialEventsData.length === 0) {
+        setInitialFilterResults();
+      }
+      setSearchAndFilterResults(filterCreatedEvents(initialEventsData));
     } else {
       // created events
       clearFilters();
-      // setSearchAndFilterResults(filterCreatedEvents(events));
-      setInitialFilterResults();
+      if (initialEventsData.length === 0) {
+        setInitialFilterResults();
+      }
+      setSearchAndFilterResults(filterCreatedEvents(initialEventsData));
     }
-    // ended events
   }, [isCreated]);
 
   // listen to filter and search changes
@@ -246,46 +253,51 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             setSearchString("");
           }}
         >
-          <div className="mb-4 flex flex-wrap gap-2">
-            {selectedTopics.map((label) => {
-              return (
-                <Button
-                  key={label}
-                  size="sm"
-                  variant="outlined"
-                  onClick={(e) => e.preventDefault()}
-                  className="font-normal"
-                >
-                  {label}
-                  <FaTimes
-                    onClick={() => {
-                      setSelectedTopics(
-                        selectedTopics.filter((topic) => {
-                          return topic != label;
-                        })
-                      );
-                    }}
-                  />
-                </Button>
-              );
-            })}
-          </div>
-
-          <EventsTable
-            data={searchAndFilterResults}
-            columns={[
-              "Event Name",
-              "Date",
-              "Location",
-              "Max Attendees",
-              "Tickets Sold",
-              "Revenue",
-              "Tags",
-              "Status",
-            ]}
-            setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
-            setEventIdToDelete={setEventIdToDelete}
-          />
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <div className="mb-4 flex flex-wrap gap-2">
+                {selectedTopics.map((label) => {
+                  return (
+                    <Button
+                      key={label}
+                      size="sm"
+                      variant="outlined"
+                      onClick={(e) => e.preventDefault()}
+                      className="font-normal"
+                    >
+                      {label}
+                      <FaTimes
+                        onClick={() => {
+                          setSelectedTopics(
+                            selectedTopics.filter((topic) => {
+                              return topic != label;
+                            })
+                          );
+                        }}
+                      />
+                    </Button>
+                  );
+                })}
+              </div>
+              <EventsTable
+                data={searchAndFilterResults}
+                columns={[
+                  "Event Name",
+                  "Date",
+                  "Location",
+                  "Max Attendees",
+                  "Tickets Sold",
+                  "Revenue",
+                  "Tags",
+                  "Status",
+                ]}
+                setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
+                setEventIdToDelete={setEventIdToDelete}
+              />
+            </>
+          )}
         </TabGroupBordered>
 
         {/* Abstract Fitler modal */}

@@ -46,6 +46,10 @@ const EventPage = ({ event, userData }: EventPageProps) => {
   } = event;
   const { isFan } = useContext(UserRoleContext);
 
+  const isEventCreator = (): boolean => {
+    return userData.userId === event.creatorId;
+  };
+
   const isRegistered = (): boolean => {
     console.log("user tickets ->", userData?.tickets);
     return !!userData.tickets?.find(
@@ -111,7 +115,7 @@ const EventPage = ({ event, userData }: EventPageProps) => {
                   </h3>
                 </div>
                 {/* not registered and not sold out */}
-                {!isFan ? (
+                {!isFan && isEventCreator() ? (
                   <Link
                     href={`/events/edit/${eventId}`}
                     className="mt-8 sm:mt-0"

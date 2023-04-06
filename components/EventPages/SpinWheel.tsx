@@ -1,10 +1,10 @@
-import { previousDay } from "date-fns";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React from "react";
 import WheelComponent from "react-wheel-of-prizes";
 import { insertRafflePrize } from "../../lib/api-helpers/user-api";
 import { CurrentTicket } from "../../pages/events/tickets";
-import Button from "../Button";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 // import 'react-wheel-of-prizes/dist/index.css'
 
 interface SpinWheelProps {
@@ -14,6 +14,7 @@ interface SpinWheelProps {
 }
 
 const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
   const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
@@ -57,20 +58,19 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   };
 
   const onFinished = async (wonPrize: any) => {
-    console.log(wonPrize);
     let prizeId = getWonPrizeId(wonPrize);
     if (prizeId) {
-      console.log(
-        "calling user Ticket api with won prize id -> ",
-        getWonPrizeId(wonPrize)
-      );
-      const res = await insertRafflePrize(prizeId, userId);
+      await toast.promise(insertRafflePrize(prizeId, userId), {
+        loading: "Preparing prize...",
+        success: "Congrats, you won something!!!",
+        error: "Error Inserting Raffle Prize",
+      });
       setCurrentTicket((prev: CurrentTicket) => ({
         ...prev,
         rafflePrizeWinner: {}, // pass in an truthy object
         rafflePrizeName: wonPrize,
       }));
-      console.log("res ->", res);
+      setTimeout(() => router.reload(), 5000);
     } else {
       console.log("error with getting won prize id");
     }

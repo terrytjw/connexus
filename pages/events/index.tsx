@@ -17,11 +17,6 @@ type EventsPageProps = {
 const EventsPage = ({ events }: EventsPageProps) => {
   const { isFan } = useContext(UserRoleContext);
 
-  /**
-   * NOTE: /events is returning everything from the db, including unpublished events
-   * temporary filter to see only public events TODO: filter on server side or make it into an api call
-   *
-   * */
   const filterEvents = (
     events: EventWithAllDetails[]
   ): EventWithAllDetails[] => {
@@ -39,7 +34,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
     <ProtectedRoute>
       <Layout>
         {!isFan ? (
-          <CreatorEventsPage events={filterEvents(events)} />
+          <CreatorEventsPage />
         ) : (
           <FanEventsPage events={filterEvents(events)} />
         )}
