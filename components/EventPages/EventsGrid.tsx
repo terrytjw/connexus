@@ -39,7 +39,6 @@ const CollectionGridItem = ({
     const res = await likeEvent(item.eventId, Number(userId));
 
     // mutate
-    console.log("liking event -> ", res);
     if (mutateTrendingEvents) {
       mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
@@ -71,7 +70,6 @@ const CollectionGridItem = ({
     e.preventDefault();
     const res = await unlikeEvent(item.eventId, Number(userId));
     // mutate events
-    console.log("UNliking event");
     if (mutateTrendingEvents) {
       mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
@@ -146,7 +144,7 @@ const CollectionGridItem = ({
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          {truncateString(item.eventName, 20)}
+          {truncateString(item.eventName, 25)}
         </h3>
         <p className="mt-2 text-base font-semibold text-gray-500">
           {formatDate(item.startDate)} - {formatDate(item.endDate)}

@@ -163,16 +163,6 @@ const TicketCard = ({
                           getPrizeWinner(ticket)?.rafflePrizeId
                         )?.name || "",
                     });
-
-                    console.log("setting current ticket ->", {
-                      eventName: ticket.event.eventName,
-                      isCheckedIn: isCheckedIn(ticket) ?? false,
-                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
-                      rafflePrizeName:
-                        getPrizeNameByRafflePrizeId(
-                          getPrizeWinner(ticket)?.rafflePrizeId
-                        )?.name || "",
-                    });
                     setRafflePrizes(getRafflePrizes(ticket));
                     setIsPrizeModalOpen(true);
                   }
@@ -194,16 +184,6 @@ const TicketCard = ({
                 onClick={() => {
                   if (setIsModalOpen && setQrValue && setCurrentTicket) {
                     setCurrentTicket({
-                      eventName: ticket.event.eventName,
-                      isCheckedIn: isCheckedIn(ticket) ?? false,
-                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
-                      rafflePrizeName:
-                        getPrizeNameByRafflePrizeId(
-                          getPrizeWinner(ticket)?.rafflePrizeId
-                        )?.name || "",
-                    });
-
-                    console.log("setting current ticket ->", {
                       eventName: ticket.event.eventName,
                       isCheckedIn: isCheckedIn(ticket) ?? false,
                       rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,

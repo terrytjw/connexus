@@ -556,10 +556,6 @@ const TicketFormPage = ({
                           }
                           className="radio checked:bg-blue-600"
                           onChange={() => {
-                            // console.log("new Ticket ->", {
-                            //   ...tickets[index],
-                            //   ticketType: ticketTypeOption,
-                            // });
                             update(index, {
                               ...tickets[index],
                               ticketType: ticketTypeOption,

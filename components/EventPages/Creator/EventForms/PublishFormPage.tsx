@@ -36,13 +36,6 @@ const PublishFormPage = ({
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   const checkAttendeesExists = (): boolean | undefined => {
-    console.log("check tickets ->", tickets);
-    console.log(
-      "check attendee resutls ->",
-      tickets.some((ticket: any) => ticket.users?.length !== 0)
-    );
-
-    console.log(tickets);
     return tickets.some((ticket: any) => {
       if (ticket.users) {
         return ticket.users?.length !== 0;
@@ -81,7 +74,7 @@ const PublishFormPage = ({
                         <Button
                           size="md"
                           variant="outlined"
-                          className=" !btn-circle relative rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
+                          className=" !btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
                         >
                           <FaRegHeart size={24} />
                         </Button>

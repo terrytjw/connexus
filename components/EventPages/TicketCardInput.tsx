@@ -26,15 +26,6 @@ const TicketCardInput = ({
     discountedTickets,
   } = watch();
 
-  console.log("discounted tickets ->", discountedTickets);
-
-  // [PLACE HOLDER] replace with prop
-  const hasDiscount = true;
-
-  // [PLACEHOLDER] listen to discount value
-  const discount = 0.1;
-
-  console.log("selected ticket ->", selectedTicketName, selectedQty);
   const showInputStepper = (): boolean => {
     // case sold out
     if (isSoldOut()) {
@@ -74,8 +65,6 @@ const TicketCardInput = ({
       (ticket: Ticket) => Number(ticket.ticketId) === Number(ticketId)
     )?.price;
   };
-
-  console.log("ticket id 1 disctouned", getPreDiscountedPrice(1));
 
   return (
     <div>

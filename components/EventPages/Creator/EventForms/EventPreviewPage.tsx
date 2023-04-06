@@ -3,8 +3,6 @@ import {
   FaCalendar,
   FaChevronLeft,
   FaFacebook,
-  FaFacebookMessenger,
-  FaInstagram,
   FaMapPin,
   FaTelegram,
   FaTwitter,

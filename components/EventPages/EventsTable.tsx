@@ -75,7 +75,6 @@ const EventsTable = ({
               key={index}
               className="hover: cursor-pointer"
               onClick={(e) => {
-                // console.log("Row clicked");
                 router.push(`/events/${data.eventId}`);
               }}
             >
