@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://imgur.com/jQF5hm5.png" alt="Get Out of My Land Logo" draggable="false" width="50%">
+    <img src="https://imgur.com/jQF5hm5.png" alt="Connexus Logo" draggable="false" width="50%">
 </p>
 
 <h3 align="center">Empowering creators to develop authentic relationships with their fans.<br><br></h3>
@@ -8,8 +8,13 @@
     Developed by Team TH01 for NUS IS4103: Information System Capstone Project. Developed with React, Next.js, Prisma and MySQL.</h3>
 </p><br>
 
+## What is Connexus?
+All-in-one platform to empower creators to develop authentic relationships with their fans through NFT-powered Digital Ticket/Merchandise, Transparent Marketplace,
+Social Channels for Fan Engagement and Fan Behavior Analytics
 
-## 🖥 Quick Start
+<br>
+
+## 🖥️ Quick Start
 
 1. Download Docker from [Docker](https://www.docker.com/).
 2. Ensure that Docker is running.
@@ -42,8 +47,19 @@
 <br>
 
 <h4 align=center>🎨 Take a look at our microsite 🎨</h4>
-<p align=center><a class="button1" href="https://connexus-dmcvvyuam-connexaofficial-gmailcom.vercel.app/">Connexus</a></p>
+<p align=center><a class="button1" href="https://connexusofficial.vercel.app//">Connexus</a></p>
 
+
+<br>
+
+## 	💯 Core team
+- [@ccwhgetgit](https://github.com/ccwhgetgit)
+- [@kaiwenyay](https://github.com/kaiwenyay)
+- [@laiweileeee](https://github.com/laiweileeee)
+- [@niclqt](https://github.com/niclqt)
+- [@terrytjw](https://github.com/terrytjw)
+- [@shengliang-tham](https://github.com/shengliang-tham)
+- [@yukineowq](https://github.com/yukineowq)
 
 <br>
 
@@ -75,3 +91,4 @@
     ├── tailwind.config.js
     └── tsconfig.json
     
+[⬆ Back to Top](#%EF%B8%8F-quick-start)

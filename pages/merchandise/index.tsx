@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
 import { useContext } from "react";
@@ -13,6 +13,8 @@ import {
 } from "../../lib/api-helpers/collection-api";
 import { searchCollectedMerchandise } from "../../lib/api-helpers/merchandise-api";
 import { MerchandiseWithCollectionName } from "../../utils/types";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type CollectionsPageProps = {
   merchandiseData: MerchandiseWithCollectionName[];
@@ -47,8 +49,10 @@ const CollectionsPage = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   const collectionsData = await searchAllCollections(0, "");

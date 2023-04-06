@@ -166,7 +166,7 @@ export async function filterEvent(
   startDate: Date | undefined,
   endDate: Date | undefined,
   // likedEvent: boolean = false,
-  // userId: number | undefined,
+  userId: number | undefined,
   status: VisibilityType | undefined
 ) {
   const baseUrl = `${API_URL}/${EVENT_ENDPOINT}`;
@@ -179,7 +179,7 @@ export async function filterEvent(
         startDate,
         endDate,
         // likedEvent,
-        // userId,
+        userId,
         status,
       },
     })

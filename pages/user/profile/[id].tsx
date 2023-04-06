@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 import React, { useState } from "react";
@@ -30,6 +30,8 @@ import CommunitiesTab from "../../../components/UserProfileTabs/CommunitiesTab";
 import EventsTab from "../../../components/UserProfileTabs/EventsTab";
 import CollectionsTab from "../../../components/UserProfileTabs/CollectionsTab";
 import CreationsTab from "../../../components/UserProfileTabs/CreationsTab";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 type UserProfilePageProps = {
   userData: UserWithAllInfo;
@@ -173,8 +175,10 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
 
 export default UserProfilePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   if (!userId) {

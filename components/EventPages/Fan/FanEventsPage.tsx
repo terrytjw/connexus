@@ -48,7 +48,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
 
   // fetch userId if from session
   const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  const userId = Number(session?.user.userId);
 
   const hasFilters = (): boolean => {
     return Boolean(dateRange[0].startDate || selectedTopics.length > 0);
@@ -83,18 +83,12 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
   // this function retrieves the latest events with the given filters and search term
   const searchAndFilterEvents = async (searchTerm: string) => {
     try {
-      // console.log("passing in filters ->", {
-      //   searchTerm,
-      //   selectedTopics,
-      //   fromDate: fromDateFilter,
-      //   toDate: toDateFilter,
-      //   visibilityType: undefined,
-      // });
       const data = await filterEvent(
         searchTerm,
         selectedTopics,
         dateRange[0].startDate,
         dateRange[0].startDate ? dateRange[0].endDate : undefined,
+        undefined,
         undefined // this is used for creator events page
       );
 
@@ -208,7 +202,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       isLoading,
     } = useSWR(
       "visitedEvents",
-      async () => await retrieveVisitedEvents(Number(userId))
+      async () => await retrieveVisitedEvents(userId)
     );
 
     if (isLoading) return <Loading />;
@@ -237,10 +231,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
       data: expiredEvents,
       error,
       isLoading,
-    } = useSWR(
-      "expiredEvents",
-      async () => await viewExpiredEvent(Number(userId))
-    );
+    } = useSWR("expiredEvents", async () => await viewExpiredEvent(userId));
 
     if (isLoading) return <Loading />;
 

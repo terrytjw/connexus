@@ -80,7 +80,7 @@ export async function filterEvent(
   startDate: Date | undefined,
   endDate: Date | undefined,
   // likedEvents: boolean | undefined,
-  // userId: number | undefined,
+  userId: number | undefined,
   status: VisibilityType | undefined
 ) {
   console.log(
@@ -92,7 +92,7 @@ export async function filterEvent(
     startDate,
     endDate,
     // likedEvents,
-    // userId,
+    userId,
     status
   );
 
@@ -105,6 +105,7 @@ export async function filterEvent(
       eventId: "asc",
     },
     where: {
+      creatorId: userId,
       eventName: {
         contains: keyword,
         mode: "insensitive",

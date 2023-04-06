@@ -17,6 +17,7 @@ import TabGroupBordered from "../../TabGroupBordered";
 import { DateRange } from "react-date-range";
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
+import { API_URL } from "../../../lib/constant";
 
 const DELAY_TIME = 400;
 
@@ -50,7 +51,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
   // fetch userId if from session
   const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  const userId = Number(session?.user.userId);
 
   // Initialize a variable to hold the timeout ID
   let timeoutId: ReturnType<typeof setTimeout>;
@@ -69,30 +70,14 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
   const searchAndFilterEvents = async (searchTerm: string) => {
     try {
-      // console.log("passing in filters ->", {
-      //   searchTerm,
-      //   selectedTopics,
-      //   fromDate: fromDateFilter,
-      //   toDate: toDateFilter,
-      //   visibilityType: visibilityType,
-      // });
       const data = await filterEvent(
         searchTerm,
         selectedTopics,
         dateRange[0].startDate,
         dateRange[0].startDate ? dateRange[0].endDate : undefined,
-        // fromDateFilter,
-        // toDateFilter,
+        userId,
         visibilityType // this is used for creator events page
       );
-
-      // console.log("search Term ->", searchString);
-      // console.log("filtered data from api ->", data);
-      // console.log(
-      //   "filtered data after frontend filter ->",
-      //   filterCreatedEvents(data)
-      // );
-      // set search and filter results
       setSearchAndFilterResults(filterCreatedEvents(data));
     } catch (error) {
       console.error(error);
@@ -131,15 +116,30 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     }
   };
 
+  const setInitialFilterResults = async () => {
+    const initialEventData = await filterEvent(
+      undefined,
+      [],
+      undefined,
+      undefined,
+      userId,
+      undefined
+    );
+    // using this state to display events on initial page load
+    setSearchAndFilterResults(filterCreatedEvents(initialEventData));
+  };
+
   // listens to created and ended events toggle
   useEffect(() => {
     if (!isCreated) {
       clearFilters();
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      // setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     } else {
       // created events
       clearFilters();
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      // setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     }
     // ended events
   }, [isCreated]);
@@ -151,7 +151,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       debounceSearchApiCall(searchString);
     } else {
       // using this to display events on initial page load
-      setSearchAndFilterResults(filterCreatedEvents(events));
+      setInitialFilterResults();
     }
 
     return () => {
@@ -412,9 +412,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 size="md"
                 className="bg-red-600 hover:bg-red-500"
                 onClick={async () => {
-                  await axios.delete(
-                    `http://localhost:3000/api/events/${eventIdToDelete}`
-                  );
+                  await axios.delete(`${API_URL}/events/${eventIdToDelete}`);
                   router.reload();
                   setDeleteConfirmationModalOpen(false);
                 }}

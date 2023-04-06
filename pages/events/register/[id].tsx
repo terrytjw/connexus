@@ -13,12 +13,12 @@ import TicketSelectionFormPage from "../../../components/EventPages/Fan/Register
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import { User, Ticket } from "@prisma/client";
 import axios from "axios";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { EventWithAllDetails, UserWithTickets } from "../../../utils/types";
 import { ethers } from "ethers";
 import contract from "../../../artifacts/contracts/SimpleEvent.sol/SimpleEvent.json";
-import { smartContract } from "../../../lib/constant";
+import { API_URL, smartContract } from "../../../lib/constant";
 import Modal from "../../../components/Modal";
 import Button from "../../../components/Button";
 import Link from "next/link";
@@ -27,6 +27,8 @@ import getStripe from "../../../lib/stripe";
 import { useRouter } from "next/router";
 import { sendEmail, sendSMS } from "../../../lib/api-helpers/communication-api";
 import { saveUserTicket } from "../../../lib/api-helpers/ticket-api";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 
 export type SelectedTicket = {
   ticketId: number | undefined;
@@ -89,6 +91,61 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     { id: "Step 2", name: "Confirm Registration", status: StepStatus.UPCOMING },
   ]);
 
+  // email html body
+  const htmlBody: string = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8">
+      <title>Ticket Notification</title>
+      <style>
+        /* Center all elements and set text color */
+        body {
+          display: flex;
+          justify-content: center;
+          text-align: center;
+          color: #34383F;
+        }
+        /* Add some space between elements */
+        img, h1, p, a {
+          margin: 10px auto;
+          display: block;
+          text-align: center;
+        }
+        /* Style the button */
+        a.button {
+          background: #1A7DFF;
+          color: #FFFFFF;
+          border-radius: 0.375rem;
+          border: none;
+          padding: 0.75rem 1rem;
+          text-decoration: none;
+          display: inline-block;
+          transition: background-color 0.3s ease;
+          font-weight: 600;
+          margin: 0 auto;
+        }
+        /* Style the button hover */
+        a.button:hover {
+          background: #1A54C2;
+          cursor: pointer;
+        }
+      </style>
+    </head>
+    <body>
+        <!-- Logo -->
+        <img style="margin-top: 4rem" src="https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/event-profile/connexa-logo.png" alt="Logo" width="200">
+        <!-- Greeting -->
+        <h1 style="margin-top: 2rem; margin-bottom: 0rem">${userData.displayName},</h1>
+        <h1 style="margin-top: 0rem;">you've got tickets!</h1>
+        <!-- Button to view the event -->
+        <div style="display: flex; justify-content: center; margin-top: 3rem; margin-bottom: 10rem">
+          <a class="button" href="http://connexus.com/events/tickets" style="display: flex; justify-content: center;">View Event</a>  
+        </div>      
+      </body>
+  </html>
+  `;
+
   // checks if payment succeeeded and call mint api
   useEffect(() => {
     const paymentSuccessExists = "paymentSuccess" in router.query;
@@ -133,29 +190,20 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
       );
       localStorage.removeItem("savedFormData");
 
-      console.log("Sending email", {
-        email: userData.email,
-        subject: `Reminder for ${event.eventName}`,
-        message: "Some reminder",
-      });
-
-      console.log("Sending sms", {
-        number: "+6591713316",
-        message: "Some reminder",
-      });
-
       // send email
       sendEmail(
         userData.email,
-        `Reminder for ${event.eventName}`,
-        "Some reminder"
+        `Registration Confirmation for ${event.eventName}`,
+        "Event Confirmation",
+        htmlBody
       );
 
       if (userData.phoneNumber) {
-        sendSMS(userData.phoneNumber, "Some reminder");
+        sendSMS(
+          userData.phoneNumber,
+          `[Connexus] Hey ${userData.displayName}! You've registered for ${event.eventName}, take a look at your tickets in Connexus! http://connexus.com/events/tickets`
+        );
       }
-
-      console.log("email sent");
     }
   }, [router.query]);
 
@@ -234,7 +282,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
     console.log(ticket_category);
     const { eventName, addressId, startDate, endDate } = eventInfo;
     let response_location = await axios.get(
-      "http://localhost:3000/api/addresses/" + addressId
+      `${API_URL}/addresses/` + addressId
     );
 
     // stringy data to store on pinata
@@ -278,14 +326,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   ) => {
     setIsLoading(true);
     setIsRegisterSuccessModalOpen(true);
-    let response = await axios.get(
-      "http://localhost:3000/api/events/" + eventId.toString()
-    );
+    let response = await axios.get(`${API_URL}/events/` + eventId.toString());
     const eventInfo = response.data as EventWithAllDetails;
     const { eventScAddress, ticketURIs, tickets } = eventInfo;
 
     let user_response = await axios.get(
-      "http://localhost:3000/api/users/" + userId.toString()
+      `${API_URL}/users/` + userId.toString()
     );
     const userInfo = user_response.data as UserWithTickets;
     var user_tickets = userInfo.tickets;
@@ -332,7 +378,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           description: tickets[j].description,
         };
         let response_tickets = await axios.post(
-          "http://localhost:3000/api/tickets/" + tickets[j].ticketId.toString(),
+          `${API_URL}/tickets/` + tickets[j].ticketId.toString(),
           ticket
         );
         user_tickets.push(tickets[j]);
@@ -350,7 +396,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
         };
         console.log("updating user in prisma, form data ->", updated_user);
         let user_update = await axios.post(
-          "http://localhost:3000/api/users/" + userId.toString(),
+          `${API_URL}/users/` + userId.toString(),
           updated_user
         );
         console.log(user_update);
@@ -376,7 +422,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
 
     console.log("posting updated event ->", updated_event);
     let updated_response = await axios.post(
-      "http://localhost:3000/api/events/" + eventId.toString(),
+      `${API_URL}/events/` + eventId.toString(),
       updated_event
     );
     let updated_data = updated_response.data;
@@ -530,17 +576,17 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
 export default FanEventRegister;
 
 // use axios GET method to fetch data
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   // use axios GET method to fetch data
-  const { data: userData } = await axios.get(
-    `http://localhost:3000/api/users/${userId}`
-  );
+  const { data: userData } = await axios.get(`${API_URL}/users/${userId}`);
 
   const { data: event } = await axios.get(
-    `http://localhost:3000/api/events/${context.params?.id}`
+    `${API_URL}/events/${context.params?.id}`
   );
 
   return {

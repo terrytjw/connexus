@@ -64,6 +64,10 @@ export const authOptions: NextAuthOptions = {
         ...session,
       };
     },
+    async redirect({ url, baseUrl }) {
+      // Allows relative callback URLs
+      return url;
+    },
   },
 };
 

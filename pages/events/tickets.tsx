@@ -5,7 +5,7 @@ import { FaChevronLeft } from "react-icons/fa";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
 import Link from "next/link";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Modal from "../../components/Modal";
 import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
 import QRCode from "react-qr-code";
@@ -20,6 +20,8 @@ import { Ticket } from "@prisma/client";
 import { BiGift } from "react-icons/bi";
 import DigitalBadge from "../../components/EventPages/DigitalBadge";
 import { useRouter } from "next/router";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type TicketsPageProps = {
   tickets: TicketWithEvent[];
@@ -212,8 +214,10 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
 export default TicketsPage;
 
 // use axios GET method to fetch data
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user?.userId;
   // build a ticket type with event name in it
   const ownedTickets = await getTicketsOwned(parseInt(userId ?? "0"));

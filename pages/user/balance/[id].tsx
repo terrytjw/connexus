@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import React, { useState } from "react";
 import Button from "../../../components/Button";
@@ -13,6 +13,8 @@ import Input from "../../../components/Input";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import { BankAccount } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
 import toast from "react-hot-toast";
 
 type WithdrawalTableProps = {
@@ -288,8 +290,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
 export default BalancePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   if (!userId) {
