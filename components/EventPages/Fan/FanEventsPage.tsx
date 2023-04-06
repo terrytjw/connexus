@@ -91,8 +91,6 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
         undefined,
         undefined // this is used for creator events page
       );
-
-      // console.log("filtered data ->", data);
       setSearchAndFilterResults(data);
     } catch (error) {
       console.error(error);
