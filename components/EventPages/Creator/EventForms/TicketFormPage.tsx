@@ -446,6 +446,10 @@ const TicketFormPage = ({
                 name={`tickets.${index}.price`}
                 rules={{
                   required: "Price of ticket is required",
+                  validate: {
+                    notNegative: (value) =>
+                      value >= 0 || "Price cannot be negative",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
