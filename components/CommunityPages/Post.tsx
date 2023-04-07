@@ -109,7 +109,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       return data.filter((post) => post.postId != res.postId);
     });
-    toast("Post deleted!");
+    toast.success("Post deleted!");
   };
 
   const createComment = async () => {
@@ -136,7 +136,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
         className="!max-w-3xl"
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-xl font-semibold">Edit Post</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Edit Post</h3>
           <Button
             variant="outlined"
             size="sm"
@@ -156,8 +156,8 @@ const Post = ({ post, mutatePosts }: PostProps) => {
       </Modal>
 
       <div className="card-body gap-4 p-4 sm:p-8">
-        <div className="flex w-full flex-wrap items-center justify-between">
-          <div className="flex items-center gap-4">
+        <div className="flex w-full items-center justify-between gap-2">
+          <div className="flex w-3/4 items-center gap-4">
             <Image
               height={48}
               width={48}
@@ -167,10 +167,17 @@ const Post = ({ post, mutatePosts }: PostProps) => {
             />
             <CustomLink
               href={`/user/profile/${post.creator.userId}`}
-              className="text-gray-700"
+              className="!inline-block truncate font-semibold text-gray-700"
             >
               {post.creator.username}
-            </CustomLink>{" "}
+            </CustomLink>
+
+            <span className="whitespace-nowrap text-gray-500">
+              {new Date(post.date).toLocaleString("en-gb", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -184,7 +191,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
                 </label>
                 <ul
                   tabIndex={0}
-                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 shadow"
+                  className="dropdown-content menu rounded-box w-52 bg-base-100 p-2 text-gray-900 shadow"
                 >
                   <li>
                     {post.isPinned ? (
@@ -235,18 +242,11 @@ const Post = ({ post, mutatePosts }: PostProps) => {
 
         <Carousel images={post.media} />
 
-        <p className="break-words">{post.content}</p>
+        <p className="break-words text-gray-900">{post.content}</p>
 
         <div className="flex w-full flex-row-reverse flex-wrap items-center justify-between gap-4">
-          <span>
-            {new Date(post.date).toLocaleString("en-gb", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </span>
           <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 text-gray-700">
               {post.likes.find(
                 (like: { userId: number }) => like.userId == userId
               ) ? (
@@ -271,7 +271,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
               {post.likes.length}
             </div>
 
-            <div className="flex items-center gap-x-2">
+            <div className="flex items-center gap-x-2 text-gray-700">
               <Button
                 size="md"
                 variant="outlined"

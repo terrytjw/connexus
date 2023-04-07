@@ -8,6 +8,7 @@ import {
   TicketWithEvent,
   UserWithTicketsAndEvent,
 } from "../utils/types";
+import { truncateString } from "../utils/text-truncate";
 
 type DigitalBadgeGridItemProps = {
   item: UserWithTicketsAndEvent;
@@ -24,7 +25,7 @@ const DigitalBadgeGridItem = ({
   const eventDescription = item.ticket.event.description;
 
   return (
-    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200">
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
       <div className="relative aspect-square w-full overflow-hidden rounded-lg bg-gray-100 transition-all">
         <Image
           fill
@@ -50,7 +51,9 @@ const DigitalBadgeGridItem = ({
           ) : null}
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{eventName}</h3>
+      <h3 className="mt-4 text-xl font-bold text-gray-900">
+        {truncateString(eventName, 20)}
+      </h3>
       {/* {collectedTab && "collection" in item ? (
         <p className="mt-2 text-sm text-gray-500">
           From{" "}
@@ -69,13 +72,13 @@ type DigitalBadgeGridProps = {
 const DigitalBadgeGrid = ({ data, collectedTab }: DigitalBadgeGridProps) => {
   if (data.length === 0)
     return (
-      <div className=" p-4 text-sm tracking-widest text-gray-400">
-        No items.
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No digital badges to show.
       </div>
     );
 
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {data.map((item) => (
         <DigitalBadgeGridItem
           key={item.userTicketId} // todo: replace with digital badge id

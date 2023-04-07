@@ -33,7 +33,9 @@ const PreferenceSettings = ({ userData }: PreferenceSettingsProps) => {
   };
   return (
     <div>
-      <h1 className="py-2 text-2xl">Attending events</h1>
+      <h1 className="py-2 text-2xl font-semibold text-gray-900">
+        Attending events
+      </h1>
       <p className="text-sm text-gray-500">
         News and updates about events created by creators
       </p>

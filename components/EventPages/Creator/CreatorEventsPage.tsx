@@ -9,31 +9,36 @@ import { CategoryType, VisibilityType } from "@prisma/client";
 import axios from "axios";
 import Badge from "../../Badge";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { FiCalendar } from "react-icons/fi";
-import EventWordToggle from "../EventWordToggle";
 import { useRouter } from "next/router";
-import Input from "../../Input";
 import { filterEvent } from "../../../lib/api-helpers/event-api";
 import { useSession } from "next-auth/react";
-import { formatDateWithLocalTime } from "../../../utils/date-util";
+import TabGroupBordered from "../../TabGroupBordered";
+// @ts-ignore
+import { DateRange } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import { API_URL } from "../../../lib/constant";
+import Loading from "../../Loading";
 
 const DELAY_TIME = 400;
 
-type CreatorEventsPageProps = {
-  events: EventWithAllDetails[];
-};
-
-const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
+const CreatorEventsPage = () => {
   const router = useRouter();
+  const [activeTab, setActiveTab] = useState(0);
   const [isCreated, setIsCreated] = useState<boolean>(false); // rendering using this  state is abit janky but it works
   const [selectedTopics, setSelectedTopics] = useState<CategoryType[]>([]);
   const [searchString, setSearchString] = useState("");
-  const [fromDateFilter, setFromDateFilter] = useState<Date | undefined>(
-    undefined
-  );
-  const [toDateFilter, setToDateFilter] = useState<Date | undefined>(undefined);
+  const [dateRange, setDateRange] = useState([
+    {
+      startDate: undefined,
+      endDate: new Date(""),
+      key: "selection",
+    },
+  ]);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
+  const [initialEventsData, setInitialEventsData] = useState<
+    EventWithAllDetails[]
+  >([]);
   const [searchAndFilterResults, setSearchAndFilterResults] = useState<
     EventWithAllDetails[]
   >([]);
@@ -43,6 +48,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   const [deleteConfirmationModalOpen, setDeleteConfirmationModalOpen] =
     useState<boolean>(false);
   const [eventIdToDelete, setEventIdToDelete] = useState<number | undefined>();
+  const [loading, setLoading] = useState<boolean>(false);
 
   // fetch userId if from session
   const { data: session, status } = useSession();
@@ -65,18 +71,11 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
   const searchAndFilterEvents = async (searchTerm: string) => {
     try {
-      // console.log("passing in filters ->", {
-      //   searchTerm,
-      //   selectedTopics,
-      //   fromDate: fromDateFilter,
-      //   toDate: toDateFilter,
-      //   visibilityType: visibilityType,
-      // });
       const data = await filterEvent(
         searchTerm,
         selectedTopics,
-        fromDateFilter,
-        toDateFilter,
+        dateRange[0].startDate,
+        dateRange[0].startDate ? dateRange[0].endDate : undefined,
         userId,
         visibilityType // this is used for creator events page
       );
@@ -88,17 +87,19 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
 
   const hasFilters = (): boolean => {
     return Boolean(
-      fromDateFilter ||
-        toDateFilter ||
-        visibilityType ||
-        selectedTopics.length > 0
+      dateRange[0].startDate || visibilityType || selectedTopics.length > 0
     );
   };
 
   const clearFilters = (): void => {
     setSelectedTopics([]);
-    setFromDateFilter(undefined);
-    setToDateFilter(undefined);
+    setDateRange([
+      {
+        startDate: undefined,
+        endDate: new Date(""),
+        key: "selection",
+      },
+    ]);
     setVisibilityType(undefined);
   };
 
@@ -117,6 +118,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   };
 
   const setInitialFilterResults = async () => {
+    setLoading(true);
     const initialEventData = await filterEvent(
       undefined,
       [],
@@ -125,7 +127,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
       userId,
       undefined
     );
-    // using this state to display events on initial page load
+    setLoading(false);
+    // use this state to store initial event data and subsequently render events using this state
+    setInitialEventsData(initialEventData);
     setSearchAndFilterResults(filterCreatedEvents(initialEventData));
   };
 
@@ -133,15 +137,18 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
   useEffect(() => {
     if (!isCreated) {
       clearFilters();
-      // setSearchAndFilterResults(filterCreatedEvents(events));
-      setInitialFilterResults();
+      if (initialEventsData.length === 0) {
+        setInitialFilterResults();
+      }
+      setSearchAndFilterResults(filterCreatedEvents(initialEventsData));
     } else {
       // created events
       clearFilters();
-      // setSearchAndFilterResults(filterCreatedEvents(events));
-      setInitialFilterResults();
+      if (initialEventsData.length === 0) {
+        setInitialFilterResults();
+      }
+      setSearchAndFilterResults(filterCreatedEvents(initialEventsData));
     }
-    // ended events
   }, [isCreated]);
 
   // listen to filter and search changes
@@ -157,43 +164,29 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [
-    searchString,
-    selectedTopics,
-    fromDateFilter,
-    toDateFilter,
-    visibilityType,
-  ]);
+  }, [searchString, selectedTopics, dateRange, visibilityType]);
 
   return (
     <div>
       <main className="py-12 px-4 sm:px-12">
-        <h1 className="text-2xl font-bold sm:text-4xl">Events</h1>
-
-        <div className="mt-4 flex flex-wrap justify-between sm:mt-6">
-          <h2 className="text-md mt-2 font-bold sm:text-xl">Created Events</h2>
-        </div>
+        {/* Rest of page */}
+        <h1 className="text-4xl font-bold text-gray-900">Your Events</h1>
+        <h3 className="mt-4 text-gray-500">
+          View all your created upcoming and past events
+        </h3>
 
         {/* dekstop filter and search */}
-        <div className="mt-6 hidden flex-wrap justify-between sm:flex">
-          <div className="flex gap-4">
-            <EventWordToggle
-              leftWord="Created"
-              rightWord="Ended"
-              isChecked={isCreated}
-              setIsChecked={setIsCreated}
-            />
-            <Button
-              href="/events/create"
-              variant="solid"
-              size="md"
-              className="max-w-xs shadow-md"
-            >
-              <FiCalendar className="text-lg text-neutral-50" />
-            </Button>
-          </div>
-          <div className="flex basis-1/3 gap-4">
-            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+        <div className="mt-10 hidden items-center justify-between gap-x-4 lg:flex">
+          <Button
+            href="/events/create"
+            variant="solid"
+            size="md"
+            className="w-fit"
+          >
+            Create a New Event
+          </Button>
+          <div className="flex gap-x-4">
+            <div className="relative items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
               </div>
@@ -201,7 +194,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="input-outlined input input-md block w-full rounded-md pl-10"
                 type="text"
                 value={searchString}
-                placeholder="Search Events by Name"
+                placeholder="Search Events"
                 onChange={(e) => {
                   setSearchString(e.target.value);
                 }}
@@ -210,27 +203,26 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
             <Button
               variant="solid"
               size="md"
-              className="max-w-sm !bg-white !text-gray-700"
+              className="max-w-sm !bg-white !text-gray-700 shadow-sm"
               onClick={() => setIsFilterModalOpen(true)}
             >
               Filter
-              <BiFilter className="h-8 w-8" />
+              <BiFilter className="h-6 w-6" />
             </Button>
           </div>
         </div>
         {/* mobile search and filter */}
-        <div className="mt-6 flex-col gap-2 sm:hidden ">
-          <div className="flex gap-4">
-            <Button
-              href="/events/create"
-              variant="solid"
-              size="md"
-              className="max-w-xs shadow-md"
-            >
-              <FiCalendar className="text-lg text-neutral-50" />
-            </Button>
-          </div>
-          <div className="mt-4 flex w-full gap-2 ">
+        <div className="mt-8 flex w-full flex-col gap-4 lg:hidden">
+          <Button
+            href="/events/create"
+            variant="solid"
+            size="md"
+            className="w-fit"
+          >
+            Create a New Event
+          </Button>
+
+          <div className="flex gap-x-2">
             <div className="relative w-full items-center justify-center rounded-md shadow-sm">
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
                 <FaSearch className="text-gray-500" />
@@ -239,7 +231,7 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
                 className="input-outlined input input-md block w-full rounded-md pl-10"
                 type="text"
                 value={searchString}
-                placeholder="Search Communities"
+                placeholder="Search Events"
                 onChange={(e) => {
                   setSearchString(e.target.value);
                 }}
@@ -252,47 +244,61 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           </div>
         </div>
 
-        <section className="mt-6">
-          <div className="mb-4 flex flex-wrap gap-2">
-            {selectedTopics.map((label) => {
-              return (
-                <Button
-                  key={label}
-                  size="sm"
-                  variant="outlined"
-                  onClick={(e) => e.preventDefault()}
-                  className="font-normal"
-                >
-                  {label}
-                  <FaTimes
-                    onClick={() => {
-                      setSelectedTopics(
-                        selectedTopics.filter((topic) => {
-                          return topic != label;
-                        })
-                      );
-                    }}
-                  />
-                </Button>
-              );
-            })}
-          </div>
-          <EventsTable
-            data={searchAndFilterResults}
-            columns={[
-              "Event Name",
-              "Date",
-              "Location",
-              "Max Attendees",
-              "Tickets Sold",
-              "Revenue",
-              "Tags",
-              "Status",
-            ]}
-            setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
-            setEventIdToDelete={setEventIdToDelete}
-          />
-        </section>
+        <TabGroupBordered
+          tabs={["Created", "Ended"]}
+          activeTab={activeTab}
+          setActiveTab={(index: number) => {
+            setIsCreated(!isCreated);
+            setActiveTab(index);
+            setSearchString("");
+          }}
+        >
+          {loading ? (
+            <Loading />
+          ) : (
+            <>
+              <div className="mb-4 flex flex-wrap gap-2">
+                {selectedTopics.map((label) => {
+                  return (
+                    <Button
+                      key={label}
+                      size="sm"
+                      variant="outlined"
+                      onClick={(e) => e.preventDefault()}
+                      className="font-normal"
+                    >
+                      {label}
+                      <FaTimes
+                        onClick={() => {
+                          setSelectedTopics(
+                            selectedTopics.filter((topic) => {
+                              return topic != label;
+                            })
+                          );
+                        }}
+                      />
+                    </Button>
+                  );
+                })}
+              </div>
+              <EventsTable
+                data={searchAndFilterResults}
+                columns={[
+                  "Event Name",
+                  "Date",
+                  "Location",
+                  "Max Attendees",
+                  "Tickets Sold",
+                  "Revenue",
+                  "Tags",
+                  "Status",
+                ]}
+                setDeleteConfirmationModalOpen={setDeleteConfirmationModalOpen}
+                setEventIdToDelete={setEventIdToDelete}
+              />
+            </>
+          )}
+        </TabGroupBordered>
 
         {/* Abstract Fitler modal */}
         <Modal
@@ -301,7 +307,9 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Filter Events</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Filter Events
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -344,31 +352,16 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           <div className="divider"></div>
           {/* Date Range */}
           <h3 className="text-sm font-medium text-gray-500">DATE RANGE</h3>
-          <div className="mt-2 flex-col justify-between gap-8">
-            <Input
-              type="datetime-local"
-              label="From"
-              value={formatDateWithLocalTime(fromDateFilter)}
-              onChange={(e) => setFromDateFilter(new Date(e.target.value))}
-              placeholder="From Date and Time"
-              size="xs"
-              variant="bordered"
-              className="max-w-3xl align-middle text-gray-500"
-            />
-            <Input
-              type="datetime-local"
-              label="To"
-              value={formatDateWithLocalTime(toDateFilter)}
-              onChange={(e) => setToDateFilter(new Date(e.target.value))}
-              placeholder="From Date and Time"
-              size="xs"
-              variant="bordered"
-              className="max-w-3xl align-middle text-gray-500"
-            />
-          </div>
+          <DateRange
+            showSelectionPreview={false}
+            showDateDisplay={false}
+            onChange={(item: any) => setDateRange([item.selection])}
+            moveRangeOnFirstSelection={false}
+            ranges={dateRange}
+            className="w-full min-w-fit [&_div]:w-full"
+          />
 
           <div className="divider"></div>
-
           {/* Publish status */}
           <h3 className="text-sm font-medium text-gray-500">PUBLISH STATUS</h3>
           <div className="flex gap-2">
@@ -415,35 +408,38 @@ const CreatorEventsPage = ({ events }: CreatorEventsPageProps) => {
           isOpen={deleteConfirmationModalOpen}
           setIsOpen={setDeleteConfirmationModalOpen}
         >
-          <div className="flex flex-col gap-6 py-4">
-            <h3 className="text-xl font-semibold">Confirm Delete Event?</h3>
-            <h3 className="text-md font-normal text-gray-500">
-              Warning - This action is permanent
-            </h3>
-            <div className="flex justify-end gap-6">
-              <Button
-                variant="outlined"
-                size="md"
-                className="border-0 text-gray-500"
-                onClick={async () => {
-                  setDeleteConfirmationModalOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
+          <div className="flex flex-col gap-6 text-gray-900">
+            <h3 className="text-xl font-semibold">Delete Event</h3>
+
+            <p>
+              By deleting this event, all existing data will be removed.{" "}
+              <span className="font-semibold">
+                You cannot undo this action.
+              </span>
+            </p>
+
+            <div className="flex gap-4">
               <Button
                 variant="solid"
                 size="md"
                 className="bg-red-600 hover:bg-red-500"
                 onClick={async () => {
-                  await axios.delete(
-                    `${API_URL}/events/${eventIdToDelete}`
-                  );
+                  await axios.delete(`${API_URL}/events/${eventIdToDelete}`);
                   router.reload();
                   setDeleteConfirmationModalOpen(false);
                 }}
               >
                 Delete
+              </Button>
+              <Button
+                className="border-0"
+                variant="outlined"
+                size="md"
+                onClick={() => {
+                  setDeleteConfirmationModalOpen(false);
+                }}
+              >
+                Cancel
               </Button>
             </div>
           </div>

@@ -107,15 +107,9 @@ const AttendeesTable = ({
                         size="sm"
                         onClick={() => {
                           const winner = getPrizeWinner(data);
-                          console.log("winner ->", winner);
                           // find prize won
                           const rafflePrizeUser =
                             getRafflePrizeUserFromRafflePrize(winner, data);
-
-                          console.log(
-                            "current Raffle Prize User ->",
-                            rafflePrizeUser
-                          );
 
                           if (
                             rafflePrizeUser?.rafflePrizeId &&

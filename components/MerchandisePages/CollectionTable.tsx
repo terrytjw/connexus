@@ -29,7 +29,9 @@ const CollectionTable = ({
 
   if (data.length === 0)
     return (
-      <div className="p-4 text-sm tracking-widest text-gray-400">No items.</div>
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No collections to show.
+      </div>
     );
 
   return (
@@ -80,7 +82,7 @@ const CollectionTable = ({
                       ) // returns total quantity
                 }
               </td>
-              <td className={textColour}>{item.fixedPrice}</td>
+              <td className={textColour}>${item.fixedPrice}</td>
               <td className={textColour}>
                 {item.premiumChannel ? (
                   <Badge size="sm" label={item.premiumChannel.name} />
@@ -113,7 +115,7 @@ const CollectionTable = ({
 
                           mutateOnSaleCollections();
                           mutatePausedCollections();
-                          toast(
+                          toast.success(
                             `Sale of ${item.collectionName} has been unpaused. The collection can be viewed in the ‘On Sale’ tab.`
                           );
                         }}
@@ -130,7 +132,7 @@ const CollectionTable = ({
 
                           mutateOnSaleCollections();
                           mutatePausedCollections();
-                          toast(
+                          toast.success(
                             `Sale of ${item.collectionName} has been paused. The collection can be viewed in the ‘Paused’ tab.`
                           );
                         }}

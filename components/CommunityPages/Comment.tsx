@@ -49,7 +49,7 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
     mutateComments((data: CommentWithCommenterAndLikes[]) => {
       return data.filter((comment) => comment.commentId != res.commentId);
     });
-    toast("Comment deleted!");
+    toast.success("Comment deleted!");
   };
 
   return (
@@ -65,16 +65,24 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
       </div>
       <div className="flex-grow">
         <div className="flex w-full flex-col gap-1">
-          <CustomLink
-            href={`/user/profile/${comment.commenter.userId}`}
-            className="text-gray-700"
-          >
-            {comment.commenter.username}
-          </CustomLink>
-          <p className="break-all text-sm">{comment.content}</p>
+          <div className="flex items-center gap-4">
+            <CustomLink
+              href={`/user/profile/${comment.commenter.userId}`}
+              className="font-medium text-gray-700"
+            >
+              {comment.commenter.username}
+            </CustomLink>
+            <span className="text-sm text-gray-500">
+              {new Date(comment.date).toLocaleString("en-gb", {
+                day: "numeric",
+                month: "short",
+              })}
+            </span>
+          </div>
+          <p className="break-all text-sm text-gray-900">{comment.content}</p>
         </div>
 
-        <div className="mt-2 flex items-center gap-4">
+        <div className="mt-2 flex items-center gap-4 text-gray-700">
           {comment.likes.length > 0 ? (
             <span className="text-sm">
               {comment.likes.length} like
@@ -84,13 +92,6 @@ const Comment = ({ comment, replyTo, mutateComments }: CommentProps) => {
           {/* <button className="text-sm hover:underline" onClick={() => replyTo()}>
             Reply
           </button> */}
-          <span className="text-sm text-gray-500">
-            {new Date(comment.date).toLocaleString("en-gb", {
-              day: "numeric",
-              month: "short",
-              year: "numeric",
-            })}
-          </span>
         </div>
       </div>
       {comment.likes.find(

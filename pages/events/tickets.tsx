@@ -11,9 +11,8 @@ import { getTicketsOwned } from "../../lib/api-helpers/ticket-api";
 import QRCode from "react-qr-code";
 import Button from "../../components/Button";
 import SpinWheel from "../../components/EventPages/SpinWheel";
-import { getSession } from "next-auth/react";
 import { truncateString } from "../../utils/text-truncate";
-import { toast, Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import { TicketWithEvent } from "../../utils/types";
 import Confetti from "react-confetti";
 import { Ticket } from "@prisma/client";
@@ -34,7 +33,6 @@ export type CurrentTicket = Partial<Ticket> & {
 };
 
 const TicketsPage = ({ tickets }: TicketsPageProps) => {
-  console.log("tickets ->", tickets);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [qrValue, setQrValue] = useState<string>("");
   const [isPrizeModalOpen, setIsPrizeModalOpen] = useState<boolean>(false);
@@ -45,11 +43,6 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
     rafflePrizeName: "",
     isCheckedIn: false,
   });
-
-  useEffect(() => {
-    if (currentTicket.rafflePrizeWinner)
-      toast.success("Congrats, you won something!!!");
-  }, [currentTicket.rafflePrizeWinner]);
 
   function isEmpty(obj: any) {
     return Object.keys(obj).length === 0;
@@ -64,7 +57,9 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             <Link href="/events">
               <FaChevronLeft className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl" />
             </Link>
-            <h2 className="text-2xl font-bold sm:text-4xl">My Tickets</h2>
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
+              My Tickets
+            </h2>
           </nav>
 
           {tickets.length === 0 ? (
@@ -111,7 +106,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
             setIsOpen={setIsModalOpen}
             className="flex flex-col items-center"
           >
-            <div className="flex flex-col items-center gap-2">
+            <div className="flex flex-col items-center gap-2 text-gray-900">
               <h2 className="text-2xl font-bold sm:text-2xl">
                 {!currentTicket.isCheckedIn ? "QR Code" : "Digital Badge"} for
               </h2>
@@ -156,7 +151,7 @@ const TicketsPage = ({ tickets }: TicketsPageProps) => {
           <Modal
             isOpen={isPrizeModalOpen}
             setIsOpen={setIsPrizeModalOpen}
-            className="flex flex-col items-center sm:min-w-fit"
+            className="flex flex-col items-center text-gray-900 sm:min-w-fit"
           >
             <h2 className="text-2xl font-bold sm:text-2xl">
               {!isEmpty(currentTicket.rafflePrizeWinner ?? {})

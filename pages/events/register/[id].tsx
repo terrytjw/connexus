@@ -447,7 +447,9 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
             <Loading className="!h-full !bg-transparent" />
           ) : (
             <div className="flex flex-col gap-6 py-4">
-              <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+              <h3 className="text-xl font-semibold text-gray-900">
+                Purchase Completed!
+              </h3>
               <h3 className="text-md font-normal text-gray-500">
                 You have successfully purchased{" "}
                 {formData.selectedTicket.ticketName} for {event.eventName}!
@@ -476,7 +478,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
                 onClick={reverseStep}
               />
             )}
-            <h2 className="text-2xl font-bold sm:text-4xl">
+            <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
               {currentStep?.id === "Step 1"
                 ? "Register for Event"
                 : currentStep?.id === "Step 2"
@@ -486,7 +488,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           </nav>
 
           {/* Steps */}
-          <div className="justify-cente relative sm:py-8">
+          <div className="justify-cente relative text-gray-900 sm:py-8">
             {/* conditionally rendered via css */}
             <StepsDesktop steps={steps} setSteps={setSteps} />
             <StepsMobile currentStep={currentStep} steps={steps} />

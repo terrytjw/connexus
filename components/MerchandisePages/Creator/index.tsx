@@ -122,31 +122,11 @@ const CreatorCollectionsPage = () => {
 
     if (activeTab == 0) {
       await searchCollections();
-      // setOnSaleCollections(
-      //   onSaleCollections.map(
-      //     (collection: CollectionWithMerchAndPremiumChannel) => {
-      //       if (collection.collectionId === formData.collectionId) {
-      //         return { ...collection, ...formData };
-      //       }
-      //       return collection;
-      //     }
-      //   )
-      // );
     } else if (activeTab == 1) {
       await searchCollections();
-      // setPausedCollections(
-      //   pausedCollections.map(
-      //     (collection: CollectionWithMerchAndPremiumChannel) => {
-      //       if (collection.collectionId === formData.collectionId) {
-      //         return { ...collection, ...formData };
-      //       }
-      //       return collection;
-      //     }
-      //   )
-      // );
     }
 
-    toast(`${formData.collectionName} has been updated.`);
+    toast.success(`${formData.collectionName} has been updated.`);
     setIsModalOpen(false);
   };
 
@@ -163,7 +143,9 @@ const CreatorCollectionsPage = () => {
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
         <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Edit Collection</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Edit Collection
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -215,8 +197,10 @@ const CreatorCollectionsPage = () => {
         </form>
       </Modal>
 
-      <h1 className="text-4xl font-bold">Your Digital Merchandise Creation</h1>
-      <h3 className="mt-4">
+      <h1 className="text-4xl font-bold text-gray-900">
+        Your Digital Merchandise Creation
+      </h1>
+      <h3 className="mt-4 text-gray-500">
         View all your on sale, paused, and sold digital merchandise collections
       </h3>
 

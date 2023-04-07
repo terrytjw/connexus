@@ -126,9 +126,11 @@ const FanCollectionPage = ({
           <Loading className="!h-full" />
         ) : (
           <div className="flex flex-col gap-6">
-            <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Purchase Completed!
+            </h3>
 
-            <p>
+            <p className="text-gray-500">
               {localStorage.getItem("merchandiseToMint") ? (
                 <>
                   {localStorage.getItem("communityUrl")
@@ -178,7 +180,9 @@ const FanCollectionPage = ({
           <FaChevronLeft />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {collection.collectionName}
+          </h1>
           <p className="mt-4 text-red-500">
             Note: Upon purchasing a collectible, it is randomised from the
             collection.

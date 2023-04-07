@@ -21,7 +21,7 @@ module.exports = {
         "bounce-once": "bounce 2s ease-in-out 1",
       },
       colors: {
-        "red-100": "FFEFF2",
+        "red-100": "#FFEFF2",
         "red-500": "#FF5B57",
         "orange-300": "#FFD086",
         "teal-100": "#F0FDF4",

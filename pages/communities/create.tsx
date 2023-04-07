@@ -170,21 +170,24 @@ const CreateCommunityPage = ({
       <Layout>
         <form onSubmit={handleSubmit(!community ? onCreate : onEdit)}>
           <Modal isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen}>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 text-gray-900">
               <h3 className="text-xl font-semibold">Delete Community</h3>
 
               <p>
-                By deleting this community, all existing data will be removed.
+                By deleting this community, all existing data will be removed.{" "}
+                <span className="font-semibold">
+                  You cannot undo this action.
+                </span>
               </p>
 
               <div className="flex gap-4">
                 <Button
-                  className="!bg-red-600"
+                  className="bg-red-600 hover:bg-red-500"
                   variant="solid"
                   size="md"
                   onClick={() => onDelete()}
                 >
-                  Confirm
+                  Delete
                 </Button>
                 <Button
                   className="border-0"
@@ -203,9 +206,11 @@ const CreateCommunityPage = ({
               <Loading className="!h-full" />
             ) : (
               <div className="flex flex-col gap-6">
-                <h3 className="text-xl font-semibold">{modalContent.title}</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  {modalContent.title}
+                </h3>
 
-                <p>{modalContent.description}</p>
+                <p className="text-gray-500">{modalContent.description}</p>
 
                 <div className="flex gap-4">
                   {modalContent.title == content[3].title ? (
@@ -249,10 +254,10 @@ const CreateCommunityPage = ({
               ) : null}
 
               <div>
-                <h2 className="text-4xl font-bold">
+                <h2 className="text-4xl font-bold text-gray-900">
                   {community ? "Edit " : ""}Community
                 </h2>
-                <h3 className="mt-4">
+                <h3 className="mt-4 text-gray-500">
                   {community
                     ? "Update your community details"
                     : "Set up a new community"}
@@ -429,7 +434,7 @@ const CreateCommunityPage = ({
                         Save Changes
                       </Button>
                       <Button
-                        className="w-full !text-red-500 sm:w-fit"
+                        className="w-full !text-red-500 hover:border-red-500 hover:bg-red-100 sm:w-fit"
                         variant="outlined"
                         size="md"
                         type="button"

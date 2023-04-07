@@ -85,7 +85,7 @@ const CommunityTab = ({
             className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Filter Community Analytics
               </h3>
               <Button
@@ -152,7 +152,7 @@ const CommunityTab = ({
             <div className="flex items-center gap-4">
               <div className="dropdown-end dropdown">
                 <label tabIndex={0}>
-                  <Button variant="solid" size="md">
+                  <Button variant="solid" size="md" className="shadow-sm">
                     Export <span className="hidden sm:contents">Data</span>
                   </Button>
                 </label>
@@ -209,11 +209,11 @@ const CommunityTab = ({
               <Button
                 variant="solid"
                 size="md"
-                className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
+                className="hidden max-w-sm !bg-white !text-gray-700 shadow-sm sm:flex"
                 onClick={() => setIsModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-8 w-8" />
+                <BiFilter className="h-6 w-6" />
               </Button>
               <BiFilter
                 className="h-12 w-10 sm:hidden"
@@ -224,7 +224,7 @@ const CommunityTab = ({
 
           <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Clicks Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -256,13 +256,13 @@ const CommunityTab = ({
                     formatter={(value, name, props) => [value, "Clicks"]}
                   />
                   <Legend formatter={(value) => "Clicks"} />
-                  <Bar dataKey="_sum.clicks" fill="#8884d8" />
+                  <Bar dataKey="_sum.clicks" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Community Growth
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -294,13 +294,13 @@ const CommunityTab = ({
                     formatter={(value, name, props) => [value, "Members"]}
                   />
                   <Legend formatter={(value) => "Members"} />
-                  <Bar dataKey="_sum.members" fill="#8884d8" />
+                  <Bar dataKey="_sum.members" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Premium Members Growth
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -335,7 +335,7 @@ const CommunityTab = ({
                     ]}
                   />
                   <Legend formatter={(value) => "Premium Members"} />
-                  <Bar dataKey="_sum.premiumMembers" fill="#8884d8" />
+                  <Bar dataKey="_sum.premiumMembers" fill="#1A54C2" />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -351,7 +351,7 @@ const CommunityTab = ({
               className="w-40 flex-grow-0 sm:w-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
             There are no community analytics to show for now, go create a
             community to interact with your fans!
             <Button variant="solid" size="md" href="/communities/create">

@@ -92,11 +92,20 @@ const MobileNavbar = ({ userData, children }: any) => {
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
+              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold text-gray-900 shadow"
             >
               <li>
-                <a onClick={() => {switchRole(); {isFan ? toast.success("You're a Creator!") : toast.success("You're a Fan!")} }}>
-                      {isFan ? "Switch to Creator View" : "Switch to Fan View"}
+                <a
+                  onClick={() => {
+                    switchRole();
+                    {
+                      isFan
+                        ? toast.success("You're a Creator!")
+                        : toast.success("You're a Fan!");
+                    }
+                  }}
+                >
+                  {isFan ? "Switch to Creator View" : "Switch to Fan View"}
                 </a>
               </li>
               <li>
@@ -137,12 +146,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               }
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/communities"
+                router.pathname.includes("/communities")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <HiOutlineHome className="ml-2 w-6 h-6" />
+              <HiOutlineHome className="ml-2 h-6 w-6" />
               Communities
             </Link>
           </li>
@@ -151,12 +160,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/merchandise"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/merchandise"
+                router.pathname.includes("/merchandise")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <HiOutlinePhotograph className="ml-2 w-6 h-6" />
+              <HiOutlinePhotograph className="ml-2 h-6 w-6" />
               Merchandise
             </Link>
           </li>
@@ -165,10 +174,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/events"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/events")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
-              <HiOutlineCalendar className="ml-2 w-6 h-6" />
+              <HiOutlineCalendar className="ml-2 h-6 w-6" />
               Events
             </Link>
           </li>
@@ -178,12 +189,12 @@ const MobileNavbar = ({ userData, children }: any) => {
                 href="/analytics"
                 className={classNames(
                   "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                  router.pathname === "/analytics"
+                  router.pathname.includes("/analytics")
                     ? "bg-blue-600 text-white"
                     : ""
                 )}
               >
-                <HiOutlineChartSquareBar className="ml-2 w-6 h-6" />
+                <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
                 Analytics
               </Link>
             </li>
@@ -193,12 +204,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href={`/user/profile/${session?.user?.userId}`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/user/profile/[id]"
+                router.pathname.includes("/user")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <HiOutlineUser className="ml-2 w-6 h-6" />
+              <HiOutlineUser className="ml-2 h-6 w-6" />
               Profile
             </Link>
           </li>
@@ -207,7 +218,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
               onClick={() => setIsAuthModalOpen(true)}
             >
-              <HiOutlineLogout className="ml-2 w-6 h-6" />
+              <HiOutlineLogout className="ml-2 h-6 w-6" />
               Logout
             </button>
           </li>
@@ -227,7 +238,7 @@ const DesktopSidebar = ({ userData }: any) => {
   const { isFan } = useContext(UserRoleContext);
 
   return (
-    <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block drop-shadow-md">
+    <div className="hidden min-h-screen w-64 bg-white drop-shadow-md lg:fixed lg:block">
       <Link
         href="/"
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
@@ -252,10 +263,12 @@ const DesktopSidebar = ({ userData }: any) => {
             }
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/communities" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/communities")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <HiOutlineHome className="ml-2 w-6 h-6" />
+            <HiOutlineHome className="ml-2 h-6 w-6" />
             Communities
           </Link>
         </li>
@@ -264,10 +277,12 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/merchandise"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/merchandise" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/merchandise")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <HiOutlinePhotograph className="ml-2 w-6 h-6" />
+            <HiOutlinePhotograph className="ml-2 h-6 w-6" />
             Merchandise
           </Link>
         </li>
@@ -276,10 +291,12 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/events"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/events")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <HiOutlineCalendar className="ml-2 w-6 h-6" />
+            <HiOutlineCalendar className="ml-2 h-6 w-6" />
             Events
           </Link>
         </li>
@@ -289,10 +306,12 @@ const DesktopSidebar = ({ userData }: any) => {
               href="/analytics"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/analytics" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/analytics")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
-              <HiOutlineChartSquareBar className="ml-2 w-6 h-6" />
+              <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
               Analytics
             </Link>
           </li>
@@ -302,12 +321,13 @@ const DesktopSidebar = ({ userData }: any) => {
             href={`/user/profile/${session?.user?.userId}`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/user/profile/[id]"
+              router.pathname.includes("/user/profile") ||
+                router.pathname.includes("/user/settings")
                 ? "bg-blue-600 text-white"
                 : ""
             )}
           >
-            <HiOutlineUser className="ml-2 w-6 h-6" />
+            <HiOutlineUser className="ml-2 h-6 w-6" />
             Profile
           </Link>
         </li>
@@ -316,7 +336,7 @@ const DesktopSidebar = ({ userData }: any) => {
             className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
             onClick={() => setIsAuthModalOpen(true)}
           >
-            <HiOutlineLogout className="ml-2 w-6 h-6" />
+            <HiOutlineLogout className="ml-2 h-6 w-6" />
             Logout
           </button>
         </li>
@@ -366,16 +386,25 @@ const Layout = ({ children }: LayoutProps) => {
                   <span className="ml-2 lowercase italic text-gray-500 transition-all  group-hover:text-gray-400">
                     @{userData.username}
                   </span>
-                  <HiChevronDown className="ml-2 w-6 h-6 text-gray-500 transition-all  group-hover:text-gray-400" />
+                  <HiChevronDown className="ml-2 h-6 w-6 text-gray-500 transition-all  group-hover:text-gray-400" />
                 </label>
                 <ul
                   tabIndex={0}
                   className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
                 >
                   <li>
-                  <a onClick={() => {switchRole(); {isFan ? toast.success("You're a Creator!") : toast.success("You're a Fan!")} }}>
+                    <a
+                      onClick={() => {
+                        switchRole();
+                        {
+                          isFan
+                            ? toast.success("You're a Creator!")
+                            : toast.success("You're a Fan!");
+                        }
+                      }}
+                    >
                       {isFan ? "Switch to Creator View" : "Switch to Fan View"}
-                  </a>
+                    </a>
                   </li>
                   <li>
                     <a href={`/user/balance/${session?.user.userId}`}>
@@ -390,7 +419,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Footer />
         </main>
       </div>
-      <Toaster/>
+      <Toaster />
     </MobileNavbar>
   );
 };

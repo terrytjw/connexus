@@ -72,7 +72,9 @@ const CreatorCollectionPage = () => {
       >
         <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Edit Collection</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Edit Collection
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -133,7 +135,9 @@ const CreatorCollectionPage = () => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collectionData.collectionName}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {collectionData.collectionName}
+        </h1>
       </div>
 
       <div className="mt-6 lg:ml-16">

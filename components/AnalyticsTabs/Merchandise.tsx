@@ -18,6 +18,7 @@ import {
   XAxis,
   YAxis,
   Sector,
+  Cell,
 } from "recharts";
 import useSWR from "swr";
 import Badge from "../../components/Badge";
@@ -66,6 +67,7 @@ const MerchandiseTab = ({
     },
   ]);
 
+  const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
   const [activeIndex, setActiveIndex] = useState(0);
   const onPieEnter = useCallback(
     (_: any, index: number) => {
@@ -211,7 +213,7 @@ const MerchandiseTab = ({
             className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Filter Merchandise Analytics
               </h3>
               <Button
@@ -305,7 +307,7 @@ const MerchandiseTab = ({
             <div className="flex items-center gap-4">
               <div className="dropdown-end dropdown">
                 <label tabIndex={0}>
-                  <Button variant="solid" size="md">
+                  <Button variant="solid" size="md" className="shadow-sm">
                     Export <span className="hidden sm:contents">Data</span>
                   </Button>
                 </label>
@@ -362,11 +364,11 @@ const MerchandiseTab = ({
               <Button
                 variant="solid"
                 size="md"
-                className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
+                className="hidden max-w-sm !bg-white !text-gray-700 shadow-sm sm:flex"
                 onClick={() => setIsModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-8 w-8" />
+                <BiFilter className="h-6 w-6" />
               </Button>
               <BiFilter
                 className="h-12 w-10 sm:hidden"
@@ -377,7 +379,7 @@ const MerchandiseTab = ({
 
           <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Revenue Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -415,14 +417,14 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "revenue" : "_sum.revenue"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Merchandise Sold Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -466,14 +468,14 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "merchSold" : "_sum.merchSold"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Clicks Per Day
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -513,14 +515,14 @@ const MerchandiseTab = ({
                     dataKey={`${
                       collectionIdSelected ? "clicks" : "_sum.clicks"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
                 Top 5 Best Selling Collections
               </h3>
               <ResponsiveContainer width="100%" height={300}>
@@ -534,9 +536,13 @@ const MerchandiseTab = ({
                     cy="50%"
                     innerRadius={50}
                     outerRadius={80}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                     onMouseEnter={onPieEnter}
-                  />
+                  >
+                    {topSellingCollections.map((entry: any, index: number) => (
+                      <Cell key={index} fill={COLORS[index]} />
+                    ))}
+                  </Pie>
                 </PieChart>
               </ResponsiveContainer>
             </div>
@@ -552,7 +558,7 @@ const MerchandiseTab = ({
               className="w-40 flex-grow-0 sm:w-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
             There are no merchandise analytics to show for now, go create a
             collection!
             <Button variant="solid" size="md" href="/merchandise/create">
