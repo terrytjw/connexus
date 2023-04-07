@@ -228,6 +228,7 @@ export async function filterAttendee(
   for (const userTicket of userTickets) {
     const userId = userTicket.userId;
     const displayName = userTicket.user.displayName;
+    const phoneNumber = userTicket.user.phoneNumber;
     const email = userTicket.user.email;
     const checkInStatus = userTicket.checkIn;
     const ticket = userTicket.ticket;
@@ -235,6 +236,7 @@ export async function filterAttendee(
     response.push({
       userId: userId,
       displayName: displayName,
+      phoneNumber: phoneNumber,
       email: email,
       checkIn: checkInStatus,
       ticket: ticket,
