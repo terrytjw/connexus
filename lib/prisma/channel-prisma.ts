@@ -1,5 +1,6 @@
 import { PrismaClient, Channel, Prisma } from "@prisma/client";
 import { getUserInfo } from "../api-helpers/user-api";
+import { getCollectionMerchOwners } from "./collection-prisma";
 
 const prisma = new PrismaClient();
 
@@ -25,9 +26,16 @@ export async function getAllChannelsInCommunity(communityId: number) {
 }
 
 export async function createChannel(channel: Channel) {
+  let users: any[] = [];
+  if (channel.collectionId) {
+    users = await getCollectionMerchOwners(channel.collectionId)
+  }
   return prisma.channel.create({
     data: {
       ...channel,
+      members: {
+        connect: users
+      }
     },
   });
 }
