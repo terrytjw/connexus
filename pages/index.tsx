@@ -107,11 +107,6 @@ const HomePage: NextPage = () => {
                 animate="visible"
               >
                 Grow your authentic relationships with your fans through
-<<<<<<< HEAD
-                Connexus.
-              </h1>
-              <p className="pb-4 font-semibold text-xl text-gray-500">
-=======
                 Connexus with{" "}
                 <span className="block h-20 italic lg:h-auto">
                   <Typewriter
@@ -132,12 +127,11 @@ const HomePage: NextPage = () => {
               </motion.h1>
 
               <motion.p
-                className="mt-4 pb-4 font-semibold text-white/80 lg:mt-8"
+                className="mt-4 pb-4 font-semibold text-xl text-white/80 lg:mt-8"
                 variants={subheaderVariant}
                 initial="hidden"
                 animate="visible"
               >
->>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
                 All-in-one platform to empower creators to develop authentic
                 relationships with their fans.
               </motion.p>
@@ -193,16 +187,9 @@ const HomePage: NextPage = () => {
         </div>
 
         {/* Explore our product section */}
-<<<<<<< HEAD
-        <section className="mx-auto max-w-7xl px-8 pt-32 lg:py-40">
-          <h2 className="text-center text-2xl font-bold lg:text-left">
-            Explore our product
-          </h2>
-          <p className="mt-8 text-center text-gray-500 lg:text-left">
-=======
         <section id="product" className="mx-auto max-w-7xl px-8 pt-32 lg:py-40">
           <motion.h2
-            className="text-center text-2xl font-semibold lg:text-3xl"
+            className="text-center text-2xl font-bold lg:text-3xl"
             variants={headerVariant}
             initial="hidden"
             whileInView="visible"
@@ -211,13 +198,12 @@ const HomePage: NextPage = () => {
             Explore our product
           </motion.h2>
           <motion.p
-            className="mt-4 text-center text-gray-500"
+            className="mt-8 text-center text-gray-500"
             variants={subheaderVariant}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
           >
->>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
             Manage every aspect of your authentic relationships with your fans
             in one secure platform.
           </motion.p>
@@ -314,12 +300,8 @@ const HomePage: NextPage = () => {
           viewport={{ once: true }}
         >
           <div className={classNames("mx-auto max-w-7xl px-4 pt-16 lg:py-40")}>
-<<<<<<< HEAD
-            <h2 className="text-center text-2xl font-bold">About us</h2>
-            <p className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wide lg:text-5xl lg:leading-[4.5rem]">
-=======
             <motion.h2
-              className="text-center text-2xl font-semibold lg:text-3xl"
+              className="text-center text-2xl font-bold lg:text-3xl"
               variants={headerVariant}
               initial="hidden"
               whileInView="visible"
@@ -328,13 +310,12 @@ const HomePage: NextPage = () => {
               About us
             </motion.h2>
             <motion.p
-              className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wider lg:text-5xl lg:leading-[4.5rem]"
+              className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wide lg:text-5xl lg:leading-[4.5rem]"
               variants={showcaseVariant}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
             >
->>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
               Our Mission is to empower creators to{" "}
               <span className="text-blue-500">
                 develop authentic relationships
@@ -356,7 +337,7 @@ const HomePage: NextPage = () => {
         <section className="lg: mx-auto max-w-7xl px-8 pt-24 lg:pt-60 lg:pb-24">
           <div className="flex flex-col lg:flex-row lg:items-center lg:gap-x-12">
             <motion.div className="text-center lg:text-left">
-              <h3 className="text-2xl font-semibold">
+              <h3 className="text-2xl font-bold">
                 How Connexus came about
               </h3>
               <p className="py-4 text-gray-500">
@@ -365,61 +346,35 @@ const HomePage: NextPage = () => {
                 creators and fans, be it through events, merchandise or even
                 social communities to interact together.
               </p>
-<<<<<<< HEAD
-            </div>
-            <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
-              <Image
-                src="/images/connexus-landing-demo-one.jpg"
-                alt="Connexus logo"
-                width={800}
-                height={800}
-              />
-            </div>
-=======
             </motion.div>
             <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
-              <video width="1200" autoPlay loop>
-                <source
-                  src="/videos/connexus-landing-demo-one.mp4"
-                  type="video/mp4"
+              <Image
+                  src="/images/connexus-landing-demo-one.jpg"
+                  alt="Connexus logo"
+                  width={800}
+                  height={800}
                 />
-                Your browser does not support the video tag.
-              </video>
             </motion.div>
->>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
           </div>
 
           <div className="mt-12 flex flex-col lg:flex-row-reverse lg:items-center lg:gap-x-12">
             <motion.div className="text-center lg:text-right">
-              <h3 className="text-2xl font-semibold">How we drive value</h3>
+              <h3 className="text-2xl font-bold">How we drive value</h3>
               <p className="py-4 text-gray-500">
                 Using blockchain technology, Connexus enables the exchange of
                 event tickets and digital merchandise, a token-gated community
                 channel exclusive to creators and fans to be transparent and the
                 traceability of data shared across a business network. 
               </p>
-<<<<<<< HEAD
-            </div>
-            <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
+            </motion.div>
+            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
               <Image
                 src="/images/connexus-landing-demo-two.jpg"
                 alt="Connexus logo"
                 width={800}
                 height={800}
               />
-            </div>
-=======
             </motion.div>
-            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
-              <video width="800" height="800" autoPlay loop>
-                <source
-                  src="/videos/connexus-landing-demo-two.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
-            </motion.div>
->>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
           </div>
         </section>
 
