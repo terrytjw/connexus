@@ -59,9 +59,7 @@ const CollectionTable = ({
           {data?.map((item, index) => (
             <tr
               key={index}
-              onClick={() =>
-                onEdit ? router.push(`/merchandise/${item.collectionId}`) : null
-              }
+              onClick={() => router.push(`/merchandise/${item.collectionId}`)}
               className="cursor-pointer"
             >
               <td className={textColour}>{item.collectionId}</td>

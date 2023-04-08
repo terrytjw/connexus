@@ -40,14 +40,14 @@ const Home = ({ isAuthModalOpen }: any) => {
         "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app"
       );
       const signature2 = await sdk.whitelistUrl(
-        "https://41be-116-15-156-213.ap.ngrok.io"
+        "https://5dec-116-15-156-213.ngrok-free.app"
       );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
           "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app":
             signature1,
-          "https://41be-116-15-156-213.ap.ngrok.io": signature2,
+          "https://5dec-116-15-156-213.ngrok-free.app": signature2,
         },
       });
       setSocialLoginSDK(sdk);
