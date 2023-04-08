@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="https://imgur.com/jQF5hm5.png" alt="Connexus Logo" draggable="false" width="50%">
+    <img src="https://imgur.com/IrXxurC.png" alt="Connexus Logo" draggable="false" width="50%">
 </p>
 
 <h3 align="center">Empowering creators to develop authentic relationships with their fans.<br><br></h3>
@@ -10,7 +10,7 @@
 
 ## What is Connexus?
 All-in-one platform to empower creators to develop authentic relationships with their fans through NFT-powered Digital Ticket/Merchandise, Transparent Marketplace,
-Social Channels for Fan Engagement and Fan Behavior Analytics
+Social Channels for Fan Engagement and Fan Behavior Analytics.
 
 <br>
 
@@ -37,12 +37,31 @@ Social Channels for Fan Engagement and Fan Behavior Analytics
 
 ## ✨ Key Features
 
-1. Events
-2. Community
-3. Merchandise
-4. Analytics
-5. Profile
-- To add images/gifs later 
+<b> 1. Events </b>
+<p align="center">
+    <img src="https://imgur.com/GehQKYX.png" alt="Events" draggable="false" width="70%">
+</p>
+
+<b> 2. Community </b>
+<p align="center">
+    <img src="https://imgur.com/JvmAulY.png" alt="Community" draggable="false" width="70%">
+</p>
+
+<b> 3. Merchandise </b>
+<p align="center">
+    <img src="https://imgur.com/kiVn8ZG.png" alt="Merchandise" draggable="false" width="70%">
+</p>
+
+<b> 4. Analytics </b>
+<p align="center">
+    <img src="https://imgur.com/PkT7wpW.png" alt="Analytics" draggable="false" width="70%">
+</p>
+
+<b> 5. Profile </b>
+<p align="center">
+    <img src="https://imgur.com/OsatjZN.png" alt="Profile" draggable="false" width="70%">
+</p>
+
 
 <br>
 
