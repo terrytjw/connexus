@@ -13,7 +13,6 @@ import { UserRoleContext } from "../contexts/UserRoleProvider";
 import useSWR from "swr";
 import Image from "next/image";
 import CustomLink from "../components/CustomLink";
-import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import TabGroupBordered from "../components/TabGroupBordered";
 import CardSwiper from "../components/LandingPage/CardSwiper";
 import {
@@ -23,6 +22,15 @@ import {
   merchandiseCards,
   profileCards,
 } from "../utils/landingPageCardsData";
+import { Typewriter } from "react-simple-typewriter";
+import { motion } from "framer-motion";
+import {
+  headerVariant,
+  rotateFromRightVariant,
+  showcaseVariant,
+  subheaderVariant,
+} from "../motionVariants/HomePage";
+import DesktopProductCard from "../components/LandingPage/DesktopProductCard";
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
@@ -33,10 +41,10 @@ const HomePage: NextPage = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  // const { data: session, status } = useSession();
+  // const userId = session?.user.userId;
 
-  const { isFan } = useContext(UserRoleContext);
+  // const { isFan } = useContext(UserRoleContext);
   // const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const SocialLoginDynamic = dynamic(
@@ -59,8 +67,8 @@ const HomePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="">
-        <nav className="mx-auto flex max-w-7xl justify-center bg-white px-8 pt-4 md:justify-between">
+      <main className="overflow-hidden">
+        <nav className="mx-auto flex max-w-7xl justify-center bg-white px-8 py-4 md:justify-between">
           <div className="md:hidden">
             <Image
               src="/svgs/mobile-connexus-logo.svg"
@@ -77,7 +85,7 @@ const HomePage: NextPage = () => {
               height={50}
             />
           </div>
-          <div className="hidden md:flex md:gap-x-4 md:font-medium md:text-blue-500">
+          <div className="hidden md:flex md:gap-x-8 md:font-medium md:text-blue-500">
             <CustomLink className="hover:text-blue-400" href="#product">
               Product
             </CustomLink>
@@ -88,51 +96,71 @@ const HomePage: NextPage = () => {
         </nav>
 
         {/* main hero section */}
-        <div className="relative bg-sky-100">
-          <div className="mx-auto mt-8 max-w-7xl px-8 pt-4 lg:flex lg:gap-20 lg:py-40">
+        <div className="bg-gradient-to-b from-blue-600 via-blue-400 to-white">
+          <div className="mx-auto max-w-7xl px-8 pt-4 lg:flex lg:gap-40 lg:py-40">
             {/* mobile hero section */}
             <section className="mx-auto mt-8 max-w-7xl">
-              <h1 className="mb-4 text-3xl font-bold">
+              <motion.h1
+                className="mb-4 text-3xl font-bold text-white lg:text-4xl"
+                variants={headerVariant}
+                initial="hidden"
+                animate="visible"
+              >
                 Grow your authentic relationships with your fans through
+<<<<<<< HEAD
                 Connexus.
               </h1>
               <p className="pb-4 font-semibold text-xl text-gray-500">
+=======
+                Connexus with{" "}
+                <span className="block h-20 italic lg:h-auto">
+                  <Typewriter
+                    words={[
+                      "Digital Ticket/Merchandise.",
+                      "Transparent Marketplace.",
+                      "Social Channels.",
+                      "Fan Behavior Analytics.",
+                    ]}
+                    loop={0}
+                    cursor
+                    cursorStyle="|"
+                    typeSpeed={70}
+                    deleteSpeed={30}
+                    delaySpeed={2000}
+                  />
+                </span>
+              </motion.h1>
+
+              <motion.p
+                className="mt-4 pb-4 font-semibold text-white/80 lg:mt-8"
+                variants={subheaderVariant}
+                initial="hidden"
+                animate="visible"
+              >
+>>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
                 All-in-one platform to empower creators to develop authentic
                 relationships with their fans.
-              </p>
-              <ul className="flex flex-col gap-y-3 py-4 text-gray-500">
-                <li className="flex gap-x-2">
-                  <CheckCircleIcon className="h-5 w-5 text-blue-500" />
-                  NFT-powered Digital Ticket/Merchandise
-                </li>
-                <li className="flex gap-x-2">
-                  <CheckCircleIcon className="h-5 w-5 text-blue-500" />
-                  Transparent Marketplace
-                </li>
-                <li className="flex gap-x-2">
-                  <CheckCircleIcon className="h-5 w-5 text-blue-500" />
-                  Social Channels for Fan Engagement
-                </li>
-                <li className="flex gap-x-2">
-                  <CheckCircleIcon className="h-5 w-5 text-blue-500" />
-                  Fan Behavior Analytics
-                </li>
-              </ul>
+              </motion.p>
             </section>
 
             {/* Join our community section */}
-            <section className="mx-auto max-w-7xl pt-20">
-              <div className="relative flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white p-8 shadow-md lg:w-80">
-                <div className="absolute -top-8 rounded-2xl bg-blue-300 p-4">
+            <section className="mx-auto max-w-7xl pt-12">
+              <motion.div
+                className="relative flex flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white/90 p-8 shadow-2xl lg:w-80"
+                variants={rotateFromRightVariant}
+                initial="hidden"
+                animate="visible"
+              >
+                <div className="absolute -top-12 rounded-2xl p-4">
                   <Image
-                    src="/svgs/mobile-connexus-logo.svg"
+                    src="/svgs/joinCommunity.svg"
                     alt="Connexus logo"
-                    width={35}
-                    height={35}
+                    width={64}
+                    height={64}
                   />
                 </div>
                 <h2 className="mt-8 text-2xl font-bold">Join our community</h2>
-                <div className="mb-8 flex flex-wrap gap-4">
+                <div className="mt-4 mb-4 flex flex-wrap gap-4">
                   <Button
                     variant="solid"
                     size="md"
@@ -159,68 +187,175 @@ const HomePage: NextPage = () => {
                     <SocialLoginDynamic isAuthModalOpen={isAuthModalOpen} />
                   </Modal>
                 </div>
-              </div>
+              </motion.div>
             </section>
-          </div>
-          <div className="absolute -bottom-20 w-full">
-            <Image
-              src="/images/landing-bg-wave.png"
-              alt="wave image"
-              width={3000}
-              height={500}
-              // fill
-            />
           </div>
         </div>
 
         {/* Explore our product section */}
+<<<<<<< HEAD
         <section className="mx-auto max-w-7xl px-8 pt-32 lg:py-40">
           <h2 className="text-center text-2xl font-bold lg:text-left">
             Explore our product
           </h2>
           <p className="mt-8 text-center text-gray-500 lg:text-left">
+=======
+        <section id="product" className="mx-auto max-w-7xl px-8 pt-32 lg:py-40">
+          <motion.h2
+            className="text-center text-2xl font-semibold lg:text-3xl"
+            variants={headerVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            Explore our product
+          </motion.h2>
+          <motion.p
+            className="mt-4 text-center text-gray-500"
+            variants={subheaderVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+>>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
             Manage every aspect of your authentic relationships with your fans
             in one secure platform.
-          </p>
-          <TabGroupBordered
-            tabs={[
-              "Events",
-              "Community",
-              "Merchandise",
-              "Analytics",
-              "Profile",
-            ]}
-            activeTab={activeTab}
-            setActiveTab={(index: number) => {
-              setActiveTab(index);
-            }}
+          </motion.p>
+          <motion.span
+            variants={showcaseVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
           >
-            {activeTab == 0 && <CardSwiper cards={eventCards} />}
-            {activeTab == 1 && <CardSwiper cards={communityCards} />}
-            {activeTab == 2 && <CardSwiper cards={merchandiseCards} />}
-            {activeTab == 3 && <CardSwiper cards={analyticsCards} />}
-            {activeTab == 4 && <CardSwiper cards={profileCards} />}
-          </TabGroupBordered>
+            <TabGroupBordered
+              tabs={[
+                "Events",
+                "Community",
+                "Merchandise",
+                "Analytics",
+                "Profile",
+              ]}
+              activeTab={activeTab}
+              setActiveTab={(index: number) => {
+                setActiveTab(index);
+              }}
+            >
+              {activeTab == 0 && (
+                <>
+                  <div className="lg:hidden">
+                    <CardSwiper cards={eventCards} />
+                  </div>
+                  <div className="hidden lg:flex">
+                    {eventCards.map((card, index) => (
+                      <DesktopProductCard key={index} card={card} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {activeTab == 1 && (
+                <>
+                  <div className="lg:hidden">
+                    <CardSwiper cards={communityCards} />
+                  </div>
+                  <div className="hidden lg:flex">
+                    {communityCards.map((card, index) => (
+                      <DesktopProductCard key={index} card={card} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {activeTab == 2 && (
+                <>
+                  <div className="lg:hidden">
+                    <CardSwiper cards={merchandiseCards} />
+                  </div>
+                  <div className="hidden lg:flex">
+                    {merchandiseCards.map((card, index) => (
+                      <DesktopProductCard key={index} card={card} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {activeTab == 3 && (
+                <>
+                  <div className="lg:hidden">
+                    <CardSwiper cards={analyticsCards} />
+                  </div>
+                  <div className="hidden lg:flex">
+                    {analyticsCards.map((card, index) => (
+                      <DesktopProductCard key={index} card={card} />
+                    ))}
+                  </div>
+                </>
+              )}
+              {activeTab == 4 && (
+                <>
+                  <div className="lg:hidden">
+                    <CardSwiper cards={profileCards} />
+                  </div>
+                  <div className="hidden lg:flex">
+                    {profileCards.map((card, index) => (
+                      <DesktopProductCard key={index} card={card} />
+                    ))}
+                  </div>
+                </>
+              )}
+            </TabGroupBordered>
+          </motion.span>
         </section>
 
         {/* About us section */}
-        <section className="bg-gradient-to-b from-[#87DBFF] via-blue-100 to-white">
+        <motion.section
+          id="about-us"
+          className="relative bg-gradient-to-b from-white via-blue-100 to-[#87DBFF]"
+          variants={headerVariant}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+        >
           <div className={classNames("mx-auto max-w-7xl px-4 pt-16 lg:py-40")}>
+<<<<<<< HEAD
             <h2 className="text-center text-2xl font-bold">About us</h2>
             <p className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wide lg:text-5xl lg:leading-[4.5rem]">
+=======
+            <motion.h2
+              className="text-center text-2xl font-semibold lg:text-3xl"
+              variants={headerVariant}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              About us
+            </motion.h2>
+            <motion.p
+              className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wider lg:text-5xl lg:leading-[4.5rem]"
+              variants={showcaseVariant}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+>>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
               Our Mission is to empower creators to{" "}
               <span className="text-blue-500">
                 develop authentic relationships
               </span>{" "}
               with their fans.
-            </p>
+            </motion.p>
           </div>
-        </section>
+          <div className="absolute">
+            <Image
+              src="/images/landing-bg-wave.png"
+              alt="wave image"
+              width={3000}
+              height={500}
+            />
+          </div>
+        </motion.section>
 
         {/* Misc section */}
-        <section className="mx-auto max-w-7xl px-8 pt-8">
+        <section className="lg: mx-auto max-w-7xl px-8 pt-24 lg:pt-60 lg:pb-24">
           <div className="flex flex-col lg:flex-row lg:items-center lg:gap-x-12">
-            <div className="text-center lg:text-left">
+            <motion.div className="text-center lg:text-left">
               <h3 className="text-2xl font-semibold">
                 How Connexus came about
               </h3>
@@ -230,6 +365,7 @@ const HomePage: NextPage = () => {
                 creators and fans, be it through events, merchandise or even
                 social communities to interact together.
               </p>
+<<<<<<< HEAD
             </div>
             <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
               <Image
@@ -239,10 +375,22 @@ const HomePage: NextPage = () => {
                 height={800}
               />
             </div>
+=======
+            </motion.div>
+            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
+              <video width="1200" autoPlay loop>
+                <source
+                  src="/videos/connexus-landing-demo-one.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            </motion.div>
+>>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
           </div>
 
           <div className="mt-12 flex flex-col lg:flex-row-reverse lg:items-center lg:gap-x-12">
-            <div className="text-center lg:text-left">
+            <motion.div className="text-center lg:text-right">
               <h3 className="text-2xl font-semibold">How we drive value</h3>
               <p className="py-4 text-gray-500">
                 Using blockchain technology, Connexus enables the exchange of
@@ -250,6 +398,7 @@ const HomePage: NextPage = () => {
                 channel exclusive to creators and fans to be transparent and the
                 traceability of data shared across a business network. 
               </p>
+<<<<<<< HEAD
             </div>
             <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
               <Image
@@ -259,10 +408,22 @@ const HomePage: NextPage = () => {
                 height={800}
               />
             </div>
+=======
+            </motion.div>
+            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
+              <video width="800" height="800" autoPlay loop>
+                <source
+                  src="/videos/connexus-landing-demo-two.mp4"
+                  type="video/mp4"
+                />
+                Your browser does not support the video tag.
+              </video>
+            </motion.div>
+>>>>>>> 6cf03f9268ec124d19b13da1075431e2cd0bc933
           </div>
         </section>
 
-        <footer className="mt-20 flex flex-col items-center gap-y-4 bg-sky-100 py-4 pt-8">
+        <footer className="mt-20 flex flex-col items-center gap-y-4 bg-sky-100 py-12">
           <div className="">
             <Image
               src="/svgs/desktop-connexus-logo.svg"
