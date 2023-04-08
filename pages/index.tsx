@@ -67,7 +67,7 @@ const HomePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="">
+      <main className="overflow-hidden">
         <nav className="mx-auto flex max-w-7xl justify-center bg-white px-8 py-4 md:justify-between">
           <div className="md:hidden">
             <Image
