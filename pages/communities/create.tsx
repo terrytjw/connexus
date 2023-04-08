@@ -230,7 +230,9 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
                       size="md"
                       href={
                         modalContent.title == content[2].title
-                          ? `/communities/create`
+                          ? isFan
+                            ? "/communities"
+                            : `/communities/create`
                           : `/communities/${communityId}`
                       }
                     >
