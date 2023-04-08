@@ -193,7 +193,7 @@ const FanCollectionPage = ({
       </div>
 
       <div className="mt-6 lg:ml-16">
-        <div className="card mb-4 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
+        <div className="card mb-8 flex justify-between gap-6 border-2 drop-shadow-sm border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row">
             <div>
               <h2 className="mb-2 text-gray-700">{collection.description}</h2>

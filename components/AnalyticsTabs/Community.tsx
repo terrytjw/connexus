@@ -139,7 +139,7 @@ const CommunityTab = ({
                 setSelected={setOptionSelected}
                 className="w-40 flex-grow-0 sm:w-64"
               />
-              <div className="tooltip" data-tip={optionSelected.tooltip}>
+              <div className="tooltip tooltip-primary" data-tip={optionSelected.tooltip}>
                 <Button
                   variant="solid"
                   size="sm"

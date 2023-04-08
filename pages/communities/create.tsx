@@ -426,7 +426,7 @@ const CreateCommunityPage = ({
                   {community ? (
                     <>
                       <Button
-                        className="w-full sm:w-fit"
+                        className="w-full sm:w-40"
                         variant="solid"
                         size="md"
                         disabled={isLoading}
@@ -446,7 +446,7 @@ const CreateCommunityPage = ({
                     </>
                   ) : (
                     <Button
-                      className="w-full sm:w-fit"
+                      className="w-full sm:w-40"
                       variant="solid"
                       size="md"
                       disabled={isLoading}

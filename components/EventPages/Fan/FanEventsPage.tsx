@@ -158,10 +158,10 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
         {/* Trending Events  */}
         <div>
           <div className="flex gap-4">
-            <h2 className="mb-6 text-2xl font-semibold tracking-wide text-slate-600">
+            <h2 className="mb-6 text-2xl font-semibold tracking-normal text-slate-600">
               Trending Events in SG
             </h2>
-            <div className="tooltip" data-tip="Most Liked Events">
+            <div className="tooltip tooltip-primary" data-tip="Most Liked Events">
               <Button
                 variant="solid"
                 size="sm"
@@ -179,7 +179,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
           />
         </div>
         <div>
-          <h2 className="mt-12 mb-6 text-2xl font-semibold tracking-wide text-slate-600">
+          <h2 className="mt-12 mb-6 text-2xl font-semibold tracking-normal text-slate-600">
             Events in Singapore
           </h2>
           <EventsGrid
