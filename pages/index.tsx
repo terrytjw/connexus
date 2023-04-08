@@ -26,7 +26,6 @@ import { Typewriter } from "react-simple-typewriter";
 import { motion } from "framer-motion";
 import {
   headerVariant,
-  rotateFromLeftVariant,
   rotateFromRightVariant,
   showcaseVariant,
   subheaderVariant,
@@ -42,11 +41,11 @@ const HomePage: NextPage = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  const { data: session, status } = useSession();
-  const userId = session?.user.userId;
+  // const { data: session, status } = useSession();
+  // const userId = session?.user.userId;
 
-  const { isFan } = useContext(UserRoleContext);
-  const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
+  // const { isFan } = useContext(UserRoleContext);
+  // const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const SocialLoginDynamic = dynamic(
     () => import("../components/scw").then((res) => res.default),
@@ -56,9 +55,9 @@ const HomePage: NextPage = () => {
     }
   );
 
-  if (isLoading) {
-    return <Loading />;
-  }
+  // if (isLoading) {
+  //   return <Loading />;
+  // }
 
   return (
     <div className="debug-screens">
@@ -160,18 +159,18 @@ const HomePage: NextPage = () => {
                     variant="solid"
                     size="md"
                     className="mt-4 px-20"
-                    onClick={
-                      session
-                        ? isFan
-                          ? () => router.push("/communities")
-                          : userData.createdCommunities.length > 0
-                          ? () =>
-                              router.push(
-                                `/communities/${userData.createdCommunities[0].communityId}`
-                              )
-                          : () => router.push("/communities/create")
-                        : () => setIsAuthModalOpen(true)
-                    }
+                    // onClick={
+                    //   session
+                    //     ? isFan
+                    //       ? () => router.push("/communities")
+                    //       : userData.createdCommunities.length > 0
+                    //       ? () =>
+                    //           router.push(
+                    //             `/communities/${userData.createdCommunities[0].communityId}`
+                    //           )
+                    //       : () => router.push("/communities/create")
+                    //     : () => setIsAuthModalOpen(true)
+                    // }
                   >
                     Login
                   </Button>
@@ -360,7 +359,7 @@ const HomePage: NextPage = () => {
           </div>
 
           <div className="mt-12 flex flex-col lg:flex-row-reverse lg:items-center lg:gap-x-12">
-            <motion.div className="text-center lg:text-left">
+            <motion.div className="text-center lg:text-right">
               <h3 className="text-2xl font-semibold">How we drive value</h3>
               <p className="py-4 text-gray-500">
                 Using blockchain technology,Connexus enables the exchange of
