@@ -166,10 +166,10 @@ const FanCommunityPage = ({
               }}
             >
               Highlighted Collection
-              <div className="relative h-36 w-full rounded-lg sm:w-36">
+              <div className="relative h-36 w-full rounded-lg">
                 <Image
                   fill
-                  className="object-cover object-center"
+                  className="rounded-lg object-cover object-center"
                   src={linkedCollections[0].merchandise[0].image}
                   alt="Highlight Collection Image"
                 />
