@@ -20,7 +20,7 @@ import {
   registerCollectionClick,
 } from "../../../lib/api-helpers/collection-api";
 
-type CommunityPagePageProps = {
+type CreatorCommunityPageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
   setCommunity: (community: CommunityWithCreatorAndChannelsAndMembers) => void;
   linkedCollections: CollectionWithMerchAndPremiumChannel[];
@@ -29,7 +29,7 @@ type CommunityPagePageProps = {
 const CreatorCommunityPage = ({
   community,
   linkedCollections,
-}: CommunityPagePageProps) => {
+}: CreatorCommunityPageProps) => {
   const [activeTab, setActiveTab] = useState(0);
 
   const router = useRouter();
