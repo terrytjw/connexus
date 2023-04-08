@@ -288,7 +288,7 @@ model CommunityAnalyticsTimestamp {
   premiumMembers Int
   clicks         Int
   date           DateTime  @default(now())
-  community      Community @relation(fields: [communityId], references: [communityId])
+  community      Community @relation(fields: [communityId], references: [communityId], onDelete: Cascade)
   communityId    Int
 }
 
@@ -298,7 +298,7 @@ model ChannelAnalyticsTimestamp {
   comments   Int
   engagement Float
   date       DateTime @default(now())
-  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channel    Channel  @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
   channelId  Int
 }
 
@@ -309,7 +309,7 @@ model EventAnalyticsTimestamp {
   clicks      Int
   likes       Int
   date        DateTime @default(now())
-  event       Event    @relation(fields: [eventId], references: [eventId])
+  event       Event    @relation(fields: [eventId], references: [eventId], onDelete: Cascade)
   eventId     Int
 }
 
@@ -319,7 +319,7 @@ model CollectionAnalyticsTimestamp {
   revenue      Int
   clicks       Int
   date         DateTime   @default(now())
-  collection   Collection @relation(fields: [collectionId], references: [collectionId])
+  collection   Collection @relation(fields: [collectionId], references: [collectionId], onDelete: Cascade)
   collectionId Int
 }
 
@@ -330,7 +330,7 @@ model Question {
   date       DateTime @default(now())
   user       User     @relation(fields: [userId], references: [userId])
   userId     Int
-  channel    Channel  @relation(fields: [channelId], references: [channelId])
+  channel    Channel  @relation(fields: [channelId], references: [channelId], onDelete: Cascade)
   channelId  Int
   isAnon     Boolean
 }
