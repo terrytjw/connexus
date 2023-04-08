@@ -14,10 +14,10 @@ const MarketplaceTab = ({
   return (
     <div>
       <div className="flex gap-4">
-        <h2 className="mb-6 text-2xl font-semibold tracking-wide text-slate-600">
+        <h2 className="mb-6 text-2xl font-semibold tracking-normal text-slate-600">
           Trending Collections
         </h2>
-        <div className="tooltip" data-tip="Top Selling Collections">
+        <div className="tooltip tooltip-primary" data-tip="Top Selling Collections">
           <Button
             variant="solid"
             size="sm"
@@ -28,7 +28,7 @@ const MarketplaceTab = ({
         </div>
       </div>
       <CollectionGrid data={trendingCollections} />
-      <h2 className="mt-12 mb-6 text-2xl font-semibold text-slate-600">
+      <h2 className="mt-12 mb-6 text-2xl font-semibold tracking-normal text-slate-600">
         Available Collections
       </h2>
       <CollectionGrid data={collections} />

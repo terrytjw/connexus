@@ -6,11 +6,11 @@ import Image from "next/image";
 const Footer = () => {
   return (
     <footer className="footer footer-center bg-gray-200 p-10 text-black">
-      <div className="grid grid-flow-col gap-4 font-medium">
+      {/* <div className="grid grid-flow-col gap-4 font-medium">
         <CustomLink href="#">About us</CustomLink>
         <CustomLink href="#">Contact</CustomLink>
         <CustomLink href="#">T&Cs</CustomLink>
-      </div>
+      </div> */}
       <div>
         <Link
           href="/"

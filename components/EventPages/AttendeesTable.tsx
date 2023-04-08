@@ -94,7 +94,7 @@ const AttendeesTable = ({
                   {data?.displayName}
                   {isRaffleActivated() && getPrizeWinner(data) && (
                     <div
-                      className="tooltip z-10"
+                      className="tooltip tooltip-primary z-10"
                       data-tip={
                         !isPrizeClaimed(data)
                           ? "Verify prize claim!"
@@ -102,7 +102,7 @@ const AttendeesTable = ({
                       }
                     >
                       <Button
-                        className="tooltip  border-0"
+                        className="tooltip tooltip-primary border-0"
                         variant="outlined"
                         size="sm"
                         onClick={() => {

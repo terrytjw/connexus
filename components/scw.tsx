@@ -178,8 +178,8 @@ const Home = ({ isAuthModalOpen }: any) => {
             </Button>
           ) : (
             <div>
-              <h1 className="py-4 text-center font-semibold">
-                Welcome to Connexus.
+              <h1 className="py-8 text-center text-lg font-semibold">
+                Welcome to Connexus!
               </h1>
               <Button
                 className="m-auto"
@@ -195,11 +195,11 @@ const Home = ({ isAuthModalOpen }: any) => {
           <>
             {router.pathname !== "/" ? (
               <div>
-                <h1 className="py-4 text-center font-semibold">
+                <h1 className="py-8 text-center text-lg font-semibold">
                   Are you sure you want to logout?
                 </h1>
                 <Button
-                  className="m-auto text-red-500 hover:bg-red-500 hover:text-white"
+                  className="w-full !text-red-500 hover:border-red-500 hover:bg-red-100 sm:w-fit"
                   variant="outlined"
                   size="md"
                   onClick={disconnectWeb3}

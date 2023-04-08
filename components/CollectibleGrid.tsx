@@ -19,9 +19,9 @@ const CollectibleGridItem = ({
   return (
     <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
       {!collectedTab ? (
-        <div className="mb-2 flex w-full gap-3 text-gray-900">
+        <div className="mb-2 flex w-full gap-3 text-blue-600 font-semibold">
           <progress
-            className="progress h-4"
+            className="progress progress-primary h-4"
             value={item.totalMerchSupply - item.currMerchSupply}
             max={item.totalMerchSupply}
           />
