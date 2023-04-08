@@ -65,6 +65,7 @@ export default async function handler(
         ? parseInt(query.ticketId as string)
         : undefined;
       await handleGET(ticketId, userId);
+      break;
     }
     case "POST":
       const { userId, ticketId, ...userTicket } = body;

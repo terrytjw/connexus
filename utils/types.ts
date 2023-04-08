@@ -91,4 +91,5 @@ export type AttendeeListType = {
   email: string;
   checkIn: boolean;
   ticket: TicketWithEvent;
+  phoneNumber: string;
 };

@@ -55,7 +55,6 @@ export default async function handler(
           { id: "userId", title: "UserId" },
           { id: "phoneNumber", title: "Phone Number" },
           { id: "displayName", title: "Display Name" },
-          { id: "username", title: "Username" },
           { id: "email", title: "Email" },
         ],
       });
