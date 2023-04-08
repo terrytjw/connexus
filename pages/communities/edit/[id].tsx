@@ -1,23 +1,49 @@
-import { useRouter } from "next/router";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth";
 import CreateCommunityPage from "../create";
-import Loading from "../../../components/Loading";
-import useSWR from "swr";
 import { getCommunityAPI } from "../../../lib/api-helpers/community-api";
+import { CommunityWithCreatorAndChannelsAndMembers } from "../../../utils/types";
 
-const EditCommunityPage = () => {
-  const router = useRouter();
-  const { id } = router.query;
+import { ParsedUrlQuery } from "querystring";
 
-  const {
-    data: community,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR("getCommunityAPI", async () => await getCommunityAPI(Number(id)));
+import { authOptions } from "../../api/auth/[...nextauth]";
 
-  if (isLoading) return <Loading />;
+type EditCommunityPageProps = {
+  community: CommunityWithCreatorAndChannelsAndMembers;
+};
 
-  return <CreateCommunityPage community={community} mutateCommunity={mutate} />;
+interface Params extends ParsedUrlQuery {
+  id: string;
+}
+
+const EditCommunityPage = ({ community }: EditCommunityPageProps) => {
+  return <CreateCommunityPage community={community} />;
 };
 
 export default EditCommunityPage;
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const { id } = context.params as Params;
+
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const userId = Number(session?.user.userId);
+
+  const community = await getCommunityAPI(Number(id));
+
+  if (community.creator.userId !== userId) {
+    return {
+      redirect: {
+        destination: "/communities",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {
+      community,
+    },
+  };
+};

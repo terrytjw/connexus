@@ -1,4 +1,6 @@
 import { CategoryType } from "@prisma/client";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
+import { getServerSession } from "next-auth";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
@@ -21,17 +23,15 @@ import {
   updateCommunityAPI,
   deleteCommunityAPI,
 } from "../../lib/api-helpers/community-api";
+import { getUserInfo } from "../../lib/api-helpers/user-api";
 import { CommunityWithCreatorAndChannelsAndMembers } from "../../utils/types";
+import { authOptions } from "../api/auth/[...nextauth]";
 
 type CreateCommunityPageProps = {
   community: CommunityWithCreatorAndChannelsAndMembers;
-  mutateCommunity: any;
 };
 
-const CreateCommunityPage = ({
-  community,
-  mutateCommunity,
-}: CreateCommunityPageProps) => {
+const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
   const { data: session } = useSession();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -131,7 +131,6 @@ const CreateCommunityPage = ({
     await updateCommunityAPI(updateCommunityParams);
 
     setIsLoading(false);
-    mutateCommunity();
   };
 
   const onDelete = async () => {
@@ -465,3 +464,28 @@ const CreateCommunityPage = ({
 };
 
 export default CreateCommunityPage;
+
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
+  const userId = Number(session?.user.userId);
+
+  const userData = await getUserInfo(userId);
+
+  if (
+    context.resolvedUrl.includes("create") &&
+    userData.createdCommunities.length > 0
+  ) {
+    return {
+      redirect: {
+        destination: `/communities/${userData.createdCommunities[0].communityId}`,
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+};
