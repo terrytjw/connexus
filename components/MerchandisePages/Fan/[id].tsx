@@ -1,4 +1,4 @@
-import { Merchandise } from "@prisma/client";
+import { CollectionState, Merchandise } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -225,81 +225,92 @@ const FanCollectionPage = ({
               </span>
             </div>
 
-            <div className="flex items-end gap-4">
-              {/* Input Stepper */}
-              <div className="flex items-center">
-                <div className="flex h-12 w-32 flex-row">
-                  {/* decrease button */}
-                  <button
-                    className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
-                    disabled={quantity == 1}
-                    // onClick={() => {
-                    //   if (quantity > 1) {
-                    //     setQuantity(quantity - 1);
-                    //     return;
-                    //   }
-                    //   setQuantity(1);
-                    // }}
-                  >
-                    <span className="m-auto text-2xl">-</span>
-                  </button>
-                  <input
-                    type="number"
-                    min={1}
-                    max={maxQuantity}
-                    step={1}
-                    value={quantity}
-                    // onKeyDown={(e) => {
-                    //   // disallow decimal
-                    //   // only allow numbers, backspace, arrow left and right for editing
-                    //   if (
-                    //     e.code == "Backspace" ||
-                    //     e.code == "ArrowLeft" ||
-                    //     e.code == "ArrowRight" ||
-                    //     (e.key >= "0" && e.key <= "9")
-                    //   ) {
-                    //     return;
-                    //   }
-                    //   e.preventDefault();
-                    // }}
-                    // onChange={(e) => {
-                    //   if (e.target.valueAsNumber > maxQuantity) {
-                    //     setQuantity(maxQuantity);
-                    //     return;
-                    //   }
-                    //   setQuantity(e.target.valueAsNumber);
-                    // }}
-                    // onBlur={(e) => {
-                    //   if (e.target.value == "") {
-                    //     setQuantity(1);
-                    //   }
-                    // }}
-                    className="w-full appearance-none bg-gray-200 text-center outline-none"
-                  ></input>
-                  {/* increase button */}
-                  <button
-                    className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
-                    disabled={quantity == maxQuantity}
-                    // onClick={() => {
-                    //   if (quantity) {
-                    //     setQuantity(quantity + 1);
-                    //     return;
-                    //   }
-                    //   setQuantity(1);
-                    // }}
-                  >
-                    <span className="m-auto text-2xl font-thin">+</span>
-                  </button>
+            {collection.collectionState !== CollectionState.SOLD &&
+            collection.merchandise.reduce(
+              (total: number, m: Merchandise) =>
+                total + m.totalMerchSupply - m.currMerchSupply,
+              0
+            ) > 0 ? (
+              <div className="flex items-end gap-4">
+                {/* Input Stepper */}
+                <div className="flex items-center">
+                  <div className="flex h-12 w-32 flex-row">
+                    {/* decrease button */}
+                    <button
+                      className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
+                      disabled={quantity == 1}
+                      // onClick={() => {
+                      //   if (quantity > 1) {
+                      //     setQuantity(quantity - 1);
+                      //     return;
+                      //   }
+                      //   setQuantity(1);
+                      // }}
+                    >
+                      <span className="m-auto text-2xl">-</span>
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      max={maxQuantity}
+                      step={1}
+                      value={quantity}
+                      // onKeyDown={(e) => {
+                      //   // disallow decimal
+                      //   // only allow numbers, backspace, arrow left and right for editing
+                      //   if (
+                      //     e.code == "Backspace" ||
+                      //     e.code == "ArrowLeft" ||
+                      //     e.code == "ArrowRight" ||
+                      //     (e.key >= "0" && e.key <= "9")
+                      //   ) {
+                      //     return;
+                      //   }
+                      //   e.preventDefault();
+                      // }}
+                      // onChange={(e) => {
+                      //   if (e.target.valueAsNumber > maxQuantity) {
+                      //     setQuantity(maxQuantity);
+                      //     return;
+                      //   }
+                      //   setQuantity(e.target.valueAsNumber);
+                      // }}
+                      // onBlur={(e) => {
+                      //   if (e.target.value == "") {
+                      //     setQuantity(1);
+                      //   }
+                      // }}
+                      className="w-full appearance-none bg-gray-200 text-center outline-none"
+                    ></input>
+                    {/* increase button */}
+                    <button
+                      className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
+                      disabled={quantity == maxQuantity}
+                      // onClick={() => {
+                      //   if (quantity) {
+                      //     setQuantity(quantity + 1);
+                      //     return;
+                      //   }
+                      //   setQuantity(1);
+                      // }}
+                    >
+                      <span className="m-auto text-2xl font-thin">+</span>
+                    </button>
+                  </div>
                 </div>
+                <Button
+                  variant="solid"
+                  size="md"
+                  onClick={() => payForMerchandise()}
+                >
+                  Buy
+                </Button>
               </div>
-              <Button
-                variant="solid"
-                size="md"
-                onClick={() => payForMerchandise()}
-              >
-                Buy
+            ) : (
+              <Button disabled variant="solid" size="md">
+                Sold
               </Button>
-            </div>
+            )}
           </div>
         </div>
         <CollectibleGrid data={collection.merchandise} collectedTab={false} />
