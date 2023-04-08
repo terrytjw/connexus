@@ -16,17 +16,13 @@ import {
   searchAllCollections,
 } from "../../../lib/api-helpers/collection-api";
 import { searchCollectedMerchandise } from "../../../lib/api-helpers/merchandise-api";
-import { MerchandiseWithCollectionName } from "../../../utils/types";
-import { getTopNSellingCollectionsAPI } from "../../../lib/api-helpers/analytics-api";
 
 type FanCollectionsPageProps = {
-  merchandiseData: MerchandiseWithCollectionName[];
-  collectionsData: CollectionWithMerchAndPremiumChannel[];
+  trendingCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
 const FanCollectionsPage = ({
-  merchandiseData,
-  collectionsData,
+  trendingCollections,
 }: FanCollectionsPageProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
@@ -34,10 +30,6 @@ const FanCollectionsPage = ({
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [trendingCollections, setTrendingCollections] = useState(
-    [] as CollectionWithMerchAndPremiumChannel[]
-  );
 
   const [collectedTabfilterSelected, setCollectedTabfilterSelected] =
     useState("");
@@ -81,28 +73,6 @@ const FanCollectionsPage = ({
       )
   );
 
-  const {
-    data: trendingCollectionIds,
-    isLoading: isTrendingCollectionsLoading,
-  } = useSWR(
-    "getTrendingCollections",
-    async () => await getTopNSellingCollectionsAPI(),
-    {
-      onSuccess: () =>
-        setTrendingCollections(
-          collectionsData.filter(
-            (collection: CollectionWithMerchAndPremiumChannel) => {
-              return trendingCollectionIds.some((trendingcollection: any) => {
-                return (
-                  collection.collectionId == trendingcollection.collectionId
-                );
-              });
-            }
-          )
-        ),
-    }
-  );
-
   useEffect(() => {
     mutateCollectedMerchandise();
   }, [searchString, collectedTabfilterSelected]);
@@ -111,12 +81,7 @@ const FanCollectionsPage = ({
     mutateAllCollections();
   }, [searchString, marketplaceTabfilterSelected]);
 
-  if (
-    isCollectedMerchandiseLoading ||
-    isAllCollectionsLoading ||
-    isTrendingCollectionsLoading ||
-    trendingCollections.length === 0
-  ) {
+  if (isCollectedMerchandiseLoading || isAllCollectionsLoading) {
     return <Loading />;
   }
 
