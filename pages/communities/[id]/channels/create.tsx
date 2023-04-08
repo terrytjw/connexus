@@ -1,7 +1,7 @@
 import { Collection } from "@prisma/client";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm, useFieldArray } from "react-hook-form";
 import { FaChevronLeft } from "react-icons/fa";
 import Layout from "../../../../components/Layout";
@@ -45,10 +45,18 @@ const CreatePremiumChannelPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { data: collections, isLoading: isLoadingSWR } = useSWR(
+  const {
+    data: collections,
+    isLoading: isLoadingSWR,
+    mutate,
+  } = useSWR(
     "getUnsoldUnlinkedCollections",
     async () => await getUnsoldUnlinkedCollections(Number(userId))
   );
+
+  useEffect(() => {
+    mutate();
+  }, [userId]);
 
   const {
     handleSubmit,
