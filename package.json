@@ -43,7 +43,7 @@
     "ether.js": "^1.0.0",
     "ethers": "^5.0.0",
     "firebase": "^9.15.0",
-    "framer-motion": "6.2.4",
+    "framer-motion": "^10.11.2",
     "hardhat": "^2.12.7",
     "html5-qrcode": "^2.3.7",
     "lodash": "^4.17.21",
