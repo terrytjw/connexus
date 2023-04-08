@@ -87,7 +87,9 @@ export async function getCollectionMerchOwners(collectionId: number) {
       merchandise: {
         include: {
           users: {
-            select: { userId: true }
+            include: {
+              joinedCommunities: true
+            }
           }
         }
       }

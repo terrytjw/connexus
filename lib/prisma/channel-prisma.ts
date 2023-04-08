@@ -29,6 +29,18 @@ export async function createChannel(channel: Channel) {
   let users: any[] = [];
   if (channel.collectionId) {
     users = await getCollectionMerchOwners(channel.collectionId)
+    users = users
+      .filter(user => {
+        for (let community of user.joinedCommunities) {
+          if (community.communityId == channel.communityId) {
+            return true
+          }
+        }
+        return false
+      })
+      .map(user => {
+        return { userId: user.userId }
+      })
   }
   return prisma.channel.create({
     data: {
