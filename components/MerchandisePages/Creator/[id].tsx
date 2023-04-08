@@ -28,7 +28,7 @@ const CreatorCollectionPage = () => {
     error,
     isLoading,
     mutate,
-  } = useSWR(id, getCollection);
+  } = useSWR("getCollection", async () => await getCollection(Number(id)));
 
   const { control, handleSubmit, setValue } = useForm<Collection>({
     defaultValues: {

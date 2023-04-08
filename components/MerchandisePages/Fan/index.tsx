@@ -114,7 +114,8 @@ const FanCollectionsPage = ({
   if (
     isCollectedMerchandiseLoading ||
     isAllCollectionsLoading ||
-    isTrendingCollectionsLoading
+    isTrendingCollectionsLoading ||
+    trendingCollections.length === 0
   ) {
     return <Loading />;
   }
