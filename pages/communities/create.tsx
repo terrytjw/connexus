@@ -158,7 +158,11 @@ const CreateCommunityPage = ({ community }: CreateCommunityPageProps) => {
     // currently in creator view, wants to switch to fan view
     // but setIsFan is asynchronous, so there may be a chance where isFan == true but localStorage.getItem("role") === "creator"
     // so have to check localstorage to ensure that role is actually fan before redirecting
-    if (isFan && localStorage.getItem("role") === "fan") {
+    if (
+      isFan &&
+      localStorage.getItem("role") === "fan" &&
+      router.asPath.includes("create")
+    ) {
       console.log("in create, redirecting to index...");
       router.replace("/communities");
     }

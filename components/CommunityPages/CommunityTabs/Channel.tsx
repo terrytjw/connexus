@@ -200,6 +200,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
                     variant="outlined"
                     size="sm"
                     type="button"
+                    disabled={!question}
                     onClick={() => {
                       createQuestion();
                     }}
