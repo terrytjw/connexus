@@ -42,10 +42,12 @@ const FanCollectionPage = ({
   const payForMerchandise = async () => {
     setLoading(true);
 
+    const merchandise = collection.merchandise.filter(
+      (m) => m.currMerchSupply < m.totalMerchSupply
+    );
+
     const merchandiseToMint =
-      collection.merchandise[
-        Math.floor(Math.random() * collection.merchandise.length)
-      ];
+      merchandise[Math.floor(Math.random() * merchandise.length)];
 
     localStorage.setItem(
       "merchandiseToMint",
