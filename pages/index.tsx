@@ -96,7 +96,7 @@ const HomePage: NextPage = () => {
                 Grow your authentic relationships with your fans through
                 Connexus.
               </h1>
-              <p className="pb-4 font-semibold text-gray-500">
+              <p className="pb-4 font-semibold text-xl text-gray-500">
                 All-in-one platform to empower creators to develop authentic
                 relationships with their fans.
               </p>
@@ -136,7 +136,7 @@ const HomePage: NextPage = () => {
                   <Button
                     variant="solid"
                     size="md"
-                    className="mt-4 px-20"
+                    className="mt-3 px-20"
                     // onClick={
                     //   session
                     //     ? isFan
@@ -175,10 +175,10 @@ const HomePage: NextPage = () => {
 
         {/* Explore our product section */}
         <section className="mx-auto max-w-7xl px-8 pt-32 lg:py-40">
-          <h2 className="text-center text-2xl font-semibold lg:text-left">
+          <h2 className="text-center text-2xl font-bold lg:text-left">
             Explore our product
           </h2>
-          <p className="mt-4 text-center text-gray-500 lg:text-left">
+          <p className="mt-8 text-center text-gray-500 lg:text-left">
             Manage every aspect of your authentic relationships with your fans
             in one secure platform.
           </p>
@@ -206,8 +206,8 @@ const HomePage: NextPage = () => {
         {/* About us section */}
         <section className="bg-gradient-to-b from-[#87DBFF] via-blue-100 to-white">
           <div className={classNames("mx-auto max-w-7xl px-4 pt-16 lg:py-40")}>
-            <h2 className="text-center text-2xl font-semibold">About us</h2>
-            <p className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wider lg:text-5xl lg:leading-[4.5rem]">
+            <h2 className="text-center text-2xl font-bold">About us</h2>
+            <p className="py-8 text-center text-3xl font-extrabold leading-[3.5rem] tracking-wide lg:text-5xl lg:leading-[4.5rem]">
               Our Mission is to empower creators to{" "}
               <span className="text-blue-500">
                 develop authentic relationships
@@ -232,13 +232,12 @@ const HomePage: NextPage = () => {
               </p>
             </div>
             <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
-              <video width="1200" autoPlay loop>
-                <source
-                  src="/videos/connexus-landing-demo-one.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <Image
+                src="/images/connexus-landing-demo-one.jpg"
+                alt="Connexus logo"
+                width={800}
+                height={800}
+              />
             </div>
           </div>
 
@@ -246,20 +245,19 @@ const HomePage: NextPage = () => {
             <div className="text-center lg:text-left">
               <h3 className="text-2xl font-semibold">How we drive value</h3>
               <p className="py-4 text-gray-500">
-                Using blockchain technology,Connexus enables the exchange of
+                Using blockchain technology, Connexus enables the exchange of
                 event tickets and digital merchandise, a token-gated community
                 channel exclusive to creators and fans to be transparent and the
                 traceability of data shared across a business network. 
               </p>
             </div>
             <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
-              <video width="800" height="800" autoPlay loop>
-                <source
-                  src="/videos/connexus-landing-demo-two.mp4"
-                  type="video/mp4"
-                />
-                Your browser does not support the video tag.
-              </video>
+              <Image
+                src="/images/connexus-landing-demo-two.jpg"
+                alt="Connexus logo"
+                width={800}
+                height={800}
+              />
             </div>
           </div>
         </section>

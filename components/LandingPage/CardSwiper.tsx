@@ -22,7 +22,7 @@ export const CardSwiper = ({ cards }: CardSwiperProps) => {
       spaceBetween={20}
       style={{
         paddingLeft: "1rem",
-        paddingTop: "1rem",
+        paddingTop: "2rem",
         paddingRight: "1rem",
         paddingBottom: "3rem",
       }}
