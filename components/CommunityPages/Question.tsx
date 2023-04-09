@@ -116,6 +116,7 @@ const Question = ({
                   variant="outlined"
                   size="sm"
                   type="button"
+                  disabled={!answer}
                   onClick={() => {
                     answerQuestion();
                   }}

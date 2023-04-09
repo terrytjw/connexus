@@ -32,6 +32,7 @@ import {
   getAllCommentsOnPostAPI,
   createCommentAPI,
 } from "../../lib/api-helpers/comment-api";
+import { getUserInfo } from "../../lib/api-helpers/user-api";
 
 type PostProps = {
   post: PostWithCreatorAndLikes;
@@ -54,10 +55,12 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   } = useSWR({ postId: post.postId }, getAllCommentsOnPostAPI);
 
   const { data: session } = useSession();
-  const userId = Number(session?.user.userId);
+  const userId = session?.user.userId;
+
+  const { data: userData } = useSWR(userId, getUserInfo);
 
   const likePost = async () => {
-    const res = await likePostAPI(post.postId, userId);
+    const res = await likePostAPI(post.postId, Number(userId));
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
         .find((post) => post.postId == res.postId)
@@ -68,11 +71,11 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const unlikePost = async () => {
-    const res = await unlikePostAPI(post.postId, userId);
+    const res = await unlikePostAPI(post.postId, Number(userId));
     mutatePosts((data: PostWithCreatorAndLikes[]) => {
       data
         .find((post) => post.postId == res.postId)
-        ?.likes.filter((like) => like.userId != userId);
+        ?.likes.filter((like) => like.userId != Number(userId));
 
       return data;
     });
@@ -113,7 +116,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
   };
 
   const createComment = async () => {
-    const res = await createCommentAPI(newComment, post.postId, userId);
+    const res = await createCommentAPI(newComment, post.postId, Number(userId));
 
     const temp = res[0];
     mutate((data: CommentWithCommenterAndLikes[]) => {
@@ -182,7 +185,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
 
           <div className="flex items-center gap-2">
             {post.isPinned ? <BsPinFill className="text-blue-600" /> : null}
-            {post.creator.userId == userId ? (
+            {post.creator.userId == Number(userId) ? (
               <div className="dropdown-btm dropdown-end dropdown">
                 <label tabIndex={0}>
                   <Button variant="outlined" size="sm" className="border-0">
@@ -248,7 +251,7 @@ const Post = ({ post, mutatePosts }: PostProps) => {
           <div className="flex w-full items-center gap-x-4 border-y-2 py-2 sm:border-0">
             <div className="flex items-center gap-x-2 text-gray-700">
               {post.likes.find(
-                (like: { userId: number }) => like.userId == userId
+                (like: { userId: number }) => like.userId == Number(userId)
               ) ? (
                 <Button
                   size="sm"
@@ -294,8 +297,8 @@ const Post = ({ post, mutatePosts }: PostProps) => {
             height={48}
             width={48}
             className="aspect-square rounded-full object-cover object-center"
-            src={post.creator.profilePic ?? ""}
-            alt="Creator profile pic"
+            src={userData.profilePic ?? ""}
+            alt="User profile pic"
           />
           <CommentInput
             value={newComment}

@@ -77,3 +77,26 @@ export async function getCollectionsForAnalytics() {
     include: { merchandise: true, analyticsTimestamps: true }
   });
 }
+
+export async function getCollectionMerchOwners(collectionId: number) {
+  const collection = await prisma.collection.findUnique({
+    where: {
+      collectionId: collectionId,
+    },
+    include: {
+      merchandise: {
+        include: {
+          users: {
+            include: {
+              joinedCommunities: true
+            }
+          }
+        }
+      }
+    },
+  });
+
+  return collection!.merchandise
+    .filter(merch => merch.users.length > 0)
+    .flatMap(merch => merch.users);
+}
