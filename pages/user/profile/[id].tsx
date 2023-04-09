@@ -105,7 +105,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             </div>
 
             {/* button group */}
-            <div className="flex flex-wrap gap-4 items-center">
+            <div className="mt-6 flex flex-wrap items-center gap-4">
               <Button
                 href={`/user/settings/${userData.userId}`}
                 variant="solid"
@@ -115,7 +115,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 <span className="hidden sm:inline-block">Settings</span>
               </Button>
 
-              <div className="ml-4 flex flex-wrap items-center gap-4 py-4">
+              <div className="flex items-center gap-4 py-4">
                 <Link
                   href={getFacebookShareLink(profileLink)}
                   target="_blank"
@@ -137,16 +137,16 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 >
                   <FaTelegram className="h-6 w-6" />
                 </Link>
-                <Link
-                  href={`https://mumbai.polygonscan.com/address/${userData.walletAddress}`}
-                  target="_blank"
-                  className="ml-2 flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline tooltip tooltip-primary" 
-                  data-tip="For Web3 native users to view the smart contract transactions in Polygon"
-                >
-                  <FaExternalLinkAlt className="h-4 w-4" />
-                  <span className="font-medium">On-chain Analysis</span>
-                </Link>
               </div>
+              <Link
+                href={`https://mumbai.polygonscan.com/address/${userData.walletAddress}`}
+                target="_blank"
+                className="tooltip tooltip-primary flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline"
+                data-tip="For Web3 native users to view the smart contract transactions in Polygon"
+              >
+                <FaExternalLinkAlt className="h-4 w-4" />
+                <span className="font-medium">On-chain Analysis</span>
+              </Link>
             </div>
 
             <TabGroupBordered
