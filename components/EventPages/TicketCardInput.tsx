@@ -26,15 +26,6 @@ const TicketCardInput = ({
     discountedTickets,
   } = watch();
 
-  console.log("discounted tickets ->", discountedTickets);
-
-  // [PLACE HOLDER] replace with prop
-  const hasDiscount = true;
-
-  // [PLACEHOLDER] listen to discount value
-  const discount = 0.1;
-
-  console.log("selected ticket ->", selectedTicketName, selectedQty);
   const showInputStepper = (): boolean => {
     // case sold out
     if (isSoldOut()) {
@@ -75,8 +66,6 @@ const TicketCardInput = ({
     )?.price;
   };
 
-  console.log("ticket id 1 disctouned", getPreDiscountedPrice(1));
-
   return (
     <div>
       <div className="pb-2 sm:pb-4">
@@ -94,12 +83,12 @@ const TicketCardInput = ({
             <h1 className="flex gap-4 text-xl font-bold text-gray-700">
               {ticket.name}{" "}
               {isPaused() && (
-                <span className="flex items-center rounded-full border-2 border-rose-100 bg-rose-100 px-2 text-sm font-normal text-rose-400">
+                <span className="flex items-center rounded-full border-2 border-red-100 bg-red-100 px-2 text-sm font-normal text-red-500">
                   Sale Paused
                 </span>
               )}
               {isSoldOut() && (
-                <span className="flex items-center rounded-full border-2 border-blue-100 bg-blue-100 px-2 text-sm font-normal text-blue-400">
+                <span className="flex items-center rounded-full border-2 border-blue-100 bg-blue-100 px-2 text-sm font-normal text-blue-600">
                   Sold Out
                 </span>
               )}
@@ -130,9 +119,7 @@ const TicketCardInput = ({
               </span>
             </span>
             <span className="flex flex-col">
-              <p className="text-md text-blue-600">
-                Perks of owning this ticket:
-              </p>
+              <p className="text-md font-semibold text-blue-600">Perks</p>
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
           </div>

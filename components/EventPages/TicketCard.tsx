@@ -94,19 +94,21 @@ const TicketCard = ({
             <h1 className="flex gap-4 text-xl font-bold text-gray-700">
               {ticket.name}
               {isOwnedTicket && isCheckedIn(ticket) && (
-                <span className="flex items-center rounded-full border-2 border-green-100 bg-green-100 px-2 text-sm font-medium text-green-400">
-                  Checked In
-                </span>
+                <div className="flex">
+                  <span className="flex h-fit items-center whitespace-nowrap rounded-full border-2 border-teal-100 bg-teal-100 px-2 py-px text-sm font-normal text-teal-500">
+                    Checked In
+                  </span>
+                </div>
               )}
               {!isOwnedTicket && (
-                <div className="flex gap-4">
+                <div className="flex w-20 gap-4">
                   {isPaused() && (
-                    <span className="flex items-center rounded-full border-2 border-rose-100 bg-rose-100 px-2 text-sm font-normal text-rose-400">
+                    <span className="flex h-fit items-center whitespace-nowrap rounded-full border-2 border-red-100 bg-red-100 py-px px-2 text-sm font-normal text-red-500">
                       Sale Paused
                     </span>
                   )}
                   {isSoldOut() && (
-                    <span className="flex items-center rounded-full border-2 border-blue-100 bg-blue-100 px-2 text-sm font-normal text-blue-400">
+                    <span className="flex h-fit items-center whitespace-nowrap rounded-full border-2 border-blue-100 bg-blue-100 px-2 py-px text-sm font-normal text-blue-600">
                       Sold Out
                     </span>
                   )}
@@ -126,7 +128,7 @@ const TicketCard = ({
               </p>
             </span>
             <span>
-              <p className="text-md font-semibold text-blue-500">
+              <p className="text-md font-semibold text-blue-600">
                 Sale Duration
               </p>
               <p className="text-sn text-gray-700">
@@ -134,9 +136,7 @@ const TicketCard = ({
               </p>
             </span>
             <span className=" flex flex-col">
-              <p className="text-md text-blue-600">
-                Perks of owning this ticket:
-              </p>
+              <p className="text-md font-semibold text-blue-600">Perks</p>
               <p className="text-sn text-gray-700">{ticket.description}</p>
             </span>
           </div>
@@ -163,16 +163,6 @@ const TicketCard = ({
                           getPrizeWinner(ticket)?.rafflePrizeId
                         )?.name || "",
                     });
-
-                    console.log("setting current ticket ->", {
-                      eventName: ticket.event.eventName,
-                      isCheckedIn: isCheckedIn(ticket) ?? false,
-                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
-                      rafflePrizeName:
-                        getPrizeNameByRafflePrizeId(
-                          getPrizeWinner(ticket)?.rafflePrizeId
-                        )?.name || "",
-                    });
                     setRafflePrizes(getRafflePrizes(ticket));
                     setIsPrizeModalOpen(true);
                   }
@@ -190,20 +180,10 @@ const TicketCard = ({
               <Button
                 variant="solid"
                 size="md"
-                className="max-w-xs "
+                className="w-full sm:max-w-xs"
                 onClick={() => {
                   if (setIsModalOpen && setQrValue && setCurrentTicket) {
                     setCurrentTicket({
-                      eventName: ticket.event.eventName,
-                      isCheckedIn: isCheckedIn(ticket) ?? false,
-                      rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,
-                      rafflePrizeName:
-                        getPrizeNameByRafflePrizeId(
-                          getPrizeWinner(ticket)?.rafflePrizeId
-                        )?.name || "",
-                    });
-
-                    console.log("setting current ticket ->", {
                       eventName: ticket.event.eventName,
                       isCheckedIn: isCheckedIn(ticket) ?? false,
                       rafflePrizeWinner: getPrizeWinner(ticket) ?? undefined,

@@ -10,14 +10,13 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import "react-loading-skeleton/dist/skeleton.css";
 import { useRouter } from "next/router";
 import Loading from "./Loading";
+import { BASE_URL } from "../lib/constant";
 
 const Home = ({ isAuthModalOpen }: any) => {
   const router = useRouter();
   const [provider, setProvider] = useState<any>();
   const [account, setAccount] = useState<string>();
-  const [smartAccount, setSmartAccount] = useState<SmartAccount | null>(null);
   const [scwAddress, setScwAddress] = useState("");
-  const [scwLoading, setScwLoading] = useState(false);
   const [socialLoginSDK, setSocialLoginSDK] = useState<SocialLogin | null>(
     null
   );
@@ -38,13 +37,17 @@ const Home = ({ isAuthModalOpen }: any) => {
 
     if (!socialLoginSDK) {
       const signature1 = await sdk.whitelistUrl(
-        "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/"
+        "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app"
+      );
+      const signature2 = await sdk.whitelistUrl(
+        "https://5dec-116-15-156-213.ngrok-free.app"
       );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
-          "https://connexus-git-feat-authentication-connexaofficial-gmailcom.vercel.app/":
+          "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app":
             signature1,
+          "https://5dec-116-15-156-213.ngrok-free.app": signature2,
         },
       });
       setSocialLoginSDK(sdk);
@@ -69,13 +72,16 @@ const Home = ({ isAuthModalOpen }: any) => {
           profileImage: retrievedUserInfo?.profileImage,
           walletAddress: accounts[0],
         };
+
         const response = await signIn("custom-login", {
           redirect: false,
-          callbackUrl: "/communities",
+          callbackUrl: `${BASE_URL}/communities`,
           ...userInfo,
         });
 
         socialLoginSDK.hideWallet();
+
+        console.log("response ->", response);
         if (response && response.url) router.push(response.url);
       }
 
@@ -146,25 +152,6 @@ const Home = ({ isAuthModalOpen }: any) => {
     setScwAddress("");
   };
 
-  useEffect(() => {
-    async function setupSmartAccount() {
-      setScwAddress("");
-      setScwLoading(true);
-      const smartAccount = new SmartAccount(provider, {
-        activeNetworkId: ChainId.POLYGON_MUMBAI,
-        supportedNetworksIds: [ChainId.POLYGON_MUMBAI],
-      });
-      await smartAccount.init();
-      const context = smartAccount.getSmartAccountContext();
-      setScwAddress(context.baseWallet.getAddress());
-      setSmartAccount(smartAccount);
-      setScwLoading(false);
-    }
-    if (!!provider && !!account) {
-      setupSmartAccount();
-    }
-  }, [account, provider]);
-
   const ButtonLoadingAnimation = () => (
     <div className="flex gap-x-2">
       <svg className="h-4 w-4 animate-spin" viewBox="3 3 18 18">
@@ -191,8 +178,8 @@ const Home = ({ isAuthModalOpen }: any) => {
             </Button>
           ) : (
             <div>
-              <h1 className="py-4 text-center font-semibold">
-                Welcome to Connexus.
+              <h1 className="py-8 text-center text-lg font-semibold">
+                Welcome to Connexus!
               </h1>
               <Button
                 className="m-auto"
@@ -208,11 +195,11 @@ const Home = ({ isAuthModalOpen }: any) => {
           <>
             {router.pathname !== "/" ? (
               <div>
-                <h1 className="py-4 text-center font-semibold">
+                <h1 className="py-8 text-center text-lg font-semibold">
                   Are you sure you want to logout?
                 </h1>
                 <Button
-                  className="m-auto text-red-500 hover:bg-red-500 hover:text-white"
+                  className="w-full !text-red-500 hover:border-red-500 hover:bg-red-100 sm:w-fit"
                   variant="outlined"
                   size="md"
                   onClick={disconnectWeb3}

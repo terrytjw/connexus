@@ -157,7 +157,7 @@ const EventFormPage = ({
         }}
       />
 
-      <div className="z-10 mx-auto h-24 px-4 sm:h-32 sm:px-6 lg:px-8">
+      <div className="z-10 mx-auto h-24 max-w-5xl px-4 sm:h-32 sm:px-6 lg:px-8">
         <div className="relative -mt-12 h-24 sm:-mt-16 sm:h-32">
           <AvatarInput
             profilePic={eventPic}
@@ -174,7 +174,7 @@ const EventFormPage = ({
         </div>
       </div>
 
-      <div className="mt-8 flex w-full flex-col gap-2">
+      <div className="mx-auto mt-8 flex max-w-5xl flex-col gap-2">
         <Controller
           control={control}
           name="eventName"

@@ -1,10 +1,10 @@
-import { previousDay } from "date-fns";
 import { useSession } from "next-auth/react";
-import React, { useState } from "react";
+import React from "react";
 import WheelComponent from "react-wheel-of-prizes";
 import { insertRafflePrize } from "../../lib/api-helpers/user-api";
 import { CurrentTicket } from "../../pages/events/tickets";
-import Button from "../Button";
+import { useRouter } from "next/router";
+import toast from "react-hot-toast";
 // import 'react-wheel-of-prizes/dist/index.css'
 
 interface SpinWheelProps {
@@ -14,20 +14,31 @@ interface SpinWheelProps {
 }
 
 const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
+  const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
-  const segColors = [
-    "#EE4040",
-    "#F0CF50",
-    "#815CD1",
-    "#3DA5E0",
-    "#34A24F",
-    "#F9AA1F",
-    "#EC3F3F",
-    "#FF9000",
-  ];
+  const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
 
-  const emptyPrizeValues = ["No prize :(", "No prize :("];
+  const concatArrayByCeilDivision = (
+    a: number,
+    b: number,
+    values: string[]
+  ): string[] => {
+    const repetitions = Math.ceil(a / b);
+    const result = [] as string[];
+
+    for (let i = 0; i < repetitions; i++) {
+      result.push(...values);
+    }
+
+    return result;
+  };
+
+  const segColors = concatArrayByCeilDivision(
+    prizes.length,
+    COLORS.length,
+    COLORS
+  );
 
   const shuffleArray = (array: any[]) => {
     for (let i = array.length - 1; i > 0; i--) {
@@ -38,9 +49,7 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   };
 
   const getSpinWheelPrizes = (): any[] => {
-    return shuffleArray(
-      prizes.map((prize: any) => prize.name).concat(emptyPrizeValues)
-    );
+    return shuffleArray(prizes.map((prize: any) => prize.name));
   };
 
   const getWonPrizeId = (wonPrizeName: string): number | undefined => {
@@ -49,24 +58,21 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   };
 
   const onFinished = async (wonPrize: any) => {
-    console.log(wonPrize);
-    if (wonPrize != "No prize :(") {
-      let prizeId = getWonPrizeId(wonPrize);
-      if (prizeId) {
-        console.log(
-          "calling user Ticket api with won prize id -> ",
-          getWonPrizeId(wonPrize)
-        );
-        const res = await insertRafflePrize(prizeId, userId);
-        setCurrentTicket((prev: CurrentTicket) => ({
-          ...prev,
-          rafflePrizeWinner: {}, // pass in an truthy object
-          rafflePrizeName: wonPrize,
-        }));
-        console.log("res ->", res);
-      } else {
-        console.log("error with getting won prize id");
-      }
+    let prizeId = getWonPrizeId(wonPrize);
+    if (prizeId) {
+      await toast.promise(insertRafflePrize(prizeId, userId), {
+        loading: "Preparing prize...",
+        success: "Congrats, you won something!!!",
+        error: "Error Inserting Raffle Prize",
+      });
+      setCurrentTicket((prev: CurrentTicket) => ({
+        ...prev,
+        rafflePrizeWinner: {}, // pass in an truthy object
+        rafflePrizeName: wonPrize,
+      }));
+      setTimeout(() => router.reload(), 5000);
+    } else {
+      console.log("error with getting won prize id");
     }
   };
 

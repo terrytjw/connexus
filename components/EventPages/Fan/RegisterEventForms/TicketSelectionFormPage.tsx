@@ -40,9 +40,7 @@ const TicketSelectionFormPage = ({
   const applyPromoCode = async () => {
     // fetch promo code
     const promo = await getPromotionCodeByName(promoInput, Number(eventId));
-    console.log("api res ->", promo);
     // checks for valid promo code from event object
-
     if (
       promo.length !== 0 &&
       promo[0].isEnabled &&

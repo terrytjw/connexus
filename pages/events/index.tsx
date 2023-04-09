@@ -5,10 +5,10 @@ import CreatorEventsPage from "../../components/EventPages/Creator/CreatorEvents
 import FanEventsPage from "../../components/EventPages/Fan/FanEventsPage";
 import ProtectedRoute from "../../components/ProtectedRoute";
 import Layout from "../../components/Layout";
-
 import { Event, PrivacyType, User, VisibilityType } from "@prisma/client";
 import { EventWithAllDetails } from "../../utils/types";
 import { UserRoleContext } from "../../contexts/UserRoleProvider";
+import { API_URL } from "../../lib/constant";
 
 type EventsPageProps = {
   events: EventWithAllDetails[];
@@ -16,12 +16,7 @@ type EventsPageProps = {
 
 const EventsPage = ({ events }: EventsPageProps) => {
   const { isFan } = useContext(UserRoleContext);
-  
-  /** 
-   * NOTE: /events is returning everything from the db, including unpublished events
-   * temporary filter to see only public events TODO: filter on server side or make it into an api call
-   * 
-   * */ 
+
   const filterEvents = (
     events: EventWithAllDetails[]
   ): EventWithAllDetails[] => {
@@ -39,7 +34,7 @@ const EventsPage = ({ events }: EventsPageProps) => {
     <ProtectedRoute>
       <Layout>
         {!isFan ? (
-          <CreatorEventsPage events={filterEvents(events)} />
+          <CreatorEventsPage />
         ) : (
           <FanEventsPage events={filterEvents(events)} />
         )}
@@ -49,12 +44,12 @@ const EventsPage = ({ events }: EventsPageProps) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const { data } = await axios.get("http://localhost:3000/api/events");
+  const { data } = await axios.get(`${API_URL}/events`);
 
   const events = await Promise.all(
     data.map(async (event: Partial<Event>) => {
       const { data: address } = await axios.get(
-        `http://localhost:3000/api/addresses/${event?.addressId}`
+        `${API_URL}/addresses/${event?.addressId}`
       );
 
       return { ...event, address };

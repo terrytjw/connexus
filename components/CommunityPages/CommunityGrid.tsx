@@ -16,13 +16,20 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
 
+  if (communities.length === 0)
+    return (
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No communities to show.
+      </div>
+    );
+
   return (
-    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {communities?.map((community) => (
         <Link
           key={community.communityId}
           href={`/communities/${community.communityId}`}
-          className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+          className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md"
           onClick={async () => {
             await registerCommunityClick(community.communityId);
           }}
@@ -63,7 +70,7 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
                     <Button
                       variant="outlined"
                       size="sm"
-                      className="relative rounded-full bg-white text-lg font-semibold"
+                      className="relative rounded-full border-0 bg-white text-lg font-semibold"
                     >
                       Join
                     </Button>
@@ -80,7 +87,9 @@ const CommunityGrid = ({ communities, joinedTab }: CommunityGridProps) => {
               src={community.profilePic ?? ""}
               alt="Community Profile"
             />
-            <h3 className="font-medium text-gray-900">{community.name}</h3>
+            <h3 className="text-xl font-bold text-gray-900">
+              {community.name}
+            </h3>
           </div>
         </Link>
       ))}

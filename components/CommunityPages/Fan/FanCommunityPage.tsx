@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { Toaster } from "react-hot-toast";
 import {
   FaFacebook,
   FaLock,
@@ -83,7 +82,6 @@ const FanCommunityPage = ({
 
   return (
     <main>
-      <Toaster />
       <div className="relative">
         <Banner coverImageUrl={community.bannerPic ?? ""} />
         <div className="absolute top-0 right-0 flex flex-wrap gap-2 p-4">
@@ -109,14 +107,14 @@ const FanCommunityPage = ({
               <FaUserFriends />
               {community.members.length}
             </div>
-            <p className="mt-1 text-gray-500">{community?.description}</p>
+            <p className="mt-4 text-gray-500">{community?.description}</p>
 
             <div className="mt-6 flex flex-wrap gap-4">
               {community.members.find((member) => member.userId == userId) ? (
                 <Button
                   className="bg-blue-900"
                   variant="solid"
-                  size="sm"
+                  size="md"
                   onClick={() => leaveCommunity()}
                 >
                   Leave
@@ -124,7 +122,7 @@ const FanCommunityPage = ({
               ) : (
                 <Button
                   variant="solid"
-                  size="sm"
+                  size="md"
                   onClick={() => joinCommunity()}
                 >
                   Join
@@ -135,21 +133,21 @@ const FanCommunityPage = ({
                 <Link
                   href={getFacebookShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaFacebook className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTwitterShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTwitter className="h-6 w-6" />
                 </Link>
                 <Link
                   href={getTelegramShareLink(communityLink)}
                   target="_blank"
-                  className="text-gray-500 transition-all hover:text-blue-500"
+                  className="text-gray-500 transition-all hover:text-blue-600"
                 >
                   <FaTelegram className="h-6 w-6" />
                 </Link>
@@ -160,7 +158,7 @@ const FanCommunityPage = ({
           {linkedCollections.length > 0 ? (
             <Link
               href={`/merchandise/${linkedCollections[0].collectionId}`}
-              className="relative flex flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm"
+              className="relative flex flex-shrink-0 flex-col items-center justify-center gap-2 rounded-lg border-2 bg-white p-2 text-sm shadow-md"
               onClick={async () => {
                 await registerCollectionClick(
                   linkedCollections[0].collectionId
@@ -168,16 +166,17 @@ const FanCommunityPage = ({
               }}
             >
               Highlighted Collection
-              <Image
-                height={144}
-                width={144}
-                className="aspect-square rounded-lg object-cover object-center"
-                src={linkedCollections[0].merchandise[0].image}
-                alt="Highlight Collection Image"
-              />
+              <div className="relative h-36 w-full rounded-lg sm:w-36">
+                <Image
+                  fill
+                  className="object-cover object-center"
+                  src={linkedCollections[0].merchandise[0].image}
+                  alt="Highlight Collection Image"
+                />
+              </div>
               <div
                 aria-hidden="true"
-                className="text-md absolute bottom-0 mx-3 my-2 flex h-36 w-36 flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
+                className="text-md absolute bottom-0 my-2 flex h-36 w-[calc(100%-0.75rem)] flex-col justify-end rounded-lg bg-gradient-to-t from-black p-2 font-semibold text-white opacity-75"
               >
                 {linkedCollections[0].collectionName}
               </div>
@@ -207,7 +206,7 @@ const FanCommunityPage = ({
             )}
           </TabGroupBordered>
         ) : (
-          <div className="mt-8 flex items-center justify-center gap-2 text-xl">
+          <div className="mt-10 flex items-center justify-center gap-2 text-gray-400 text-xl">
             <FaLock />
             Join to get full access to this community
           </div>

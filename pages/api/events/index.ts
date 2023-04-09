@@ -130,7 +130,7 @@ export default async function handler(
         startDate,
         endDate,
         // likedEvents,
-        // userId,
+        userId,
         status
       );
       break;
@@ -151,7 +151,7 @@ export default async function handler(
     startDate: Date | undefined,
     endDate: Date | undefined,
     // likedEvents: boolean | undefined,
-    // userId: number | undefined,
+    userId: number | undefined,
     status: VisibilityType | undefined
   ) {
     try {
@@ -163,7 +163,7 @@ export default async function handler(
         startDate,
         endDate,
         // likedEvents,
-        // userId,
+        userId,
         status
       );
       res.status(200).json(events);

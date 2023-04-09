@@ -2,7 +2,7 @@ import { Post } from "@prisma/client";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Controller, useForm } from "react-hook-form";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { FaImages } from "react-icons/fa";
 import Button from "../Button";
 import Carousel from "../Carousel";
@@ -52,7 +52,7 @@ const PostInput = ({
   const uploadMultipleFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       if (media.length + e.target.files.length > 10) {
-        toast("You can only upload a maximum of 10 files!");
+        toast.error("You can only upload a maximum of 10 files!");
         return;
       }
 

@@ -69,7 +69,6 @@ const AttendeesPage = () => {
   const [isValid, setIsValid] = useState(false);
   const [searchString, setSearchString] = useState("");
   const [attendees, setAttendees] = useState<AttendeeListType[]>([]);
-  const [selectedOption, setSelectedOption] = useState(null);
   const [loading, setLoading] = useState<boolean>(false);
 
   const {
@@ -168,19 +167,6 @@ const AttendeesPage = () => {
       setIsValid(false);
       showToastWithLimit("Invalid QR Code!", { duration: 3000 }, 5000);
       setCheckInStatus(CheckInStatus.INITIAL);
-    }
-  };
-
-  const handleChange = (event: any) => {
-    setSelectedOption(event.target.value);
-    if (event.target.value === "csv") {
-      const url = exportCSV(Number(eventId));
-      router.push(url);
-      setTimeout(() => router.reload(), 3000); // bring users back after 0.3 sec
-    } else {
-      const url = exportPDF(Number(eventId));
-      router.push(url);
-      setTimeout(() => router.reload(), 3000);
     }
   };
 
@@ -348,16 +334,6 @@ const AttendeesPage = () => {
     <ProtectedRoute>
       <Layout>
         <main className="py-12 px-4 sm:px-12">
-          <Toaster
-            position="top-center"
-            toastOptions={{
-              style: {
-                background: "#FFFFFF",
-                color: "#34383F",
-                textAlign: "center",
-              },
-            }}
-          />
           {/* Header */}
           <div className="mb-8 flex justify-between gap-4">
             <div className="flex items-center gap-4">
@@ -369,7 +345,7 @@ const AttendeesPage = () => {
               >
                 <FaChevronLeft />
               </Button>
-              <h1 className="text-3xl font-bold">
+              <h1 className="text-3xl font-bold text-gray-900">
                 Attendees for{" "}
                 {truncateString(
                   attendees[0]?.ticket?.event?.eventName ?? "",
@@ -413,17 +389,54 @@ const AttendeesPage = () => {
                       }}
                     />
                   </div>
-                  <select
-                    value={selectedOption ?? ""}
-                    onChange={handleChange}
-                    className="btn-outline btn flex gap-x-2 rounded-md normal-case text-blue-600 hover:border-blue-600 hover:bg-blue-100 hover:text-blue-600"
-                  >
-                    <option value="" hidden>
-                      Export Table
-                    </option>
-                    <option value="csv">Export as CSV</option>
-                    <option value="pdf">Export as PDF</option>
-                  </select>
+                  <div className="flex min-w-fit items-center gap-4">
+                    <div className="dropdown-end dropdown">
+                      <label tabIndex={0}>
+                        <Button
+                          variant="outlined"
+                          size="md"
+                          className="shadow-sm"
+                        >
+                          Export Table
+                        </Button>
+                      </label>
+                      <ul
+                        tabIndex={0}
+                        className="dropdown-content menu rounded-box w-64 bg-base-100 p-2 shadow"
+                      >
+                        <li>
+                          <Button
+                            size="md"
+                            variant="solid"
+                            className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                            onClick={() => {
+                              const url = exportPDF(Number(eventId));
+
+                              router.push(url);
+                              setTimeout(() => router.reload(), 3000);
+                            }}
+                          >
+                            Export and download as PDF
+                          </Button>
+                        </li>
+                        <li>
+                          <Button
+                            size="md"
+                            variant="solid"
+                            className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                            onClick={() => {
+                              const url = exportCSV(Number(eventId));
+
+                              router.push(url);
+                              setTimeout(() => router.reload(), 3000);
+                            }}
+                          >
+                            Export and download as CSV
+                          </Button>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
               {/* mobile search */}
@@ -465,7 +478,7 @@ const AttendeesPage = () => {
             setIsOpen={setIsPrizeModalOpen}
             className="inline-block text-center"
           >
-            <h2 className="font-bold sm:text-2xl">
+            <h2 className="font-bold text-gray-900 sm:text-2xl">
               {currentPrizeSelection?.prizeName}
             </h2>
             <div className="mt-4 flex justify-center">
@@ -489,7 +502,7 @@ const AttendeesPage = () => {
             setIsOpen={setIsQrModalOpen}
             className="min-w-fit"
           >
-            <h2 className="text-2xl font-bold sm:text-2xl">
+            <h2 className="text-center text-2xl font-bold text-gray-900 sm:text-2xl">
               {checkInStatus !== CheckInStatus.LOADING
                 ? "Scan a QR code"
                 : "Scanning..."}

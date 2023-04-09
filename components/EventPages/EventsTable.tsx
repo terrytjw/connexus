@@ -48,15 +48,6 @@ const EventsTable = ({
     return (
       <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
         <span> No events to show. </span>{" "}
-        <span> Start by creating an event!</span>
-        <Button
-          href="/events/create"
-          variant="solid"
-          size="md"
-          className="max-w-xs !tracking-normal shadow-md"
-        >
-          Create Event
-        </Button>
       </div>
     );
 
@@ -84,7 +75,6 @@ const EventsTable = ({
               key={index}
               className="hover: cursor-pointer"
               onClick={(e) => {
-                // console.log("Row clicked");
                 router.push(`/events/${data.eventId}`);
               }}
             >

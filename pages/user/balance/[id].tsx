@@ -1,4 +1,4 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import { getSession } from "next-auth/react";
 import React, { useState } from "react";
 import Button from "../../../components/Button";
@@ -13,7 +13,9 @@ import Input from "../../../components/Input";
 import ProtectedRoute from "../../../components/ProtectedRoute";
 import Layout from "../../../components/Layout";
 import { BankAccount } from "@prisma/client";
-import toast, { Toaster } from "react-hot-toast";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../../api/auth/[...nextauth]";
+import toast from "react-hot-toast";
 
 type WithdrawalTableProps = {
   data: any[]; // TODO: change type any to data type
@@ -107,7 +109,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
         bankName: formData.bankName,
         accountName: formData.accountName,
         accountNumber: formData.bankAccountNum,
-        routingNumber: formData.bankRoutingNum ?? "",
+        routingNumber: formData.bankRoutingNum,
       } as BankAccount;
 
       await upsertBankAccount(userId, bankDetails);
@@ -115,6 +117,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       toast.success("Saved bank details");
     } catch (e) {
       toast.error("Unable to save bank details");
+      console.log(e);
     }
   };
 
@@ -123,17 +126,19 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       <Layout>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="max-w-7xl p-6 pb-60 lg:px-12"
+          className="max-w-7xl py-12 px-4 pb-60 sm:px-12"
         >
-          <h1 className="mb-4 text-2xl font-bold">Account Balance</h1>
+          <h1 className="mb-8 text-4xl font-bold text-gray-900">
+            Account Balance
+          </h1>
           {/* account hero section */}
           <section className="mb-8 bg-white p-4 shadow-lg lg:mb-12 lg:p-8">
             <h4 className="mb-8 text-sm text-gray-500 lg:mb-16 lg:text-base">
               Your Balance
             </h4>
             <div className="flex justify-between py-2">
-              <h2 className="text-3xl font-semibold text-blue-500 lg:text-4xl">
-                ${updatedUserData.walletBalance}
+              <h2 className="text-3xl font-semibold text-blue-600 lg:text-4xl">
+                ${updatedUserData.walletBalance.toFixed(2)}
               </h2>
               <Button
                 className="lg:hidden"
@@ -161,7 +166,9 @@ const BalancePage = ({ userData }: BalancePageProps) => {
           {/* fill up bank details section */}
           <section className="lg:flex lg:justify-between">
             <div className="mb-4 max-w-2xl lg:mb-8 lg:grow">
-              <h4 className="mb-4 text-lg font-semibold">Bank details</h4>
+              <h4 className="mb-4 text-lg font-semibold text-gray-900">
+                Bank details
+              </h4>
               <Controller
                 control={control}
                 name="bankName"
@@ -205,7 +212,11 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankAccountNum"
-                rules={{ required: "Bank account number is required" }}
+                rules={{ 
+                  required: "Bank Account Number is required", 
+                  validate: (value) =>
+                    value.length > 6 || "Bank Account Number has to at least 7 digits",
+                }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -215,7 +226,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
                     label="Bank Account Number*"
                     value={value}
                     onChange={onChange}
-                    placeholder="e.g. 501123956001"
+                    placeholder="e.g. 0052312891"
                     errorMessage={error?.message}
                     size="md"
                     variant="bordered"
@@ -225,16 +236,21 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankRoutingNum"
+                rules={{ 
+                  required: "Bank Routing Number is required", 
+                  validate: (value) =>
+                  value.length > 3 || "Bank Routing Number has to at least 4 digits",
+                }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
                   <Input
                     type="text"
-                    label="Bank Routing Number"
+                    label="Bank Routing Number*"
                     value={value}
                     onChange={onChange}
-                    placeholder=""
+                    placeholder="e.g. 7375"
                     errorMessage={error?.message}
                     size="md"
                     variant="bordered"
@@ -264,8 +280,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
           {/* withdrawal history section */}
           <section>
-            <h2 className="mb-2 text-lg font-semibold">Withdrawal History</h2>
-            <p className="mb-6 text-sm text-gray-500">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">
+              Withdrawal History
+            </h2>
+            <p className="mt-6 mb-8 text-sm text-gray-500">
               Withdrawals will take 5-7 business days to be credited into your
               bank account.
             </p>
@@ -275,7 +293,6 @@ const BalancePage = ({ userData }: BalancePageProps) => {
             />
           </section>
         </form>
-        <Toaster />
       </Layout>
     </ProtectedRoute>
   );
@@ -283,8 +300,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
 export default BalancePage;
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const session = await getServerSession(context.req, context.res, authOptions);
   const userId = session?.user.userId;
 
   if (!userId) {

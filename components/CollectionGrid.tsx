@@ -20,7 +20,7 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
   return (
     <Link
       href={`/merchandise/${item.collectionId}`}
-      className="group rounded-lg p-2 text-sm hover:bg-gray-200"
+      className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md"
       onClick={async () => {
         if (router.asPath.includes("communities")) {
           localStorage.setItem("communityUrl", router.asPath);
@@ -47,7 +47,9 @@ const CollectionGridItem = ({ item }: CollectionGridItemProps) => {
           </p>
         </div>
       </div>
-      <h3 className="mt-4 font-medium text-gray-900">{item.collectionName}</h3>
+      <h3 className="mt-4 text-xl font-bold text-gray-900">
+        {item.collectionName}
+      </h3>
       <p className="mt-2 text-sm text-gray-500">{item.description}</p>
       {item.premiumChannel ? (
         <div className="mt-2 text-sm font-semibold text-blue-600">
@@ -71,8 +73,15 @@ const CollectionGrid = ({ data }: CollectionGridProps) => {
     localStorage.removeItem("communityUrl");
   }, []);
 
+  if (data.length === 0)
+    return (
+      <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
+        No collections to show.
+      </div>
+    );
+
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-x-8 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {data.map((item) => (
         <CollectionGridItem key={item.collectionId} item={item} />
       ))}

@@ -96,14 +96,14 @@ const TicketFormPage = ({
   };
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl">
       {/* Promo Code */}
       <section>
         <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-          <p className="text-md font-medium text-slate-500">Promo Code</p>
+          <p className="text-lg font-semibold text-gray-900">Promo Code</p>
         </div>
         {/* Radios */}
-        <fieldset className="mt-8">
+        <fieldset className="my-6">
           <div className="space-y-5">
             {/* want promo */}
             <div className="relative flex items-start">
@@ -113,7 +113,7 @@ const TicketFormPage = ({
                   type="radio"
                   value={"yes"}
                   checked={isPromoEnabled()}
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   onChange={() => setValue("promotion.0.isEnabled", true)}
                 />
               </div>
@@ -137,7 +137,7 @@ const TicketFormPage = ({
                   type="radio"
                   value={"no"}
                   checked={!isPromoEnabled()}
-                  className="radio checked:bg-blue-500"
+                  className="radio checked:bg-blue-600"
                   onChange={() => setValue("promotion.0.isEnabled", false)}
                 />
               </div>
@@ -216,12 +216,12 @@ const TicketFormPage = ({
       {/* Raffle Prizes */}
       <section>
         <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-          <p className="text-md font-medium text-slate-500">Raffle</p>
+          <p className="text-lg font-semibold text-gray-900">Raffle</p>
         </div>
 
         {/* Radios */}
         {!isRaffleActivated() && (
-          <fieldset className="mt-8">
+          <fieldset className="my-6">
             <div className="space-y-5">
               {/* want raffle */}
               <div className="relative flex items-start">
@@ -231,7 +231,7 @@ const TicketFormPage = ({
                     type="radio"
                     value={"yes"}
                     checked={isRaffleEnabled()}
-                    className="radio checked:bg-blue-500"
+                    className="radio checked:bg-blue-600"
                     onChange={() => {
                       setValue("raffles.0.isEnabled", true);
                     }}
@@ -255,7 +255,7 @@ const TicketFormPage = ({
                     type="radio"
                     value={"no"}
                     checked={!isRaffleEnabled()}
-                    className="radio checked:bg-blue-500"
+                    className="radio checked:bg-blue-600"
                     onChange={() => {
                       setValue("raffles.0.isEnabled", false);
                     }}
@@ -349,7 +349,7 @@ const TicketFormPage = ({
           >
             {index > 0 && <div className="divider" />}
             <div className="sticky top-0 z-30 flex justify-between bg-sky-100 py-2">
-              <p className="text-md font-medium text-slate-500">
+              <p className="text-lg font-semibold text-gray-900">
                 {`Ticket #${index + 1}: ${ticket.name}` ||
                   `Add Ticket #${index + 1}`}
               </p>
@@ -360,7 +360,7 @@ const TicketFormPage = ({
                 />
               )}
             </div>
-            <div className="mt-8 flex w-full flex-col gap-2">
+            <div className="my-6 flex w-full flex-col gap-2">
               <Controller
                 control={control}
                 name={`tickets.${index}.name`}
@@ -446,6 +446,10 @@ const TicketFormPage = ({
                 name={`tickets.${index}.price`}
                 rules={{
                   required: "Price of ticket is required",
+                  validate: {
+                    notNegative: (value) =>
+                      value >= 0 || "Price cannot be negative",
+                  },
                 }}
                 render={({
                   field: { onChange, value },
@@ -554,12 +558,8 @@ const TicketFormPage = ({
                           checked={
                             ticketTypeOption === tickets[index].ticketType
                           }
-                          className="radio checked:bg-blue-500"
+                          className="radio checked:bg-blue-600"
                           onChange={() => {
-                            // console.log("new Ticket ->", {
-                            //   ...tickets[index],
-                            //   ticketType: ticketTypeOption,
-                            // });
                             update(index, {
                               ...tickets[index],
                               ticketType: ticketTypeOption,

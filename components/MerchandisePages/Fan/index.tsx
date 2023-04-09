@@ -16,17 +16,13 @@ import {
   searchAllCollections,
 } from "../../../lib/api-helpers/collection-api";
 import { searchCollectedMerchandise } from "../../../lib/api-helpers/merchandise-api";
-import { MerchandiseWithCollectionName } from "../../../utils/types";
-import { getTopNSellingCollectionsAPI } from "../../../lib/api-helpers/analytics-api";
 
 type FanCollectionsPageProps = {
-  merchandiseData: MerchandiseWithCollectionName[];
-  collectionsData: CollectionWithMerchAndPremiumChannel[];
+  trendingCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
 const FanCollectionsPage = ({
-  merchandiseData,
-  collectionsData,
+  trendingCollections,
 }: FanCollectionsPageProps) => {
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
@@ -34,10 +30,6 @@ const FanCollectionsPage = ({
   const [activeTab, setActiveTab] = useState(0);
   const [searchString, setSearchString] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [trendingCollections, setTrendingCollections] = useState(
-    [] as CollectionWithMerchAndPremiumChannel[]
-  );
 
   const [collectedTabfilterSelected, setCollectedTabfilterSelected] =
     useState("");
@@ -81,28 +73,6 @@ const FanCollectionsPage = ({
       )
   );
 
-  const {
-    data: trendingCollectionIds,
-    isLoading: isTrendingCollectionsLoading,
-  } = useSWR(
-    "getTrendingCollections",
-    async () => await getTopNSellingCollectionsAPI(),
-    {
-      onSuccess: () =>
-        setTrendingCollections(
-          collectionsData.filter(
-            (collection: CollectionWithMerchAndPremiumChannel) => {
-              return trendingCollectionIds.some((trendingcollection: any) => {
-                return (
-                  collection.collectionId == trendingcollection.collectionId
-                );
-              });
-            }
-          )
-        ),
-    }
-  );
-
   useEffect(() => {
     mutateCollectedMerchandise();
   }, [searchString, collectedTabfilterSelected]);
@@ -111,11 +81,7 @@ const FanCollectionsPage = ({
     mutateAllCollections();
   }, [searchString, marketplaceTabfilterSelected]);
 
-  if (
-    isCollectedMerchandiseLoading ||
-    isAllCollectionsLoading ||
-    isTrendingCollectionsLoading
-  ) {
+  if (isCollectedMerchandiseLoading || isAllCollectionsLoading) {
     return <Loading />;
   }
 
@@ -127,10 +93,10 @@ const FanCollectionsPage = ({
         className="min-w-fit"
       >
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">
+          <h3 className="text-xl font-semibold text-gray-900">
             {activeTab == 0
-              ? "Filter Collected Merchandise"
-              : "Filter Collections"}
+              ? "Filter Collections"
+              : "Filter Collected Merchandise"}
           </h3>
           <Button
             variant="outlined"
@@ -138,8 +104,8 @@ const FanCollectionsPage = ({
             className="border-0 text-red-500"
             onClick={() => {
               activeTab == 0
-                ? setCollectedTabfilterSelected("")
-                : setMarketplaceTabfilterSelected("");
+                ? setMarketplaceTabfilterSelected("")
+                : setCollectedTabfilterSelected("");
             }}
           >
             Clear
@@ -147,27 +113,10 @@ const FanCollectionsPage = ({
         </div>
 
         <h3 className="mt-8 text-sm font-medium text-gray-500">
-          {activeTab == 0 ? "PRICE" : "LINK TO PREMIUM CHANNEL"}
+          {activeTab == 0 ? "LINK TO PREMIUM CHANNEL" : "PRICE"}
         </h3>
         <div className="mt-2 mb-4 flex flex-wrap gap-4">
           {activeTab == 0 ? (
-            <>
-              <Badge
-                label="Free-of-Charge"
-                size="lg"
-                selected={collectedTabfilterSelected === "Free-of-Charge"}
-                onClick={() => setCollectedTabfilterSelected("Free-of-Charge")}
-                className="h-8 min-w-fit rounded-lg"
-              />
-              <Badge
-                label="Purchased"
-                size="lg"
-                selected={collectedTabfilterSelected === "Purchased"}
-                onClick={() => setCollectedTabfilterSelected("Purchased")}
-                className="h-8 min-w-fit rounded-lg"
-              />
-            </>
-          ) : (
             <>
               <Badge
                 label="Linked to Premium Channel"
@@ -188,6 +137,23 @@ const FanCollectionsPage = ({
                 className="h-8 min-w-fit rounded-lg"
               />
             </>
+          ) : (
+            <>
+              <Badge
+                label="Free-of-Charge"
+                size="lg"
+                selected={collectedTabfilterSelected === "Free-of-Charge"}
+                onClick={() => setCollectedTabfilterSelected("Free-of-Charge")}
+                className="h-8 min-w-fit rounded-lg"
+              />
+              <Badge
+                label="Purchased"
+                size="lg"
+                selected={collectedTabfilterSelected === "Purchased"}
+                onClick={() => setCollectedTabfilterSelected("Purchased")}
+                className="h-8 min-w-fit rounded-lg"
+              />
+            </>
           )}
         </div>
         <Button
@@ -200,15 +166,15 @@ const FanCollectionsPage = ({
         </Button>
       </Modal>
 
-      <h1 className="text-4xl font-bold">
+      <h1 className="text-4xl font-bold text-gray-900">
         {activeTab === 0
-          ? "Your Digital Merchandise Collection"
-          : "Browse Digital Merchandise Collections"}
+          ? "Browse Digital Merchandise Collections"
+          : "Your Digital Merchandise Collection"}
       </h1>
-      <h3 className="mt-4">
+      <h3 className="mt-4 text-gray-500">
         {activeTab === 0
-          ? "View all your collected digital merchandise"
-          : "Take a look at all these collections by other creators!"}
+          ? "Take a look at all these collections by other creators!"
+          : "View all your collected digital merchandise"}
       </h3>
 
       {/* mobile */}
@@ -222,7 +188,7 @@ const FanCollectionsPage = ({
             type="text"
             value={searchString}
             placeholder={
-              activeTab == 0 ? "Search Collected" : "Search Collections"
+              activeTab == 0 ? "Search Collections" : "Search Collected"
             }
             onChange={(e) => setSearchString(e.target.value)}
           />
@@ -232,7 +198,7 @@ const FanCollectionsPage = ({
 
       <div className="relative">
         <TabGroupBordered
-          tabs={["Collected", "Marketplace"]}
+          tabs={["Marketplace", "Collected"]}
           activeTab={activeTab}
           setActiveTab={(index: number) => {
             setActiveTab(index);
@@ -240,26 +206,6 @@ const FanCollectionsPage = ({
           }}
         >
           {activeTab == 0 && (
-            <>
-              {collectedTabfilterSelected ? (
-                <Button
-                  size="sm"
-                  variant="outlined"
-                  onClick={(e) => e.preventDefault()}
-                  className="mb-4 font-normal"
-                >
-                  {collectedTabfilterSelected}
-                  <FaTimes
-                    onClick={() => {
-                      setCollectedTabfilterSelected("");
-                    }}
-                  />
-                </Button>
-              ) : null}
-              <CollectedTab collectedMerchandise={collectedMerchandise} />
-            </>
-          )}
-          {activeTab == 1 && (
             <>
               {marketplaceTabfilterSelected ? (
                 <Button
@@ -275,11 +221,35 @@ const FanCollectionsPage = ({
                     }}
                   />
                 </Button>
-              ) : null}
+              ) : (
+                <div className="mb-4" />
+              )}
               <MarketplaceTab
                 collections={allCollections}
                 trendingCollections={trendingCollections}
               />
+            </>
+          )}
+          {activeTab == 1 && (
+            <>
+              {collectedTabfilterSelected ? (
+                <Button
+                  size="sm"
+                  variant="outlined"
+                  onClick={(e) => e.preventDefault()}
+                  className="mb-4 font-normal"
+                >
+                  {collectedTabfilterSelected}
+                  <FaTimes
+                    onClick={() => {
+                      setCollectedTabfilterSelected("");
+                    }}
+                  />
+                </Button>
+              ) : (
+                <div className="mb-4" />
+              )}
+              <CollectedTab collectedMerchandise={collectedMerchandise} />
             </>
           )}
         </TabGroupBordered>
@@ -291,11 +261,11 @@ const FanCollectionsPage = ({
               <FaSearch className="text-gray-500" />
             </div>
             <input
-              className="input-outlined input input-md block w-48 rounded-md pl-10"
+              className="input-outlined input input-md block w-full rounded-md pl-10"
               type="text"
               value={searchString}
               placeholder={
-                activeTab == 0 ? "Search Collected" : "Search Collections"
+                activeTab == 0 ? "Search Collections" : "Search Collected"
               }
               onChange={(e) => setSearchString(e.target.value)}
             />
@@ -303,11 +273,11 @@ const FanCollectionsPage = ({
           <Button
             variant="solid"
             size="md"
-            className="max-w-sm !bg-white !text-gray-700"
+            className="max-w-sm !bg-white !text-gray-700 shadow-sm"
             onClick={() => setIsModalOpen(true)}
           >
             Filter
-            <BiFilter className="h-8 w-8" />
+            <BiFilter className="h-6 w-6" />
           </Button>
         </div>
       </div>

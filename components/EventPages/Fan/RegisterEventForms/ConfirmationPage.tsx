@@ -12,6 +12,7 @@ import { TicketsForm } from "../../../../pages/events/register/[id]";
 import { isEmail, isMobilePhone } from "validator";
 import useSWR from "swr";
 import { swrFetcher } from "../../../../lib/swrFetcher";
+import { API_URL } from "../../../../lib/constant";
 
 type ConfirmationFormProps = {
   watch: UseFormWatch<TicketsForm>;
@@ -33,7 +34,7 @@ const ConfirmationFormProps = ({
   } = watch();
 
   const { data: userData } = useSWR(
-    `http://localhost:3000/api/users/${userId}`,
+    `${API_URL}/users/${userId}`,
     swrFetcher
   );
 

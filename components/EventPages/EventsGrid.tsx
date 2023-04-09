@@ -39,7 +39,6 @@ const CollectionGridItem = ({
     const res = await likeEvent(item.eventId, Number(userId));
 
     // mutate
-    console.log("liking event -> ", res);
     if (mutateTrendingEvents) {
       mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
@@ -71,7 +70,6 @@ const CollectionGridItem = ({
     e.preventDefault();
     const res = await unlikeEvent(item.eventId, Number(userId));
     // mutate events
-    console.log("UNliking event");
     if (mutateTrendingEvents) {
       mutateTrendingEvents((data: EventWithAllDetails[]) => {
         data
@@ -97,24 +95,24 @@ const CollectionGridItem = ({
   };
 
   return (
-    <Link
-      href={`/events/${item.eventId}`}
-      className="group text-sm"
-      onClick={async () => {
-        await registerEventClick(item.eventId);
-      }}
-    >
-      <div>
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100 group-hover:opacity-75">
+    <div className="group rounded-lg p-2 text-sm hover:bg-gray-200 hover:shadow-md">
+      <Link
+        href={`/events/${item.eventId}`}
+        className="group text-sm"
+        onClick={async () => {
+          await registerEventClick(item.eventId);
+        }}
+      >
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
           <Image
+            fill
+            sizes="100vw, (min-width: 640px) 50vw, (min-width: 1024px) 33vw, (min-width: 1536px) 25vw"
+            className="object-cover object-center"
             src={item.eventPic || "/images/bear.jpg"}
             alt={item.eventName}
-            className="w-full object-cover object-center"
-            width={100}
-            height={100}
           />
           <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
-            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
+            <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black" />
             {/* TODO: Replace boolean with like check*/}
             {isListed && (
               <div className="relative ml-auto">
@@ -146,7 +144,7 @@ const CollectionGridItem = ({
         </div>
 
         <h3 className="mt-4 text-xl font-bold text-gray-900">
-          {truncateString(item.eventName, 20)}
+          {truncateString(item.eventName, 25)}
         </h3>
         <p className="mt-2 text-base font-semibold text-gray-500">
           {formatDate(item.startDate)} - {formatDate(item.endDate)}
@@ -161,9 +159,8 @@ const CollectionGridItem = ({
         <p className="text-s mt-2 font-semibold text-blue-600">
           {item.maxAttendee} attendees
         </p>
-        {/* </Link> */}
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 };
 
@@ -186,7 +183,7 @@ const EventsGrid = ({
       </div>
     );
   return (
-    <div className="grid grid-cols-1 gap-y-16 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
+    <div className="grid grid-cols-1 gap-y-8 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
       {data.map((item) => (
         <CollectionGridItem
           isListed={isListed}

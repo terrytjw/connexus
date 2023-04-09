@@ -7,7 +7,8 @@ import { ConnexusSMS } from "../../pages/api/sms";
 export async function sendEmail(
   toEmail: string,
   subject: string,
-  text: string
+  text: string,
+  html: string
 ) {
   const url = `${API_URL}/${EMAIL_ENDPOINT}`;
 
@@ -15,6 +16,7 @@ export async function sendEmail(
     toEmail: toEmail,
     subject: subject,
     text: text,
+    html: html,
   } as ConnexusEmail;
   const response = (await axios.post(url, body)).data;
   return response;

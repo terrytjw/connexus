@@ -1,4 +1,4 @@
-import { Merchandise } from "@prisma/client";
+import { CollectionState, Merchandise } from "@prisma/client";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
@@ -42,10 +42,12 @@ const FanCollectionPage = ({
   const payForMerchandise = async () => {
     setLoading(true);
 
+    const merchandise = collection.merchandise.filter(
+      (m) => m.currMerchSupply < m.totalMerchSupply
+    );
+
     const merchandiseToMint =
-      collection.merchandise[
-        Math.floor(Math.random() * collection.merchandise.length)
-      ];
+      merchandise[Math.floor(Math.random() * merchandise.length)];
 
     localStorage.setItem(
       "merchandiseToMint",
@@ -126,9 +128,11 @@ const FanCollectionPage = ({
           <Loading className="!h-full" />
         ) : (
           <div className="flex flex-col gap-6">
-            <h3 className="text-xl font-semibold">Purchase Completed!</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Purchase Completed!
+            </h3>
 
-            <p>
+            <p className="text-gray-500">
               {localStorage.getItem("merchandiseToMint") ? (
                 <>
                   {localStorage.getItem("communityUrl")
@@ -144,7 +148,7 @@ const FanCollectionPage = ({
                       } from ${collection.collectionName}! ${
                         collection.premiumChannel
                           ? `You are in for ${collection.premiumChannel.name}!`
-                          : null
+                          : ""
                       }`}
                 </>
               ) : null}
@@ -178,7 +182,9 @@ const FanCollectionPage = ({
           <FaChevronLeft />
         </Button>
         <div>
-          <h1 className="text-3xl font-bold">{collection.collectionName}</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {collection.collectionName}
+          </h1>
           <p className="mt-4 text-red-500">
             Note: Upon purchasing a collectible, it is randomised from the
             collection.
@@ -187,7 +193,7 @@ const FanCollectionPage = ({
       </div>
 
       <div className="mt-6 lg:ml-16">
-        <div className="card mb-4 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
+        <div className="card mb-8 flex justify-between gap-6 border-2 drop-shadow-sm border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row">
             <div>
               <h2 className="mb-2 text-gray-700">{collection.description}</h2>
@@ -204,7 +210,7 @@ const FanCollectionPage = ({
 
             {collection.premiumChannel ? (
               <Badge
-                className="h-min !bg-blue-100 !text-blue-500"
+                className="h-min !bg-blue-100 !text-blue-600"
                 size="lg"
                 label={`Unlocks ${collection.premiumChannel?.name}`}
               />
@@ -221,81 +227,92 @@ const FanCollectionPage = ({
               </span>
             </div>
 
-            <div className="flex items-end gap-4">
-              {/* Input Stepper */}
-              <div className="flex items-center">
-                <div className="flex h-12 w-32 flex-row">
-                  {/* decrease button */}
-                  <button
-                    className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
-                    disabled={quantity == 1}
-                    // onClick={() => {
-                    //   if (quantity > 1) {
-                    //     setQuantity(quantity - 1);
-                    //     return;
-                    //   }
-                    //   setQuantity(1);
-                    // }}
-                  >
-                    <span className="m-auto text-2xl">-</span>
-                  </button>
-                  <input
-                    type="number"
-                    min={1}
-                    max={maxQuantity}
-                    step={1}
-                    value={quantity}
-                    // onKeyDown={(e) => {
-                    //   // disallow decimal
-                    //   // only allow numbers, backspace, arrow left and right for editing
-                    //   if (
-                    //     e.code == "Backspace" ||
-                    //     e.code == "ArrowLeft" ||
-                    //     e.code == "ArrowRight" ||
-                    //     (e.key >= "0" && e.key <= "9")
-                    //   ) {
-                    //     return;
-                    //   }
-                    //   e.preventDefault();
-                    // }}
-                    // onChange={(e) => {
-                    //   if (e.target.valueAsNumber > maxQuantity) {
-                    //     setQuantity(maxQuantity);
-                    //     return;
-                    //   }
-                    //   setQuantity(e.target.valueAsNumber);
-                    // }}
-                    // onBlur={(e) => {
-                    //   if (e.target.value == "") {
-                    //     setQuantity(1);
-                    //   }
-                    // }}
-                    className="w-full appearance-none bg-gray-200 text-center outline-none"
-                  ></input>
-                  {/* increase button */}
-                  <button
-                    className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
-                    disabled={quantity == maxQuantity}
-                    // onClick={() => {
-                    //   if (quantity) {
-                    //     setQuantity(quantity + 1);
-                    //     return;
-                    //   }
-                    //   setQuantity(1);
-                    // }}
-                  >
-                    <span className="m-auto text-2xl font-thin">+</span>
-                  </button>
+            {collection.collectionState !== CollectionState.SOLD &&
+            collection.merchandise.reduce(
+              (total: number, m: Merchandise) =>
+                total + m.totalMerchSupply - m.currMerchSupply,
+              0
+            ) > 0 ? (
+              <div className="flex items-end gap-4">
+                {/* Input Stepper */}
+                <div className="flex items-center">
+                  <div className="flex h-12 w-32 flex-row">
+                    {/* decrease button */}
+                    <button
+                      className="w-20 rounded-l bg-gray-200 hover:bg-gray-300"
+                      disabled={quantity == 1}
+                      // onClick={() => {
+                      //   if (quantity > 1) {
+                      //     setQuantity(quantity - 1);
+                      //     return;
+                      //   }
+                      //   setQuantity(1);
+                      // }}
+                    >
+                      <span className="m-auto text-2xl">-</span>
+                    </button>
+                    <input
+                      type="number"
+                      min={1}
+                      max={maxQuantity}
+                      step={1}
+                      value={quantity}
+                      // onKeyDown={(e) => {
+                      //   // disallow decimal
+                      //   // only allow numbers, backspace, arrow left and right for editing
+                      //   if (
+                      //     e.code == "Backspace" ||
+                      //     e.code == "ArrowLeft" ||
+                      //     e.code == "ArrowRight" ||
+                      //     (e.key >= "0" && e.key <= "9")
+                      //   ) {
+                      //     return;
+                      //   }
+                      //   e.preventDefault();
+                      // }}
+                      // onChange={(e) => {
+                      //   if (e.target.valueAsNumber > maxQuantity) {
+                      //     setQuantity(maxQuantity);
+                      //     return;
+                      //   }
+                      //   setQuantity(e.target.valueAsNumber);
+                      // }}
+                      // onBlur={(e) => {
+                      //   if (e.target.value == "") {
+                      //     setQuantity(1);
+                      //   }
+                      // }}
+                      className="w-full appearance-none bg-gray-200 text-center outline-none"
+                    ></input>
+                    {/* increase button */}
+                    <button
+                      className="w-20 rounded-r bg-gray-200 hover:bg-gray-300"
+                      disabled={quantity == maxQuantity}
+                      // onClick={() => {
+                      //   if (quantity) {
+                      //     setQuantity(quantity + 1);
+                      //     return;
+                      //   }
+                      //   setQuantity(1);
+                      // }}
+                    >
+                      <span className="m-auto text-2xl font-thin">+</span>
+                    </button>
+                  </div>
                 </div>
+                <Button
+                  variant="solid"
+                  size="md"
+                  onClick={() => payForMerchandise()}
+                >
+                  Buy
+                </Button>
               </div>
-              <Button
-                variant="solid"
-                size="md"
-                onClick={() => payForMerchandise()}
-              >
-                Buy
+            ) : (
+              <Button disabled variant="solid" size="md">
+                Sold
               </Button>
-            </div>
+            )}
           </div>
         </div>
         <CollectibleGrid data={collection.merchandise} collectedTab={false} />

@@ -1,6 +1,5 @@
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext } from "next";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
 import { useContext } from "react";
 import Layout from "../../components/Layout";
 import ProtectedRoute from "../../components/ProtectedRoute";
@@ -11,18 +10,13 @@ import {
   CollectionWithMerchAndPremiumChannel,
   searchAllCollections,
 } from "../../lib/api-helpers/collection-api";
-import { searchCollectedMerchandise } from "../../lib/api-helpers/merchandise-api";
-import { MerchandiseWithCollectionName } from "../../utils/types";
+import { getTopNSellingCollectionsAPI } from "../../lib/api-helpers/analytics-api";
 
 type CollectionsPageProps = {
-  merchandiseData: MerchandiseWithCollectionName[];
-  collectionsData: CollectionWithMerchAndPremiumChannel[];
+  trendingCollections: CollectionWithMerchAndPremiumChannel[];
 };
 
-const CollectionsPage = ({
-  merchandiseData,
-  collectionsData,
-}: CollectionsPageProps) => {
+const CollectionsPage = ({ trendingCollections }: CollectionsPageProps) => {
   const { isFan } = useContext(UserRoleContext);
 
   return (
@@ -34,10 +28,7 @@ const CollectionsPage = ({
           </Head>
 
           {isFan ? (
-            <FanCollectionsPage
-              merchandiseData={merchandiseData}
-              collectionsData={collectionsData}
-            />
+            <FanCollectionsPage trendingCollections={trendingCollections} />
           ) : (
             <CreatorCollectionsPage />
           )}
@@ -47,21 +38,22 @@ const CollectionsPage = ({
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async (context: any) => {
-  const session = await getSession(context);
-  const userId = session?.user.userId;
-
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
   const collectionsData = await searchAllCollections(0, "");
-  const merchandiseData = await searchCollectedMerchandise(
-    parseInt(userId as string),
-    "",
-    0
+  const trendingCollectionIds = await getTopNSellingCollectionsAPI();
+  const trendingCollections = collectionsData.filter(
+    (collection: CollectionWithMerchAndPremiumChannel) => {
+      return trendingCollectionIds.some((trendingcollection: any) => {
+        return collection.collectionId == trendingcollection.collectionId;
+      });
+    }
   );
 
   return {
     props: {
-      merchandiseData,
-      collectionsData,
+      trendingCollections,
     },
   };
 };

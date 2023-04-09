@@ -106,7 +106,7 @@ const ChannelTab = ({
             className="!max-w-xl"
           >
             <div className="flex items-center justify-between">
-              <h3 className="text-xl font-semibold">
+              <h3 className="text-xl font-semibold text-gray-900">
                 Filter Channel Analytics
               </h3>
               <Button
@@ -185,11 +185,11 @@ const ChannelTab = ({
                 setSelected={setOptionSelected}
                 className="w-40 flex-grow-0 sm:w-64"
               />
-              <div className="tooltip" data-tip={optionSelected.tooltip}>
+              <div className="tooltip tooltip-primary" data-tip={optionSelected.tooltip}>
                 <Button
                   variant="solid"
                   size="sm"
-                  className="!bg-blue-100 !text-blue-500"
+                  className="!bg-blue-100 !text-blue-600"
                 >
                   i
                 </Button>
@@ -198,7 +198,7 @@ const ChannelTab = ({
             <div className="flex items-center gap-4">
               <div className="dropdown-end dropdown">
                 <label tabIndex={0}>
-                  <Button variant="solid" size="md">
+                  <Button variant="solid" size="md" className="shadow-sm">
                     Export <span className="hidden sm:contents">Data</span>
                   </Button>
                 </label>
@@ -255,11 +255,11 @@ const ChannelTab = ({
               <Button
                 variant="solid"
                 size="md"
-                className="hidden max-w-sm !bg-white !text-gray-700 sm:flex"
+                className="hidden max-w-sm !bg-white !text-gray-700 shadow-sm sm:flex"
                 onClick={() => setIsModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-8 w-8" />
+                <BiFilter className="h-6 w-6" />
               </Button>
               <BiFilter
                 className="h-12 w-10 sm:hidden"
@@ -270,7 +270,9 @@ const ChannelTab = ({
 
           <div className="mt-8 grid w-full gap-4 md:grid-cols-2">
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">Likes</h3>
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
+                Likes
+              </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   width={500}
@@ -306,14 +308,16 @@ const ChannelTab = ({
                   <Legend formatter={(value) => "Likes"} />
                   <Bar
                     dataKey={`${channelIdSelected ? "likes" : "_sum.likes"}`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
             </div>
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
-              <h3 className="mb-8 ml-4 text-xl font-semibold">Comments</h3>
+              <h3 className="mb-8 ml-4 text-xl font-semibold text-gray-900">
+                Comments
+              </h3>
               <ResponsiveContainer width="100%" height={300}>
                 <BarChart
                   width={500}
@@ -351,7 +355,7 @@ const ChannelTab = ({
                     dataKey={`${
                       channelIdSelected ? "comments" : "_sum.comments"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -359,7 +363,9 @@ const ChannelTab = ({
 
             <div className="rounded-lg bg-white py-8 pl-4 pr-8">
               <div className="mb-8 ml-4 flex items-center gap-4">
-                <h3 className="text-xl font-semibold">Post Engagement</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Post Engagement
+                </h3>
                 <div
                   className="tooltip"
                   data-tip="Ratio of interactions with a post (likes and comments) to total number of members in your community"
@@ -367,7 +373,7 @@ const ChannelTab = ({
                   <Button
                     variant="solid"
                     size="sm"
-                    className="!bg-blue-100 !text-blue-500"
+                    className="!bg-blue-100 !text-blue-600"
                   >
                     i
                   </Button>
@@ -417,7 +423,7 @@ const ChannelTab = ({
                     dataKey={`${
                       channelIdSelected ? "engagement" : "_avg.engagement"
                     }`}
-                    fill="#8884d8"
+                    fill="#1A54C2"
                   />
                 </BarChart>
               </ResponsiveContainer>
@@ -434,7 +440,7 @@ const ChannelTab = ({
               className="w-40 flex-grow-0 sm:w-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold">
+          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
             There are no channel analytics to show for now, go create a
             community to interact with your fans!
             <Button variant="solid" size="md" href="/communities/create">

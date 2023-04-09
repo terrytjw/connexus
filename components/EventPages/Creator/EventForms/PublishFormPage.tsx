@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { UseFormSetValue, UseFormWatch } from "react-hook-form";
-import { FaHeart } from "react-icons/fa";
+import { FaRegHeart } from "react-icons/fa";
 import EventPreviewPage from "./EventPreviewPage";
 import Button from "../../../Button";
 import Image from "next/image";
@@ -36,13 +36,6 @@ const PublishFormPage = ({
   const [isPreview, setIsPreview] = useState<boolean>(false);
 
   const checkAttendeesExists = (): boolean | undefined => {
-    console.log("check tickets ->", tickets);
-    console.log(
-      "check attendee resutls ->",
-      tickets.some((ticket: any) => ticket.users?.length !== 0)
-    );
-
-    console.log(tickets);
     return tickets.some((ticket: any) => {
       if (ticket.users) {
         return ticket.users?.length !== 0;
@@ -53,19 +46,19 @@ const PublishFormPage = ({
   };
 
   return (
-    <div>
+    <div className="mx-auto max-w-5xl">
       {!isPreview ? (
         <div>
           <section>
             <div>
               {/* TODO: Abstract out to event grid item  */}
               <div>
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Preview Event Details
                 </h2>
                 <div className="gap-y-15 grid grid-cols-1 gap-x-6 pt-8 sm:grid-cols-3">
                   <div
-                    className="group link mb-8 rounded-lg p-2 text-sm no-underline hover:cursor-pointer hover:bg-gray-200"
+                    className="group rounded-lg p-2 text-sm no-underline hover:cursor-pointer hover:bg-gray-200 hover:shadow-md"
                     onClick={() => setIsPreview((prev) => !prev)}
                   >
                     <div className="relative aspect-square w-full overflow-hidden rounded-lg group-hover:opacity-75">
@@ -79,11 +72,11 @@ const PublishFormPage = ({
                       <div className="absolute inset-x-0 top-0 flex h-full items-end justify-between overflow-hidden rounded-lg p-4">
                         <div className="absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t from-black opacity-50" />
                         <Button
-                          variant="solid"
-                          size="sm"
-                          className="relative ml-auto rounded-full text-lg font-semibold text-white"
+                          size="md"
+                          variant="outlined"
+                          className=" !btn-circle relative ml-auto rounded-full border-0 !bg-neutral-100 text-lg font-semibold text-blue-600 hover:!bg-opacity-30 "
                         >
-                          <FaHeart />
+                          <FaRegHeart size={24} />
                         </Button>
                       </div>
                     </div>
@@ -105,7 +98,7 @@ const PublishFormPage = ({
                 <Button
                   variant="solid"
                   size="md"
-                  className="max-w-xs"
+                  className="mt-4 max-w-xs"
                   onClick={() => setIsPreview((prev) => !prev)}
                 >
                   Preview Event
@@ -114,7 +107,7 @@ const PublishFormPage = ({
 
               {/* Radios */}
               <div className="mt-12">
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   Who can see your event?
                 </h2>
                 <fieldset className="mt-8">
@@ -130,7 +123,7 @@ const PublishFormPage = ({
                             type="radio"
                             value={privacyOption}
                             checked={privacyOption === privacyType}
-                            className="radio checked:bg-blue-500"
+                            className="radio checked:bg-blue-600"
                             onChange={(e) =>
                               setValue(
                                 "privacyType",
@@ -162,7 +155,7 @@ const PublishFormPage = ({
 
               {/* Dummy component */}
               <div className="mt-12">
-                <h2 className="text-xl font-semibold ">
+                <h2 className="text-xl font-semibold text-gray-900">
                   When should we publish your event?
                 </h2>
                 <fieldset className="mt-8">
@@ -178,7 +171,7 @@ const PublishFormPage = ({
                             type="radio"
                             value={visibilityOption}
                             checked={visibilityOption === visibilityType}
-                            className="radio checked:bg-blue-500"
+                            className="radio checked:bg-blue-600"
                             onChange={(e) =>
                               setValue(
                                 "visibilityType",

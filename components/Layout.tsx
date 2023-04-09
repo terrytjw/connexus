@@ -1,14 +1,15 @@
 import Image from "next/image";
 import Link from "next/link";
 import {
-  FaHome,
-  FaPhotoVideo,
-  FaCalendarAlt,
-  FaUser,
-  FaSignOutAlt,
-  FaChevronDown,
-  FaChartBar,
-} from "react-icons/fa";
+  HiOutlineHome,
+  HiOutlinePhotograph,
+  HiOutlineCalendar,
+  HiOutlineUser,
+  HiOutlineLogout,
+  HiChevronDown,
+  HiOutlineChartSquareBar,
+} from "react-icons/hi";
+import { toast, Toaster } from "react-hot-toast";
 import { BiMenuAltLeft } from "react-icons/bi";
 import Footer from "./Footer";
 import { useRouter } from "next/router";
@@ -91,11 +92,20 @@ const MobileNavbar = ({ userData, children }: any) => {
             </label>
             <ul
               tabIndex={0}
-              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
+              className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold text-gray-900 shadow"
             >
               <li>
-                <a onClick={() => switchRole()}>
-                  {isFan ? "Switch to Creator view" : "Switch to Fan view"}
+                <a
+                  onClick={() => {
+                    switchRole();
+                    {
+                      isFan
+                        ? toast.success("You're a Creator!")
+                        : toast.success("You're a Fan!");
+                    }
+                  }}
+                >
+                  {isFan ? "Switch to Creator View" : "Switch to Fan View"}
                 </a>
               </li>
               <li>
@@ -112,7 +122,7 @@ const MobileNavbar = ({ userData, children }: any) => {
       {/* Side Drawer */}
       <div className="drawer-side">
         <label htmlFor="my-drawer" className="drawer-overlay"></label>
-        <ul className="menu w-80 bg-white p-4 text-gray-700">
+        <ul className="menu w-80 bg-white p-4 text-gray-700 drop-shadow-md">
           {/* <!-- Sidebar content here --> */}
           <Link
             href="/"
@@ -136,12 +146,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               }
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/communities"
+                router.pathname.includes("/communities")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <FaHome className="ml-2" />
+              <HiOutlineHome className="ml-2 h-6 w-6" />
               Communities
             </Link>
           </li>
@@ -150,12 +160,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/merchandise"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/merchandise"
+                router.pathname.includes("/merchandise")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <FaPhotoVideo className="ml-2" />
+              <HiOutlinePhotograph className="ml-2 h-6 w-6" />
               Merchandise
             </Link>
           </li>
@@ -164,10 +174,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href="/events"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/events")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
-              <FaCalendarAlt className="ml-2" />
+              <HiOutlineCalendar className="ml-2 h-6 w-6" />
               Events
             </Link>
           </li>
@@ -177,12 +189,12 @@ const MobileNavbar = ({ userData, children }: any) => {
                 href="/analytics"
                 className={classNames(
                   "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                  router.pathname === "/analytics"
+                  router.pathname.includes("/analytics")
                     ? "bg-blue-600 text-white"
                     : ""
                 )}
               >
-                <FaChartBar className="ml-2" />
+                <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
                 Analytics
               </Link>
             </li>
@@ -192,12 +204,12 @@ const MobileNavbar = ({ userData, children }: any) => {
               href={`/user/profile/${session?.user?.userId}`}
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/user/profile/[id]"
+                router.pathname.includes("/user")
                   ? "bg-blue-600 text-white"
                   : ""
               )}
             >
-              <FaUser className="ml-2" />
+              <HiOutlineUser className="ml-2 h-6 w-6" />
               Profile
             </Link>
           </li>
@@ -206,7 +218,7 @@ const MobileNavbar = ({ userData, children }: any) => {
               className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
               onClick={() => setIsAuthModalOpen(true)}
             >
-              <FaSignOutAlt className="ml-2" />
+              <HiOutlineLogout className="ml-2 h-6 w-6" />
               Logout
             </button>
           </li>
@@ -226,7 +238,7 @@ const DesktopSidebar = ({ userData }: any) => {
   const { isFan } = useContext(UserRoleContext);
 
   return (
-    <div className="hidden min-h-screen w-64 bg-white lg:fixed lg:block">
+    <div className="hidden min-h-screen w-64 bg-white drop-shadow-md lg:fixed lg:block">
       <Link
         href="/"
         className="block p-4 transition-all duration-300 hover:-translate-y-[3px] hover:opacity-90"
@@ -251,10 +263,12 @@ const DesktopSidebar = ({ userData }: any) => {
             }
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/communities" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/communities")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <FaHome className="ml-2" />
+            <HiOutlineHome className="ml-2 h-6 w-6" />
             Communities
           </Link>
         </li>
@@ -263,10 +277,12 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/merchandise"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/merchandise" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/merchandise")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <FaPhotoVideo className="ml-2" />
+            <HiOutlinePhotograph className="ml-2 h-6 w-6" />
             Merchandise
           </Link>
         </li>
@@ -275,10 +291,12 @@ const DesktopSidebar = ({ userData }: any) => {
             href="/events"
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/events" ? "bg-blue-600 text-white" : ""
+              router.pathname.includes("/events")
+                ? "bg-blue-600 text-white"
+                : ""
             )}
           >
-            <FaCalendarAlt className="ml-2" />
+            <HiOutlineCalendar className="ml-2 h-6 w-6" />
             Events
           </Link>
         </li>
@@ -288,10 +306,12 @@ const DesktopSidebar = ({ userData }: any) => {
               href="/analytics"
               className={classNames(
                 "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-                router.pathname === "/analytics" ? "bg-blue-600 text-white" : ""
+                router.pathname.includes("/analytics")
+                  ? "bg-blue-600 text-white"
+                  : ""
               )}
             >
-              <FaChartBar className="ml-2" />
+              <HiOutlineChartSquareBar className="ml-2 h-6 w-6" />
               Analytics
             </Link>
           </li>
@@ -301,12 +321,13 @@ const DesktopSidebar = ({ userData }: any) => {
             href={`/user/profile/${session?.user?.userId}`}
             className={classNames(
               "flex items-center gap-x-2 rounded-md p-2 font-medium transition-all hover:bg-blue-600 hover:text-white",
-              router.pathname === "/user/profile/[id]"
+              router.pathname.includes("/user/profile") ||
+                router.pathname.includes("/user/settings")
                 ? "bg-blue-600 text-white"
                 : ""
             )}
           >
-            <FaUser className="ml-2" />
+            <HiOutlineUser className="ml-2 h-6 w-6" />
             Profile
           </Link>
         </li>
@@ -315,7 +336,7 @@ const DesktopSidebar = ({ userData }: any) => {
             className="flex w-full items-center gap-x-2 rounded-md p-2 font-medium text-red-500 transition-all hover:bg-red-500 hover:text-white"
             onClick={() => setIsAuthModalOpen(true)}
           >
-            <FaSignOutAlt className="ml-2" />
+            <HiOutlineLogout className="ml-2 h-6 w-6" />
             Logout
           </button>
         </li>
@@ -339,6 +360,12 @@ const Layout = ({ children }: LayoutProps) => {
   } = useSWR(session?.user.userId, getUserInfo);
 
   const { isFan, switchRole } = useContext(UserRoleContext);
+
+  useEffect(() => {
+    return () => {
+      toast.remove();
+    };
+  }, []);
 
   if (isLoading) return <Loading />;
 
@@ -365,15 +392,22 @@ const Layout = ({ children }: LayoutProps) => {
                   <span className="ml-2 lowercase italic text-gray-500 transition-all  group-hover:text-gray-400">
                     @{userData.username}
                   </span>
-                  <FaChevronDown className="ml-2 text-gray-500 transition-all  group-hover:text-gray-400" />
+                  <HiChevronDown className="ml-2 h-6 w-6 text-gray-500 transition-all  group-hover:text-gray-400" />
                 </label>
                 <ul
                   tabIndex={0}
                   className="dropdown-content menu rounded-box w-60 bg-base-100 p-2 text-sm font-semibold shadow"
                 >
                   <li>
-                    <a onClick={switchRole}>
-                      {isFan ? "Switch to Creator view" : "Switch to Fan view"}
+                    <a
+                      onClick={() => {
+                        switchRole();
+                        isFan
+                          ? toast.success("You're a Creator!")
+                          : toast.success("You're a Fan!");
+                      }}
+                    >
+                      {isFan ? "Switch to Creator View" : "Switch to Fan View"}
                     </a>
                   </li>
                   <li>
@@ -389,6 +423,7 @@ const Layout = ({ children }: LayoutProps) => {
           <Footer />
         </main>
       </div>
+      <Toaster />
     </MobileNavbar>
   );
 };

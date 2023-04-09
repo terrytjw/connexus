@@ -75,7 +75,9 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
           className="min-w-fit"
         >
           <div className="flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Filter Communities</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Filter Communities
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -127,7 +129,13 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
         </Modal>
 
         <main className="py-12 px-4 sm:px-12">
-          <h2 className="text-4xl font-bold">Communities</h2>
+          <h2 className="text-4xl font-bold text-gray-900">
+            Browse Communities
+          </h2>
+          <h3 className="mt-4 text-gray-500">
+            Take a look at all these communities by other creators and join a
+            community!
+          </h3>
 
           {/* mobile */}
           {activeTab == 0 ? (
@@ -191,10 +199,12 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                 </>
               )}
               {activeTab == 1 && (
-                <CommunityGrid
-                  communities={userData.joinedCommunities}
-                  joinedTab={true}
-                />
+                <div className="mt-4">
+                  <CommunityGrid
+                    communities={userData.joinedCommunities}
+                    joinedTab={true}
+                  />
+                </div>
               )}
             </TabGroupBordered>
 
@@ -218,11 +228,11 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                 <Button
                   variant="solid"
                   size="md"
-                  className="max-w-sm !bg-white !text-gray-700"
+                  className="max-w-sm !bg-white !text-gray-700 shadow-sm"
                   onClick={() => setIsModalOpen(true)}
                 >
                   Filter
-                  <BiFilter className="h-8 w-8" />
+                  <BiFilter className="h-6 w-6" />
                 </Button>
               </div>
             ) : null}

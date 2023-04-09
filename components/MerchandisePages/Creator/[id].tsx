@@ -28,7 +28,7 @@ const CreatorCollectionPage = () => {
     error,
     isLoading,
     mutate,
-  } = useSWR(id, getCollection);
+  } = useSWR("getCollection", async () => await getCollection(Number(id)));
 
   const { control, handleSubmit, setValue } = useForm<Collection>({
     defaultValues: {
@@ -72,7 +72,9 @@ const CreatorCollectionPage = () => {
       >
         <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Edit Collection</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Edit Collection
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -133,16 +135,18 @@ const CreatorCollectionPage = () => {
         >
           <FaChevronLeft />
         </Button>
-        <h1 className="text-3xl font-bold">{collectionData.collectionName}</h1>
+        <h1 className="text-3xl font-bold text-gray-900">
+          {collectionData.collectionName}
+        </h1>
       </div>
 
       <div className="mt-6 lg:ml-16">
-        <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
+        <div className="card mb-8 flex justify-between gap-6 border-2 drop-shadow-sm border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
             <h2 className="text-gray-700">{collectionData.description}</h2>
             {collectionData.premiumChannel ? (
               <Badge
-                className="h-min !bg-blue-100 !text-blue-500"
+                className="h-min !bg-blue-100 !text-blue-600"
                 size="lg"
                 label={`Unlocks ${collectionData.premiumChannel?.name}`}
               />

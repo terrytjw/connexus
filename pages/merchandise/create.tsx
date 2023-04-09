@@ -81,9 +81,11 @@ const CreateCollectionPage = () => {
               <Loading className="!h-full" />
             ) : (
               <div className="flex flex-col gap-6">
-                <h3 className="text-xl font-semibold">Collected Created!</h3>
+                <h3 className="text-xl font-semibold text-gray-900">
+                  Collected Created!
+                </h3>
 
-                <p>
+                <p className="text-gray-500">
                   Your collection can be viewed in the ‘On Sale’ tab in the
                   Digital Merchandise page of yours.
                 </p>
@@ -111,10 +113,10 @@ const CreateCollectionPage = () => {
                 <FaChevronLeft />
               </Button>
               <div>
-                <h1 className="text-3xl font-bold">
+                <h1 className="text-3xl font-bold text-gray-900">
                   Create a New Merchandise Collection
                 </h1>
-                <h2 className="mt-4 text-gray-700">
+                <h2 className="mt-4 text-gray-500">
                   Upload a digital merchandise collection
                 </h2>
               </div>

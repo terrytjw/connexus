@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { FaSearch, FaTimes } from "react-icons/fa";
-import { toast, Toaster } from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import CollectionTable from "../CollectionTable";
 import Button from "../../Button";
 import Input from "../../Input";
@@ -122,31 +122,11 @@ const CreatorCollectionsPage = () => {
 
     if (activeTab == 0) {
       await searchCollections();
-      // setOnSaleCollections(
-      //   onSaleCollections.map(
-      //     (collection: CollectionWithMerchAndPremiumChannel) => {
-      //       if (collection.collectionId === formData.collectionId) {
-      //         return { ...collection, ...formData };
-      //       }
-      //       return collection;
-      //     }
-      //   )
-      // );
     } else if (activeTab == 1) {
       await searchCollections();
-      // setPausedCollections(
-      //   pausedCollections.map(
-      //     (collection: CollectionWithMerchAndPremiumChannel) => {
-      //       if (collection.collectionId === formData.collectionId) {
-      //         return { ...collection, ...formData };
-      //       }
-      //       return collection;
-      //     }
-      //   )
-      // );
     }
 
-    toast(`${formData.collectionName} has been updated.`);
+    toast.success(`${formData.collectionName} has been updated.`);
     setIsModalOpen(false);
   };
 
@@ -160,11 +140,12 @@ const CreatorCollectionsPage = () => {
 
   return (
     <main className="py-12 px-4 sm:px-12">
-      <Toaster />
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
         <form onSubmit={handleSubmit(onEdit)}>
           <div className="mb-4 flex items-center justify-between">
-            <h3 className="text-xl font-semibold">Edit Collection</h3>
+            <h3 className="text-xl font-semibold text-gray-900">
+              Edit Collection
+            </h3>
             <Button
               variant="outlined"
               size="sm"
@@ -216,13 +197,24 @@ const CreatorCollectionsPage = () => {
         </form>
       </Modal>
 
-      <h1 className="text-4xl font-bold">Your Digital Merchandise Creation</h1>
-      <h3 className="mt-4">
-        View all your on sale paused, and sold digital merchandise collections
+      <h1 className="text-4xl font-bold text-gray-900">
+        Your Digital Merchandise Creation
+      </h1>
+      <h3 className="mt-4 text-gray-500">
+        View all your on sale, paused, and sold digital merchandise collections
       </h3>
 
       {/* mobile */}
       <div className="mt-8 flex w-full flex-col gap-4 lg:hidden">
+        <Button
+          href="/merchandise/create"
+          variant="solid"
+          size="md"
+          className="w-fit"
+        >
+          Create a New Collection
+        </Button>
+
         <div className="flex gap-x-2">
           <div className="relative w-full items-center justify-center rounded-md shadow-sm">
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
@@ -232,22 +224,13 @@ const CreatorCollectionsPage = () => {
               className="input-outlined input input-md block w-full rounded-md pl-10"
               type="text"
               value={searchString}
-              placeholder="Search Collection"
+              placeholder="Search Collections"
               onChange={(e) => {
                 setSearchString(e.target.value);
               }}
             />
           </div>
         </div>
-
-        <Button
-          href="/merchandise/create"
-          variant="solid"
-          size="md"
-          className="w-fit"
-        >
-          Create a New Collection
-        </Button>
       </div>
 
       {/* desktop */}
@@ -265,7 +248,7 @@ const CreatorCollectionsPage = () => {
               className="input-outlined input input-md block w-full rounded-md pl-10"
               type="text"
               value={searchString}
-              placeholder="Search Collection"
+              placeholder="Search Collections"
               onChange={(e) => {
                 setSearchString(e.target.value);
               }}

@@ -27,6 +27,7 @@ import {
   createQuestionAPI,
   getAllQuestionsInChannelAPI,
 } from "../../../lib/api-helpers/question-api";
+import { API_URL } from "../../../lib/constant";
 
 type ChannelTabProps = {
   channel: ChannelWithMembers;
@@ -74,7 +75,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
 
   const searchMembers = async () => {
     const res = await axios.get(
-      `http://localhost:3000/api/channel/${channel.channelId}/users?keyword=${searchString}`
+      `${API_URL}/channel/${channel.channelId}/users?keyword=${searchString}`
     );
     const temp = res.data;
     setMembers(temp);
@@ -90,7 +91,7 @@ const ChannelTab = ({ channel, isCreator }: ChannelTabProps) => {
     <div>
       <Modal isOpen={isModalOpen} setIsOpen={setIsModalOpen}>
         <div className="flex items-center justify-between">
-          <h3 className="text-xl font-semibold">Member List</h3>
+          <h3 className="text-xl font-semibold text-gray-900">Member List</h3>
           <Button
             variant="outlined"
             size="sm"
