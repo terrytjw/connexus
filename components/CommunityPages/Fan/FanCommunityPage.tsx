@@ -114,7 +114,7 @@ const FanCommunityPage = ({
                 <Button
                   className="bg-blue-900"
                   variant="solid"
-                  size="sm"
+                  size="md"
                   onClick={() => leaveCommunity()}
                 >
                   Leave
@@ -122,7 +122,7 @@ const FanCommunityPage = ({
               ) : (
                 <Button
                   variant="solid"
-                  size="sm"
+                  size="md"
                   onClick={() => joinCommunity()}
                 >
                   Join
@@ -206,7 +206,7 @@ const FanCommunityPage = ({
             )}
           </TabGroupBordered>
         ) : (
-          <div className="mt-8 flex items-center justify-center gap-2 text-xl">
+          <div className="mt-10 flex items-center justify-center gap-2 text-gray-400 text-xl">
             <FaLock />
             Join to get full access to this community
           </div>

@@ -140,7 +140,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                 <Link
                   href={`https://mumbai.polygonscan.com/address/${userData.walletAddress}`}
                   target="_blank"
-                  className="ml-2 flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline tooltip" 
+                  className="ml-2 flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline tooltip tooltip-primary" 
                   data-tip="For Web3 native users to view the smart contract transactions in Polygon"
                 >
                   <FaExternalLinkAlt className="h-3 w-3" />

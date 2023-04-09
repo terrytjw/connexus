@@ -361,6 +361,12 @@ const Layout = ({ children }: LayoutProps) => {
 
   const { isFan, switchRole } = useContext(UserRoleContext);
 
+  useEffect(() => {
+    return () => {
+      toast.remove();
+    };
+  }, []);
+
   if (isLoading) return <Loading />;
 
   return (
@@ -396,11 +402,9 @@ const Layout = ({ children }: LayoutProps) => {
                     <a
                       onClick={() => {
                         switchRole();
-                        {
-                          isFan
-                            ? toast.success("You're a Creator!")
-                            : toast.success("You're a Fan!");
-                        }
+                        isFan
+                          ? toast.success("You're a Creator!")
+                          : toast.success("You're a Fan!");
                       }}
                     >
                       {isFan ? "Switch to Creator View" : "Switch to Fan View"}
