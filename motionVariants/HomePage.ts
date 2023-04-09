@@ -71,3 +71,31 @@ export const showcaseVariant = {
     },
   },
 };
+
+export const cameAboutVariant = {
+  hidden: {
+    x: 50,
+    opacity: 0,
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 1,
+    },
+  },
+};
+
+export const driveValueVariant = {
+  hidden: {
+    x: -50,
+    opacity: 0,
+  },
+  visible: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 1,
+    },
+  },
+};

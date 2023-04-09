@@ -25,6 +25,8 @@ import {
 import { Typewriter } from "react-simple-typewriter";
 import { motion } from "framer-motion";
 import {
+  cameAboutVariant,
+  driveValueVariant,
   headerVariant,
   rotateFromRightVariant,
   showcaseVariant,
@@ -41,11 +43,11 @@ const HomePage: NextPage = () => {
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
 
-  // const { data: session, status } = useSession();
-  // const userId = session?.user.userId;
+  const { data: session, status } = useSession();
+  const userId = session?.user.userId;
 
-  // const { isFan } = useContext(UserRoleContext);
-  // const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
+  const { isFan } = useContext(UserRoleContext);
+  const { data: userData, error, isLoading } = useSWR(userId, getUserInfo);
 
   const SocialLoginDynamic = dynamic(
     () => import("../components/scw").then((res) => res.default),
@@ -55,9 +57,9 @@ const HomePage: NextPage = () => {
     }
   );
 
-  // if (isLoading) {
-  //   return <Loading />;
-  // }
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <div className="debug-screens">
@@ -127,7 +129,7 @@ const HomePage: NextPage = () => {
               </motion.h1>
 
               <motion.p
-                className="mt-4 pb-4 font-semibold text-xl text-white/80 lg:mt-8"
+                className="mt-4 pb-4 text-xl font-semibold text-white/80 lg:mt-8"
                 variants={subheaderVariant}
                 initial="hidden"
                 animate="visible"
@@ -159,18 +161,18 @@ const HomePage: NextPage = () => {
                     variant="solid"
                     size="md"
                     className="mt-3 px-20"
-                    // onClick={
-                    //   session
-                    //     ? isFan
-                    //       ? () => router.push("/communities")
-                    //       : userData.createdCommunities.length > 0
-                    //       ? () =>
-                    //           router.push(
-                    //             `/communities/${userData.createdCommunities[0].communityId}`
-                    //           )
-                    //       : () => router.push("/communities/create")
-                    //     : () => setIsAuthModalOpen(true)
-                    // }
+                    onClick={
+                      session
+                        ? isFan
+                          ? () => router.push("/communities")
+                          : userData.createdCommunities.length > 0
+                          ? () =>
+                              router.push(
+                                `/communities/${userData.createdCommunities[0].communityId}`
+                              )
+                          : () => router.push("/communities/create")
+                        : () => setIsAuthModalOpen(true)
+                    }
                   >
                     Login
                   </Button>
@@ -335,30 +337,40 @@ const HomePage: NextPage = () => {
 
         {/* Misc section */}
         <section className="lg: mx-auto max-w-7xl px-8 pt-24 lg:pt-60 lg:pb-24">
-          <div className="flex flex-col lg:flex-row lg:items-center lg:gap-x-12">
-            <motion.div className="text-center lg:text-left">
-              <h3 className="text-2xl font-bold">
-                How Connexus came about
-              </h3>
+          <motion.div
+            className="flex flex-col lg:flex-row lg:items-center lg:gap-x-12"
+            variants={cameAboutVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <div className="text-center lg:text-left">
+              <h3 className="text-2xl font-bold">How Connexus came about</h3>
               <p className="py-4 text-gray-500">
                 The idea for Connexus originated in 2023, when our founding
                 members sought to provide a common channel of outreach between
                 creators and fans, be it through events, merchandise or even
                 social communities to interact together.
               </p>
-            </motion.div>
-            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
+            </div>
+            <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
               <Image
-                  src="/images/connexus-landing-demo-one.jpg"
-                  alt="Connexus logo"
-                  width={800}
-                  height={800}
-                />
-            </motion.div>
-          </div>
+                src="/images/connexus-landing-demo-one.jpg"
+                alt="Connexus logo"
+                width={800}
+                height={800}
+              />
+            </div>
+          </motion.div>
 
-          <div className="mt-12 flex flex-col lg:flex-row-reverse lg:items-center lg:gap-x-12">
-            <motion.div className="text-center lg:text-right">
+          <motion.div
+            className="mt-12 flex flex-col lg:flex-row-reverse lg:items-center lg:gap-x-12"
+            variants={driveValueVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+          >
+            <div className="text-center lg:text-right">
               <h3 className="text-2xl font-bold">How we drive value</h3>
               <p className="py-4 text-gray-500">
                 Using blockchain technology, Connexus enables the exchange of
@@ -366,16 +378,16 @@ const HomePage: NextPage = () => {
                 channel exclusive to creators and fans to be transparent and the
                 traceability of data shared across a business network. 
               </p>
-            </motion.div>
-            <motion.div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
+            </div>
+            <div className="rounded-md p-4 shadow-lg transition-all duration-300 hover:shadow-2xl">
               <Image
                 src="/images/connexus-landing-demo-two.jpg"
                 alt="Connexus logo"
                 width={800}
                 height={800}
               />
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         </section>
 
         <footer className="mt-20 flex flex-col items-center gap-y-4 bg-sky-100 py-12">
