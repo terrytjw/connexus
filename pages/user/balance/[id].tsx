@@ -80,7 +80,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
     bankAccountNum: string;
     bankRoutingNum: string;
   };
-  const { handleSubmit, control } = useForm<BankDetailsForm>({
+  const { handleSubmit, control, getValues } = useForm<BankDetailsForm>({
     defaultValues: {
       bankName: userData.bankAccount?.bankName ?? "",
       accountName: userData.bankAccount?.accountName ?? "",
@@ -94,6 +94,16 @@ const BalancePage = ({ userData }: BalancePageProps) => {
   const handleWithdraw = async () => {
     try {
       const userId = userData.userId;
+      if (
+        getValues().bankName === "" ||
+        getValues().accountName === "" ||
+        getValues().bankAccountNum === "" ||
+        getValues().bankRoutingNum === ""
+      ) {
+        toast.error("Please fill up all the bank details");
+        return;
+      }
+
       const response = await withdraw(userId);
       setUpdatedUserData(response);
       toast.success("Withdraw initiated");
@@ -212,10 +222,11 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankAccountNum"
-                rules={{ 
-                  required: "Bank Account Number is required", 
+                rules={{
+                  required: "Bank Account Number is required",
                   validate: (value) =>
-                    value.length > 6 || "Bank Account Number has to at least 7 digits",
+                    value.length > 6 ||
+                    "Bank Account Number has to at least 7 digits",
                 }}
                 render={({
                   field: { onChange, value },
@@ -236,10 +247,11 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankRoutingNum"
-                rules={{ 
-                  required: "Bank Routing Number is required", 
+                rules={{
+                  required: "Bank Routing Number is required",
                   validate: (value) =>
-                  value.length > 3 || "Bank Routing Number has to at least 4 digits",
+                    value.length > 3 ||
+                    "Bank Routing Number has to at least 4 digits",
                 }}
                 render={({
                   field: { onChange, value },
