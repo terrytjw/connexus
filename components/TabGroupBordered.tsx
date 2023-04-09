@@ -46,7 +46,9 @@ const TabGroupBordered = ({
                   classNames(
                     "whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium outline-0",
                     selected
-                      ? "border-blue-600 text-blue-600"
+                      ? tab === "+ Unlock Premium Channels"
+                        ? "border-red-600"
+                        : "border-blue-600 text-blue-600"
                       : "border-transparent text-gray-500 hover:border-blue-600 hover:text-blue-600",
                     "transition-all",
                     tab === "+ Unlock Premium Channels" ? "text-red-500" : ""

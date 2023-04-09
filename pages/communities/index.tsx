@@ -155,7 +155,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                 />
               </div>
               <BiFilter
-                className="h-12 w-10"
+                className="text-gray-500 h-12 w-10"
                 onClick={() => setIsModalOpen(true)}
               />
             </div>
@@ -232,7 +232,7 @@ const CommunitiesPage = ({ communitiesData }: CommunitiesPagePageProps) => {
                   onClick={() => setIsModalOpen(true)}
                 >
                   Filter
-                  <BiFilter className="h-6 w-6" />
+                  <BiFilter className="text-gray-500 h-6 w-6" />
                 </Button>
               </div>
             ) : null}

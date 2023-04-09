@@ -40,7 +40,7 @@ const Question = ({
   return (
     <div className="card border-2 border-gray-200 bg-white">
       <div className="card-body p-4 sm:p-8">
-        <div className="mb-2 flex w-full items-center justify-between gap-4">
+        <div className="mb-4 flex w-full items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <Image
               height={48}
@@ -93,12 +93,12 @@ const Question = ({
           </div>
         </div>
 
-        <p className="break-words text-lg font-semibold text-gray-700">
+        <p className="break-words mb-2 text-xl font-semibold text-gray-700">
           {question.question}
         </p>
 
         {question.answer && !isEditing ? (
-          <p className="break-words border-l-2 pl-4 text-gray-700">
+          <p className="break-words mb-2 border-l-2 pl-4 text-gray-700">
             {question.answer}
           </p>
         ) : (

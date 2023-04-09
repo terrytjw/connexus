@@ -522,7 +522,7 @@ const AttendeesPage = () => {
                 />
               )}
             </div>
-            <div className="mt-4 flex justify-end">
+            <div className="mt-4 flex justify-center">
               <Button
                 className="border-0"
                 variant="outlined"

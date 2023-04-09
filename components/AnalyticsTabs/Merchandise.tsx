@@ -368,10 +368,10 @@ const MerchandiseTab = ({
                 onClick={() => setIsModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-6 w-6" />
+                <BiFilter className="text-gray-500 h-6 w-6" />
               </Button>
               <BiFilter
-                className="h-12 w-10 sm:hidden"
+                className="text-gray-500 h-12 w-10 sm:hidden"
                 onClick={() => setIsModalOpen(true)}
               />
             </div>
@@ -558,7 +558,7 @@ const MerchandiseTab = ({
               className="w-40 flex-grow-0 sm:w-64"
             />
           </div>
-          <div className="flex flex-col items-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
+          <div className="flex flex-col items-center text-center justify-center gap-8 rounded-lg bg-white px-8 py-16 font-semibold text-gray-900">
             There are no merchandise analytics to show for now, go create a
             collection!
             <Button variant="solid" size="md" href="/merchandise/create">

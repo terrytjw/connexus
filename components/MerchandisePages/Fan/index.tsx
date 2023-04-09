@@ -193,7 +193,7 @@ const FanCollectionsPage = ({
             onChange={(e) => setSearchString(e.target.value)}
           />
         </div>
-        <BiFilter className="h-12 w-10" onClick={() => setIsModalOpen(true)} />
+        <BiFilter className="text-gray-500 h-12 w-10" onClick={() => setIsModalOpen(true)} />
       </div>
 
       <div className="relative">
@@ -277,7 +277,7 @@ const FanCollectionsPage = ({
             onClick={() => setIsModalOpen(true)}
           >
             Filter
-            <BiFilter className="h-6 w-6" />
+            <BiFilter className="text-gray-500 h-6 w-6" />
           </Button>
         </div>
       </div>

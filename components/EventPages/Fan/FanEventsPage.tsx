@@ -359,7 +359,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
                 onClick={() => setIsFilterModalOpen(true)}
               >
                 Filter
-                <BiFilter className="h-6 w-6" />
+                <BiFilter className="text-gray-500 h-6 w-6" />
               </Button>
             </div>
           ) : null}
@@ -389,7 +389,7 @@ const FanEventsPage = ({ events }: FanEventsPageProps) => {
                 />
               </div>
               <BiFilter
-                className="h-12 w-10"
+                className="text-gray-500 h-12 w-10"
                 onClick={() => setIsFilterModalOpen(true)}
               />
             </div>
