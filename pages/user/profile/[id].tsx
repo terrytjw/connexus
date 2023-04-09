@@ -105,7 +105,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
             </div>
 
             {/* button group */}
-            <div className="mt-6 flex items-center gap-2">
+            <div className="flex flex-wrap gap-4 items-center">
               <Button
                 href={`/user/settings/${userData.userId}`}
                 variant="solid"
@@ -143,7 +143,7 @@ const UserProfilePage = ({ userData }: UserProfilePageProps) => {
                   className="ml-2 flex items-center gap-x-2 text-blue-600 transition-all hover:text-blue-900 hover:underline tooltip tooltip-primary" 
                   data-tip="For Web3 native users to view the smart contract transactions in Polygon"
                 >
-                  <FaExternalLinkAlt className="h-3 w-3" />
+                  <FaExternalLinkAlt className="h-4 w-4" />
                   <span className="font-medium">On-chain Analysis</span>
                 </Link>
               </div>

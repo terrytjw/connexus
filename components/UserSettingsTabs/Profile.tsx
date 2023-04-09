@@ -47,7 +47,6 @@ const ProfileSettings = ({ userData }: ProfileSettingsProps) => {
 
     const response = await updateUserInfo(userData.userId, updatedUserData);
     router.push(`/user/profile/${userData.userId}`);
-    // TODO: add toast in the future
   };
 
   return (

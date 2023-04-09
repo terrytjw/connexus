@@ -97,10 +97,12 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
   <html>
     <head>
       <meta charset="utf-8">
+      <link href='https://fonts.googleapis.com/css?family=Poppins' rel='stylesheet'>
       <title>Ticket Notification</title>
       <style>
         /* Center all elements and set text color */
         body {
+          font-family: 'Poppins';
           display: flex;
           justify-content: center;
           text-align: center;
@@ -122,6 +124,7 @@ const FanEventRegister = ({ userData, event }: FanEventReigsterProps) => {
           text-decoration: none;
           display: inline-block;
           transition: background-color 0.3s ease;
+          font-family: 'Poppins';
           font-weight: 600;
           margin: 0 auto;
         }

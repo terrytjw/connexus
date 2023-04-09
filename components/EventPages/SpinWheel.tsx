@@ -17,7 +17,7 @@ const SpinWheel = ({ prizes, size, setCurrentTicket }: SpinWheelProps) => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = Number(session?.user.userId);
-  const COLORS = ["#1A54C2", "#87DBFF", "#FFD086", "#F69489", "#ED6571"];
+  const COLORS = ["#1A54C2", "#79D7FF", "#FFD086", "#F69489", "#ED6571"];
 
   const concatArrayByCeilDivision = (
     a: number,
