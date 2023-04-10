@@ -108,6 +108,7 @@ const CreateCollectionPage = () => {
                 className="hidden border-0 lg:block"
                 variant="outlined"
                 size="md"
+                type="button"
                 onClick={() => history.back()}
               >
                 <FaChevronLeft />
