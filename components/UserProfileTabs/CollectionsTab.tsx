@@ -14,16 +14,14 @@ type CollectionsTabProps = {
 const CollectionsTab = ({ userData }: CollectionsTabProps) => {
   const [isFree, setIsFree] = useState(false);
 
-  // filter by price
   const userTicketData =
     userData.userTicket as unknown as UserWithTicketsAndEvent[];
-  const paidMerch = userData.merchandise.filter((item) => item.price !== 0);
 
   return (
     <main className="">
       <WordToggle
-        leftWord="Paid"
-        rightWord="Free"
+        leftWord="Merchandise"
+        rightWord="Badge"
         isChecked={isFree}
         setIsChecked={setIsFree}
       />
@@ -31,7 +29,7 @@ const CollectionsTab = ({ userData }: CollectionsTabProps) => {
         {isFree ? (
           <DigitalBadgeGrid data={userTicketData} collectedTab={true} />
         ) : (
-          <CollectibleGrid data={paidMerch} collectedTab={true} />
+          <CollectibleGrid data={userData.merchandise} collectedTab={true} />
         )}
       </div>
     </main>
