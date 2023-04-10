@@ -114,7 +114,7 @@ async function generateCommunity() {
 }
 
 async function generateChannel() {
-  const analyticsTimestamps: any[][] = [[], [], []];
+  const analyticsTimestamps: any[][] = [[], [], [], []];
   for (let arr of analyticsTimestamps) {
     let likes = 20;
     let comments = 2;
@@ -173,6 +173,18 @@ async function generateChannel() {
       },
       analyticsTimestamps: {
         create: analyticsTimestamps[2],
+      },
+    },
+    {
+      name: "Ascendant Only",
+      community: {
+        connect: {
+          communityId: 1,
+        },
+      },
+      channelType: ChannelType.PREMIUM,
+      analyticsTimestamps: {
+        create: analyticsTimestamps[3],
       },
     },
   ];
@@ -497,6 +509,11 @@ async function generateCollection() {
         create: analyticsTimestamps[0],
       },
       clicks: 100,
+      premiumChannel:{
+        connect: {
+          channelId: 4
+        }
+      }
     },
     {
       collectionName: "Cosplay Collection",
