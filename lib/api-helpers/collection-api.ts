@@ -313,9 +313,11 @@ export async function mintMerchandise(
     value: price,
   });
 
+  const updatedMerchSupply = merchandiseInfo.currMerchSupply + 1;
+
   const updatedMerchandiseInfo = {
     ...merchandiseInfo,
-    currMerchSupply: merchandiseInfo.currMerchSupply + 1,
+    currMerchSupply: updatedMerchSupply,
   };
 
   const updatedMerchandiseResponse = await updateMerchandise(
@@ -324,9 +326,33 @@ export async function mintMerchandise(
     userId
   );
 
+  const collection = await getCollection(merchandiseInfo.collectionId);
+  let isSold = true;
+  for (let merchandise of collection.merchandise) {
+    if (merchandise.currMerchSupply < merchandise.totalMerchSupply) {
+      isSold = false;
+      break;
+    }
+  }
+
+  if (isSold) {
+    await updateCollection(merchandiseInfo.collectionId, {
+      collectionState: CollectionState.SOLD,
+    });
+  }
+
   console.log("updatedMerchandiseResponse ->", updatedMerchandiseResponse);
 
   return link;
+}
+
+async function updateCollection(
+  collectionId: number,
+  collection: Partial<Collection>
+) {
+  const url = baseUrl + `/${collectionId}`;
+  const response = (await axios.post(url, collection)).data;
+  return response;
 }
 
 async function mintOnChainMerchandise(merchandise: Partial<Merchandise>) {

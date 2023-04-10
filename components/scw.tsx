@@ -40,14 +40,14 @@ const Home = ({ isAuthModalOpen }: any) => {
         "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app"
       );
       const signature2 = await sdk.whitelistUrl(
-        "https://41be-116-15-156-213.ap.ngrok.io"
+        "https://5dec-116-15-156-213.ngrok-free.app"
       );
       await sdk.init({
         chainId: ethers.utils.hexValue(80001),
         whitelistUrls: {
           "https://connexus-git-supabase-connexaofficial-gmailcom.vercel.app":
             signature1,
-          "https://41be-116-15-156-213.ap.ngrok.io": signature2,
+          "https://5dec-116-15-156-213.ngrok-free.app": signature2,
         },
       });
       setSocialLoginSDK(sdk);
@@ -178,8 +178,8 @@ const Home = ({ isAuthModalOpen }: any) => {
             </Button>
           ) : (
             <div>
-              <h1 className="py-4 text-center font-semibold">
-                Welcome to Connexus.
+              <h1 className="py-8 text-center text-lg font-semibold">
+                Welcome to Connexus!
               </h1>
               <Button
                 className="m-auto"
@@ -195,11 +195,11 @@ const Home = ({ isAuthModalOpen }: any) => {
           <>
             {router.pathname !== "/" ? (
               <div>
-                <h1 className="py-4 text-center font-semibold">
+                <h1 className="py-8 text-center text-lg font-semibold">
                   Are you sure you want to logout?
                 </h1>
                 <Button
-                  className="m-auto text-red-500 hover:bg-red-500 hover:text-white"
+                  className="w-full !text-red-500 hover:border-red-500 hover:bg-red-100 sm:w-fit"
                   variant="outlined"
                   size="md"
                   onClick={disconnectWeb3}

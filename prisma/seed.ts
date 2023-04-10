@@ -557,7 +557,7 @@ async function generateCollection() {
           image:
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.jpg",
           totalMerchSupply: 100,
-          currMerchSupply: 12,
+          currMerchSupply: 100,
           price: 20.0,
           users: {
             connect: { userId: 4 },

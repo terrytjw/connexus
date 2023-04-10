@@ -80,7 +80,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
     bankAccountNum: string;
     bankRoutingNum: string;
   };
-  const { handleSubmit, control } = useForm<BankDetailsForm>({
+  const { handleSubmit, control, getValues } = useForm<BankDetailsForm>({
     defaultValues: {
       bankName: userData.bankAccount?.bankName ?? "",
       accountName: userData.bankAccount?.accountName ?? "",
@@ -94,6 +94,16 @@ const BalancePage = ({ userData }: BalancePageProps) => {
   const handleWithdraw = async () => {
     try {
       const userId = userData.userId;
+      if (
+        getValues().bankName === "" ||
+        getValues().accountName === "" ||
+        getValues().bankAccountNum === "" ||
+        getValues().bankRoutingNum === ""
+      ) {
+        toast.error("Please fill up all the bank details");
+        return;
+      }
+
       const response = await withdraw(userId);
       setUpdatedUserData(response);
       toast.success("Withdraw initiated");
@@ -109,7 +119,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
         bankName: formData.bankName,
         accountName: formData.accountName,
         accountNumber: formData.bankAccountNum,
-        routingNumber: formData.bankRoutingNum ?? "",
+        routingNumber: formData.bankRoutingNum,
       } as BankAccount;
 
       await upsertBankAccount(userId, bankDetails);
@@ -117,6 +127,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
       toast.success("Saved bank details");
     } catch (e) {
       toast.error("Unable to save bank details");
+      console.log(e);
     }
   };
 
@@ -127,7 +138,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
           onSubmit={handleSubmit(onSubmit)}
           className="max-w-7xl py-12 px-4 pb-60 sm:px-12"
         >
-          <h1 className="mb-4 text-4xl font-bold text-gray-900">
+          <h1 className="mb-8 text-4xl font-bold text-gray-900">
             Account Balance
           </h1>
           {/* account hero section */}
@@ -137,7 +148,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
             </h4>
             <div className="flex justify-between py-2">
               <h2 className="text-3xl font-semibold text-blue-600 lg:text-4xl">
-                ${updatedUserData.walletBalance}
+                ${updatedUserData.walletBalance.toFixed(2)}
               </h2>
               <Button
                 className="lg:hidden"
@@ -211,7 +222,12 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankAccountNum"
-                rules={{ required: "Bank account number is required" }}
+                rules={{
+                  required: "Bank Account Number is required",
+                  validate: (value) =>
+                    value.length > 6 ||
+                    "Bank Account Number has to at least 7 digits",
+                }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
@@ -221,7 +237,7 @@ const BalancePage = ({ userData }: BalancePageProps) => {
                     label="Bank Account Number*"
                     value={value}
                     onChange={onChange}
-                    placeholder="e.g. 501123956001"
+                    placeholder="e.g. 0052312891"
                     errorMessage={error?.message}
                     size="md"
                     variant="bordered"
@@ -231,16 +247,22 @@ const BalancePage = ({ userData }: BalancePageProps) => {
               <Controller
                 control={control}
                 name="bankRoutingNum"
+                rules={{
+                  required: "Bank Routing Number is required",
+                  validate: (value) =>
+                    value.length > 3 ||
+                    "Bank Routing Number has to at least 4 digits",
+                }}
                 render={({
                   field: { onChange, value },
                   fieldState: { error },
                 }) => (
                   <Input
                     type="text"
-                    label="Bank Routing Number"
+                    label="Bank Routing Number*"
                     value={value}
                     onChange={onChange}
-                    placeholder=""
+                    placeholder="e.g. 7375"
                     errorMessage={error?.message}
                     size="md"
                     variant="bordered"
@@ -270,10 +292,10 @@ const BalancePage = ({ userData }: BalancePageProps) => {
 
           {/* withdrawal history section */}
           <section>
-            <h2 className="mb-2 text-lg font-semibold text-gray-900">
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">
               Withdrawal History
             </h2>
-            <p className="mb-6 text-sm text-gray-500">
+            <p className="mt-6 mb-8 text-sm text-gray-500">
               Withdrawals will take 5-7 business days to be credited into your
               bank account.
             </p>

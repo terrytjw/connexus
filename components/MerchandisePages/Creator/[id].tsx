@@ -28,7 +28,7 @@ const CreatorCollectionPage = () => {
     error,
     isLoading,
     mutate,
-  } = useSWR(id, getCollection);
+  } = useSWR("getCollection", async () => await getCollection(Number(id)));
 
   const { control, handleSubmit, setValue } = useForm<Collection>({
     defaultValues: {
@@ -141,7 +141,7 @@ const CreatorCollectionPage = () => {
       </div>
 
       <div className="mt-6 lg:ml-16">
-        <div className="card mb-8 flex justify-between gap-6 border-2 border-gray-200 bg-white p-6">
+        <div className="card mb-8 flex justify-between gap-6 border-2 drop-shadow-sm border-gray-200 bg-white p-6">
           <div className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
             <h2 className="text-gray-700">{collectionData.description}</h2>
             {collectionData.premiumChannel ? (
