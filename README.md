@@ -18,12 +18,12 @@ Social Channels for Fan Engagement and Fan Behavior Analytics.
 
 1. Download Docker from [Docker](https://www.docker.com/).
 2. Ensure that Docker is running.
-3. Run `yarn` to download dependencies.
-4. Ensure that `POSTGRES_HOSTNAME=db` is uncommented in `.env` file.
+3. Ensure that `POSTGRES_HOSTNAME=db` is uncommented in `.env` file.
 4. Run `docker compose up`.
-5. Open a separate terminal and type `docker compose exec app sh`. Type `yarn db:init` within the same terminal. 
-6. Run `yarn dev` to run the local server for development, if `POSTGRES_HOSTNAME=localhost` is uncommented instead.
-7. Clear the browser cookies before `Login`.
+5. Open a separate terminal and type `docker compose exec app sh`. Run `yarn` to download dependencies.
+6. In this separate terminal, type `yarn db:init` within the same terminal. 
+7. Run `yarn dev` to run the local server for development, if `POSTGRES_HOSTNAME=localhost` is uncommented instead.
+8. Clear the browser cookies before `Login`.
 
 <br>
 
