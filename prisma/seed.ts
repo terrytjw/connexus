@@ -114,7 +114,7 @@ async function generateCommunity() {
 }
 
 async function generateChannel() {
-  const analyticsTimestamps: any[][] = [[], [], []];
+  const analyticsTimestamps: any[][] = [[], [], [], []];
   for (let arr of analyticsTimestamps) {
     let likes = 20;
     let comments = 2;
@@ -173,6 +173,18 @@ async function generateChannel() {
       },
       analyticsTimestamps: {
         create: analyticsTimestamps[2],
+      },
+    },
+    {
+      name: "Ascendant Only",
+      community: {
+        connect: {
+          communityId: 1,
+        },
+      },
+      channelType: ChannelType.PREMIUM,
+      analyticsTimestamps: {
+        create: analyticsTimestamps[3],
       },
     },
   ];
@@ -497,6 +509,11 @@ async function generateCollection() {
         create: analyticsTimestamps[0],
       },
       clicks: 100,
+      premiumChannel: {
+        connect: {
+          channelId: 4,
+        },
+      },
     },
     {
       collectionName: "Cosplay Collection",
@@ -531,7 +548,7 @@ async function generateCollection() {
     {
       collectionName: "Travel Picture Collection",
       description: "This is Travel Picture Collection.",
-      fixedPrice: 20.0,
+      fixedPrice: 0,
       currency: Currency.USD,
       collectionState: CollectionState.SOLD,
       merchandise: {
@@ -541,7 +558,7 @@ async function generateCollection() {
             "https://ewxkkwolfryfoidlycjr.supabase.co/storage/v1/object/public/user-profile/travel-collection-media.jpg",
           totalMerchSupply: 100,
           currMerchSupply: 100,
-          price: 20.0,
+          price: 0,
           users: {
             connect: { userId: 4 },
           },
@@ -727,7 +744,8 @@ async function generateEvent() {
             price: 100,
             startDate: new Date("2023-03-22"),
             endDate: new Date("2023-03-26"),
-            description: "Access to exclusive cosplay workshops, covering topics like costume design, makeup techniques, and prop making",
+            description:
+              "Access to exclusive cosplay workshops, covering topics like costume design, makeup techniques, and prop making",
             ticketType: TicketType.ON_SALE,
           },
           {
@@ -736,7 +754,8 @@ async function generateEvent() {
             price: 1000,
             startDate: new Date("2023-03-22"),
             endDate: new Date("2023-03-26"),
-            description: "Exclusive meet and greet with featured cosplayers, including autograph and photo opportunities",
+            description:
+              "Exclusive meet and greet with featured cosplayers, including autograph and photo opportunities",
             ticketType: TicketType.ON_SALE,
           },
         ],
@@ -761,8 +780,7 @@ async function generateEvent() {
       analyticsTimestamps: {
         create: analyticsTimestamps[2],
       },
-      eventName:
-        "Travely Travel Fair 2023",
+      eventName: "Travely Travel Fair 2023",
       category: CategoryType.TRAVEL,
       address: {
         create: {
@@ -790,7 +808,8 @@ async function generateEvent() {
             price: 10,
             startDate: new Date("2023-04-24"),
             endDate: new Date("2023-04-26"),
-            description: "Access to the main event area, including exhibitor booths, travel agencies, and destination showcases",
+            description:
+              "Access to the main event area, including exhibitor booths, travel agencies, and destination showcases",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
             ticketType: TicketType.ON_SALE,
@@ -801,7 +820,8 @@ async function generateEvent() {
             price: 100,
             startDate: new Date("2023-04-24"),
             endDate: new Date("2023-04-26"),
-            description: "Access to exclusive travel talks and panel discussions with industry experts and influencers",
+            description:
+              "Access to exclusive travel talks and panel discussions with industry experts and influencers",
             ticketType: TicketType.ON_SALE,
           },
           {
@@ -810,7 +830,8 @@ async function generateEvent() {
             price: 1000,
             startDate: new Date("2023-04-24"),
             endDate: new Date("2023-04-26"),
-            description: "VIP entry and priority access to all event areas, including early entry to the exhibition floor",
+            description:
+              "VIP entry and priority access to all event areas, including early entry to the exhibition floor",
             ticketType: TicketType.ON_SALE,
           },
         ],
@@ -859,7 +880,8 @@ async function generateEvent() {
             price: 8,
             startDate: new Date("2023-05-24"),
             endDate: new Date("2023-05-26"),
-            description: "Participation in selected fitness classes and activities",
+            description:
+              "Participation in selected fitness classes and activities",
             users: { connect: [{ userId: 1 }, { userId: 2 }] },
             currentTicketSupply: 2,
             ticketType: TicketType.ON_SALE,
@@ -870,7 +892,8 @@ async function generateEvent() {
             price: 88,
             startDate: new Date("2023-05-24"),
             endDate: new Date("2023-05-26"),
-            description: "Access to premium fitness classes led by celebrity trainers and industry experts",
+            description:
+              "Access to premium fitness classes led by celebrity trainers and industry experts",
             ticketType: TicketType.ON_SALE,
           },
           {
@@ -879,7 +902,8 @@ async function generateEvent() {
             price: 888,
             startDate: new Date("2023-05-24"),
             endDate: new Date("2023-05-26"),
-            description: "VIP entry and priority access to all event areas, Exclusive meet and greet with celebrity trainers and industry experts",
+            description:
+              "VIP entry and priority access to all event areas, Exclusive meet and greet with celebrity trainers and industry experts",
             ticketType: TicketType.ON_SALE,
           },
         ],
