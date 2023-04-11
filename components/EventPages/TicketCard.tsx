@@ -41,8 +41,10 @@ const TicketCard = ({
     return ticket.ticketType === TicketType.PAUSED;
   };
 
-  const isRaffleActivated = (): boolean => {
-    return ticket.event.raffles[0]?.isActivated;
+  const isRaffleEnabledAndActivated = (): boolean => {
+    return (
+      ticket.event.raffles[0]?.isEnabled && ticket.event.raffles[0]?.isActivated
+    );
   };
 
   const getPrizeWinner = (ticket: any): any => {
@@ -143,7 +145,7 @@ const TicketCard = ({
 
           {/* Right column */}
           <div className="flex flex-col justify-end gap-4">
-            {isOwnedTicket && isRaffleActivated() && (
+            {isOwnedTicket && isRaffleEnabledAndActivated() && (
               <Button
                 variant="outlined"
                 size="md"

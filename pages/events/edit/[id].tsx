@@ -37,6 +37,7 @@ import { useRouter } from "next/router";
 import raffle from "../../api/events/raffle";
 import { RafflesWithPrizes } from "../../../lib/prisma/raffle-prisma";
 import { ParsedUrlQuery } from "querystring";
+import { useSession } from "next-auth/react";
 
 // smart contract stuff
 const provider = new ethers.providers.JsonRpcProvider(
@@ -58,6 +59,9 @@ interface Params extends ParsedUrlQuery {
 const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   const router = useRouter();
   const { id: eventId } = router.query;
+  const { data: session } = useSession();
+  const userId = Number(session?.user.userId);
+
   const { handleSubmit, setValue, control, watch, trigger, getFieldState } =
     useForm<EventWithAllDetails>({
       defaultValues: {
@@ -540,114 +544,122 @@ const CreatorEventEdit = ({ event, address }: CreatorEventPageProps) => {
   return (
     <ProtectedRoute>
       <Layout>
-        <main className="py-12 px-4 sm:px-12">
-          {/* Register success modal */}
-          <Modal
-            isOpen={isCreateSuccessModalOpen}
-            setIsOpen={setIsCreateSuccessModalOpen}
-          >
-            {isLoading ? (
-              <Loading className="!h-full !bg-transparent" />
-            ) : (
-              <div className="flex flex-col gap-6 py-4">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Event Updated!
-                </h3>
-                <h3 className="text-md font-normal text-gray-500">
-                  Your Event Page can be viewed in the 'Events' tab in the
-                  navigation bar.
-                </h3>
-
-                <Link href={`/events/${eventId}`}>
-                  <Button
-                    variant="solid"
-                    size="md"
-                    className="border-0"
-                    onClick={() => setIsCreateSuccessModalOpen(false)}
-                  >
-                    Confirm
-                  </Button>
-                </Link>
-              </div>
-            )}
-          </Modal>
-
-          {/* Header */}
-          <nav className="flex items-center gap-6">
-            {currentStep?.id !== "Step 1" && (
-              <FaChevronLeft
-                className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
-                onClick={reverseStep}
-              />
-            )}
-            <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
-              {currentStep?.id === "Step 1"
-                ? "Edit Event"
-                : currentStep?.id === "Step 2"
-                ? "Edit Tickets"
-                : "Publish Event Changes"}
-            </h2>
-          </nav>
-
-          {/* Steps */}
-          <div className="relative justify-center text-gray-900 sm:py-8">
-            {/* conditionally rendered via css */}
-            <StepsDesktop steps={steps} setSteps={setSteps} isEdit={true} />
-            <StepsMobile currentStep={currentStep} steps={steps} />
-          </div>
-
-          {/* Form */}
-          <div>
-            <form
-              onSubmit={handleSubmit((event: EventWithAllDetails) =>
-                parseAndUpdate(event)
-              )}
+        {userId === event?.creatorId ? (
+          <main className="py-12 px-4 sm:px-12">
+            {/* Register success modal */}
+            <Modal
+              isOpen={isCreateSuccessModalOpen}
+              setIsOpen={setIsCreateSuccessModalOpen}
             >
-              {/* Step 1 */}
-              {currentStep?.id === "Step 1" &&
-                currentStep?.status === StepStatus.CURRENT && (
-                  <EventFormPage
-                    isEdit={true} // tells the form page that user is not editing
-                    watch={watch}
-                    setValue={setValue}
-                    control={control}
-                    trigger={trigger}
-                    proceedStep={proceedStep}
-                  />
+              {isLoading ? (
+                <Loading className="!h-full !bg-transparent" />
+              ) : (
+                <div className="flex flex-col gap-6 py-4">
+                  <h3 className="text-xl font-semibold text-gray-900">
+                    Event Updated!
+                  </h3>
+                  <h3 className="text-md font-normal text-gray-500">
+                    Your Event Page can be viewed in the 'Events' tab in the
+                    navigation bar.
+                  </h3>
+
+                  <Link href={`/events/${eventId}`}>
+                    <Button
+                      variant="solid"
+                      size="md"
+                      className="border-0"
+                      onClick={() => setIsCreateSuccessModalOpen(false)}
+                    >
+                      Confirm
+                    </Button>
+                  </Link>
+                </div>
+              )}
+            </Modal>
+
+            {/* Header */}
+            <nav className="flex items-center gap-6">
+              {currentStep?.id !== "Step 1" && (
+                <FaChevronLeft
+                  className="text-lg text-blue-600 hover:cursor-pointer sm:text-xl"
+                  onClick={reverseStep}
+                />
+              )}
+              <h2 className="text-2xl font-bold text-gray-900 sm:text-4xl">
+                {currentStep?.id === "Step 1"
+                  ? "Edit Event"
+                  : currentStep?.id === "Step 2"
+                  ? "Edit Tickets"
+                  : "Publish Event Changes"}
+              </h2>
+            </nav>
+
+            {/* Steps */}
+            <div className="relative justify-center text-gray-900 sm:py-8">
+              {/* conditionally rendered via css */}
+              <StepsDesktop steps={steps} setSteps={setSteps} isEdit={true} />
+              <StepsMobile currentStep={currentStep} steps={steps} />
+            </div>
+
+            {/* Form */}
+            <div>
+              <form
+                onSubmit={handleSubmit((event: EventWithAllDetails) =>
+                  parseAndUpdate(event)
                 )}
-              {/* Step 2 */}
-              {currentStep?.id === "Step 2" &&
-                currentStep?.status === StepStatus.CURRENT && (
-                  <TicketFormPage
-                    isEdit={true}
-                    getFieldState={getFieldState}
-                    watch={watch}
-                    setValue={setValue}
-                    control={control}
-                    trigger={trigger}
-                    fields={fields}
-                    update={update}
-                    addNewTicket={addNewTicket}
-                    removeTicket={removeTicket}
-                    prizesFields={prizesFields}
-                    appendPrize={appendPrize}
-                    removePrize={removePrize}
-                    proceedStep={proceedStep}
-                  />
-                )}
-              {/* Step 3 */}
-              {currentStep?.id === "Step 3" &&
-                currentStep?.status === StepStatus.CURRENT && (
-                  <PublishFormPage
-                    watch={watch}
-                    setValue={setValue}
-                    setIsCreateSuccessModalOpen={setIsCreateSuccessModalOpen}
-                    isLoading={isLoading}
-                  />
-                )}
-            </form>
-          </div>
-        </main>
+              >
+                {/* Step 1 */}
+                {currentStep?.id === "Step 1" &&
+                  currentStep?.status === StepStatus.CURRENT && (
+                    <EventFormPage
+                      isEdit={true} // tells the form page that user is not editing
+                      watch={watch}
+                      setValue={setValue}
+                      control={control}
+                      trigger={trigger}
+                      proceedStep={proceedStep}
+                    />
+                  )}
+                {/* Step 2 */}
+                {currentStep?.id === "Step 2" &&
+                  currentStep?.status === StepStatus.CURRENT && (
+                    <TicketFormPage
+                      isEdit={true}
+                      getFieldState={getFieldState}
+                      watch={watch}
+                      setValue={setValue}
+                      control={control}
+                      trigger={trigger}
+                      fields={fields}
+                      update={update}
+                      addNewTicket={addNewTicket}
+                      removeTicket={removeTicket}
+                      prizesFields={prizesFields}
+                      appendPrize={appendPrize}
+                      removePrize={removePrize}
+                      proceedStep={proceedStep}
+                    />
+                  )}
+                {/* Step 3 */}
+                {currentStep?.id === "Step 3" &&
+                  currentStep?.status === StepStatus.CURRENT && (
+                    <PublishFormPage
+                      watch={watch}
+                      setValue={setValue}
+                      setIsCreateSuccessModalOpen={setIsCreateSuccessModalOpen}
+                      isLoading={isLoading}
+                    />
+                  )}
+              </form>
+            </div>
+          </main>
+        ) : (
+          <main className="py-12 px-4 sm:px-12">
+            <div className=" flex h-[calc(100vh-16rem)] items-center justify-center p-4 text-sm tracking-widest text-gray-400 lg:h-[calc(100vh-16rem)]">
+              Not Authorized to View This Page.
+            </div>
+          </main>
+        )}
       </Layout>
     </ProtectedRoute>
   );

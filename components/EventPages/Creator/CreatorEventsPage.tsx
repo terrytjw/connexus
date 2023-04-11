@@ -19,6 +19,7 @@ import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { API_URL } from "../../../lib/constant";
 import Loading from "../../Loading";
+import toast from "react-hot-toast";
 
 const DELAY_TIME = 400;
 
@@ -424,8 +425,12 @@ const CreatorEventsPage = () => {
                 size="md"
                 className="bg-red-600 hover:bg-red-500"
                 onClick={async () => {
-                  await axios.delete(`${API_URL}/events/${eventIdToDelete}`);
-                  router.reload();
+                  try {
+                    await axios.delete(`${API_URL}/events/${eventIdToDelete}`);
+                    router.reload();
+                  } catch (error) {
+                    toast.error("Unable to Delete Event.");
+                  }
                   setDeleteConfirmationModalOpen(false);
                 }}
               >

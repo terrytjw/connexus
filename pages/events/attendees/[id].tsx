@@ -101,22 +101,6 @@ const AttendeesPage = () => {
 
   if (isLoading) return <Loading />;
 
-  // custom function to show toast max once every X time period
-  let lastToastTime: number | null = null;
-
-  const showToastWithLimit = (
-    message: string,
-    options: { duration: number },
-    timeLimit: number
-  ) => {
-    const currentTime = Date.now();
-
-    if (!lastToastTime || currentTime - lastToastTime >= timeLimit) {
-      lastToastTime = currentTime;
-      toast.error(message, options);
-    }
-  };
-
   // validation function
   const isValidQr = (str: string) => {
     const numCommas = (str.match(/,/g) || []).length;
@@ -165,7 +149,9 @@ const AttendeesPage = () => {
       }, 2000);
     } else {
       setIsValid(false);
-      showToastWithLimit("Invalid QR Code!", { duration: 3000 }, 5000);
+      toast.error("Invalid QR Code!", {
+        id: "error",
+      });
       setCheckInStatus(CheckInStatus.INITIAL);
     }
   };
@@ -245,10 +231,29 @@ const AttendeesPage = () => {
   const handleActivateRaffle = async () => {
     const raffles = fetchedAttendees[0].ticket.event.raffles; // raffle object from db
 
-    // show different error messages
+    // allow start event even if raffle is not enabled
     if (!isRaffleEnabled()) {
-      toast.error("Please enable raffle first");
-      return;
+      setLoading(true);
+      const updatedRaffle = { ...raffles[0], isActivated: true };
+      await toast.promise(updateRaffle(raffles[0].raffleId, updatedRaffle), {
+        loading: "Starting Event...",
+        success: "Event Started!",
+        error: "Error Starting Event",
+      });
+      // deploy digital badge contract
+      await toast.promise(deployDigitalBadgeContract(), {
+        loading: "Deploying Digital Badge Contract...",
+        success: "Digital Badge Contract Deployed!",
+        error: "Error Deploying Digital Badge Contract",
+      });
+
+      mutate((data: AttendeeListType[]) =>
+        data.map(
+          (attendee: any, index) =>
+            index === 0 && attendee.ticket.event.raffles[0]?.isActivated
+        )
+      );
+      setLoading(false);
     }
     // event has a raffle and raffle is enabled
     if (raffles.length !== 0 && raffles[0].isEnabled) {
@@ -278,15 +283,6 @@ const AttendeesPage = () => {
 
   const handleVerify = async () => {
     if (currentPrizeSelection?.rafflePrizeUserData) {
-      // console.log("passing this obj -> ", {
-      //   rafflePrizeUserId:
-      //     currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
-      //   rafflePrizeId:
-      //     currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeId,
-      //   isClaimed: true,
-      //   userId: currentPrizeSelection?.rafflePrizeUserData?.userId,
-      // });
-
       const res = await toast.promise(
         updateRafflePrize(
           currentPrizeSelection?.rafflePrizeUserData?.rafflePrizeUserId,
@@ -348,7 +344,7 @@ const AttendeesPage = () => {
               <h1 className="text-3xl font-bold text-gray-900">
                 Attendees for{" "}
                 {truncateString(
-                  attendees[0]?.ticket?.event?.eventName ?? "",
+                  attendees[0]?.ticket?.event?.eventName ?? "Your Event",
                   30
                 )}
               </h1>

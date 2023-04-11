@@ -203,13 +203,10 @@ const CreatorEventCreate = () => {
     console.log("Posting Parsed Event Object -> ", event);
 
     // call post api
-    const { data: response } = await axios.post(
-      `${API_URL}/events`,
-      {
-        ...event,
-        eventScAddress: event_contract.address,
-      }
-    );
+    const { data: response } = await axios.post(`${API_URL}/events`, {
+      ...event,
+      eventScAddress: event_contract.address,
+    });
     const data = response;
     console.log("Event Created -> ", data);
     setIsLoading(false);
