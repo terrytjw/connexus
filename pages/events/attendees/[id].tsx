@@ -344,7 +344,7 @@ const AttendeesPage = () => {
               <h1 className="text-3xl font-bold text-gray-900">
                 Attendees for{" "}
                 {truncateString(
-                  attendees[0]?.ticket?.event?.eventName ?? "",
+                  attendees[0]?.ticket?.event?.eventName ?? "Your Event",
                   30
                 )}
               </h1>
