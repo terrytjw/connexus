@@ -367,7 +367,7 @@ const ChannelTab = ({
                   Post Engagement
                 </h3>
                 <div
-                  className="tooltip"
+                  className="tooltip tooltip-primary"
                   data-tip="Ratio of interactions with a post (likes and comments) to total number of members in your community"
                 >
                   <Button
