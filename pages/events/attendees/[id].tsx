@@ -350,123 +350,118 @@ const AttendeesPage = () => {
               </h1>
             </div>
           </div>
-          {attendees.length === 0 ? (
-            <div className=" flex h-80 flex-col items-center justify-center gap-4 p-4 text-sm tracking-widest text-gray-400">
-              <span> No attendees for this event yet. </span>
+          <div className="flex justify-between">
+            <div className="flex gap-4">
+              <Button
+                variant="solid"
+                size="md"
+                className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
+                onClick={handleActivateRaffle}
+                disabled={
+                  isRaffleActivated() || loading || attendees.length === 0
+                }
+              >
+                {!isRaffleActivated() ? "Start Event" : "Event Started"}
+              </Button>
             </div>
-          ) : (
-            <>
-              <div className="flex justify-between">
-                <div className="flex gap-4">
-                  <Button
-                    variant="solid"
-                    size="md"
-                    className={`max-w-xs ${isRaffleActivated() && "border-0"}`}
-                    onClick={handleActivateRaffle}
-                    disabled={
-                      isRaffleActivated() || loading || attendees.length === 0
-                    }
+            <div className="flex gap-4">
+              <div className="relative hidden w-full items-center justify-center rounded-md shadow-sm lg:flex">
+                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                  <FaSearch className="text-gray-500" />
+                </div>
+                <input
+                  className="input-outlined input input-md block w-full rounded-md pl-10"
+                  type="text"
+                  value={searchString}
+                  placeholder="Search Attendees"
+                  onChange={(e) => {
+                    setSearchString(e.target.value);
+                  }}
+                />
+              </div>
+              <div className="flex min-w-fit items-center gap-4">
+                <div className="dropdown-end dropdown">
+                  <label tabIndex={0}>
+                    <Button
+                      variant="outlined"
+                      size="md"
+                      className={`shadow-sm ${
+                        attendees.length === 0 && "border-0"
+                      }`}
+                      disabled={attendees.length === 0}
+                    >
+                      Export Table
+                    </Button>
+                  </label>
+                  <ul
+                    tabIndex={0}
+                    className="dropdown-content menu rounded-box w-64 bg-base-100 p-2 shadow"
                   >
-                    {!isRaffleActivated() ? "Start Event" : "Event Started"}
-                  </Button>
-                </div>
-                <div className="flex gap-4">
-                  <div className="relative hidden w-full items-center justify-center rounded-md shadow-sm lg:flex">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                      <FaSearch className="text-gray-500" />
-                    </div>
-                    <input
-                      className="input-outlined input input-md block w-full rounded-md pl-10"
-                      type="text"
-                      value={searchString}
-                      placeholder="Search Attendees"
-                      onChange={(e) => {
-                        setSearchString(e.target.value);
-                      }}
-                    />
-                  </div>
-                  <div className="flex min-w-fit items-center gap-4">
-                    <div className="dropdown-end dropdown">
-                      <label tabIndex={0}>
-                        <Button
-                          variant="outlined"
-                          size="md"
-                          className="shadow-sm"
-                        >
-                          Export Table
-                        </Button>
-                      </label>
-                      <ul
-                        tabIndex={0}
-                        className="dropdown-content menu rounded-box w-64 bg-base-100 p-2 shadow"
+                    <li>
+                      <Button
+                        size="md"
+                        variant="solid"
+                        className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                        onClick={() => {
+                          const url = exportPDF(Number(eventId));
+
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }}
                       >
-                        <li>
-                          <Button
-                            size="md"
-                            variant="solid"
-                            className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                            onClick={() => {
-                              const url = exportPDF(Number(eventId));
+                        Export and download as PDF
+                      </Button>
+                    </li>
+                    <li>
+                      <Button
+                        size="md"
+                        variant="solid"
+                        className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
+                        onClick={() => {
+                          const url = exportCSV(Number(eventId));
 
-                              router.push(url);
-                              setTimeout(() => router.reload(), 3000);
-                            }}
-                          >
-                            Export and download as PDF
-                          </Button>
-                        </li>
-                        <li>
-                          <Button
-                            size="md"
-                            variant="solid"
-                            className="justify-start !bg-white !text-gray-900 hover:!bg-gray-200"
-                            onClick={() => {
-                              const url = exportCSV(Number(eventId));
-
-                              router.push(url);
-                              setTimeout(() => router.reload(), 3000);
-                            }}
-                          >
-                            Export and download as CSV
-                          </Button>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
+                          router.push(url);
+                          setTimeout(() => router.reload(), 3000);
+                        }}
+                      >
+                        Export and download as CSV
+                      </Button>
+                    </li>
+                  </ul>
                 </div>
               </div>
-              {/* mobile search */}
-              <div className="mt-4 flex w-full gap-2 lg:hidden">
-                <div className="relative w-full items-center justify-center rounded-md shadow-sm">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <FaSearch className="text-gray-500" />
-                  </div>
-                  <input
-                    className="input-outlined input input-md block w-full rounded-md pl-10"
-                    type="text"
-                    value={searchString}
-                    placeholder="Search Attendees"
-                    onChange={(e) => {
-                      setSearchString(e.target.value);
-                    }}
-                  />
-                </div>
+            </div>
+          </div>
+          {/* mobile search */}
+          <div className="mt-4 flex w-full gap-2 lg:hidden">
+            <div className="relative w-full items-center justify-center rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <FaSearch className="text-gray-500" />
               </div>
-              <section>
-                <div className="pt-6">
-                  <AttendeesTable
-                    data={attendees}
-                    columns={["Name", "Email Address", "Check-in Status"]}
-                    setIsQrModalOpen={setIsQrModalOpen}
-                    checkInStatus={checkInStatus}
-                    isRaffleActivated={isRaffleActivated}
-                    setIsPrizeModalOpen={setIsPrizeModalOpen}
-                    setCurrentPrizeSelection={setCurrentPrizeSelection}
-                  />
-                </div>
-              </section>
-            </>
-          )}
+              <input
+                className="input-outlined input input-md block w-full rounded-md pl-10"
+                type="text"
+                value={searchString}
+                placeholder="Search Attendees"
+                onChange={(e) => {
+                  setSearchString(e.target.value);
+                }}
+              />
+            </div>
+          </div>
+          <section>
+            <div className="pt-6">
+              <AttendeesTable
+                data={attendees}
+                columns={["Name", "Email Address", "Check-in Status"]}
+                setIsQrModalOpen={setIsQrModalOpen}
+                checkInStatus={checkInStatus}
+                isRaffleActivated={isRaffleActivated}
+                setIsPrizeModalOpen={setIsPrizeModalOpen}
+                setCurrentPrizeSelection={setCurrentPrizeSelection}
+              />
+            </div>
+          </section>
 
           {/* Prize Modal */}
           <Modal
