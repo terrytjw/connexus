@@ -503,7 +503,7 @@ const AttendeesPage = () => {
                 ? "Scan a QR code"
                 : "Scanning..."}
             </h2>
-            <div className="mt-16">
+            <div className="mt-10">
               {checkInStatus === CheckInStatus.LOADING && (
                 <Loading className="!h-full bg-transparent" />
               )}
