@@ -194,7 +194,7 @@ const Home = ({ isAuthModalOpen }: any) => {
         ) : (
           <>
             {router.pathname !== "/" ? (
-              <div>
+              <div className="flex justify-center">
                 <h1 className="py-8 text-center text-lg font-semibold">
                   Are you sure you want to logout?
                 </h1>
