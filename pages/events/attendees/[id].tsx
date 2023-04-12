@@ -75,7 +75,10 @@ const AttendeesPage = () => {
     data: fetchedAttendees,
     isLoading,
     mutate: mutate,
-  } = useSWR(eventId, async () => await viewAttendeeList(Number(eventId)));
+  } = useSWR(
+    "fetchedAttendees",
+    async () => await viewAttendeeList(Number(eventId))
+  );
 
   console.log("fetchAttendees ->", fetchedAttendees);
   console.log("filteredAttendees ->", attendees);
