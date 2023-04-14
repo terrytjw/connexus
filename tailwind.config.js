@@ -38,5 +38,5 @@ module.exports = {
       },
     },
   },
-  plugins: [require("daisyui"), require("tailwindcss-debug-screens")],
+  plugins: [require("daisyui") /* require("tailwindcss-debug-screens") */],
 };
